@@ -1,0 +1,23 @@
+
+@import '../../../variables';
+
+.close-buttton {
+  border: 1px solid $second-color;
+  color: $second-color;
+  font-weight: 600;
+}
+.game-amount {
+ color: $second-color;
+}
+::ng-deep {
+    .game-list-win-lose-alert {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      //overflow-y: auto;
+      min-height: calc(100vh - 60px);
+      & > .modal-content {
+        background-color: #e1dfe2 !important;
+      }
+    } 
+  }

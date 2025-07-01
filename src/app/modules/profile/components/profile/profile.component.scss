@@ -1,0 +1,116 @@
+@import '../../../../variables';
+.listview {
+  & li{
+    @include box-shadow;
+  }
+ 
+}
+
+
+
+.image-listview > li a.not-show:after {
+    background-image: none !important;
+}
+.image-listview > li a.item :after {
+    background-image: url(/assets/img/arrow.svg);
+}
+#appCapsule {
+    padding: 0px 0 !important;      
+    min-height: 120vh !important;
+    overflow-x: hidden
+  }
+.account-bgcolor {  
+    display: flex;
+    border: none !important;
+    background: transparent !important;
+    
+}
+.wallet-account {
+    position:relative;
+    text-align:center;
+    background: linear-gradient(60deg, $first-color 0%, $second-color 100%) !important;
+    color: #fff;
+  }
+.header {
+  background: #fff;
+  color: $second-color;
+}
+.image-listview > li a.item:after {
+  background-image: url('/assets/img/arrow.svg');
+  
+}
+
+.image-listview > li {
+  border: none !important;
+  border-bottom: 1px solid #E1E1E1 !important;
+  border-radius: 0px !important;
+}
+.listview {
+    background: transparent !important;
+}
+
+.account-title-active {
+    color: #fff;
+    margin: 0px !important;
+}
+.account-login-active{
+    font-size: 70px;
+    color: #fff;
+    
+  }
+.account-login{
+    font-size: 100px;
+    color:  #2456A6;
+}
+
+.account_login_text {
+  color: $second-color;
+  font-weight: bold;
+}
+.profile-head.bg-primary.text-light {
+    width: 1600px;
+    margin-left: -16px;
+    margin-top: -16px;
+}
+.imaged.w100 {
+    width: 80px !important;
+}
+.profile-head .avatar {
+    margin-right: 16px;
+    margin-left: 16px;
+}
+.profile-head .in .name {
+    margin: 0 0 5px 0;
+    font-weight: 500;
+    color: white;
+}
+.profile-head .in .subtext {
+    color:white;
+    font-weight: 400;
+    margin: 0;
+}
+.image-listview.media > li {
+    border: 1px solid #E1E1E1;
+    background: #fff !important;
+    border-radius: 5px !important;
+    width : 98%;
+    margin-top: 10px;
+    margin-left : 1%;
+}
+.image-listview > li a.item {
+    color: #141515 !important;
+    padding-right: 36px;
+    height: 50px;
+}
+.imaged.w64 {
+    width: 30px !important;
+}
+
+@media screen and (max-width: 400px) {
+  .profile-not-login-img {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+

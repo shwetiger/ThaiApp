@@ -1,0 +1,59 @@
+@import '../../../../variables';
+#appCapsule {
+  padding: 0px !important;
+  background-color: #fff !important;
+
+  & .bet-limit-text{
+    color: $second-color;
+    padding-top: 5px;
+  }
+  & .dot99avobe {
+    height: 25px;
+    width: 25px;
+    background-color: grey;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  & .dot99lessthan {
+    height: 25px;
+    width: 25px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  & .numberCard-selected{
+    width: 50px;
+    height: 45px;
+    background-color: $second-color !important;
+    position: relative;
+    margin: 5px 10px;
+    color: #fff;
+  }
+& .numberCard{
+  width: 50px;
+  height: 45px;
+  background-color: lightgray;
+  position: relative;
+  margin: 5px 10px;
+  }
+
+  .fullnumberCard{
+    width: 50px;
+    height: 45px;
+    background-color: grey;
+    position: relative;
+    margin: 5px 10px;
+    }
+  & .progress{
+    height: 5px;
+    border-radius: 6px;
+    margin: 0px 5px;
+  }
+  & .bet-number{
+    margin-bottom: 80px !important;
+  }
+  & .bg-custom-grey {
+    background-color: grey; /* Use !important to ensure the style takes precedence */
+}
+}
+

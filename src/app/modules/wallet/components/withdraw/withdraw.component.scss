@@ -1,0 +1,132 @@
+@import '../../../../variables';
+
+#appCapsule {
+  padding-top: 0px !important;
+  background-color: $background-color !important;
+  min-height: 100vh !important; 
+  .card {
+    @include box-shadow;
+    .card-body {
+      padding: 15px 15px;
+      line-height: 1.4em;
+    }
+  }
+  .game-list {
+    padding: 5px 16px;
+    line-height: 1.4em;
+    border-radius: 2px;
+  }  
+  .account-change-withdraw {
+    text-decoration: none;
+    font-weight: bold;
+    color: $second-color !important;   
+  }
+  .account{
+    display: flex;
+    flex-flow:row wrap;
+    justify-content: space-between;
+  }
+  .input{
+      height: 50px;
+      width: 100%;
+      background: $input-color !important;
+      border: 1px solid $second-color;
+  }
+  input::placeholder {
+    font-size: 13px;
+  }
+  .active-banklogo {
+    -ms-filter: grayscale(0%) !important; 
+    -webkit-filter: grayscale(0%) !important; /* Safari 6.0 - 9.0 */
+    filter: grayscale(0%) !important;
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    border-radius: 10px;
+  }
+  img {
+    // -ms-filter: grayscale(100%); 
+    // -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    // filter: grayscale(100%);
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    border-radius: 10px;
+  } 
+  .withdraw-imaged {
+    -ms-filter: grayscale(0%);
+    -webkit-filter: grayscale(0%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(0%);
+    height: 55px;
+    width: 55px;
+  }
+  .error-color
+  {
+    color: red;
+    font-size: 10px;
+  }  
+  .text-eye {
+    margin-right: 20px;
+    float: right;
+    margin-top: -35px;
+    position: relative;
+    z-index: 2;
+    i {
+      font-size: 20px;
+    }  
+  }
+  .withdraw__button {
+    width: 90%;
+    align-content: center;
+    background-color: $second-color;
+    border-radius: 5px;
+    color: #fff;
+  }
+  .QRimage{
+    width:30px;
+    height:30px;
+    //align-content: center;
+    border-radius: 0;
+    //color:#cccccc;
+  }
+  .uploadimage{
+    width:80px;
+    height:30px;
+    border-radius: 0;
+
+  }
+  
+  .bank_qr{
+  border: dashed 2px; 
+  height: 115px;
+  text-align: center;
+  font-size: 12px;
+  border-radius: 10px;
+  }
+  .bank_qr>input {
+     //margin-top:20px
+    display: none;
+  }
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+}
+
+::ng-deep {
+  .gameList-class {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 60px);
+  }
+ .withdraw-account-alert {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 60px);
+  }
+
+ 
+}
+
+
+

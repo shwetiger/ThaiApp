@@ -1,0 +1,204 @@
+@import '../../../variables';
+
+.appHeader {
+    background: linear-gradient(to right, $first-color 0%, $second-color 100%);
+}
+.winner_2d{
+    width: calc( 100% - 0px );  
+    height: 50px;  
+}
+#appCapsule {
+    padding-top: 10px !important;
+    padding-bottom: 100% !important;
+    background-color: #fff !important;
+   // height: 100% !important;
+   padding-bottom: 20px !important;
+   min-height: 100vh;
+
+}
+
+.win-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: $second-color;
+    text-align: center;
+}
+
+.win-date {
+    color: $second-color;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.win-number {
+    color: $second-color;
+    font-weight: bold;
+    font-size: 35px;
+}
+
+.center-top {
+    position: relative;
+    top: -58px;
+    z-index: 222;
+}
+.center-top-second {
+    position: relative;
+    top: -28px;
+    z-index: 222;
+}
+.order-3 {
+    z-index: 222;
+}
+
+.winner-card {
+    box-shadow: 0 3px 6px 0 rgba(0 ,0 ,0 ,0.01), 0 1px 3px 0 rgba(0 ,0 ,0 ,0.08);
+    border-radius: 5px;
+    line-height: 1.3;
+    padding: 5px;
+   
+}
+
+.top-winner-wrapper {
+    position: relative;
+    &::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 160px;
+        bottom: -100px;//-75px;
+        background: url('/assets/img/winner/top_winner_prize.png') center top / 100% no-repeat;
+    }
+}
+
+.top-winner-card {
+    border-radius: 10px;
+    padding: 30px 5px 15px;
+    line-height: 1.5;
+    color: $second-color;
+}
+
+.first.top-winner-card {
+    border: 4px solid #007cf5;
+}
+
+.second.top-winner-card {
+    border: 4px solid #007cf5;
+}
+
+.third.top-winner-card {
+    border: 4px solid #007cf5;
+}
+
+.winner-name {
+    font-weight: bold;
+    text-align: center;
+    height: 38px;
+    display: table;
+    width: 100%;
+    span {
+        display: table-cell;
+        vertical-align: middle;
+    }
+}
+
+.winner-phone {
+    font-size: 14px;
+    text-align: center;
+}
+
+.winner-image {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border-radius: 100%;
+    position: relative;
+    margin: 0 auto;
+}
+
+.winner-image img {
+    width: inherit;
+    height: inherit;
+    border-radius: 100%;
+}
+
+.winner-image::before {
+    content: "";
+    position: absolute;
+    top: -25px;
+    left: 5px;
+    width: 38px;
+    height: 30px;
+}
+
+.first .winner-image {
+    // img {
+    //     border: 2px solid #cdac45;
+    // }
+    &::before {
+        background: url('/assets/img/winner/Golden_Crown.png') center 2px / 100% no-repeat;
+    }
+}
+
+.second .winner-image {
+    // img {
+    //     border: 2px solid #c5c0b1;
+    // }
+    &::before {
+        background: url('/assets/img/winner/Silver_Crown.png') center 2px / 100% no-repeat;
+    }
+}
+
+.third .winner-image {
+    // img {
+    //     border: 2px solid #332700;
+    // }
+    &::before {
+        background: url('/assets/img/winner/Brown_Crown.png') center 4px / 100% no-repeat;
+    }
+}
+
+.win-amount, .bet-amount {
+    padding: 5px 0;  
+}
+
+.win-btn-group {
+    font-size: 20px;
+    font-weight: bold;
+    & > div {
+        cursor: pointer;
+    }
+    ion-icon {
+        color: #000;
+        position: relative;
+        top: 5px;
+    }
+    .count {
+        font-size: 14px;
+    }
+}
+
+.winner-card {
+    background-color: #8aefff;  
+}
+.second.winner-card {
+    background-color: #a2d1ff !important;
+}
+
+@media screen and (max-width: 400px) {
+    .bet-amount, .win-amount {
+        font-size: 10px !important;
+    }
+    .center-top {      
+        top: -56px;
+        z-index: 222;
+    }
+    .center-top-second {        
+        top: -36px !important;
+        z-index: 222;
+    }
+    .order-3{        
+        top: -12px !important;
+        z-index: 222;
+    }
+}

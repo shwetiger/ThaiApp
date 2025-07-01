@@ -1,0 +1,24 @@
+         <a  class="item" (click) = "logoutModel(logout)">
+                <div class="imageWrapper">
+                    <img src="assets/img/logout.png" alt="image" class="imaged w64">
+                </div>
+                <div class="in">
+                    <div>
+                        {{ 'logout' | translate}}
+                    </div>
+                </div>
+            </a>
+
+            <ng-template #logout> 
+                         
+                    <div class="modal-body " style="padding: 0px !important;">
+                       <h3 class="text-center mt-3">{{'confirm_logout_msg' | translate }}</h3>
+                    </div>
+                    <div class="modal-footer mb-2" style="display: flex; justify-content: center;"> 
+                        <button type="button" class="btn" style="width:100px;color: red;border: 2px solid #ddd;border-radius: 5px;"  (click)="HidelogoutModel()" >{{ 'logout_cancel' | translate}}</button>
+                            <button type="button" class="btn" style="background-color:  #2253A2;color:white;width:100px" (click)="goLogOut()">{{ 'logout_confirm' | translate}}</button>
+                         
+                    </div>
+               
+              </ng-template>
+              

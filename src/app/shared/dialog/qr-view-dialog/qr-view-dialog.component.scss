@@ -1,0 +1,18 @@
+::ng-deep {
+    .qr-view-dalog {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-y: auto;
+      width: 300px !important;
+      margin: auto;
+      
+      min-height: calc(100vh - 60px);
+      & > .modal-content {
+        background-color: #e1dfe2 !important;
+      }
+    } 
+   
+     
+  }

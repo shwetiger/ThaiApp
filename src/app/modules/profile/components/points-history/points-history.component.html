@@ -1,0 +1,170 @@
+<app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar>
+
+<div *ngIf="!common.refreshLoading" id="appCapsule">
+    <div
+    class="container-fluid"
+    style="height:190px;background-image: url('assets/img/PointBannerr.webp'); background-size: cover; background-repeat: no-repeat; background-position: center;"
+  >
+
+  <!-- Referee -->
+    <div class="row py-1">
+      <div class="col-12 text-right">  <img src="assets/img/Referee1.webp" alt="product" class="referee"><span class="text-white" style="font-size: 15px;"> :{{referalusers}}</span></div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="row no-padding">
+          <h3 class="text-white no-padding mb-1">{{ 'total_point' | translate }}</h3>
+        </div>
+        <div class="row" style="padding-left: 8px !important;">
+          <h3 class="mb-1 text-white no-padding" style="font-size:25px;font-weight: 600;">{{totalpoint | number : '1.0-2'}}<span style="font-weight: 600;"></span></h3>
+        </div>
+        <div class="row" style="padding-left: 8px !important;">
+          <h3 class="mb-2 text-white no-padding"><span style="font-weight: 400;">{{ '1pt-1mk' | translate }}</span></h3>
+        </div>
+        <div class="row mb-2" style="padding-left: 8px !important;">
+         <button type="button" style="color:black;background-color:#FFCB50 ;width:100px;height:30px;border-radius: 5px;border:none;" (click)="showtransferdialog(pointtransfer)">{{'transfer' | translate}}</button>
+        </div>
+      </div>
+     
+    </div>
+  </div>  
+
+    <div class="container">
+        <div class="row">
+            <div [ngClass]="receivedTab? 'header-active':'header'" (click)='gotoReceived()'
+                style="padding-top: 5px;display: flex;">
+                <h3 style="color:#2253A2;font-weight:bold"
+                    class="d-flex justify-content-center pt-1">{{'receive' | translate}}</h3>
+            </div>
+    
+            <div [ngClass]="transferTab? 'header-active':'header'" (click)='gotoTransfer()'
+                style="padding-top: 5px;display: flex;font-weight: bold;">
+                <h3 style="color:#2253A2;font-weight:bold"
+                    class="d-flex justify-content-center pt-1">{{'transfer' | translate}}</h3>
+            </div>
+    
+        </div>
+        <div *ngIf="receivedTab==true">
+          <div class="row mx-1">
+            <div class="card mt-2 w-100" style="border:1px solid #2253A2" *ngFor="let recievept of myrecivepointList">
+              <div class="row ml-2">
+                <!-- Image Column -->
+                <div class="col-2 mt-2 d-flex justify-content-center" style="white-space: nowrap;">
+                  <img src="assets/img/Receive.webp" alt="product" class="recieve__image">
+                </div>
+          
+                <!-- Status Column -->
+                <div class="col-4 mt-1 d-flex flex-column justify-content-center align-items-center">
+                  <ng-container>
+                    <p class="receive__dec" style="font-weight: bold;">{{'pt_status' | translate}}</p>
+                    <p style="color:green;font-size: 13px;white-space: nowrap;">  {{'pt_trans_success' | translate}}</p>
+                  </ng-container>
+                </div>
+          
+                <!-- Date Column -->
+                <div class="col-3 mt-1 d-flex flex-column justify-content-center align-items-center">
+                  <ng-container>
+                    <p class="receive__dec" style="font-weight: bold;">{{'pt_date' | translate}}</p>
+                   <p style="line-height: 0.7rem;">  {{ recievept.date }}</p>
+                   <p style="line-height: 0.7rem;">{{ recievept.time }}</p>
+                    
+                  </ng-container>
+                </div>
+          
+                <!-- Points Column -->
+                <div class="col-3 mt-1 d-flex flex-column justify-content-center align-items-center">
+                  <ng-container>
+                    <p class="receive__dec" style="font-weight: bold;">{{'pt_point' | translate}}</p>
+                    <p style="white-space: nowrap; font-size: 13px;">{{recievept.point_received}}</p>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+             <div *ngIf="transferTab==true">
+              <div class="row mx-1">
+                <div class="card mt-2 w-100" style="border:1px solid #2253A2"  *ngFor="let transferObj of transferlist">
+                  <div class="row ml-2">
+                    <!-- Image Column -->
+                    <div class="col-2 mt-2 d-flex justify-content-center" style="white-space: nowrap;">
+                      <img src="assets/img/Transfer.webp" alt="product" class="recieve__image">
+                    </div>
+              
+                    <!-- Status Column -->
+                    <div class="col-4 mt-1 d-flex flex-column justify-content-center align-items-center">
+                      <ng-container>
+                        <p class="receive__dec" style="font-weight: bold;">{{'pt_status' | translate}}</p>
+                        <p *ngIf="transferObj.status =='APPROVED'" style="color:green;font-weight:bold;font-size: 12px;white-space: nowrap;">{{'pt_trans_success' | translate}}</p>
+                        <p *ngIf="transferObj.status =='DENIED'" style="color:red; font-weight:bold;font-size: 12px;white-space: nowrap;">{{'pt_trans_denied' | translate}}</p>
+                        <p *ngIf="transferObj.status =='PENDING'" style="color:#2253A2;font-weight:bold;font-size: 12px;white-space: nowrap;" >{{'pt_trans_pending' | translate}}</p>
+                      </ng-container>
+                    </div>
+              
+                    <!-- Date Column -->
+                    <div class="col-3 mt-1 d-flex flex-column justify-content-center align-items-center">
+                      <ng-container>
+                        <p class="receive__dec" style="font-weight: bold;">{{'pt_date' | translate}}</p>
+                       
+                        <p style="line-height: 0.7;">{{ transferObj.date}}</p>
+                        <p style="line-height: 0.7;">{{ transferObj.time }}</p>
+                      </ng-container>
+                    </div>
+              
+                    <!-- Points Column -->
+                    <div class="col-3 mt-1 d-flex flex-column justify-content-center align-items-center">
+                      <ng-container>
+                        <p class="receive__dec" style="font-weight: bold;">{{'mmk' | translate}}</p>
+                        <p>{{transferObj.amount | number : '1.0-2'}}</p>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+               </div>
+        </div>
+</div>
+
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+
+<ng-template #pointtransfer style="margin-top: 50px;">
+  <div class="modal-body" style="padding: 0px !important;">
+    <h3 class="mt-2 text-center" style="color:#2253A2;font-weight: bold;">
+      {{'transfer_point' | translate }}
+    </h3>
+    
+    <div ngClass="ml-3 mt-2 text-center">
+      <input  
+  type="number" 
+  maxlength="10"
+  [placeholder]="'enter_trans_pt' | translate" 
+  style="width: 250px;height: 40px; border: 0.5px solid #2253A2; border-radius: 3px;" 
+  class="form-control ml-2"
+  [(ngModel)]="amount" 
+  [ngModelOptions]="{standalone: true}" 
+  (keypress)="keyPressNumberfornumberintput($event)" 
+  (keyup)="checkBetAmount()">
+
+    </div>
+     <p  id = "betAmountErr" class="error-color ml-5"></p>
+  </div>
+
+  <div class="modal-footer justify-content-center mt-1 mb-3">
+    <button type="button" 
+            class="btn mr-3" 
+            style="color: gray;height: 30px;width: 100px;border: 2px solid #2253A2" 
+            (click)="HideTransferModel()">
+      {{'point_transfer_cancel' | translate}}
+    </button>
+    
+    <button type="button" 
+            class="btn ml-3" 
+            style="color: white;height: 30px;width: 100px;background-color: #2253A2;" 
+            (click)="Transfer(amount)">
+      {{ 'point_transfer_submit' | translate}}
+    </button>
+  </div>
+</ng-template>

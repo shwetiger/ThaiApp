@@ -1,0 +1,41 @@
+
+ <app-not-appbar>{{ 'helloword' | translate }}</app-not-appbar>
+ <div id="appCapsule">
+ <div class="d-flex justify-content-center py-2">
+    <i class="material-icons" style="font-size: 20px; color: #fff;font-size: 70px; border-radius: 50px; background-color: green;">check_circle</i>         
+</div>
+
+<p calss = "text-success successMsg" style="text-align: center;color: green;">{{'game_transfer_success' | translate}}</p>
+<div class="card mx-1">
+  <div class="card-body">      
+    <div class="card-header" style="background-color: #fff;">
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-center">
+                <div class="col-5 d-flex justify-content-end">
+                    <p class="service-color pt-2" style="color: #000;"> {{gameFrom}} </p>
+                </div>
+                <div class="col-2 d-flex justify-content-center" >
+                    <img src="assets/img/game_transfer.png" alt="walletImg" class="game_transfer_img">
+                </div>
+                <div class="col-5 d-flex justify-content-start">
+                    <p class="service-color pt-2" style="color: #000;"> {{gameTo}} </p>
+                </div>               
+            </div>       
+        </div>
+      </div>  
+  
+  <div class="row">
+    <div class="form-group boxed">
+        <div class="input-wrapper">
+            <label class="label ksLabel" for="phone5">{{transferAmount | number : 0}} {{ 'ks' | translate}}</label>
+        </div>
+    </div>
+  </div>
+ 
+</div>
+</div>
+
+<div class="section full text-center mt-2" id="gameTransferSuccess">             
+    <button type="button"  (click)="goToGameList()" style="border:none;border-radius: 5px;height:40px; width: 90%;background-color: #2253A2 !important;color: #fff;">{{ 'bet_done' | translate}}</button>
+</div>
+</div>

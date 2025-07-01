@@ -1,0 +1,108 @@
+
+@import '../../../variables';
+
+#appCapsule {
+    padding: 0px !important;
+    background-color: $background-color !important;    
+    min-height: 100vh;
+    overflow-x: hidden ;
+    overflow-y:hidden;
+    .header{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+    }
+    .header-active{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        border-bottom: solid 4px $second-color;  
+        box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+        z-index: 111;
+    }
+    .header-2d{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        //box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+    }
+    .header-2d-active{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        border-bottom: solid 4px $second-color;  
+        box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+        z-index: 111;
+    }
+    .header-2d-active-right{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        border-bottom: solid 4px $second-color;  
+        box-shadow: -2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+        z-index: 111;
+    }
+    .header-3d{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        //box-shadow: rgba(0, 0, 0, 0.15) 2.4px 2.4px 3.2px;
+    }
+    .header-3d-active{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        border-bottom: solid 4px $second-color;  
+        box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+        z-index: 111;
+    }
+    .header-3d-active-right{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        border-bottom: solid 4px $second-color;  
+        box-shadow: -2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+        z-index: 111;
+    }
+    
+    .one-header-active{
+        
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        border-bottom: solid 4px $second-color;
+    }
+    
+    .twod_image {
+        background: $second-color;
+        padding: 10px;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 17px;
+      
+    }
+    .bet-history-title {
+        margin-top: 10px;
+        text-align: center;
+        color: $second-color;
+        padding-bottom: 5px;
+        border-bottom: 3px solid $second-color;
+    }
+}
+
+
+
+
+@media screen and (max-width: 400px) {     
+    .twod_image {       
+        padding: 5px !important;
+    }
+}

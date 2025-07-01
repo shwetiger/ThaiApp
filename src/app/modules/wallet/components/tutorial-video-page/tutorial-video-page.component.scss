@@ -1,0 +1,70 @@
+
+#appCapsule {
+    padding: 0px 0 !important;
+    background-color: #fff !important;
+   
+  }
+.appHeader {
+    background: linear-gradient(to right, #06386b 0%, #2456a6 100%);
+}
+
+.video-title{
+    color: #2456a6 !important;
+    font-size: 12px;
+    
+}
+.responsive {
+    padding-bottom: 10px;
+    padding-left: 10px;
+    width: 100%;
+    min-width: 80px;   
+    height: auto;
+  }
+
+  .wide-block {
+      padding: 0px !important;
+  }
+  
+  .video-container {
+    overflow: hidden;
+    position: relative;
+    width:100%;
+}
+
+.video-container::after {
+    padding-top: 56.25%;
+    display: block;
+    content: '';
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.responsive {
+    width: 100%; /* Make sure the image resizes with the parent container */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  /* Container for the text */
+  .position-relative {
+    position: relative;
+  }
+  
+  /* Center the text inside the image container */
+  .centered-text {
+    position: absolute; 
+    top: 50%; /* Vertical center */
+    left: 50%; /* Horizontal center */
+    transform: translate(-50%, -50%); /* Adjust for exact centering */
+    color: white; /* White text color for visibility */
+    text-align: center; /* Ensure the text is centered inside the box */
+    font-size: 18px; /* Adjust the font size as needed */
+    background: rgba(0, 0, 0, 0.5); /* Optional: add a semi-transparent background for text visibility */
+    padding: 10px; /* Optional: add padding for the text */
+    border-radius: 5px; /* Optional: add border radius */
+  }

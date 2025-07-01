@@ -1,0 +1,137 @@
+@import '../../../variables';
+
+// .wallet-right-arrow {
+//   position: absolute;
+//   float: right;
+//   justify-content: right;
+//   left: 94%;
+//   top: 50%;
+// }
+
+.wallet-right-arrow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute; 
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%); 
+}
+
+
+.wallet-right-arrow1 {
+  position: absolute;
+  float: right;
+  justify-content: right;
+  left: 94%;
+  top: 30%;
+}
+
+.wallet-account {
+  position: relative;
+}
+
+.show-wallet {
+  position: relative;
+  background-color: #fff !important; 
+  border-radius: 10px;
+  padding: 10px 10px;
+  @include box-shadow;
+  img {
+    width: 20px;
+  }
+}
+
+.show-account-wallet{
+  position: absolute;
+  min-width: calc(100% - 15px); 
+  z-index: 111;
+  bottom: -50px;
+ 
+}
+
+
+.account-bgcolor {
+  position: relative;
+  text-align: center;
+  background: linear-gradient(60deg, $first-color 0%, $second-color 100%) !important;
+  color: #fff;
+}
+
+.header {
+  position: relative;
+  text-align: center;
+  background: #fff;
+  color: $second-color;
+}
+
+.open-wallet-text {
+  cursor: pointer;
+  color: $second-color;
+  font-weight: bold;
+}
+.open-wallet {
+  cursor: pointer;
+  color: $second-color;
+}
+.wide-block {  
+  border: none !important;
+}
+.account-login{
+  font-size: 60px;
+  color: $second-color;
+}
+.account_login_text {
+  color: $second-color;
+  font-weight: 600;
+}
+.account-title {
+  color:  $second-color;
+}
+  
+  // .wallet-account > .account-bgcolor {  
+  //   padding-bottom: 30px;
+   
+  // }
+  .account-login-active{
+    font-size: 70px;
+    color: #fff;
+  
+  }
+  .account-title-name {
+    color: #fff;
+    padding: 0px;
+    margin: 0px;
+  }
+  .account-title-active {
+    margin: 0px;
+    padding: 0px;
+    color: #fff;    
+   
+  }
+  
+  .account-amount-title{
+    color:  $second-color;
+    font-size: 16px;
+  }
+  .account-show-eye {
+    color:  $second-color;
+    font-size: 20px;
+    /*added */
+    margin-top: -5px;
+  }
+  
+  .account {
+    position: relative;
+  }
+  
+  .account-amount {
+    position: absolute;
+    top: 18%; 
+    left: 0.2%;
+    right:  0.2%;
+    text-align: center;
+    font-size: 18px; 
+    height: 90px ;
+  }  
+ 

@@ -1,0 +1,26 @@
+<div class="container" >
+    <div class="root">
+        <div id="gridcontainer">
+            <div class="" *ngFor="let result of resultList">
+                <div class="card result-card">                   
+                        <div class="categories">
+                            <div class="setval">
+                                <label>{{'betDate' | translate}}</label>
+                                <label>{{getDate(result.date)}}</label>
+                            </div>
+                            <div class="setval">
+                                <label>
+                                    3D                                  
+                                </label>
+                                <label style="color: gold !important;">{{result.result}}</label>
+                            </div>
+                        </div>                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="position: relative; justify-content: center;" class="mt-2">
+        <ngx-spinner [name] = 'spinnerName' size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+    </div>
+    
+</div>

@@ -1,0 +1,290 @@
+@import '../../../../variables';
+
+#twod-dream-book {
+    min-height: 100vh;
+    padding: 15px 0 80px 0;
+
+    #twod-header {
+      width: 100%;
+      height: auto;
+      background: #fff;
+      padding: 5px 15px;
+      margin-top: env(safe-area-inset-top);
+      position: fixed;
+      top: 56px;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .dream-book-btn {
+      width: 80px;
+      color: #fff;
+      font-size: 12px;
+      background: $second-color;
+      border-radius: 10px;      
+    }
+
+    #search-input-group {
+        &::before {
+            content: '';
+            width: 46px;
+            height: 40px;
+            border: 1px solid gray;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            background: url('/assets/img/icons/search.png') center center / 50% no-repeat, #fff;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    }
+    
+    .search-input {
+        width: 100%;
+        height: 40px;
+        padding: 0 0 0 15px;
+        margin: 0 0 0 46px;
+        background-color:#fff;
+        border: 1px solid gray;
+        border-left: 0;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+      
+        &:active, &:focus {
+          
+            outline-color:#5497ce ;
+
+        }
+    }
+
+    input::placeholder {
+      font-size: 13px;
+    }
+    .dream-searching-col{
+      width: 100% !important;
+     // text-align: center;
+    }
+    
+    .dream-searching-icon{
+      margin-left: -30px;    
+      margin-bottom: -5px;
+      width: 20px;    
+    }
+    
+    .dream-searching {
+      width: 100%;   
+      padding: 8px;
+      border: 1px solid #2253A2;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+    
+    .dream-searching:focus {
+      border: 3px solid #2253A2 !important;
+      outline: none !important;
+    } 
+    .error-color {
+      color: red;
+      font-size: 12px;
+      padding-top: 5px;
+    }
+
+    .more-btn {
+      color: $second-color;
+      background-color: #fff;
+      border: 2px solid $second-color;
+    }
+
+    .clean-btn {
+      width: 120px;
+      color: red;
+      background-color: #fff;
+      border: 2px solid #ddd;
+    }
+    .twod-bet-btn {
+      width: 120px;
+      color: #fff;
+      background-color: $second-color;
+      position: relative;
+    }
+
+    .dream-desc {
+      color: #fff;
+      text-align: center;
+      background-color: $second-color;
+      height: 40px;
+      padding: 10px 0px;
+      margin: 0px;
+      border-radius : 10px 10px 0 0;
+    }
+    
+    .dream-img {
+      width: 100%;
+      height: 120px;
+      overflow: hidden;
+      img {
+        width: inherit;
+        height: auto;
+      }
+    }
+
+    #navTwoDBet {
+        min-height: 56px;
+        position: fixed;
+        z-index: 999;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #f2f2f2;       
+    }
+
+    .reverse-icon-left {
+      color: #fff;
+      font-weight: 600;
+      text-align: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 100%;
+      background-color: orange;
+      display: inline-block;
+      position: absolute;
+      left: 5px;
+      bottom: 30px;
+      padding-top: 2px;
+  }
+  .reverse-icon-right {
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: orange;
+    display: inline-block;
+    position: absolute;
+    right: 5px;
+    bottom: 30px;
+    padding-top: 2px;
+  }
+   
+}
+
+@media screen and (min-width: 1024px) {
+    #twod-header  {
+        margin: 0px 35% !important;
+        max-width: 30% !important;
+    }
+    #navTwoDBet {
+      margin: 0px 35% !important;
+      max-width: 30% !important;
+    }
+}
+
+::ng-deep {
+  .selected-btn {
+    width: 35px;
+    border-radius: 0;
+    font-weight: 600;
+    &.not-selected {
+      color: $first-color;
+      background-color: #ccc;
+    }
+    &.selected {
+      color: #fff;
+      background-color: $second-color;
+    }
+  }
+
+  .dream-bet-btn {
+    color: #fff !important;
+    background: $second-color;
+    width: 70px;
+    height: 30px;
+    padding: 0 5px;
+  }
+
+  .dream-cancel-btn {
+    color: #fff !important;
+    background: $second-color;
+    border: 1px solid #eee;
+    width: 70px;
+    height: 30px;
+    padding: 0 5px;
+  }
+
+  .dream-amt-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 0 0 5px;
+    border: 1px solid gray;
+    border-radius: 6px;
+    &::placeholder {
+      font-size: 10px;
+    }
+    &:disabled {
+      background-color: #e8e8e8;
+      border-color: #d4d4d4;
+    }
+    // &:active, &:focus {
+    //   //-color: #2253A2;
+    //   // border: 1px solid #2253A2;
+    //   // outline-color:#5497ce ;
+    // }
+  }
+
+  .wide-block{
+    border:none;
+  }
+
+
+  .bet-selected-count-icon {
+    color: #000;
+    font-weight: 600;
+    text-align: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 100%;
+    background-color: $yellow-color;
+    display: inline-block;
+    position: absolute;
+    right: -8px;
+    top: -8px;
+    padding: 5px 0 0 0;
+    transform-origin: 50% 5em;
+    animation: wiggle 2s linear;
+  }
+  @keyframes wiggle {
+  0%, 7% {
+      transform: rotateZ(0);
+  }
+  15% {
+      transform: rotateZ(-15deg);
+  }
+  20% {
+      transform: rotateZ(10deg);
+  }
+  25% {
+      transform: rotateZ(-10deg);
+  }
+  30% {
+      transform: rotateZ(6deg);
+  }
+  35% {
+      transform: rotateZ(-4deg);
+  }
+  40%, 100% {
+      transform: rotateZ(0);
+  }
+  }
+
+}
+
+::ng-deep {
+  .dreamCount-class {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    min-height: calc(100vh - 60px);   
+  } 
+}

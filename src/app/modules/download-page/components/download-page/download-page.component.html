@@ -1,0 +1,34 @@
+<appbar>{{ 'helloword' | translate }}</appbar>
+<div id="appCapsule">   
+<div class="container ">
+    <div class="row pt-5 mb-2 text-center">
+        <h4>{{'downloadpage_desc' |translate}}</h4>
+       
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <img src="assets/img/ios_download.png" alt="" Width="150px" height="50px">
+        </div>
+        <div class="col-6">
+            <a (click)="downloadPage()">
+            <button type="button" class="btn btn-block btn-primary" style="height:50px;white-space: nowrap;">{{'click_to_download' | translate}} &nbsp;
+                <!-- <i class="material-icons" style='font-size:25px;'>file_download</i>   -->
+                <img src="assets/img/icon/file_download.png" alt="" width="20" height="20">    
+            </button>
+            </a>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-6">
+            <img src="assets/img/andrioddownload.png" alt="" width="150px" height="50px" >
+        </div>
+        <div class="col-6">
+            <a [href]="downloadLink.douwnloadLink+'?openinnewtap=1'">
+            <button type="button" class="btn btn-block btn-primary " style="height:50px;white-space: nowrap;">{{'click_to_download'|translate}} &nbsp;
+                <img src="assets/img/icon/file_download.png" alt="" width="20" height="20">    
+             </button>
+            </a>
+        </div>
+    </div>
+</div>
+</div>

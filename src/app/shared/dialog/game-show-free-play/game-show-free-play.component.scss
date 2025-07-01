@@ -1,0 +1,8 @@
+::ng-deep {
+    .game-list-play-free-alert {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;   
+      min-height: calc(100vh - 60px);
+    } 
+  }

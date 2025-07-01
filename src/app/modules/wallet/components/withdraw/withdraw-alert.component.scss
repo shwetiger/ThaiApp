@@ -1,0 +1,9 @@
+@import '../../../../variables';
+ul {
+  list-style-type: decimal;
+  margin: 0px;
+  padding-left: 20px;
+  & li{
+    margin: 0px !important;
+  } 
+}

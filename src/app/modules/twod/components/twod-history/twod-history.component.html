@@ -1,0 +1,49 @@
+
+<!-- <div class="appHeader text-light">
+   <div class="pageTitle">
+     {{ 'helloword' | translate}}
+   </div>
+  
+</div> -->
+   
+<div id="appCapsule">
+   <div class="container section full mt-2">
+      <div class='resultStyle'>
+         {{liveResult}}
+      </div>
+
+      <div class="updateTimeStyle">
+         <i class='material-icons' style='font-size:18px;margin-right:4px;vertical-align:middle; color: blue;'>done</i>
+        
+         <span>Updated: {{updateDate}}</span>
+      </div>
+
+      <div class="section full mt-2">
+         <div class="card section-card">
+            <div [ngClass]="history.isReference?'row referenceRow':'row secRow'"
+               *ngFor="let history of historyList; let i = index;">
+               <div class="col-3">
+                  <span >{{getDate(history.date)}}</span>
+               </div>
+
+               <div class="col-3">
+                  <span>{{history.set.substr(0,history.set.length-1)}}</span>
+                  <span class="value-highlight">{{history.set.substr(history.set.length-1,history.set.length)}}</span>
+               </div>
+
+               <div class="col-3">
+                  <span>{{history.value.substr(0,history.value.length-4)}}</span>
+                  <span class="value-highlight">{{history.value.substr(history.value.length-4,1)}}</span>
+                  <span>{{history.value.substr(history.value.length-3,history.value.length)}}</span>
+               </div>
+               <div class="col-3">
+                  <span class="value-highlight">{{history.result}}</span>
+               </div>
+            </div>
+         </div>
+      </div>
+
+
+   </div>
+
+</div>

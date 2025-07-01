@@ -1,0 +1,49 @@
+
+@import '../../../variables';
+#appCapsule {
+    padding: 0px !important;
+    background-color: $background-color !important;
+    min-height: 100vh;
+    .bet-history-detail-table {
+        background-color: #fff;
+        @include box-shadow;
+        thead th {
+            color: #fff;
+            background-color: $second-color;
+            vertical-align: middle;
+        }
+        tbody td { 
+            vertical-align: middle;
+        }
+        .winner-icon {
+            width: 20px;
+            margin-right: 5px;
+        }
+    }
+    
+    .section-color {
+        color: $second-color;
+        font-weight: 300;
+    }
+    .tr-first {
+        th{
+            font-weight: 600;           
+        }
+    }
+    .tr-second {
+        td{
+            font-weight: 600;          
+        }        
+    }
+    .tr-three {
+        td{
+            font-weight: 600;         
+        }        
+    }
+    .histroy-font-first {
+        font-weight: 900;
+    }
+    .win-text{
+        color: orange;
+    }  
+}

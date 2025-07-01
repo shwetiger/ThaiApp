@@ -1,0 +1,83 @@
+
+@import '../../../../variables';
+#appCapsule {  
+ padding-top: 0px !important;
+ min-height: 100vh !important; 
+ overflow-x: hidden;
+ overflow: hidden;
+.service-box {  
+ @include box-shadow;  
+ border-radius: 5px;
+ margin: 2px 0px;    
+ & .col-4 {
+   height: 55px;
+   line-height: 50px;  
+   width: 60px;
+   vertical-align: middle; 
+   
+ }    
+
+
+ & h5
+ {
+   //display: inline-block;  
+   font-size: 12px; 
+   font-weight: bold;  
+   padding-top: 17px; 
+   line-height: 1.8;
+   vertical-align: middle; 
+ }
+ 
+ & h4
+ {
+   //display: inline-block;  
+   font-size: 12px; 
+   font-weight: bold;  
+   padding-top: 19px; 
+   line-height: 2.9;
+   vertical-align: middle; 
+ }
+ & h3
+ {
+   //display: inline-block;  
+   font-size: 16px; 
+   font-weight: bold;  
+   padding-top: 20px; 
+   line-height: 1.8;
+   vertical-align: middle; 
+ }
+ & .row{
+   padding-top: 20px;
+ }
+ }  
+}
+
+.service-image {
+ width: 40px;
+ border-radius: 5px;
+}
+
+.service-channel-image {
+  width: 150px;
+  border-radius: 5px;
+  padding-top: 15;
+  margin: 2px 0px;
+  
+  
+
+ }
+@media screen and (max-width: 342px) {
+   .btn{
+       width: 70px;
+   }
+ }
+ @media screen and (max-width: 270px) {
+   .btn{
+       width: 70px;
+   }
+}
+.telgram {
+  border: 1px solid #2da9df !important;
+  width: 40px;
+  border-radius: 5px;
+}

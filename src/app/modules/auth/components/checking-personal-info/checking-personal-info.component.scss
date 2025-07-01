@@ -1,0 +1,266 @@
+
+@import '../../../../variables';
+::ng-deep {
+        @media only screen and (max-width: 600px){  
+          .day .custom-option:first-of-type,
+          .month .custom-option:first-of-type,
+          .year .custom-option:first-of-type
+          {          
+            font-size: 10px !important;
+          }
+          .custom-select-trigger {
+            height: 40px;
+            padding: 10px 40px 10px 10px !important;
+            font-size: 14px !important;
+            line-height: 20px !important;
+          }
+          .custom-select-forget-day-trigger ,
+          .custom-select-forget-month-trigger,
+          .custom-select-forget-year-trigger{ 
+          padding: 0 10px 0 10px !important;      
+          font-size: 12px !important;
+         
+          }
+        .custom-select-forget-day-trigger:after,
+        .custom-select-forget-month-trigger:after,
+        .custom-select-forget-year-trigger:after
+        {
+         
+          width: 8px !important; 
+          height: 8px !important;        
+          right: 10px !important;
+          
+        }
+
+        }    
+  
+        .custom-select {
+        background: transparent !important;
+        border: none;
+        padding: 0px !important;
+
+        }
+      .custom-select-trigger , .custom-select-forget-day-trigger ,
+      .custom-select-forget-month-trigger,
+      .custom-select-forget-year-trigger{       
+        position: relative;
+        display: block;
+        //width: 200px;
+        padding: 0 20px 0 10px;
+        font-size: 16px;
+        font-weight: 300;
+        color: #495057;
+        line-height: 40px;
+        background: #fff;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        cursor: pointer;
+        z-index: 1;
+      }
+        .custom-select-trigger:after , .custom-select-forget-day-trigger:after,
+        .custom-select-forget-month-trigger:after,
+        .custom-select-forget-year-trigger:after
+        {
+          position: absolute;
+          display: block;
+          content: '';
+          width: 10px; 
+          height: 10px;
+          top: 50%; 
+          right: 25px;
+          margin-top: -3px;
+          border-bottom: 1px solid #495057;
+          border-right: 1px solid #495057;
+          transform: rotate(45deg) translateY(-50%);
+          transition: all .4s ease-in-out;
+          transform-origin: 50% 0;
+        }
+        .custom-select.opened .custom-select-trigger:after ,  
+        .custom-select.opened .custom-select-forget-day-trigger:after,
+        .custom-select.opened .custom-select-forget-month-trigger:after,
+        .custom-select.opened .custom-select-forget-year-trigger:after
+        {
+          margin-top: 3px;
+          transform: rotate(-135deg) translateY(-50%);
+        }
+        .day .custom-options,  .month .custom-options,  .year .custom-options {           
+          top: 120% !important; 
+        }
+      .custom-options {
+        position: absolute;
+        display: block;
+        top: 80%; 
+        left: 0; 
+        right: 0;
+        min-width: 80%;
+        margin: 0px 8px;
+        // height: 200px;
+        // overflow-y: scroll;
+        // border: 1px solid #b5b5b5;
+        border-radius: 4px;
+        box-sizing: border-box;
+        box-shadow: 0 2px 1px rgba(0,0,0,.07);
+        background: #fff;
+        transition: all .4s ease-in-out;      
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-15px);
+        z-index: 111;
+        box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+      }
+      .custom-options-scorll {
+        height: 200px;
+        overflow-y: scroll;
+      }
+      .custom-options-scorll::-webkit-scrollbar {
+        display: none;
+      }
+      .custom-select.opened .custom-options {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+      .custom-options:before {        
+        position: absolute;
+        display: block;
+        content: '';
+        bottom: 100%; 
+        left: 25px;
+        width: 7px;
+        height: 7px;
+        margin-bottom: -4px;
+        border-top: 1px solid rgba(99, 99, 99, 0.2);
+        border-left: 1px solid rgba(99, 99, 99, 0.2);
+        background: #fff;
+        transform: rotate(45deg);
+        transition: all .4s ease-in-out;
+      }
+      .option-hover:before {
+        background: #f9f9f9;
+      }
+      .custom-option {
+        position: relative;
+        display: block;
+        padding: 0 22px;
+       // border-bottom: 1px solid #b5b5b5;
+        font-size: 16px;
+        font-weight: 300;
+        color: #495057;
+        line-height: 36px;
+        cursor: pointer;
+        transition: all .4s ease-in-out;      
+      }
+      .custom-option:first-of-type {
+        border-radius: 4px 4px 0 0;
+      }
+      .custom-option:last-of-type {
+        border-bottom: 0;
+        border-radius: 0 0 4px 4px;
+      }
+      .custom-option:hover,
+      .custom-option.selection {
+        background: #f9f9f9;
+      }
+      
+      
+    }
+
+//
+.scrollbar-hidden::-webkit-scrollbar {
+   display: none;
+}
+
+/* Hide scrollbar for IE, Edge add Firefox */
+.scrollbar-hidden {
+  -webkit-appearance: listbox;
+  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+}
+
+#appCapsule {
+    padding: 0px !important;
+    background-color: #fff !important;
+    height: 100% !important;
+    overflow-x: hidden;
+}
+
+::ng-deep {  
+    .forgetPassword-class {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: calc(100vh - 60px);
+    }
+    
+  }
+  .forUpload{
+    background-color: #fff !important;
+    color: #000 !important;
+    padding: 0.5rem;
+    font-family: sans-serif;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+    border : 2px dotted #2253A2 !important;
+  }
+  ::ng-deep.bs-datepicker {
+    height: 350px;
+  }
+  #errAmt
+  {
+     color : red !important;
+     font-size: 12px;
+      padding-top: 5px;
+  }
+
+//   .img-wrap {
+//     position: relative;
+//    }
+//   .img-wrap .close {
+//     position: absolute;
+//     top: -10px;
+//     z-index: 100;
+//     right : 12px;
+// }
+
+ img {
+    // -ms-filter: grayscale(100%); 
+    // -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    // filter: grayscale(100%);
+    cursor: pointer;
+    border: 3px solid #ffffff;
+    border-radius: 0px;
+  } 
+// @media (max-width: 768px) 
+// {
+//   .img-wrap .close {
+//     position: absolute;
+//     top: -10px;
+//     right: 145px;
+//     z-index: 100;
+//      }
+// }
+// @media screen and (min-width: 1024px) {
+//   .img-wrap .close 
+//    {
+//     position: absolute;
+//     top: -10px;
+//     right: 73px !important;
+//     z-index: 100;
+//      }
+// }
+.h
+{
+  display: none !important;
+}
+
+input::placeholder {
+  font-size: 13px;
+}
+
+
+ 

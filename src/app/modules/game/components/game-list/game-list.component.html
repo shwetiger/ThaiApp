@@ -1,0 +1,210 @@
+
+<appbar (myEvent)="refreshPage()" parentLink={{parentLink}} [rootLevel]=1 >{{ 'helloword' | translate }}</appbar>
+
+<div id="game__list" *ngIf="!common.refreshLoading || !common.gameLoading">
+  <div class="extraHeader1">
+    <div class="container-fluid" style="padding: 0px !important;">
+      <game-account-login  [gameProviderId]="gameProviderId"></game-account-login>
+    </div>
+  </div>
+  <div [ngClass]="isUserLoggedIn?'extraFooter':'extraFooter-not'">
+    <div class="container" >
+      <div class="slider">
+          <owl-carousel-o [options]="customOptions">
+            <ng-container *ngIf = "this.adsList != ''">
+                <ng-template carouselSlide *ngFor="let adsObj of this.adsList">           
+                    <div class="slide">                    
+                      <a [href]="adsObj.linkUrl+''+openUrl | safeUrl" *ngIf="adsObj.linkUrl !=null && !adsObj.linkUrl.includes('facebook.com')">
+                          <img  [src]="adsObj.imageUrl" alt="AdsImage">
+                        </a>      
+                        <a [href]="adsObj.linkUrl | safeUrl" *ngIf="adsObj.linkUrl !=null && adsObj.linkUrl.includes('facebook.com')">
+                            <img  [src]="adsObj.imageUrl" alt="AdsImage">
+                        </a>                
+                        <img  [src]="adsObj.imageUrl" alt="AdsImage" *ngIf="adsObj.linkUrl == null">
+                    </div>
+                </ng-template>  
+            </ng-container>  
+          </owl-carousel-o> 
+      
+          <div class="overlay" *ngIf = "this.marqueeText != null">
+            <marquee direction="left" scrollamount="3"><h5>{{this.marqueeText.marqueeText}}</h5></marquee>
+          </div>
+      </div> 
+      <div class="container">
+        <div class="row" *ngIf = "this.gameList != null && this.gameList.isMaintenance == false && this.gameList.status == 'ACTIVE'" >
+          <div class="container-fluid"  style="margin: 0px !important; padding: 0px !important;">
+            <div class="row" *ngIf="this.gameList.gsGameList.length > 10">
+              <div class="game-searching-col">
+                <input type="text" placeholder="{{'game_serach'| translate}}" (keyup)="search()" [(ngModel)]="searchKey" [ngModelOptions]="{standalone: true}"class="game-searching">
+                <img src="assets/img/icons/search.png" alt=""   class="game-searching-icon">
+              </div>
+            
+            </div>
+            <div class="row">              
+              <div class="game-list" *ngFor="let gameObj of this.gameItems">
+                <span class="hot" *ngIf="gameObj.isHot" style="position: absolute; margin-top: -20px; margin-left: -5px;"><img src="assets/img/hot_fire.gif" alt="" width="30px"></span>
+                <img class="bradius" [src]="gameObj.iconurl" alt="gameImage" 
+                (click)='showplayFreeOrplay(playFreeOrPlay,transferAlert,gameObj.supportdemourl,gameObj.code,gameObj.providercode,gameObj)'>   
+             <span *ngIf="gameObj.type != 'OT'" class="text-wrap ml-1 game-name-span">
+               {{ changeLanguage(gameObj) }}
+            </span>
+          
+          <!-- <span *ngIf="gameObj.type == 'OT' || ( gameObj.name == 'LIVE 22')" class="text-wrap ml-1" 
+                style="width: 5rem; justify-content: center; display: flex; margin-top: -10px;">
+            {{ changeLanguage(gameObj) }}
+          </span> -->
+              </div>
+            </div>
+          </div>
+    </div>
+      </div>    
+    
+      <!-- * App Capsule *ngIf = "gameObj.type != 'OT' &&  gameObj.type != 'LC'"-->
+      <div class="row" *ngIf = "this.gameList != null && this.gameList.isMaintenance == true"> 
+        <div class="container" *ngIf="this.gameAlertObject !=null">
+          <div class="row">
+            <img *ngIf = " (this.gameAlertObject.imageUrl == null && this.gameAlertObject.imageUrl?.length == 0)" src = './assets/img/maintenance.png' width="150px" height="150px"/>
+            <img *ngIf = " (this.gameAlertObject.imageUrl != null && this.gameAlertObject.imageUrl?.length != 0)" [src] = 'this.gameAlertObject.imageUrl' width="150px" height="150px" class = 'gameAlertImg'/>          
+          </div>
+         
+          <div class="row mx-1 justify-content-center"  > 
+                 
+            <div [ngStyle]="{color:'#055099'}" style="font-weight: bold text;text-align:'center'" >{{ changeLanguageGameAlert(gameAlertObject)}} </div>             
+      
+         </div>
+        <!-- <div class="row">
+            <p>{{ changeLanguageGameAlert(gameAlertObject)}}</p>             
+          </div> --> 
+          <app-maintenance-time [gameProviderId]="gameProviderId"></app-maintenance-time>
+        </div> 
+        
+      </div>
+   
+
+      <!-- * App Maintain Capsule -->
+    </div>
+  </div>    
+</div> 
+
+<!-- Play free or play Modal -- not user this -->
+  <div class="modal fade" id="playFreeOrplay" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content playFreeOrPlay">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class = "row">
+              <button type="button" class="btn btn-success btn-lg btnAction" data-dismiss="modal" (click) = "playFree()">{{ 'play_free' | translate}}</button>
+           </div>
+           <div class = "row py-3">
+               <button type="button" class="btn btn-success btn-lg btnAction" (click) = "play(transferAlert)" >{{ 'play' | translate}}</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- * Play free or play -->
+
+<!-- Pls topup alert -->
+ <ng-template #transferAlert> 
+  <div class="modal-header">
+    <h4 class="modal-title pull-left"></h4>
+    <div  class="close pull-right">
+      <i class="material-icons" (click)="HideAlert()" style="color: red;">cancel</i>     
+    </div>    
+  </div>    
+      <div class="modal-body" style="padding: 0px !important;">
+        <div style="text-align: center;">
+          <i class="material-icons"  style="font-size: 50px;">error</i>           
+        </div>
+        <div class="container pt-1">
+          <div class="row gametransactionAlert">
+            <div class="col-12">{{ 'gametransactionAlert' | translate}}</div>
+          </div>
+          <div class="row walletlbl" *ngIf="userProfileBalance != undefined">
+            <div class="col-2">
+              <img src = './assets/img/game_kyat.png'  class="active-wallet"/>
+
+            </div>
+            <div class="col-10" style="padding: 15px 0px 0px 0px !important;">
+              <span class = "child-walletbalance" style="float: left;">{{ 'mainWallet' | translate}}</span>
+              <span  class = "child-walletbalance" style="float: right;"> {{this.userProfileBalance | number : 0}}</span>
+            </div>           
+          </div> 
+          <div class="row walletlbl">
+            <div class="col-2">
+              <img src = './assets/img/game_wallet_img.png' class="active-wallet"/>
+            </div>
+            <div class="col-10" style="padding: 10px 0px 0px 0px !important;">
+              <span class = "child-walletbalance" style="float: left;">{{ 'gameWallet' | translate}}</span>
+              <span  class = "child-walletbalance" style="float: right;">{{ gameUserBalance }}</span>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center pt-1 pb-3">
+            <button type="button" class="btn  btnGroup" (click) ="goToWallet()"
+             style="background: #0054a6 !important; color: #fff !important;">{{ 'game_balance_transfer' | translate}}</button>
+          </div>
+        </div>
+      </div>
+     
+</ng-template>
+
+  <!-- playFreeOrPlay alert use this -->
+  <ng-template #playFreeOrPlay> 
+    <div class="modal-header">
+      <h4 class="modal-title pull-left"></h4>
+      <div  class="close pull-right">
+        <i class="material-icons" (click)="HidePlayFreeOrPlayAlert()" style="color: red;">cancel</i> 
+      </div>    
+    </div>   
+    <div class="modal-body">
+      <div class = "row">
+        <button type="button" class="btn btn-block mx-3" data-dismiss="modal" (click) = "playFree()" style="background: #000; color: #fff;margin: 10px 0px;">{{ 'play_free' | translate}}</button>
+        <button type="button" class="btn btn-success btn-block  mx-3" (click) = "play(transferAlert)" >{{ 'play' | translate}}</button>
+      </div>    
+    </div>  
+  <div class="modal-footer">
+    <!-- <button type="button" class="btn btn-sm close-buttton mr-1" (click)="HidePlayFreeOrPlayAlert()">
+      {{ 'close' | translate}}
+   </button>   -->
+  </div>
+  </ng-template>
+
+<!-- * Game maintenance Alert -->
+  <div *ngIf="this.gameAlertObject!=null" id="DialogIconedInfo" class="modal" tabindex="-1" data-backdrop="static" role="dialog">
+    <div class="modal-dialog game-maintenance">
+      <!-- Modal content-->
+      <div class="modal-content gameAlertContentModal">
+        <div class="modal-header">
+          <button type="button" class="close closeX" data-dismiss="modal">&times;</button>        
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <img [src] = 'this.gameAlertObject.imageUrl' class = "gameAlertImgClass" width="80px" height="80px"> 
+            </div>
+            <div class="row">
+              <p>{{changeLanguageGameAlert(this.gameAlertObject)}}</p>
+            </div>
+          </div>         
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Game Click loading -->
+<ngx-spinner [name]="common.loading.gameLoading.name" [size]="common.loading.gameLoading.size"
+[color]="common.loading.gameLoading.color" [type]="common.loading.gameLoading.type"
+[fullScreen]="common.loading.gameLoading.fullScreen"></ngx-spinner>
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+[color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+[fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

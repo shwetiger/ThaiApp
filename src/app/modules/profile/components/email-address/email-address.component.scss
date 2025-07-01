@@ -1,0 +1,11 @@
+@import '../../../../variables';
+#appCapsule {
+    background-color: $background-color !important;
+    padding-top: 0px !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+input::placeholder {
+    font-size: 13px;
+  }

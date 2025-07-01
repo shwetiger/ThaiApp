@@ -1,0 +1,49 @@
+<div class="modal-header" style="padding-bottom: 0px !important;">
+    <h4 class="modal-title pull-left"></h4>
+    <div  class="close pull-right">
+      <i class="material-icons" (click)="close()" style="color: red;">cancel</i> 
+    </div>    
+  </div> 
+<div class="modal-body pb-2 " style="padding-top: 0px !important;">
+  <div class="container mr-2">
+    <div class="row d-flex justify-content-center"><h4  [style.color]="gameType == 'in' ? '#00ab4c': '#004d9f'">{{ title }}</h4></div>
+    <div class="row">
+        <div class="form-group boxed">
+            <div class="input-wrapper">
+                <label for="phone5" style="margin-bottom: 5px;">{{ 'game_transfer_amount' | translate}}</label>
+                <input type="tel" class="form-control" id="amount" maxlength="10"
+                [(ngModel)]="depositModel.transferAmount"   [ngModelOptions]="{standalone: true}"
+                (keyup)="checkAmount()" (keyup.enter)="enter($event)" style="border: 1px solid #2253A2;">                
+                <i class="text-ks">
+                    <h3 style=" color: gray !important">{{ 'ks' | translate}}</h3>                                        
+                </i>  
+            </div>
+            <p class="error-color">{{ amount_error_message }}</p>
+        </div>
+    </div> 
+    <div class="row">
+        <div class="form-group boxed mb-2">
+            <div class="input-wrapper">
+                <label for="pass" style="margin-bottom: 5px;">{{ 'withdrawal_login_password_required' | translate}}</label>
+                <input [type]="passwordType" class="form-control" id="pass" maxlength="21"
+                [(ngModel)]="depositModel.password" [ngModelOptions]="{standalone: true}" (keyup.enter)="enter($event)"                       
+                (keyup)="checkPassword()" style="border: 1px solid #2253A2;" placeholder="{{'withdrawal_login_password_hint' | translate}}">
+                <i class="text-eye">
+                <i class="material-icons" (click)="showPassword(!showPass)" style=" font-size: 20px; color: gray !important" *ngIf="showPass">visibility</i> 
+                <i class="material-icons" (click)="showPassword(!showPass)" style=" font-size: 20px; color: gray !important" *ngIf="!showPass">visibility_off</i>
+                </i>
+            </div>
+            <p class="error-color">{{ password_error_message }}</p>
+        </div>
+    </div>
+
+    <div class="row justify-content-center" style="padding-bottom: 30px;">
+        <div class="mt-2" style="position: relative; justify-content: center; background-color: red;" class="mt-2" *ngIf="loadingSubmiting" >                  
+            <ngx-spinner size = "medium" color = "rgb(6,56,107)" name="loadingSubmiting" type = "ball-elastic-dots" [fullScreen] = "false"></ngx-spinner>
+        </div>
+        <button type="button" class="button-notRound" (click) = "transfer()" style="width:100%; height: 40px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;" *ngIf="!loadingSubmiting" >{{ 'game_submit' | translate}}</button>
+      </div>
+  </div>   
+  
+   
+</div>

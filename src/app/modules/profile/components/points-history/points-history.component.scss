@@ -1,0 +1,114 @@
+@import '../../../../variables';
+
+#appCapsule {
+    padding-top: 0px !important;
+    background-color: $background-color !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+   
+     .background-active {
+        background-color: $wind-all-color !important;
+        border-radius: 10px !important;
+        & h4 {
+            color: #fff !important;
+        }
+        
+    }
+   
+   
+    .account-bgcolor {
+        background: $second-color;
+    }
+
+    .header{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+    }
+    .header-active{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        border-bottom: solid 4px $second-color;  
+        box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+        z-index: 111;
+    }
+    
+    .one-header-active{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        border-bottom: solid 4px $second-color;
+    }
+
+    .recieve__image {
+        height: 45px;
+        width: 45px;
+       }
+      .referee{
+        height: 15px;
+        width: 20px;
+      }
+    .receive__dec{
+        color:$second-color
+      
+    }
+
+    input::placeholder {
+      font-size: 13px;
+    }
+
+   
+}
+
+.editname-text {
+  padding-left: 15px; 
+  padding-right: 10px; 
+  cursor: text; 
+  border: 1px solid #2253A2; /* Default border color */
+  transition: border 0.3s ease; 
+}
+
+/* Active state: when input is focused */
+.editname-text:focus {
+  border: 3px solid #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.6); 
+}
+
+input::placeholder {
+  font-size: 14px; /* Set the desired font size */
+  color: #888; /* Optionally set the color */
+}
+
+::ng-deep {
+    .gameList-class {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      //overflow-y: auto;
+      min-height: calc(100vh - 60px);
+    }
+    .game-play-now-modal  .modal-content {
+      border-radius: 10px;
+    }
+    
+  }
+
+  ::ng-deep {
+    .point-modal{
+      transform: none;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow-y: auto !important;
+      min-height: calc(100% - 50px) !important; 
+      max-width: 330px;
+      margin: 0 auto;
+    }
+    .point-modal .modal-content > .modal-header, .modal-footer {
+        border:  none !important; 
+        padding: 5px 0px; 
+      }
+    }

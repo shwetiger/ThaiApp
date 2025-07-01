@@ -1,0 +1,341 @@
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+<div class="root" *ngIf="!common.refreshLoading" >
+    <div [ngClass]="container" style="padding: 0px !important; margin: 0px !important;" *ngFor="let noti of notiList" 
+    [ngStyle]="{'background-color' :noti.status == '0'? '#afe2f0':'white'}" (click)="goToNotiDetail(noti)">
+        <div *ngIf="noti.type== '2D Results'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper ">              
+                    <img *ngIf="noti.fortime == '10:30 AM'" src="assets/img/2D-1.png" alt="image" class="imaged">
+                    <img *ngIf="noti.fortime == '12:01 PM'" src="assets/img/2D-2.png" alt="image" class="imaged">
+                    <img *ngIf="noti.fortime == '02:30 PM'" src="assets/img/2D-3.png" alt="image" class="imaged">
+                    <img *ngIf="noti.fortime == '04:30 PM'" src="assets/img/2D-4.png" alt="image" class="imaged">
+                </div>
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'2D_results'| translate}}</span></div>                
+                    <div style="overflow: hidden; font-weight: bold;color: green;">{{noti.number}}</div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+
+        </div>
+
+        <div *ngIf="noti.type== '3D Results'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <!-- <span class="threed_image">3D</span> -->
+                    <img src="assets/img/3D.png" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'3D_results'| translate}}</span></div>
+                    <div style="overflow: hidden; font-weight: bold;color: green;">{{noti.number}}</div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <div *ngIf="noti.type== 'TOPUP' && noti.isFirstTopup != '1'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+                    
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        [src]="noti.state =='APPROVED'?'assets/img/topupnoti.png':'assets/img/topup denied.png'" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div *ngIf="noti.state =='APPROVED'"><span style="font-weight: bold;">{{'notification_toup_success'| translate}}</span></div>
+                    <div *ngIf="noti.state !='APPROVED'"><span style="font-weight: bold;">{{'notification_toup_denied'| translate}}</span></div>
+                    <div style="overflow: hidden; font-weight: bold;color: green;">{{noti.bill | number:'1.0':'en-US'}}
+                        {{'ks'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <div *ngIf="noti.type== 'WITHDRAW'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        [src]="noti.state=='APPROVED'?'assets/img/withdrawalnoti.png':'assets/img/withdrawal denied.png'" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div *ngIf="noti.state =='APPROVED'"><span style="font-weight: bold;">{{'notification_withdrawal_success'| translate}}</span></div>
+                    <div *ngIf="noti.state !='APPROVED'"><span style="font-weight: bold;">{{'notification_withdrawal_denied'| translate}}</span></div>
+                    <div style="overflow: hidden; font-weight: bold;color: green;">{{noti.bill | number:'1.0':'en-US'}}
+                        {{'ks'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <div *ngIf="noti.type== 'WINNER'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        src="assets/img/winnoti1.jpg" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div *ngIf="noti.category == '2D'"><span style="font-weight: bold;">{{'2D_winner'| translate}}</span></div>
+                    <div *ngIf="noti.category != '2D'"><span style="font-weight: bold;">{{'3D_winner'| translate}}</span></div>
+                    <div style="overflow: hidden; font-weight: bold;color: green;">{{noti.balance | number:'1.0':'en-US'}}
+                        {{'ks'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <div *ngIf="noti.type== 'All' || noti.type== 'Football' || noti.type== 'Maintenance' || noti.type== 'Advertising'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">  
+                        <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined) && noti.type== 'All'"
+                        src="assets/img/icon/twodthreedicon.png" alt="image" class="imaged">
+                        <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)  && noti.type== 'Football'"
+                        src="assets/img/football.png" alt="image" class="imaged">
+                        <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)  && noti.type== 'Maintenance'"
+                        src="assets/img/maintenance-noti.png" alt="image" class="imaged">
+                        <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)  && noti.type== 'Advertising'"
+                        src="assets/img/icon/twodthreedicon.png" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px;">
+                    <div><span style="color:blue">{{noti.title}}</span></div>
+                    <!-- <div><p >{{getAllNotiCutStr(noti.body)}}</p></div> -->
+                   
+                    
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <div *ngIf="noti.type== 'POINT'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        src="assets/img/point.png" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'point-noti-title'| translate}}</span></div>
+                    <div style="overflow: hidden; font-weight: bold;color: green;">{{noti.bill | number:'1.0':'en-US'}}
+                        {{'ks'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <div *ngIf="noti.isFirstTopup == '1' && noti.type=='TOPUP'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        src="assets/img/point.png" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'point-list-title'| translate}}</span></div>
+                    <div style="overflow: hidden; font-weight: bold;color: green;">{{noti.pointWallet | number:'1.0':'en-US'}}
+                        {{'ks'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+        <!-- bankslip -->
+        <div *ngIf="noti.type== 'BankSlip'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">  
+                    <img [src]="noti.state == 'DENIED'?'assets/img/bank-slip-denive.png': 'assets/img/bank-slip-approved.png'" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'bank-slip-title'| translate}}</span></div>
+                    <div>
+                        <!-- <span>{{noti.title}}</span>                -->
+                      <span *ngIf="noti.state != 'DENIED'">{{'bankslip_approved_title' | translate}}</span>  
+                      <span *ngIf="noti.state == 'DENIED'">{{'bankslip_reject_title' | translate}}</span>
+                    </div>                
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <!-- Points -->
+        <div *ngIf="noti.type=='Point' && noti.state=='RECEIVED'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        src="assets/img/point.png" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'referal_bonus_point'| translate}}</span></div>
+                    <div style="font-weight: bold;color: green;">{{noti.pointWallet | number:'1.0':'en-US'}}
+                        {{'pt'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <div *ngIf="noti.type=='Point' && noti.state=='APPROVED'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        src="assets/img/point.png" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'referal_pt_trans_success'| translate}}</span></div>
+                    <div style="font-weight: bold;color: green;">{{noti.bill | number:'1.0':'en-US'}}
+                        {{'pt'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+
+        <!-- point DENIED -->
+        <div *ngIf="noti.type=='Point' && noti.state=='DENIED'">
+            <div class="row noti-row">
+                <div class="col-3 imageWrapper">
+                    <img *ngIf="noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined"
+                        [src]="noti.imageUrl" alt="image" class="imaged">
+
+                    <img *ngIf="!(noti.imageUrl!=null && noti.imageUrl!='' && noti.imageUrl!=undefined)"
+                        src="assets/img/point.png" alt="image" class="imaged">
+                </div>
+
+                <div class="col-8" style="padding-left: 8px; ">
+                    <div><span style="font-weight: bold;">{{'referal_pt_trans_denied'| translate}}</span></div>
+                    <div style="font-weight: bold;color: green;">{{noti.bill | number:'1.0':'en-US'}}
+                        {{'pt'|translate}}
+                    </div>
+                    <div *ngIf="noti.sendTime!=null" class="time-ago">{{ noti.sendTime | timeAgo }}</div>
+                    <div *ngIf="noti.sendTime==null"class="time-ago">{{ noti.currentdate | timeAgo }}</div>
+                </div>
+                <div class="col-1 d-flex align-items-center justify-content-center">
+                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">   
+                </div>
+            </div>
+
+            <div class="divider">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

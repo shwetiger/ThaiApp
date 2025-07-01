@@ -1,0 +1,31 @@
+<app-not-appbar>{{ 'helloword' | translate }}</app-not-appbar>
+<div id="appCapsule">
+<div class="mt-2">
+
+    <div class="text-center">
+        <img src="assets/img/pendingimage.png" alt="pendingimage" width="30px" height="30px">
+        <p class = "pendingText">{{'tran_waiting_withdrawal_title' | translate }} </p>
+   </div> 
+    <!-- * if pending -->
+      <div>
+            <div class="container bg-white py-2">       
+                <div class="row pt-2">
+                    <div class="row">
+                        <div class="col justify-content-center text-center">
+                            <h3 class="service-color">{{ 'serviceTime1' | translate}} </h3>
+                        </div>  
+                    </div>
+                </div>
+              </div>
+             <p class="px-2">{{ tran_waiting_withdrawal_desc1}}</p>  
+            
+   
+    </div>
+    <div class="pt-2" style="display:flex;justify-content: center;">
+        <button type="button" class="btn shadowed" (click) = "goBack()"  
+        style="width: 90%;align-content: center;background-color: #2456A6;border-radius: 20px;color: #fff;">
+           {{ 'tran_waiting_btn' | translate}}
+        </button>
+    </div> 
+</div>
+</div>

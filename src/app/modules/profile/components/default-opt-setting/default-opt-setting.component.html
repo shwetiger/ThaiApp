@@ -1,0 +1,101 @@
+<app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<div id="appCapsule" *ngIf="common.refreshLoading==false">
+    <div class="mx-3 mt-2">  <p style="font-size: 16px;color:#2253A2">{{ 'otpsetting_headertext' | translate }}</p></div>
+  <div class="mt-3 mx-2 card faq-searching-col">
+    <div class="card-body d-flex flex-column justify-content-center">
+        <div class="row" style="margin: 0 !important;"  *ngIf="smspohshow==true">
+            <div class="col-10" style="display: flex; align-items: center;">
+                <img src="assets/img/icon/smsotp.png" alt="image" class="imaged w64" style="margin-right: 8px;">
+                <div style="margin: 0; font-size: 0.9rem; line-height: 1.2;">
+                    <span style="color:#2253A2">
+                      {{ 'otpdesciption1' | translate }}
+                    </span><br>
+                    <span style="font-size: 0.7rem;">
+                      {{ phonenodescription }}
+                    </span>
+                  </div>
+              </div>
+        
+        <div class="col-2 text-right mt-2" >
+          <input  type="radio" name="1" id="option1" value="sms_poh" [(ngModel)]="selectedType"/>
+        </div>
+     </div>
+     <hr style="width: 100%; border-top: 1px solid #E8E9EB; height: 2px; margin-top:10px !important;margin-bottom:10px !important; padding: 0 !important;" *ngIf="vibershow==true && smspohshow==true">
+     <div class="row" style="margin: 0 !important;" *ngIf="vibershow==true">
+        <div class="col-10" style="display: flex; align-items: center;" >
+            <img src="assets/img/icon/viberotp.png" alt="image" class="imaged w64" style="margin-right: 8px;">
+            <div style="margin: 0; font-size: 0.9rem; line-height: 1.2;">
+                <span style="color:#2253A2;">
+                  {{ 'otpdesciption2' | translate }}
+                </span><br>
+                <span style="font-size: 0.7rem;">
+                  {{ 'sub_otpdesciption2' | translate }}
+                </span>
+              </div>
+          </div>
+    
+        <div class="col-2 text-right mt-2" >
+          <input  type="radio" name="options2" id="option2" value="vmg_viber" [(ngModel)]="selectedType"/>
+        </div>
+     </div> 
+
+     <hr style="width: 100%; border-top: 1px solid #E8E9EB; height: 2px; margin-top:10px !important;margin-bottom:10px !important; padding: 0 !important;" *ngIf="emailshow==true && (smspohshow==true || vibershow==true)">
+     <div class="row" style="margin: 0 !important;" *ngIf="emailshow==true">
+        <div class="col-10" style="display: flex; align-items: center;">
+            <img src="assets/img/email.png" alt="image" class="imaged w64" style="margin-right: 8px;">
+            <div style="margin: 0; font-size: 0.9rem; line-height: 1.2;">
+                <span style="color:#2253A2;">
+                  {{ 'otpdesciption3' | translate }}
+                </span><br>
+                <span style="font-size: 0.7rem;">
+                  {{ emaildescription }}
+                </span>
+              </div>
+          </div>
+    
+        <div class="col-2 text-right mt-2" >
+          <input  type="radio" name="options3" id="option3" value="email" [(ngModel)]="selectedType"/>
+        </div>
+     </div> 
+
+      </div>
+    </div>
+    <div class="mx-3 mt-2">
+        <p style="font-size: 0.9rem;">{{'otp_bottom_desc'| translate}}</p>
+    </div>
+    <div class="pt-2 saveBtn" style="display:flex;justify-content: center;">
+   
+    </div>
+  
+    <div class="section d-flex justify-content-around bg-white" id="navTwoDBet" style="position: relative;">
+      <!-- Button -->
+      <button 
+        type="submit" 
+        (click)="onSubmit()" 
+        class="btn shadowed" 
+        *ngIf="!common.submitLoading" 
+        style="width: 400px; align-content: center; background-color: #2456A6; border-radius: 5px; color: #fff;" 
+      >
+        {{ 'save' | translate }}
+      </button>
+    
+      <!-- Loading Spinner -->
+      <div 
+        *ngIf="common.submitLoading" 
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: auto;"
+      >
+        <ngx-spinner 
+          [name]="common.loading.submitLoading.name" 
+          [size]="common.loading.submitLoading.size" 
+          [color]="common.loading.submitLoading.color" 
+          [type]="common.loading.submitLoading.type" 
+          [fullScreen]="false"
+        >
+        </ngx-spinner>
+      </div>
+    </div>
+  </div>
+
+   <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

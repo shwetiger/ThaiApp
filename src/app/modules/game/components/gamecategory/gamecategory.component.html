@@ -1,0 +1,136 @@
+
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+
+<div id="appCapsule" *ngIf="!common.refreshLoading || !common.gameLoading">
+  <div class="extraHeader1">
+    <div class="container-fluid" style="padding: 0px !important;">
+      <game-account-login  [gameProviderId]="gameId"></game-account-login>      
+    </div>
+  </div>
+  <div [class]="{'extraFooter': isUserLoggedIn && catName != 'Fishing','extraFooter-not': !isUserLoggedIn, 'slots-fishing-footer':  isUserLoggedIn && catName == 'Fishing'}" >
+     <div class="container-fluid">
+      <div class="slider">
+        <owl-carousel-o [options]="customOptions">
+          <ng-container *ngIf = "this.adsList != ''">
+              <ng-template carouselSlide *ngFor="let adsObj of this.adsList">           
+                  <div class="slide">                    
+                      <a [href]="adsObj.linkUrl+''+openUrl | safeUrl" *ngIf="adsObj.linkUrl !=null && !adsObj.linkUrl.includes('facebook.com')">
+                        <img  [src]="adsObj.imageUrl" alt="AdsImage">
+                      </a>      
+                      <a [href]="adsObj.linkUrl | safeUrl" *ngIf="adsObj.linkUrl !=null && adsObj.linkUrl.includes('facebook.com')">
+                          <img  [src]="adsObj.imageUrl" alt="AdsImage">
+                      </a>
+                      <img  [src]="adsObj.imageUrl" alt="AdsImage" *ngIf="adsObj.linkUrl == null">
+                  </div>
+              </ng-template>  
+          </ng-container>  
+        </owl-carousel-o> 
+        <div class="overlay" *ngIf = "this.marqueeText != null">
+          <marquee direction="left" scrollamount="3"><h5>{{this.marqueeText.marqueeText}}</h5></marquee>
+        </div>
+      </div>
+      <div class="container-fluid pt-1">
+        <div class="row game-card">
+          <div class="col-6" [ngClass]="{'active': slots}" (click)="getSlotsGameCategory('8')">
+            <div class="d-flex py-2 justify-content-center"><img [src]="slots?'assets/img/fishing-notactive.png': 'assets/img/fishing.png'" alt="" width="26" height="26"><span style="padding-top: 3px;">{{ 'slots' | translate }}</span></div>
+          </div>
+          <div class="col-6" [ngClass]="{'active': fishing}"  (click)="getFishingGameCategory('2')">         
+            <div class="d-flex py-2 justify-content-center"><img [src]="fishing?'assets/img/fishing-notactive.png': 'assets/img/fishing.png'" alt="" width="26" height="26"><span style="padding-top: 3px;">{{ 'fishing' | translate }}</span></div> 
+          </div>
+        </div>  
+        <div class="row pb-2"></div>
+        <div class="row" id="slots">   
+          <div class="row"  *ngIf = "gameMaintenanceSlot == false">     
+            <div class="game-list" *ngFor="let gameObj of gamecatSlotsList">
+              <span class="hot" *ngIf="gameObj.isHot" style="position: absolute; margin-top: -20px; margin-left: -5px;"><img src="assets/img/hot_fire.gif" alt="" width="30px"></span>
+              <img class="bradius" [src]="gameObj.iconurl" alt="gameImage" (click)='showPlayFreeDialog(gameObj)' >   
+              <!-- <span class = "text-wrap ml-2" style="width: 5rem;" >{{ changeLanguage(gameObj)}}</span> -->
+              <span class="text-wrap ml-1 game-name-span">
+              {{ changeLanguage(gameObj) }}
+              </span>
+            </div>
+          </div>  
+          <!-- App Maintain Capsule -->
+          <div class="row" *ngIf = "gameMaintenanceSlot == true">             
+            <div class="container" *ngIf="this.gameAlertObject !=null">
+              <div class="row">
+                <img *ngIf = " (this.gameAlertObject.imageUrl == null && this.gameAlertObject.imageUrl?.length == 0)" src = './assets/img/maintenance.png' width="150px" height="150px"/>
+                <img *ngIf = " (this.gameAlertObject.imageUrl != null && this.gameAlertObject.imageUrl?.length != 0)" [src] = 'this.gameAlertObject.imageUrl' width="150px" height="150px" class = 'gameAlertImg'/>
+              </div>
+              <div class="row">
+                <p>{{ changeLanguageGameAlert(gameAlertObject)}}</p>  
+              </div>
+            </div>
+          </div>
+          <!-- * App Maintain Capsule -->          
+        </div>
+        <div class="row" id="fishing">
+          <div class="row" *ngIf = "gameMaintenanceFishing == false">     
+            <div class="game-list" *ngFor="let gameObj of gamecatFishingList">
+              <span class="hot" *ngIf="gameObj.isHot" style="position: absolute; margin-top: -20px; margin-left: -5px;">
+                <img src="assets/img/hot_fire.gif" alt="" width="30px"></span>
+              <img class="bradius" [src]="gameObj.iconurl" alt="gameImage"  (click)='showPlayFreeDialog(gameObj)'>   
+              <!-- <span class = "text-wrap ml-2" style="width: 5rem;">{{ changeLanguage(gameObj)}}</span> -->
+              <span class="text-wrap ml-1 game-name-span">
+              {{ changeLanguage(gameObj) }}
+              </span>
+            </div>  
+          </div>
+           <!-- App Maintain Capsule -->
+           <div class="row" *ngIf = "gameMaintenanceFishing == true">             
+            <div class="container" *ngIf="this.gameAlertObject !=null">
+              <div class="row">
+                <img *ngIf = " (this.gameAlertObject.imageUrl == null && this.gameAlertObject.imageUrl?.length == 0)" src = './assets/img/maintenance.png' width="150px" height="150px"/>
+                <img *ngIf = " (this.gameAlertObject.imageUrl != null && this.gameAlertObject.imageUrl?.length != 0)" [src] = 'this.gameAlertObject.imageUrl' width="150px" height="150px" class = 'gameAlertImg'/>
+              </div>
+              <div class="row">
+                <p>{{ changeLanguageGameAlert(gameAlertObject)}}</p>  
+              </div>
+            </div> 
+            
+          </div>
+          <!-- * App Maintain Capsule -->               
+        </div>   
+
+        <div class="row" id="fishing">
+          <!-- <div class="row" *ngIf = "bothgameMaintenance == false">     
+            <div class="game-list" *ngFor="let gameObj of gamecatFishingList">
+              <span class="hot" *ngIf="gameObj.isHot" style="position: absolute; margin-top: -20px; margin-left: -5px;">
+                <img src="assets/img/hot_fire.gif" alt="" width="30px"></span>
+              <img class="bradius" [src]="gameObj.iconurl" alt="gameImage"  (click)='showPlayFreeDialog(gameObj)'>   
+              <span class = "text-wrap ml-2" style="width: 5rem;">{{ changeLanguage(gameObj)}}</span>
+            </div>  
+          </div> -->
+           <!-- App Maintain Capsule -->
+           <div class="row" *ngIf = "bothgameMaintenance == true">             
+            <div class="container" *ngIf="this.gameAlertObject !=null">
+              <div class="row">
+                <img *ngIf = " (this.gameAlertObject.imageUrl == null && this.gameAlertObject.imageUrl?.length == 0)" src = './assets/img/maintenance.png' width="150px" height="150px"/>
+                <img *ngIf = " (this.gameAlertObject.imageUrl != null && this.gameAlertObject.imageUrl?.length != 0)" [src] = 'this.gameAlertObject.imageUrl' width="150px" height="150px" class = 'gameAlertImg'/>
+              </div>
+              <div class="row">
+                <p>{{ changeLanguageGameAlert(gameAlertObject)}}</p>  
+              </div>
+              <app-maintenance-time [gameProviderId]="gameProviderId"></app-maintenance-time>
+            </div> 
+            
+          </div>
+          <!-- * App Maintain Capsule -->               
+        </div> 
+      </div>
+    
+     </div>
+  </div>    
+</div>
+<!-- Game Click loading -->
+<ngx-spinner [name]="common.loading.gameLoading.name" [size]="common.loading.gameLoading.size"
+[color]="common.loading.gameLoading.color" [type]="common.loading.gameLoading.type"
+[fullScreen]="common.loading.gameLoading.fullScreen"></ngx-spinner>
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+[color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+[fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+
+
+  

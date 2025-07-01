@@ -1,0 +1,62 @@
+
+
+<div class="modal-body pb-2">
+    <div class="container-fluid no-padding" >
+       
+        <div class="row justify-content-center">
+            <img *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) &lt; 0" src="assets/img/win.png" alt="" width="80px">
+            <img *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) &gt; 0" src="assets/img/loss.png" alt="" width="80px">
+            <img *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) == 0" src="assets/img/win.png" alt="" width="80px">
+        </div>
+        <div class="row justify-content-center">
+            <h5>{{changeLanguage()}}</h5>
+        </div>
+        <div class="row">
+            <div class="col-8 d-flex">
+                <img src="assets/img/activewallet.png" alt="" width="20px" height="20px">&nbsp;<h5 class="game-amount" style="font-weight: 600;">{{ 'before-game-balance' |translate}}({{ 'ks' |translate}})</h5>
+            </div>
+            <div class="col-4"> 
+                <h4 class="game-amount" *ngIf="!loadingGameBalance">{{ closeGameBalance.balanceBefore }}</h4>
+                <div  style="background-color: transparent !important; position: relative; margin: 15px 15px 30px 15px; width: 100%; " *ngIf="loadingGameBalance">
+                    <ngx-spinner name="gameWinLoseLoading" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+                </div>
+            </div>
+           
+        </div>
+        <div class="row">
+            <div class="col-8 d-flex">
+                <img src="assets/img/game_wallet_img.png" alt="" width="20px" height="20px">&nbsp;<h5 class="game-amount" style="font-weight: 600;">{{ 'leave-post-game-balance' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+            </div>
+            <div class="col-4" > 
+                <h4 class="game-amount" *ngIf="!loadingGameBalance">{{ closeGameBalance.postBalance }}</h4>
+                <div  style="background-color: transparent !important; position: relative; margin: 15px 15px 30px 15px; width: 100%; " *ngIf="loadingGameBalance">
+                    <ngx-spinner name="gameWinLoseLoading" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+                </div>
+            </div>
+           
+        </div>
+        <div class="row">
+            <div class="col-8 d-flex">
+                <img src="assets/img/activewallet.png" alt="" width="20px" height="20px">&nbsp;
+                <h5 style="font-weight: 600;" class="game-amount" *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) &lt; 0">{{ 'game-win' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+                <h5 style="font-weight: 600;" class="game-amount" *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) &gt; 0">{{ 'game-lose' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+                <h5 style="font-weight: 600;" class="game-amount" *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) == 0">{{ 'game-even' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+            </div>
+            <div class="col-4">
+                <div *ngIf="!loadingGameBalance">
+                <span class="game-amount" *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) &gt; 0" >(-)</span><span class="game-amount" *ngIf="(closeGameBalance.balanceBefore - closeGameBalance.postBalance) &lt; 0"> (+)</span> <span class="game-amount"> {{changeNumber(closeGameBalance.balanceBefore, closeGameBalance.postBalance) }}</span>
+                </div>
+                <div  style="background-color: transparent !important; position: relative; margin: 15px 15px 30px 15px; width: 100%; " *ngIf="loadingGameBalance">
+                    <ngx-spinner name="gameWinLoseLoading" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+                </div>
+            </div>
+           
+        </div>
+        <div class="row justify-content-center">  
+            <button type="button" class="btn btn-sm close-buttton mr-1" (click)="close()">
+                {{ 'close' | translate}}
+            </button>                     
+        </div>
+    </div>
+
+</div>

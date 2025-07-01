@@ -1,0 +1,129 @@
+
+@import '../../../../variables';
+
+#appCapsule {    
+      padding: 0px !important;     
+      min-height: 100vh; 
+      background-color: #fff !important; 
+     
+    .quickselect-betnumv2{
+        border-radius: 5px;
+        color: white;
+        float: left;
+        width: 57px;
+        height: 44px;
+        background-color: black;
+        margin-bottom: 3px;
+        margin-right:10px;
+        text-align: center;
+        font-size: medium;
+        font-weight: bold;
+        padding: 12px;
+
+        
+    }
+
+    .countnumber{
+      border-radius: 5px;
+      color: black;
+      float: left;
+      width: 57px;
+      height: 40px;
+      background-color: white;
+      margin-bottom: 3px;
+      margin-right:10px;
+      text-align: center;
+      font-size: medium;
+      font-weight: bold;
+      padding: 9px;
+      border: 2px solid #d4d4d4;
+  }
+  
+    
+    .quickselect-bet100num{
+      border-radius: 5px;
+      color:white;
+      width: 78px;
+      height:44px;
+      background-color: black;
+      margin-bottom: 3px;
+      margin-right: 10px;
+      text-align: center;
+      font-size: small;
+      font-weight:bold;
+      padding: 12px;   
+    } 
+    
+    
+    .error-color {
+        color: red;
+        font-size: 12px;
+        padding-top: 5px;
+    }
+
+    .button-notRound {
+      &.clear {
+          width: 125px ; 
+          height: 40px ;
+          color: red ;
+          border: 1px solid #ddd ; 
+          border-radius: 5px ;
+      }
+      &.submit {
+          background-color: $second-color; 
+          color: #fff; 
+          border: 1px solid #ddd; 
+          border-radius: 5px;
+          position: relative;
+      }
+  }
+
+  input::placeholder {
+    font-size: 13px;
+  }
+     
+}
+    
+@media screen and (max-width: 400px) {  
+  .quickselect-bet100num {  
+    width: auto !important;
+    margin: 3px 5px !important;   
+  }
+}         
+
+#navTwoDBet{
+  min-height: 56px;
+  position: fixed;
+  z-index: 999;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  display: flex;
+  justify-content: space-evenly;
+
+  & .button-notRound {
+    &.clear{
+     width: 125px;
+     height: 40px;
+     color: red;
+     border: 1px solid #ddd;
+     border-radius: 5px;
+    }
+    &.submit{
+     background-color: #2253A2; 
+     color: #fff;
+     width: 125px;
+     height: 40px; 
+     border-radius: 5px;
+    }
+   }
+   
+}
+@media screen and (min-width: 1024px) {
+  #navTwoDBet {
+      margin: 0px 35% !important;
+      max-width: 30% !important;
+  }
+ 
+}

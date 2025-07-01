@@ -1,0 +1,25 @@
+<div class="modal-header" style="height:22px; padding:0px;">
+   
+<div  class="close pull-right">  
+    <i class="material-icons"  (click)="close()" style="color: #000; font-size: 35px;">cancel</i> 
+  </div>    
+ </div>  
+
+
+   <div class="modal-body" style="padding: 0px !important;">  
+   
+    <div class="container">
+    
+      <div class="row d-flex justify-content-center" ><h4 style="font-weight:bold;">{{ 'game_maintenance' | translate}}</h4></div>
+          <div class="row d-flex justify-content-center" >
+            <img [src]='this.data.imageUrl' class = "gameAlertImgClass" width="80px" height="80px"> 
+          </div>
+          <div class="row justify-content-center">
+            <p>{{changeLanguageGameAlert(this.data)}}</p>
+          </div>
+    </div>
+  </div>
+  <!-- <div class="modal-footer d-flex justify-content-end mr-2" (click)="close()">
+         <span>Close</span>
+  </div>   -->
+

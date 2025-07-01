@@ -1,0 +1,27 @@
+<div id="maintenance-time"> 
+    <div class="container no-padding">
+        <div class="row mx-2 justify-content-center"  > 
+                 
+               <div [ngStyle]="{color:'#055099'}" style="font-weight: bold;" >{{ 'maintenancetime' | translate }} </div>             
+         
+            </div>
+          
+            <div class= "row justify-content-center" *ngIf = " this.demoHr !=0 ||this.demoMin !=0 || this.demoSec!=0">
+                
+                 <button class="button1">
+                 <p style="margin: 8px 0 0 0;font-weight: bold;">{{demoDays}}</p> <p style="font-size: 10px;margin: 13px 0 0 0;color:rgb(169, 171, 173)">{{'day' |translate}}</p></button>
+                 <button class="button2">
+                    <p style="margin: 10px 0 0 0;font-weight: bold;">{{demoHr}}</p><p style="font-size: 10px;margin: 13px 0 0 0;color:rgb(169, 171, 173)">{{'hr' |translate}}</p></button>
+                 <button class="button2">
+                 <p style="margin: 10px 0 0 0;font-weight: bold;">{{demoMin}}</p><p style="font-size: 10px;margin: 13px 0 0 0;color:rgb(169, 171, 173)">{{'min' |translate}}</p></button>
+                 <button class="button3">
+                 <p style="margin: 10px 0 0 0;font-weight: bold;">{{demoSec}}</p><p style="font-size: 10px;margin: 13px 0 0 0;color:rgb(169, 171, 173)">{{'sec' |translate}}</p></button>
+             
+           </div>
+
+           <div class= "row justify-content-center" *ngIf = "demoMin ==0 && demoHr ==0 && demoSec==0">
+            <div [ngStyle]="{color:'#055099'}" style="font-weight: bold;margin:10px 0 0 0" >CloseMainTenance</div>
+      </div>
+                
+    </div>   
+</div>

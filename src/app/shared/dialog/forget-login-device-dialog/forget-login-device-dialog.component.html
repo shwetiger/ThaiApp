@@ -1,0 +1,19 @@
+
+<div class="modal-header">
+    <h4 class="modal-title pull-left"></h4>
+    <div  class="close pull-right">     
+      <i class="material-icons" (click)="close()" style="color: red;">cancel</i> 
+    </div>    
+</div>    
+<div class="modal-body">   
+    <div class="container">
+       <div class="row">
+        {{ 'login_new_device' | translate}}
+       </div>
+       <div class="row d-flex justify-content-around pt-2">  
+        <button type="button" class="btn button-notRound" style="width: 125px;height: 40px;color: red;border: 1px solid #ddd; border-radius: 5px;" (click)="close()" >{{ 'login_no' | translate}}</button>                    
+        <button type="button" class="btn button-notRound"  style="background-color: #2253A2; color: #fff;width: 125px;height: 40px; border-radius: 5px;" (click)="otpNextPage()">{{ 'login_yes' | translate}}</button>
+      </div>
+    
+    </div>
+</div>

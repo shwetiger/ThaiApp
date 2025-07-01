@@ -1,0 +1,444 @@
+
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+<!-- <div class="appHeader text-light">
+    <div class="left">
+      <a (click)="goBack()" class="headerButton">     
+        <img src="assets/img/icon/arrow_back.png" alt="">          
+     </a> 
+    </div>
+    <div class="pageTitle"> {{ 'helloword' | translate }} </div>
+    <div class="right">
+      <a class="headerButton">  
+        <img src="assets/img/icon/refresh.png" alt="" (click)="refreshPageHeader()">  
+    
+      </a>
+    </div>
+  </div> -->
+<div *ngIf="(!closeTwoD && !common.refreshLoading)" id="appCapsule">  
+    <div class="extraHeader1">
+        <div class="container-fluid">               
+            <div class="row">
+                <div class="container no-padding">                                        
+                    <twod-close-time [sectionId]="sectionId" (closed)="twoDClose($event)"  (myEvent)="refreshPage()" (weekendClosed)="getWeekendClosed($event)" (HolidayClosed)="getHolidayClosed($event)"></twod-close-time>
+                </div>                              
+            </div> 
+            <div class="row mt-1">
+                <div class="col-4">
+                    <!-- <button type="button" class="button-notRound"  (click)="betSectionModal()">
+                        {{ (!section && section.sectionName == '') ? ('Select Section' | translate) : section.sectionName }}
+                        <i class="material-icons" style="font-size: 16px; margin: 0 0 0 3px">arrow_drop_down</i>
+                    </button> -->
+                  
+                   
+                    <button type="button" class="button-notRound reverse-disable-btn" disabled (click)="twodBetAkhwayModal(twodBetAkhway)" *ngIf="akhwaybuttondisable==true">
+                       {{'akhway'|translate}}
+                    </button>
+                    <button type="button" class="button-notRound"  (click)="twodBetAkhwayModal(twodBetAkhway)" *ngIf="akhwaybuttondisable==false">
+                        {{'akhway'|translate}}
+                     </button>
+                </div>
+                <div class="col-4 text-center">
+                    <button type="button" class="button-notRound"  (click)="quickSelectModal(quickSelect)" >{{ 'quick_select' | translate }}</button>
+                </div>
+                <div class="col-4 text-right" *ngIf="roundbuttondisable==false">
+                    <button type="button" class="button-notRound reverse-btn" (click)="selectedReverse()">{{ 'round' | translate }}</button>
+                </div>
+                <div class="col-4 text-right" *ngIf="roundbuttondisable==true">
+                    <button type="button" class="button-notRound reverse-disable-btn" (click)="selectedReverse()" disabled="roundbuttondisable">{{ 'round' | translate }}</button>
+                </div>
+            </div> 
+            <div class="row mt-3"> 
+                <div class="col-auto px-2">
+                    <button type="button" class="btn dream-book-button" (click)="goToDreamBook()">
+                        <img src="assets/img/icons/book.png" alt="" width="22">
+                        <span class="ml-1">{{ 'dream_book' | translate }}</span>
+                    </button>                   
+                </div>
+                <div class="col px-2" >
+                    <input type="number" class="form-control input" id="betAmount" [(ngModel)]="betAmount" 
+                    [ngModelOptions]="{standalone: true}" (keyup.enter)="enter($event)" 
+                     (keyup)="checkBetAmount()" placeholder="{{'amountHint' | translate}}" 
+                     (keypress)="keyPressNumbers($event)" (input)="checkMaxLength($event)">
+                    <p id = "betAmountErr" class="error-color" ></p>
+                </div>                
+            </div>            
+          
+            <div class="row">
+                <div class="container no-padding" >                   
+                    <div class="row no-padding" >
+                        <button type="button" class="btn btn-secondary colorDialog" (click)="colorMeaningModal(colorMeaning)">?</button>
+                        &nbsp;<h3 (click)="colorMeaningModal(colorMeaning)" class="no-padding">{{ 'bet_color_meaning' | translate}}</h3>
+                    </div>
+                </div>
+            </div>  
+            <div class="row my-3 " *ngIf="twoDCloseTime">
+                <div class="container">
+                    <div class="row">
+                        <div class="card wallet-text">
+                            <div class="card-body">
+                              <h3 class="text-center text-white">{{ 'over_bet_time' | translate}}</h3>          
+                              <div class="container">
+                                  <div class="row mb-1 justify-content-center">
+                                    <img src="assets/img/closetime.png" alt="" width="100px" height="100px">
+                                  </div>                          
+                                  <div class="row d-flex justify-content-center">
+                                    <h3 class="text-white mt-3 mb-1">{{ twoDCloseSection }}</h3>                                    
+                                  </div>                                 
+                              </div>                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+    </div>   
+  
+    <div class="extraFooter">
+        <div class="container  bg-white" *ngIf="!twoDCloseTime " >        
+           <div class="row">
+                <div class="container py-2 px-2 pb-2">
+                    <div class="row justify-content-center footer-select-number">
+                        <div class="card"                   
+                        [ngClass]="{'numberCard-selected': item.selected, 'numberCard': !item.selected,'numberCard-not-selected': item.betLimitColor &gt;= 100}"
+                        *ngFor='let item of betTwodNumber;let i=index' (click)="betNumberSelected(item.number, !item.selected,item.reverseStatus)">                    
+                            <div *ngIf = "item != 'undefined'">
+                                <span *ngIf="item.reverseStatus" class="reverse-icon">R</span>
+                                <span *ngIf="item.akhway" class="khway-icon">ခွေ</span>
+                            <p class="number pt-1">{{item.number}}</p>                  
+                                <div *ngIf="item.betLimitColor &gt;= 100"></div>                   
+                                <div *ngIf="item.betLimitColor &lt; 100">
+                                    <div class="progress">                                             
+                                        <div class="progress-bar bg-success" role="progressbar"[style.width.%]="item.betLimitColor" [aria-valuenow]="item.betLimitColor"
+                                            aria-valuemin="0" aria-valuemax="100" *ngIf="item.betLimitColor &gt;= 0 && item.betLimitColor &lt; 50"></div>
+                                        <div class="progress-bar bg-warning" role="progressbar" [style.width.%]="item.betLimitColor" [aria-valuenow]="item.betLimitColor"
+                                            aria-valuemin="0" aria-valuemax="100" *ngIf="item.betLimitColor &gt;= 50 && item.betLimitColor &lt; 80"></div>  
+                                        <div class="progress-bar bg-danger" role="progressbar" [style.width.%]="item.betLimitColor" [aria-valuenow]="item.betLimitColor"
+                                            aria-valuemin="0" aria-valuemax="100" *ngIf="item.betLimitColor &gt;= 80 && item.betLimitColor &lt; 100"></div> 
+                                        <div class="progress-bar" role="progressbar" style="width: 0%;" [aria-valuenow]="item.betLimitColor"
+                                            aria-valuemin="0" aria-valuemax="0" *ngIf="item.betLimitColor &gt;= 100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           </div>
+
+        </div> 
+    </div>
+   
+</div>
+<div  id="appCapsule" *ngIf="closeHoliday && !common.refreshLoading">
+    <div class="container" >
+        <div class="row" >
+            <img src="assets/img/holidaynew.webp" alt="" width="100px" height="100px">        
+        </div>
+        <div class="row px-2 justify-content-center">
+            <h5 class="mt-2 text-danger">{{ 'close_holiday1' | translate}}{{ holidaryDescrition }}{{ 'close_holiday2' | translate}}</h5>
+        </div>
+        <div class="row px-5">       
+            <button type="button" class="button" [routerLink] = "['/twod/holiday']" [replaceUrl]="false" style="white-space: nowrap;border-radius: 5px;font-size: 12px;background-color: #2253A2;color:white">{{ 'see_holiday' | translate }}</button>
+        </div>
+    </div>
+</div>
+<div  id="appCapsule" *ngIf="closeWeekend && !common.refreshLoading">
+    <div class="container">
+        <div class="row">        
+            <img src="assets/img/close.png" alt="" width="100px" height="100px">        
+        </div>
+        <div class="row justify-content-center">
+            <h3 class="mt-2 text-danger">{{ 'close_weekend' | translate}}</h3>
+        </div>
+    </div>
+</div>
+<ng-template #quickSelect>        
+    <div class="modal-body">  
+        <div class="container-fluid justify-content-center">
+            <div class="row d-flex justify-content-end">   
+                <button type="button" class="close select-close-icon" (click)="modalRef.hide()">                      
+                    <i class="material-icons" style="font-size: 26px; color: #fff;">close</i>                             
+                </button> 
+            </div> 
+            <div class="row d-flex justify-content-start mt-1"> 
+                <div class="row mt-1"> {{ 'brake' | translate }}</div>
+                <div class="quick-wide-block mt-1">
+                    <div class="row pl-3">
+                        <!-- <div class="col-12"> -->
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected0bk(twodBetUnBetList)">{{
+                                '0/10' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected1bk(twodBetUnBetList)">{{
+                                '1/11' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected2bk(twodBetUnBetList)">{{
+                                '2/12' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected3bk(twodBetUnBetList)">{{
+                                '3/13' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected4bk(twodBetUnBetList)">{{
+                                '4/14' | translate}}</button> 
+                     </div>
+                     <div class="row mt-1 pl-3 justify-content-start">
+                                <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected5bk(twodBetUnBetList)">{{
+                                    '5/15' | translate}}</button>
+                                <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected6bk(twodBetUnBetList)">{{
+                                    '6/16' | translate}}</button>
+                                <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected7bk(twodBetUnBetList)">{{
+                                    '7/17' | translate}}</button>
+                                <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected8bk(twodBetUnBetList)">{{
+                                    '8/18' | translate}}</button>
+                                <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selected9bk(twodBetUnBetList)">{{
+                                    '9/19' | translate}}</button>   
+                    </div>           
+                        <!-- </div> -->
+                    </div>       
+                </div>
+            </div>                                             
+            <div class="row d-flex justify-content-start">    
+                <div class="row mt-1" style="margin-left: 5px;">{{ 'single_double_size' | translate}}</div> 
+                <div class="quick-wide-block">
+                    <div class="row pl-3 mt-1">
+                        <!-- <div class="col-12"> -->
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedBrother(twodBetUnBetList)">{{
+                                'brother' | translate }}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedBig(twodBetUnBetList)">{{ 'big' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedSmall(twodBetUnBetList)">{{ 'small' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedOdd(twodBetUnBetList)">{{ 'odd' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedEven(twodBetUnBetList)">{{ 'even' | translate}}</button>
+                        <!-- </div> -->
+                    </div>
+                    <div class="row mt-1 pl-3 justify-content-start">
+                        <!-- <div class="col-12"> -->
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedEe(twodBetUnBetList)">{{ 'ee' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedEo(twodBetUnBetList)">{{ 'eo' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedOe(twodBetUnBetList)">{{ 'oe' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedOo(twodBetUnBetList)">{{ 'oo' | translate}}</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedSame(twodBetUnBetList)">{{ 'same' | translate}}</button>
+                        <!-- </div> -->
+                 
+            
+                </div>
+            </div>
+            
+            <div class="row d-flex justify-content-start mt-1">
+                <div class="row mt-1" style="margin-left: 10px;"> {{ 'twod_round' | translate}}</div>
+                <div class="quick-wide-block mt-1 ">
+                    <div class="row  pl-3">
+                        <!-- <div class="col-12"> -->
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound0(twodBetUnBetList)">0</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound1(twodBetUnBetList)">1</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound2(twodBetUnBetList)">2</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound3(twodBetUnBetList)">3</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound4(twodBetUnBetList)">4</button>
+                    </div>
+                    <div class="row  pl-3">
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound5(twodBetUnBetList)">5</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound6(twodBetUnBetList)">6</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound7(twodBetUnBetList)">7</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound8(twodBetUnBetList)">8</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedRound9(twodBetUnBetList)">9</button>                
+                        <!-- </div> -->
+                    </div>       
+                </div>
+            </div>
+            
+            <div class="row d-flex justify-content-start mt-1">
+                <div class="row mt-1" style="margin-left: 10px;">{{ 'head' | translate}}</div>
+                <div class="quick-wide-block mt-1">
+                    <div class="row pr-1 pl-3">
+                        <!-- <div class="col-12"> -->
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead0(twodBetUnBetList)">0</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead1(twodBetUnBetList)">1</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead2(twodBetUnBetList)">2</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead3(twodBetUnBetList)">3</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead4(twodBetUnBetList)">4</button>
+                    </div>
+                    <div class="row pr-1 pl-3">
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead5(twodBetUnBetList)">5</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead6(twodBetUnBetList)">6</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead7(twodBetUnBetList)">7</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead8(twodBetUnBetList)">8</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedHead9(twodBetUnBetList)">9</button>               
+                        <!-- </div> -->
+                    </div>       
+                </div>
+            </div>
+            <div class="row d-flex justify-content-start mt-1">
+                <div class="row mt-1" style="margin-left: 10px;">  {{ 'tail' | translate}}</div>
+                <div class=" quick-wide-block mt-1">
+                    <div class="row pr-1 pl-3">
+                        <!-- <div class="col-12"> -->
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail0(twodBetUnBetList)">0</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail1(twodBetUnBetList)">1</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail2(twodBetUnBetList)">2</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail3(twodBetUnBetList)">3</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail4(twodBetUnBetList)">4</button>
+                    </div>
+                    <div class="row pr-1 pl-3">
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail5(twodBetUnBetList)">5</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail6(twodBetUnBetList)">6</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail7(twodBetUnBetList)">7</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail8(twodBetUnBetList)">8</button>
+                            <button type="button" class="btn btn-sm quick-btn mr-1" (click)="selectedTail9(twodBetUnBetList)">9</button>                 
+                        <!-- </div> -->
+                    </div>       
+                </div>
+            </div>
+            
+            <div class="row d-flex justify-content-start mt-1">
+                <!-- {{ 'constellation_title' | translate}} -->
+                <div class="row pl-2">{{ 'constellation_title' | translate}}</div>
+                <div class=" quick-wide-block pl-3 pr-3">
+                   
+                    <div class="row pt-1">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedConstellation(selectedConstellation)">{{ 'constellation' | translate}}</button>    
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedConstellationR(selectedConstellation)">{{ 'constellationR' | translate}}</button>    
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedPowder(selectedConstellation)">{{ 'powder' | translate}}</button>    
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedPowerR(selectedConstellation)">{{ 'powerR' | translate}}</button>    
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedThaiConstellation(selectedConstellation)">{{ 'thai_constellation' | translate}}</button>    
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedThaiConstellationR(selectedConstellation)">{{ 'thai_constellationR' | translate}}</button>    
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedThaiPowder(selectedConstellation)">{{ 'thai_powder' | translate}}</button>    
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-sm quick-btn-1 mr-1" (click)="selectedThaiPowderR(selectedConstellation)">{{ 'thai_powerR' | translate}}</button>    
+                    </div>
+                        
+                </div>
+            
+            </div>
+            <div class="row d-flex justify-content-start mt-1">
+               <div class="row pl-2"> {{ 'selection_number' | translate}}</div>
+                <div class="quick-wide-block mt-1">
+                    <div class="row pl-4">                                                    
+                        <button type="button" class="btn btn-sm quick-btn-2 mr-1" (click)="selectedNumber0019(selectedConstellation)">{{'00-19' |translate}}</button>  
+                        <button type="button" class="btn btn-sm quick-btn-2 mr-1" (click)="selectedNumber2039(selectedConstellation)">{{'20-39' | translate}}</button> 
+                        <button type="button" class="btn btn-sm quick-btn-2 mr-1" (click)="selectedNumber4059(selectedConstellation)">{{'40-59' | translate}}</button> 
+                        <button type="button" class="btn btn-sm quick-btn-2 mr-1" (click)="selectedNumber6079(selectedConstellation)">{{'60-79' | translate}}</button> 
+                        <button type="button" class="btn btn-sm quick-btn-2 mr-1" (click)="selectedNumber8099(selectedConstellation)">{{'80-99' | translate}}</button>   
+                    </div>           
+                </div>
+            </div>
+        </div>         
+        
+    
+    </div>
+  
+</ng-template>
+<ng-template #colorMeaning>
+    <div class="modal-body">
+      <div class="close pull-right " style="margin-top: -10px;">
+        <i class="material-icons" (click)="hidecolorMeaningModal()" style="color: red;">cancel</i>
+      </div>
+      <h4 class="modal-title text-center mt-2">{{ 'bet_color_meaning' | translate}}</h4>
+      <h5 class="text-center">{{ 'bet_limit_full' | translate}}</h5>    
+      <div class="container">
+        <div class="row">
+          <p class="bet-limit-color bg-success"></p>&nbsp;&nbsp;
+          {{ 'bet_limit_under50' | translate}}
+        </div>
+        <div class="row">
+          <p class="bet-limit-color bg-warning"></p>&nbsp;&nbsp;
+          {{ 'bet_limit_between50to80' | translate}}
+        </div>
+        <div class="row">
+          <p class="bet-limit-color bg-danger"></p>&nbsp;&nbsp;
+          {{ 'bet_limit_between80to99' | translate}}
+        </div>
+        <div class="row">
+          <p class="bet-limit-color bg-secondary"></p>&nbsp;&nbsp;
+          <span style="white-space: nowrap;"> {{ 'bet_limit_above90' | translate}}</span>
+        </div>
+      </div>
+    </div>      
+  </ng-template>
+  
+ <!-- App Bottom Menu -->
+
+ <div *ngIf="(!closeTwoD && !common.refreshLoading)" class="section full d-flex justify-content-around bg-white" id="navTwoDBet">  
+    <button type="button" class="btn button-notRound clear mt-2 mb-4 mr-1 mb-1" (click) = "twoDBetClean()" *ngIf="!twoDCloseTime">{{ 'clean' | translate}}</button>  
+                
+    <button type="button" class="mt-2 button-notRound submit" (click)= "twoDBet(twodBetUnBetList)" *ngIf="!twoDCloseTime">{{ 'bet' | translate}}
+        <span *ngIf="betSelectedCount > 0" class="bet-selected-count-icon">{{ betSelectedCount }}</span></button>
+ </div>
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+
+  <ng-template #twodBetUnBetList>                           
+    <div class="modal-body">  
+      <button type="button" class="close pull-right" aria-label="Close"  (click)="unBetLimitListModalDelete()" >
+        <span aria-hidden="true">×</span>                                    
+     </button>     
+     <br>                              
+     <div class="section full"> 
+        <div class="">
+            <p class="text-danger">{{'unbetlist_textforqselect' | translate}}</p>
+          </div>
+        <div class="row">
+          <div class="col-7" *ngFor="let unBetLimitListObj of modalService.config.initialState.unBetLimitList;">
+            <span> {{ unBetLimitListObj }} </span>
+          </div>
+        </div>
+        <br>
+        <p class="text-danger">{{'unbetlist_textforqselect1' | translate}}</p>
+    </div>
+    </div>                           
+  </ng-template>
+
+  <ng-template #twodBetAkhway>  
+    <div class="modal-body">  
+      <div class="container">
+        <div class="row "> 
+          <div class="col-12">
+            <h4 style="color:#09285a;font-size: 14px;font-weight: bold;">{{ 'akwaytext' | translate }}</h4>
+            <p style="color:#2253A2;">{{ 'akhwaytext1' | translate }}</p>
+          </div>
+        </div>
+        
+        <div class="row justify-content-center">
+          <!-- <div class="col-8"> -->
+            <input type="text" pattern="\d*" [maxlength]="maxlength" id="inputString" 
+              class="form-control mx-auto" 
+              placeholder="{{ 'twototennumber' | translate }}" 
+              [(ngModel)]="modalService.config.initialState.number"
+              [ngModelOptions]="{standalone: true}" 
+              value="{{ modalService.config.initialState.number }}" 
+              (keyup)="validateInput()" 
+              (keypress)="keyPressNumbers($event)">
+            <p id="samenumbererr" class="error-color"></p>  
+          <!-- </div> -->
+        </div>
+  
+        <div class="row justify-content-center pt-1">
+          <div class="col-6 text-center">
+            <button type="button" class="btn btn-block akhway-colse-button" (click)="AwayModalDelete()">
+              {{ 'akhway_close' | translate }}
+            </button>  
+          </div> 
+          <div class="col-6 text-center">
+            <button type="button" class="btn btn-block akhway-button" (click)="selectedakway(modalService.config.initialState.number)" 
+              *ngIf="!akhwayconfrimbutton">
+              {{ 'confirm' | translate }}
+            </button> 
+            <button type="button" class="btn btn-block akhway-button-disable" disabled 
+              (click)="selectedakway(modalService.config.initialState.number)" 
+              *ngIf="akhwayconfrimbutton">
+              {{ 'confirm' | translate }}
+            </button> 
+          </div>
+        </div>
+      </div>
+    </div>                  
+  </ng-template>
+  

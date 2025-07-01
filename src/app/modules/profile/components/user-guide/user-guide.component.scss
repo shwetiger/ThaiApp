@@ -1,0 +1,88 @@
+@import '../../../../variables';
+
+#appCapsule {
+    background-color: $background-color !important;
+    padding-top: 0px !important;
+    min-height: 130vh !important ;
+    h3 {
+        color: $second-color; 
+        font-weight: 600;
+    }
+
+    @media screen and (max-width: 767px) {
+        min-height: 105vh !important;
+    }
+
+    @media screen and (min-width: 768px) {
+        min-height: 135vh !important;
+    }
+   
+    
+
+    .button-container {
+        display: flex;
+        align-items: center;
+    }
+    
+    .button {
+       // background-color: #2253A2;
+        color: $second-color;
+        width: 100%;
+        border: none;
+        padding: 10px;
+       // border-radius: 10px;
+    }
+    
+    .vertical-line {
+        height: 30px; /* Adjust height as needed */
+        border-left: 1px solid #ccc; /* Change color and style as needed */
+        margin: 0 10px; /* Adjust margin as needed */
+    }
+    
+    .bg-custom-blue {
+        background-color: $second-color !important; /* Use !important to ensure the style takes precedence */
+    }
+    
+    .userguideimg {
+        width:90%;
+        height:30% /* Adjust the width for smaller screens */
+      }
+    @media screen and (max-width: 768px) {
+        .userguideimg {
+          width:90%;
+          height:50% ;/* Adjust the width for smaller screens */
+        }
+      }
+    
+}
+
+#navTwoDBetConfirm {
+    min-height: 150px;
+    //width:50%;
+    position: fixed;
+    //z-index: 999;
+    bottom:0px;
+    left:0;
+    right:0;
+   // background-color: darkkhaki;
+    display: flex;
+    justify-content: space-evenly;
+
+}
+
+.card {
+    width: 30%; 
+    max-width: 600px; 
+    margin: auto;
+    padding: 0px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: white; 
+}
+
+@media screen and (max-width: 768px) {
+    .card {
+      width:100%; /* Adjust the width for smaller screens */
+    }
+  }
+

@@ -1,0 +1,83 @@
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<div id="appCapsule">
+<div class="pt-2">
+    <h3 class="text-center" style="color: #2456A6;">{{'only_refcode_header' | translate }}</h3>
+   <div class="text-center">      
+    <i class="material-icons" style="color: #fff;font-size: 60px; border-radius: 50px; background-color: green;">check_circle</i>            
+</div>  
+   <div>
+    <div class="card mt-2 mx-3">
+        <div class="card-body">   
+            <div class="row justify-content-center">
+             <h4>{{'only_refcode_desc' | translate }}</h4>
+               
+            </div>         
+            <div class="row mt-2">              
+                <div class="col-12 justify-content-center text-center">
+                    <input type="text" maxlength="12" class="form-control refCode" placeholder="{{ 'enter_ref' | translate}}"  [(ngModel)]="refModel.referral_code" [ngModelOptions]="{standalone: true}" >
+                   
+                 </div>
+            </div>  
+            <div class="row mt-2">
+              <div class="col-5"></div>
+              <!-- <div class="col-4"><span style="color:#2456A6;font-weight: bold;text-align: center;">{{ 'ref_or' | translate}}</span></div> -->
+              <div class="col-5"></div>
+            </div>
+            <!-- <div class="row mt-2">              
+              <div class="col-12 justify-content-center text-center">
+                  <input type="text" maxlength="12" class="form-control refPhoneNumber" placeholder="{{ 'enter_ref_phno' | translate}}"  (keyup) ='checkPhoneNumber()'  [(ngModel)]="refModel.referral_phone_no" [ngModelOptions]="{standalone: true}" >
+                 
+               </div>
+               <p id ="phoneErr" class="error-color" style="text-align: left; width: 100%;" ></p>
+          </div>   -->
+
+            <div class="row d-flex justify-content-center">
+                <div class="mt-2" style="position: relative; justify-content: center; background-color: red;" class="mt-2" *ngIf="loadingSubmitingOne" >                  
+                    <ngx-spinner size = "medium" color = "rgb(6,56,107)" name="loadingSubmitingOne" type = "ball-elastic-dots" [fullScreen] = "false"></ngx-spinner>
+                </div>
+                <button type="button" class="btn btn-block shadowed mt-2" (click)="registerInviteCode(true)" *ngIf="!loadingSubmitingOne"
+                    style="align-content: center;background-color: #2456A6;border-radius: 5px;color: #fff;">
+                    {{ 'ref_submit' | translate }}
+                </button>
+            </div>        
+        </div>
+    </div>
+   </div>
+      <div>
+            <div class="section full bg-white py-2">       
+                <div class="pt-2">
+                    <div class="row">
+                    <div class="col justify-content-center text-center">
+                     <h4 class="service-color">{{ 'only_refcode_skip_desc' | translate}} </h4>                    
+                     </div>  
+                    </div>
+                </div>
+              </div>
+            </div> 
+   
+    
+            <div class="pt-2 saveBtn" style="display:flex; justify-content: center;">
+                <!-- Show the spinner when loadingSubmiting is true -->
+                <div *ngIf="loadingSubmiting" style="position: relative; justify-content: center; background-color: red;" class="mt-2">
+                  <ngx-spinner 
+                    size="medium" 
+                    color="rgb(6,56,107)" 
+                    name="loadingSubmiting" 
+                    type="ball-elastic-dots" 
+                    [fullScreen]="false">
+                  </ngx-spinner>
+                </div>
+              
+                <!-- Show the button when loadingSubmiting is false -->
+                <button 
+                  type="button" 
+                  class="btn shadowed"
+                  style="width: 90%; align-content: center; background-color: #2456A6; border-radius: 5px; color: #fff;" 
+                  (click)="registerInviteCode(false)" 
+                  *ngIf="!loadingSubmiting">
+                  {{ 'no_ref_code' | translate }}
+                </button>
+              </div>
+</div>
+
+</div>

@@ -1,0 +1,202 @@
+<!-- <app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar> -->
+<div class="appHeader text-light">
+    <div class="left">
+    </div>
+    <div class="pageTitle">{{ 'helloword' | translate }}</div>
+ 
+</div>
+<div id="appCapsule"> 
+    <div class="container-fluid no-padding bg-white">
+        <div class="row bg-white pt-3 pt-2">
+            <div class="col-10 offset-1">
+                <h3 class="service-color text-center " style="font-weight: bold;color:#2253A2">{{ 'serviceTime3' | translate}}</h3>
+            </div>  
+        </div>
+        <!-- TopUp/Withdrawal Help -->  
+        <div class="row" *ngIf="service_transaction != 0 ">           
+            <div class="col-12">
+             <h4 class="service-title text-center">{{ 'serviceTime4' | translate }}<span style="font-weight: bold;"> {{ 'serviceTime5' | translate }}  </span><span>{{ 'serviceTime6' | translate }}</span> </h4> 
+                <div class="row" *ngFor="let servicePhoneObj of servicePhoneList" >
+                    <div class="container-fluid" *ngIf="servicePhoneObj.title == 'service_transaction'">
+                        <div class="row bg-white mx-3 service-box" >
+                        <div class="col-5" *ngIf="servicePhoneObj.phone_no !=''">
+                            <h5 class="text-center">
+                            {{ 'service_transaction' | translate }}
+                            <br>
+                            {{ servicePhoneObj.phone_no}}</h5>
+                        </div> 
+                            
+                        <div class="col-5" *ngIf="servicePhoneObj.phone_no ==''">
+                            <h4 class="text-center">
+                            {{ 'service_transaction' | translate }}
+                           </h4>
+                        </div>               
+                        <div class="col-7 d-flex justify-content-end">
+                            <div class="row"> 
+                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id!=''">
+                                    <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+openUrl | safeUrl"> 
+                                        <img class="service-image mr-2" src="assets/img/telegram.png" alt="">
+                                    </a> 
+                                </div>
+                                
+                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id==''">
+                                  
+                                </div>
+                                <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
+                                    <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
+                                        <img class="service-image mr-2" src="assets/img/phone.png" alt="">
+                                    </a>
+                                </div>
+                               
+                                <div class="col-3" *ngIf="servicePhoneObj.phone_no ==''">
+                                 
+                                </div>
+                                <div class="col-4" *ngIf="servicePhoneObj.viber!=''">
+                                    <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">                               
+                                        <img class="service-image" src="assets/img/viber.png" alt="" >
+                                    </a>
+                                </div>   
+                                <div class="col-4" *ngIf="servicePhoneObj.viber==''">
+                                </div>                               
+                            </div>                           
+                        </div>                                 
+                        </div>
+                    </div>
+                </div>   
+            </div>
+        </div>
+         <!-- App Error -->
+        <div class="row" *ngIf="service_error != 0">           
+            <div class="col-12 pt-2 pb-2">
+                      
+                <div class="row" *ngFor="let servicePhoneObj of servicePhoneList" >
+                    <div class="container-fluid" *ngIf="servicePhoneObj.title == 'service_error'">
+                        <div class="row bg-white mx-3 service-box" >
+                        <div class="col-5" *ngIf="servicePhoneObj.phone_no !=''">
+                            <h5 class="text-center">{{ 'service_error' | translate }}
+                                <br>
+                            {{ servicePhoneObj.phone_no}}</h5></div>     
+                            <div class="col-5" *ngIf="servicePhoneObj.phone_no ==''">
+                                <h4 class="text-center">{{ 'service_error' | translate }}
+                                  </h4></div>                
+                        <div class="col-7 d-flex justify-content-end">
+                            <div class="row"> 
+                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id!=''">
+                                    <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+openUrl | safeUrl">
+                                        <img class="service-image mr-2" src="assets/img/telegram.png" alt="">
+                                    </a>   
+                                </div>
+                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id==''">
+                                     
+                                </div>
+                                <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
+                                    <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
+                                        <img class="service-image mr-2" src="assets/img/phone.png" alt="">
+                                    </a>
+                                </div>
+                                <div class="col-3"  *ngIf="servicePhoneObj.phone_no ==''">
+                                  
+                                </div>
+                                <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
+                                    <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">                             
+                                        <img class="service-image" src="assets/img/viber.png" alt="" >
+                                    </a>
+                                </div>  
+                                <div class="col-4" *ngIf="servicePhoneObj.viber ==''">
+                                    
+                                </div>                               
+                            </div>                         
+                        </div>                                 
+                        </div>
+                    </div>
+                </div>   
+            </div>
+        </div>
+         <!-- cumstomer service -->
+        <div class="row" *ngIf="customer_service != 0">           
+            <div class="col-12  pb-2">
+                     
+                <div class="row" *ngFor="let servicePhoneObj of servicePhoneList" >
+                    <div class="container-fluid" *ngIf="servicePhoneObj.title == 'customer_service'">
+                        <div class="row bg-white mx-3 service-box">
+                        <div class="col-5"  *ngIf="servicePhoneObj.phone_no !=''">
+                            <h5 class="text-center">{{ 'customer_service' | translate }}
+                                <br>
+                            {{ servicePhoneObj.phone_no}}</h5></div> 
+                            <div class="col-5" *ngIf="servicePhoneObj.phone_no ==''">
+                                <h4 class="text-center">{{ 'customer_service' | translate }}
+                                   </h4></div>                  
+                        <div class="col-7 d-flex justify-content-end">
+                            <div class="row"> 
+                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id!=''">
+                                    <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+openUrl | safeUrl">
+                                        <img class="service-image mr-2" src="assets/img/telegram.png" alt="">
+                                    </a>   
+                                </div>
+                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id==''">
+                                   
+                                </div>
+
+                                <div class="col-3" *ngIf="servicePhoneObj.phone_no==''">
+                                
+                                </div>
+                                <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
+                                    <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
+                                        <img class="service-image mr-2" src="assets/img/phone.png" alt="">
+                                    </a>
+                                </div>
+
+                                <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
+                                    <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">                             
+                                        <img class="service-image" src="assets/img/viber.png" alt="" >
+                                    </a>
+                                </div>   
+                                <div class="col-4"  *ngIf="servicePhoneObj.viber ==''">
+                                  
+                                </div>                             
+                            </div>                           
+                        </div>                                 
+                        </div>
+                    </div>
+                </div>   
+            </div>
+        </div>
+         <!-- channel link -->
+         <div class="row justify-content-center" *ngFor="let servicePhoneObj of servicePhoneList">           
+            <div *ngIf="servicePhoneObj.title == 'join_us'">
+                <h3 class="service-title text-center" style="font-weight:bold ;">{{ 'channel-title' | translate }}</h3>      
+                <div class="row justify-content-center">
+                    <div class="container-fluid">
+    
+                            <div class="row justify-content-center" style="padding-bottom: 5px;"> 
+                                <!-- <div class="col-6" *ngIf="servicePhoneObj.telegram_link!='' && servicePhoneObj.viber_link ==''">
+                                    <a [href]="servicePhoneObj.telegram_link +''+openUrl | safeUrl">
+                                        <img style="padding-left: 2px;"class="service-channel-image" src="assets/img/telegram channel.png" alt="">
+                                    </a>  
+                                </div> -->
+                                <div class="col-6" *ngIf="servicePhoneObj.telegram_link!='' && servicePhoneObj.viber_link !=''">
+                                 
+                                    <a [href]="servicePhoneObj.telegram_link +''+openUrl | safeUrl">
+                                        <img style="padding-left: 0px;"class="service-channel-image" src="assets/img/telegram channel.png" alt="">
+                                    </a>  
+                                </div>
+                                <div class="col-6" *ngIf="servicePhoneObj.viber_link!=''">
+                                    <a [href]="servicePhoneObj.viber_link+''+openUrl | safeUrl">
+                                        <img class="service-channel-image" src="assets/img/viber channel.png" alt="" >
+                                    </a>
+                                </div>                              
+                            </div>                           
+                   
+                </div>   
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-navigation-bar></app-navigation-bar>
+
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

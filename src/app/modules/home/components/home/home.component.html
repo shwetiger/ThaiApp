@@ -1,0 +1,63 @@
+
+<app-splash-screen-ads *ngIf="deviceId1 === 'chrome'"></app-splash-screen-ads>
+<app-navigation-bar></app-navigation-bar>
+  <!-- App Header -->
+  <div class="appHeader text-light">
+    <div class="left">
+      <div class="app-download" (click)="downloadPage()">
+        <div style="display: flex;">
+          <h4 style="color: #fff;">App&nbsp;</h4>  
+          <img src="assets/img/icon/file_download.png" alt="" width="20" height="20">     
+          <!-- <i class="material-icons" style='font-size:25px;'>file_download</i>   -->
+        </div>
+      </div>
+    </div>
+    <div class="pageTitle"> {{ 'helloword' | translate }}</div>
+   
+    <div class="right">           
+      <a class="headerButton">  
+        <img src="assets/img/icon/refresh.png" alt=""  (click) ="refreshPage()">   
+        <!-- <i class="material-icons" (click) ="refreshPage()" style="font-size: 26px;">refresh</i>       -->
+      </a>
+    </div>
+</div>
+<!-- * App Header -->
+
+  <app-account-login></app-account-login>
+  <div class="mt-2 mb-2">
+    <app-ads-slider></app-ads-slider>
+  </div>
+
+<!-- App Capsule -->
+<div id="home" *ngIf="!common.refreshLoading"> 
+  <div class="container">
+    <!-- <div class="row">Fcm>>> {{ fcmtokenCheck }}</div> -->
+    <div class="row" style="padding: 0px !important; margin: 0px !important;" >
+      <div class="col-6" style="padding: 0px !important; margin: 0px !important;" (click)="twodPage()">      
+          <img src="assets/img/twod_bet.png" alt="image" class="bet-image" style="padding: 0px !important; margin: 0px !important;">
+          
+          <h3 class="text-color text-center" style="margin-top: -11px !important; margin-bottom: 5px !important; padding: 0px !important;">{{ '2d-title' | translate }}</h3>    
+      </div>
+      <div class="col-6" style="padding: 0px !important;" (click)="threedPage()">        
+          <img src="assets/img/threed_bet.png" alt="image" class="bet-image" style="padding: 0px !important; margin: 0px !important;">
+          <h3 class="text-color text-center"style="margin-top: -11px !important; margin-bottom: 6px !important; padding: 0px !important;">{{ '3d-title' | translate }}</h3>   
+      </div>
+    </div>  
+    <div class="row" style="margin-top: -10px !important;">
+      <div class="col-6" *ngFor="let gameProviderObj of gameProviderList" style="padding: 0px !important; margin: 0px !important;">        
+       
+        <span *ngIf ="gameProviderObj.isMaintenance == false"><img class="bet-image" [src]="gameProviderObj.imageUrl"  (click)="goToGame(gameProviderObj.id, gameProviderObj.name,gameProviderObj.isMaintenance)" alt="TwoDBetImage"></span>
+        <span *ngIf ="gameProviderObj.isMaintenance == true"><img class="bet-image" [src]="gameProviderObj.mimageUrl"  (click)="goToGame(gameProviderObj.id, gameProviderObj.name,gameProviderObj.isMaintenance)" alt="TwoDBetImage"></span>
+       
+        <h4 class="text-color text-center" style="margin-top: -11px !important;margin-bottom: 5px !important; padding: 0px !important;">{{changeLanguageTitle(gameProviderObj)}}</h4>  
+      </div>
+    </div>
+    <div class="row mt-2"></div>  
+  </div>
+</div>
+<!-- * App Capsule -->
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+

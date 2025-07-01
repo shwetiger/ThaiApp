@@ -1,0 +1,375 @@
+
+ <div class="appHeader text-light">
+    <div class="left">
+      <a (click)="goToHome()" class="headerButton">        
+        <i class="material-icons" style="font-size: 26px;">arrow_back</i>  
+     </a> 
+    </div>
+    <div class="pageTitle">{{ 'helloword' | translate }}</div>   
+  </div>
+<div class="root" *ngIf="!common.refreshLoading">    
+    <div *ngIf="data.isFirstTopup != '1' && data.type=='TOPUP'">
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">
+                <span *ngIf="(data.description !=null && data.description != 'null')" style="color:  red;">{{ data.description }}</span>
+                <span *ngIf="(data.description == null || data.description == 'null')">{{getTopupNotiStr(data.state)}}</span>
+            </div>
+            <div class="divider">
+            </div>
+            <div class="date">
+                {{'topup_time' | translate}}
+                {{data.request_date | date:'dd/MM/yyyy hh:mm a'}}
+            </div>
+        </div>
+        <!-- <div class="imgClass">
+            <img [src]="data.state=='APPROVED'?'assets/img/topupnoti.png':'assets/img/topup denied.png'" alt="image" class="imaged">
+        </div> -->
+        <div class="img__box">
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
+        </div>
+    </div>
+
+    <div *ngIf="data.type=='WITHDRAW'">
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">
+                <span *ngIf="(data.description != null && data.description != 'null')" style="color:  red;">{{ data.description }}</span>
+                <span *ngIf="(data.description == null || data.description == 'null')">{{getWithdrawNotiStr(data.state)}}</span>
+            </div>
+            <div class="divider">
+
+            </div>
+
+            <div class="date">
+                {{'withdrawal_time' | translate}} <!--{{getDateTime(data.request_date)}}-->
+                {{data.request_date | date:'dd/MM/yyyy hh:mm a'}}
+            </div>
+
+        </div>
+        <!-- <div class="imgClass">
+            <img [src]="data.state=='APPROVED'?'assets/img/withdrawalnoti.png':'assets/img/withdrawal denied.png'" alt="image" class="imaged">
+        </div> -->
+        <div class="img__box">
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
+        </div>
+    </div>
+
+    <div *ngIf="data.type=='2D Results'">
+
+        <div class="card noti-card">
+            
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">                
+                <span>{{ twodResult }}</span>            
+                <span class="number">{{data.number}}</span>
+                <span>{{ 'towd_is' | translate}}</span>
+
+            </div>
+            <div class="divider">
+
+            </div>
+
+            <div class="date">
+                {{'noti_date' | translate}} <!--{{getDateTime(data.currentdate)}}-->
+                {{data.currentdate | date:'dd/MM/yyyy hh:mm a'}}
+            </div>
+
+
+
+        </div>
+        <!-- <div class="imgClass">           
+            <img *ngIf="data.fortime == '10:30 AM'" src="assets/img/2D-1.jpg" alt="image" class="imaged">
+            <img *ngIf="data.fortime == '12:01 PM'" src="assets/img/2D-2.jpg" alt="image" class="imaged">
+            <img *ngIf="data.fortime == '02:30 PM'" src="assets/img/2D-3.jpg" alt="image" class="imaged">
+            <img *ngIf="data.fortime == '04:30 PM'" src="assets/img/2D-4.jpg" alt="image" class="imaged">           
+        </div> -->
+
+        <div class="img__box">
+           
+            <img  src="{{imgLink}}" alt="image" class="noti__imaged">
+            <!-- <img *ngIf="notiDetailObj.fortime == '12:01 PM'" src="assets/img/2D-2.jpg" alt="image" class="noti__imaged">
+            <img *ngIf="notiDetailObj.fortime == '02:30 PM'" src="assets/img/2D-3.jpg" alt="image" class="noti__imaged">
+            <img *ngIf="notiDetailObj.fortime == '04:30 PM'" src="assets/img/2D-4.jpg" alt="image" class="noti__imaged"> -->
+            
+        </div>
+    </div>
+
+
+    <div *ngIf="data.type=='3D Results'">
+
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">
+                <span>{{'threed_result' | translate}}</span>
+                <span class="number">{{data.number}}</span>
+                <span>{{ 'towd_is' | translate}}</span>
+                <!-- {{data.body}} -->
+            </div>
+            <div class="divider">
+
+            </div>
+
+            <div class="date">
+                {{'noti_date' | translate}} <!--{{getDate(data.currentdate)}}-->
+                {{data.request_date | date:'dd/MM/yyyy'}} 3:30 PM
+            </div>
+
+        </div>
+        <!-- <div class="imgClass">           
+            <img src="assets/img/3D.jpg" alt="image" class="imaged">
+        </div> -->
+        <div class="img__box">
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
+        </div>
+    </div>
+
+    <div *ngIf="data.type=='All' || data.type== 'Football' || data.type== 'Maintenance' || data.type== 'Advertising'">
+
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body" style="white-space: pre-line;text-align: center;" *ngIf="notilink==''">
+                <!-- {{data.body}}
+                {{data.bodyForPushNoti}} -->
+                <div *ngIf="data.bodyForPushNoti==null"> {{data.body}}  </div> 
+                <!-- <div [innerHTML]="getSanitizedContent(notiDetailObj.bodyForPushNoti)"></div> -->
+                <!-- <div quill-view-html [content]="notiDetailObj.bodyForPushNoti"></div> -->
+                <div style="width: 100%" class="ql-editor" [innerHTML]="getSanitizedContent(data.bodyForPushNoti)" *ngIf="data.bodyForPushNoti!=null"></div>
+                <!-- <div style="width: 100%" class="ql-editor" [innerHTML]="getSanitizedContent(data.bodyForPushNoti)"></div> -->
+            </div>
+            <div class="noti__body" style="white-space: pre-line;text-align: center;" *ngIf="notilink!=''">
+                <span>{{linktext}}</span>
+                <a href="{{notilink}}" > {{notilink}} </a> 
+            </div>
+            <div class="divider">
+
+            </div>
+
+            <div class="date">
+                {{'noti_date' | translate}} 
+                {{data.currentdate | date:'dd/MM/yyyy hh:mm a'}}
+                <!--{{getDateTime(data.currentdate)}}-->
+            </div>
+
+
+
+        </div>
+        <!-- <div class="imgClass">
+            <img *ngIf="data.type== 'All'"
+            src="assets/img/icon.png" alt="image" class="imaged">
+            <img *ngIf="data.type== 'Football'"
+            src="assets/img/football.png" alt="image" class="imaged">
+            <img *ngIf="data.type== 'Maintenance'"
+            src="assets/img/maintenance-noti.png" alt="image" class="imaged">
+            <img *ngIf="data.type== 'Advertising'"
+            src="assets/img/icon.png" alt="image" class="imaged">
+        </div> -->
+        <div class="img__box">
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
+        </div>
+
+    </div>
+
+    <div *ngIf="data.type=='WINNER'">
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">
+                <div style="font-weight: bold;font-size: 16;">{{userProfileModel.name}}</div>
+
+                <div *ngIf="data.category == '2D'"
+                    style="padding-top: 10px;padding-bottom: 10px;font-size: 14;">
+                    {{'noti_winner_title2D'| translate}}
+                </div>
+
+                <div *ngIf="data.category != '2D'"
+                    style="padding-top: 10px;padding-bottom: 10px;font-size: 14;">
+                    {{'noti_winner_title3D'| translate}}
+                </div>
+
+                <div style="padding-top: 10px; font-size:18px;color: blue;">
+                    {{ data.balance | number : '1.0-2'}}
+                </div>
+
+            </div>
+
+            <div class="divider">
+            </div>
+
+            <div class="row" style="justify-content:space-between;padding-top: 10px;">
+                <div class="col">
+                    {{'bet_time'| translate}}
+                </div>
+                <div class="col">
+                    {{getWinnerDate()}}
+                </div>
+            </div>
+
+
+            <div class="row" style="justify-content:space-between;padding-top: 10px;">
+                <div class="col">
+                    {{'noti_winner_number'| translate}}
+                </div>
+                <div class="col">
+                    {{data.number}}
+                </div>
+            </div>
+
+
+            <div class="row" style="justify-content:space-between;padding-top: 10px;">
+                <div class="col">
+                    {{'bet_amount'| translate}}
+                </div>
+                <div class="col">
+                    {{ data.amount | number : '1.2-2'}}
+                </div>
+            </div>
+
+            <div class="row" style="justify-content:space-between;padding-top: 10px;">
+                <div class="col">
+                    {{'odds'| translate}}
+                </div>
+                <div class="col">
+                    {{ data.odd }}
+                </div>
+            </div>
+
+
+
+            <!-- <div class="date">
+            {{'point_time' | translate}} {{getDate(data.currentdate)}} 
+        </div> -->
+
+        </div>
+        <!-- <div class="imgClass">
+            <img src="assets/img/winnoti1.jpg" alt="image" class="imaged">
+        </div> -->
+        <div class="img__box">
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
+        </div>
+    </div>
+
+    <div *ngIf="data.type=='TOPUP' && data.isFirstTopup == '1'">
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">
+                <span>{{getFirstTopUpStr()}}</span>
+
+            </div>
+            <div class="divider">
+
+            </div>
+
+            <div class="date">
+                {{'point_time' | translate}} <!--{{getDateTime(data.currentdate)}}-->
+                {{data.currentdate | date:'dd/MM/yyyy hh:mm a'}}
+            </div>
+
+        </div>
+        <!-- <div class="imgClass">
+            <img src="assets/img/point.png" alt="image" class="imaged">
+        </div> -->
+        <div class="img__box">
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
+        </div>
+        
+    </div>
+
+    <div *ngIf="data.type=='POINT'">
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">
+                <span>{{getNotiPoint()}}</span>
+
+            </div>
+            <div class="divider">
+
+            </div>
+
+            <div class="date">
+                {{'point_time' | translate}} {{getDate(data.currentdate)}}
+            </div>
+
+        </div>
+        <!-- <div class="imgClass">
+            <img src="assets/img/point.png" alt="image" class="imaged">
+        </div> -->
+        <div class="img__box">
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
+        </div>
+    </div>
+    <!-- bankslip -->
+    <div *ngIf="data.type=='BankSlip'">
+        <div class="card noti-card">
+            <div class="title">
+                {{data.title}}
+            </div>
+            <div class="body">
+                <span> {{data.body}}</span>
+
+            </div>
+            <div class="divider">
+            </div>
+            <div class="date">               
+                {{data.currentdate | date:'dd/MM/yyyy hh:mm a'}}               
+            </div>
+
+        </div>
+        <div class="imgClass">
+            <img [src]="data.state == 'DENIED'?'assets/img/bank-slip-denive.png': 'assets/img/bank-slip-approved.png'" alt="image" class="imaged">
+        </div>
+    </div>
+   
+    <div class="container py-3">
+        <div *ngIf="bankSlip != null && !isUserLoggedIn">
+            <div class="card noti-card" (click)="goToForget()">
+                <div class="title">
+                    {{bankSlip.title}}
+                </div>
+                <div class="body">
+                    <span> {{bankSlip.body}}</span>
+    
+                </div>
+                <div class="divider">
+                </div>
+                <div class="date">               
+                    {{bankSlip.currentdate | date:'dd/MM/yyyy hh:mm a'}}               
+                </div>
+                <div class="row d-flex justify-content-center pt-1">
+                    <!-- <span class="title" *ngIf="bankSlip.state == 'APPROVED'"> {{ 'next' | translate}}</span> -->
+                    <!-- <span class="title" *ngIf="bankSlip.state == 'DENIED'"> {{ 'forgotPassword-try' | translate}}</span>                    -->
+                    <!-- <i class="material-icons" style="font-size: 20px;">arrow_forward_ios</i>   -->
+                </div>    
+            </div>
+            <!-- <div class="imgClass">
+                <img [src]="bankSlip.state == 'DENIED'?'assets/img/bank-slip-denive.png': 'assets/img/bank-slip-approved.png'" alt="image" class="imaged">
+            </div> -->
+            <div class="img__box">
+                <img src="{{imgLink}}" alt="image" class="noti__imaged">
+            </div>
+        </div>
+        
+    </div>
+   
+</div>
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+

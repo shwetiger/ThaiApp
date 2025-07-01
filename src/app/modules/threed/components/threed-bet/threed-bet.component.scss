@@ -1,0 +1,144 @@
+@import '../../../../variables';
+
+#appCapsule { 
+  padding-top: 0px!important;
+  background-color: #fff !important;
+  position: relative !important;
+  z-index: 0;
+  & .wrapper {
+    position: relative;
+    z-index:1111;
+  }
+  & .bet-inpt-padding{
+    padding-left: 10px;
+  }
+  & .date-overlay {
+     position: absolute;
+     z-index:1111;
+     width: 100%; 
+     height: 200px; top: 210px;
+  }
+  & .custom-button {
+    display: inline-grid !important;
+    & .threed-button {
+      background-color: $second-color; 
+      color:white;
+      border-radius: 5px;
+      height: 42px;
+      width: 100px;
+      margin-bottom:5px;
+      border: none !important;      
+    }
+  }
+  & .bet-number{
+    position: relative;
+    z-index:1111; 
+    padding: 0px !important; 
+    margin: 0px !important;
+  }
+
+  & .thread-betselectednumv2{
+    color: white;
+    float: left;    
+    background-color: black;
+    margin-bottom: 2px;
+    margin-right:3px;
+    text-align: center;
+    font-size: large;
+    font-weight: bold;
+    padding: 18px;
+    border-radius: 5px;
+  }
+  & .error-color {
+    @include error-color();
+  }
+  & .dream-book-button {
+   // padding: 0px 12px !important;
+    width: 100px;
+    height: 45px !important;
+    color: #fff;
+    font-size: 13px;
+    background: $second-color;
+    border-radius: 5px;
+    position: relative;
+    &::after {
+        content: "";
+        position: absolute;
+        right: -10px;
+        top: -14px;
+        width: 30px;
+        height: 30px;
+        background: url('/assets/img/icons/new.png') top center / 100% no-repeat;
+    }
+    &:disabled {
+        opacity: 1;
+        color: #000;
+        background-color: #e8e8e8;
+        border: 2px solid #d4d4d4;
+        &::after {
+            background: url('/assets/img/icons/new-disabled.png') top center / 100% no-repeat;
+        }
+    }
+  }
+  & .hot-button {
+    //padding: 0px 12px !important;
+    width: 100px;
+    height: 45px !important;
+    color: #fff;
+    font-size: 13px;
+    background: $second-color;
+    border-radius: 5px;
+    position: relative;
+   
+  }
+
+  & .input {
+    height: 50px;
+    background-color: lightgray;
+    border-color: lightslategray;
+  }
+ 
+}
+
+input::placeholder {
+  font-size: 13px;
+}
+#navTwoDBet{
+  min-height: 56px;
+  position: fixed;
+  z-index: 999;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  display: flex;
+  justify-content: space-evenly;
+
+  & .button-notRound {
+    &.clear{
+     width: 125px;
+     height: 40px;
+     color: red;
+     border: 1px solid #ddd;
+     border-radius: 5px;
+    }
+    &.submit{
+     background-color: #2253A2; 
+     color: #fff;
+     width: 125px;
+     height: 40px; 
+     border-radius: 5px;
+    }
+   }
+
+  
+
+}
+
+@media screen and (min-width: 1024px) {
+  #navTwoDBet {
+      margin: 0px 35% !important;
+      max-width: 30% !important;
+  }
+ 
+}

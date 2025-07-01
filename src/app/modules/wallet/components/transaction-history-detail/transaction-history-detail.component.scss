@@ -1,0 +1,134 @@
+@import '../../../../variables';
+
+#appCapsule {
+    padding-top: 0px !important;
+    background-color: $background-color !important;
+    min-height: 100vh;
+}
+.deniedIcon
+{
+    color : red;
+}
+.successfulText
+{
+    color: green;
+}
+/*already correct*/
+.imaged{
+    border-radius: 5px;
+    width: 70px;
+    height: 70px;
+    border: 2px;
+    background-color: white;
+    border-color: lightskyblue;
+   // margin-left : 15px;
+}
+// .hr
+// {
+//     width: 5px solid;
+// }
+.listview
+{
+    display: block;
+    padding: 0;
+    margin: 0;
+    color: #141515;
+    background: #fff;
+    line-height: 1.3em;
+}
+.service-image {
+    width: 80px;
+    border-radius: 5px;
+  }
+/*specific correct*/
+@media only screen and (device-width : 414px) and (device-height : 896px){
+    .imaged{
+        border-radius: 5px;
+        width: 70px;
+        height: 70px;
+        border: 2px;
+        background-color: white;
+        border-color: lightskyblue;
+        margin-left : 15px;
+    }
+  }
+
+  
+
+  /*for denied*/
+  .tranStatusDenied {
+    background: #f4f2f2;
+    margin: 0px 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.pending-header {
+    padding-top: 5px;
+    color: $second-color;
+    font-weight: bold;
+}
+
+.amount {
+    color: #000;
+    font-weight: 600;
+}
+
+.topup-submit-phone-card {
+    height: 50px;
+    @include box-shadow; 
+    border-radius: 5px; 
+    margin: 2px 0px; 
+   // align-items: baseline;
+   // width :80px;
+    .phone-service-card {
+      display: flex;
+      font-size: 13px;
+      //justify-content: space-between;
+   
+      //padding: 8px 10px 0 10px;     
+     // border-radius: 6px;  
+      
+      p {
+        padding: 15px 0 0 0;
+        font-weight: 600;
+       // margin-top: 5px;
+      }
+      a {
+        text-decoration: none;
+      }
+      .service-contact {
+        display: flex;
+      
+        a {
+          color: unset;
+          text-align: center;
+          text-decoration: none;
+        
+          span {
+            display: block;
+            //position: relative;
+            top: -5px;
+          }
+        }
+       
+        .col-4 {
+          height: 55px;
+          line-height: 50px;  
+          width: auto;  
+         // vertical-align: middle; 
+        }
+        
+      }
+        
+      
+    }
+  }
+
+  .service-image {
+    width: 40px;
+    margin-top: 4px;
+    border-radius: 5px;
+   // margin-top:5px;
+  }

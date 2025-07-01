@@ -1,0 +1,8 @@
+<app-navigation-bar [routeUrl]="routeUrl"></app-navigation-bar>
+<!-- <appbar (myEvent)="refreshPage()" *ngIf="showBackButton =='1'|| showBackButton =='2'" >{{ 'helloword' | translate }}</appbar> -->
+<app-page-header (myEvent)="refreshPage()" *ngIf=" showBackButton == undefined || showBackButton =='0'" >{{ 'helloword' | translate }}</app-page-header>
+<app-wallet-account-page></app-wallet-account-page>
+
+<!--XXX spinner MH-->
+<ngx-spinner [name] = "spinnerName" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+

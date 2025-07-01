@@ -1,0 +1,40 @@
+<div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="false">
+    <!-- <button id="button-basic" dropdownToggle type="button" class="btn btn-group" data-toggle="dropdown" 
+    aria-haspopup="true" aria-expanded="true" (click)="changeLanguage()" value="{{lang}}">
+        <img class="mr-1" src="assets/img/{{lang}}_flag.png" alt="" width="30px" height="30px" >                                 
+    </button>    -->
+    <button *ngIf="this.lang=='my'" id="button-basic" dropdownToggle type="button" class="btn btn-group" data-toggle="dropdown" 
+    aria-haspopup="true" aria-expanded="true" (click)="changeLanguage()" value="{{lang}}">
+        <img class="mr-1" src="assets/img/my_flag.png" alt="" width="30px" height="30px" >                                 
+    </button>   
+    
+    <button *ngIf="this.lang=='en'" id="button-basic" dropdownToggle type="button" class="btn btn-group" data-toggle="dropdown" 
+    aria-haspopup="true" aria-expanded="true" (click)="changeLanguage()" value="{{lang}}">
+        <img class="mr-1" src="assets/img/en_flag.png" alt="" width="30px" height="30px" >                                 
+    </button>
+    <button *ngIf="this.lang=='th'" id="button-basic" dropdownToggle type="button" class="btn btn-group" data-toggle="dropdown" 
+    aria-haspopup="true" aria-expanded="true" (click)="changeLanguage()" value="{{lang}}">
+        <img class="mr-1" src="assets/img/th_flag.png" alt="" width="30px" height="30px" >                                 
+    </button>
+    <button *ngIf="this.lang=='zh'" id="button-basic" dropdownToggle type="button" class="btn btn-group" data-toggle="dropdown" 
+    aria-haspopup="true" aria-expanded="true" (click)="changeLanguage()" value="{{lang}}">
+        <img class="mr-1" src="assets/img/zh_flag.png" alt="" width="30px" height="30px" >                                 
+    </button>
+
+    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu dropdown-menu-right"
+       role="menu" aria-labelledby="button-basic">           
+        <a class="dropdown-item" [routerLink]=""  *ngFor="let lang of supportLanguages; let i = index;" [class.active]="selectedIndex == i" 
+        (click)="selectedLanguageCountry(lang,i,dropdown.isOpen = !dropdown.isOpen)" value="{{lang}}">
+        <li role="menuitem">
+            <div class="d-flex">
+                <img class="mr-1" src="assets/img/{{lang}}_flag.png" alt="" width="30px" height="30px">
+                <span *ngIf="lang == 'en'" style="font-size: 13px;padding-top: 5px;">English</span>  
+                <span *ngIf="lang == 'my'" style="font-size: 13px; padding-top: 5px;">မြန်မာ</span>
+                <span *ngIf="lang == 'th'" style="font-size: 13px; padding-top: 5px;">ประเทศไทย</span>       
+                <span *ngIf="lang == 'zh'" style="font-size: 13px; padding-top: 5px;">中文</span>
+            </div>
+           
+        </li>
+        </a>
+    </ul>
+</div>  

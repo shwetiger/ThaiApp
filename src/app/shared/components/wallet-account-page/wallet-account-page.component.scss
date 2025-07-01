@@ -1,0 +1,148 @@
+@import '../../../variables';
+
+
+.account-wallet{
+  position: absolute;
+  min-width: calc(100% - 10px); 
+  z-index: 111;
+  top: calc(100% - 82%); 
+  margin: 0px 5px;
+}
+
+@media screen and (max-width: 400px) {
+  .wallet_desc_margin {
+    margin-left: -25px !important;
+  }
+}
+@media screen and (min-width: 400px) {
+  .wallet_desc_margin {
+    margin-left: -30px !important;
+  }
+}
+@media screen and (min-width: 1024px) {
+  .wallet_desc_margin {
+    margin-left: -40px !important;
+  }
+  .account-wallet {
+  //  min-width:  calc(100% - 71%);
+    top: calc(100% - 82%);  
+    margin: 0px 5px;
+   }
+}
+.account-login{
+    font-size: 100px;
+    color:  #2456A6;
+}
+.account-title {
+  color:  #2456A6;
+}
+.account-bgcolor {
+  background: linear-gradient(to right, $first-color 0%, $second-color 100%);
+  position: relative;
+}
+.account-login-active{
+  font-size: 70px;
+  color: #fff;
+  
+}
+.account-title-active {
+color: #fff;
+}
+
+.account-amount-title{
+  color:  #2456A6;
+  font-size: 20px;
+}
+.account-show-eye {
+  color:  #fff;
+  font-size: 20px;
+}
+
+.wallet-account {
+  position: relative;
+}
+.account-amount {
+  position: absolute;
+  top: 16%; 
+  left: 0.2%;
+  right:  0.2%;
+  text-align: center;
+  font-size: 18px; 
+ 
+}
+
+.account-amount > .wide-block {    
+  border-top: transparent !important;
+  border-bottom: transparent !important;  
+  background: #ffffff;
+  border: 5px solid #fff !important;
+  border-radius: 6px;
+  border: 0;
+  //box-shadow: 0 3px 6px 0 rgb(0 0 0 / 10%), 0 1px 3px 0 rgb(0 0 0 / 8%);  
+}
+
+.wallet-padding > .wide-block {  
+  margin: 100px 0px;
+  border-top: transparent !important;
+  border-bottom: transparent !important;
+}
+
+.video-padding {  
+  background: transparent !important;
+  margin: 20px 0px;
+  border-top: transparent !important;
+  border-bottom: transparent !important;
+}
+
+.account-amount-forward {
+  font-size: 25px;
+}
+.wallet-title {
+  margin-top: 5px;
+  justify-content: center;
+  font-size: 10px;
+}
+.wallet-image {
+    width: 50px;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: $second-color;
+}
+.wallet-image-css {
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: $second-color;
+}
+#appCapsule {
+  padding: 0px 0 !important;
+  padding-bottom: 80% !important;
+ 
+}
+
+.wallet-text {
+    background-color:  $second-color;
+    border-radius: 10px;
+    border: 5px solid #3474db !important;
+   
+}
+
+.wallet-text > .card-body :is(h1, h2, h3, h4, h5, h6, p){
+    color: #fff;
+}
+
+.wallet-video-title {
+    background: transparent !important;
+    border-radius: 0!important;
+    border: 0;
+    box-shadow: transparent !important;
+}
+.wallet-video-title > .card-body :is(h1, h2, h3, h4, h5, h6){
+    color: #000;
+}
+
+.underline {
+  text-decoration: underline;
+  text-decoration-color: #3474db;
+}

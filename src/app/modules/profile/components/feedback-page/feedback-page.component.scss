@@ -1,0 +1,148 @@
+@import '../../../../variables';
+
+#appCapsule {
+    background-color: $background-color !important;
+    padding-top: 0px !important;
+    min-height: 100vh;
+    h3 {
+        color: $second-color; 
+        font-weight: 700;
+    }
+
+    .header{
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      width: 50%;
+  }
+  .header-active{
+      background-color: #fff;
+      display: flex;
+      justify-content: center;
+      width: 50%;
+      border-bottom: solid 4px $second-color;  
+      box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+      z-index: 111;
+  }
+  
+  .one-header-active{
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      border-bottom: solid 4px $second-color;
+  }
+  
+  .faq-searching-col {
+     // text-align: center;
+     // justify-content: center;
+      height:50px;
+    }
+    .faq-searching {
+      width: 100%;   
+      padding: 8px;
+      border:none;
+      height:26px;
+    }
+    .faq-searching:focus {
+      border: 0px solid $second-color !important;
+      outline: none !important;
+    } 
+  
+    .faq-searching-icon {
+      margin-left: 1px;    
+      margin-top: 10px;
+      width: 20px;    
+    }
+    .no-resize {
+      resize: none;
+    }
+
+    .center-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  
+  }
+
+  .custom-textarea {
+    width: 300px;
+    height: 150px;
+    resize: none;
+}
+     
+.no-resize-textarea .form-control {
+  resize: none;
+}
+
+.container {
+  position: fixed;
+  top: 50px; /* or adjust as needed */
+  left: 0 !important; /* or adjust as needed */
+  right: 0 !important; /* or adjust as needed */
+  overflow-y: auto; /* Allow vertical scrolling if content exceeds viewport */
+  width:30%;
+  scrollbar-width: none;
+ // background-color: aqua;
+  height: 100%;
+}
+
+
+@media screen and (max-width: 768px) {
+  .container {
+    width:100%; /* Adjust the width for smaller screens */
+  }
+}
+}
+
+
+
+
+  a {
+      font-size: 12px; /* Set the font size to 16 pixels */
+  }
+    .underline-link {
+      position: relative; /* Ensure the positioning context */
+      text-decoration: underline; 
+      line-height: 1 /* Remove default underline */
+      
+    }
+    
+    .underline-link::after {
+      content: ""; /* Add a pseudo-element for the underline */
+      position: absolute; /* Position it relative to its parent */
+      left: 0; /* Align it with the left edge */
+      bottom: 1px; /* Adjust the position as per your requirement */
+      width: 100%; /* Make it cover the whole width */
+      height: 1px; /* Set the thickness of the underline */
+      background-color: #1E90FF; /* Set the color of the underline */
+    }
+
+    ol.a {
+      list-style-type: number;
+    }
+  
+    .numbered-list {
+      list-style-type: decimal;
+      padding-left: 20px; /* Adjust as needed */
+    }
+
+    .no-list-style {
+      list-style-type: none; /* Remove bullet points */
+    }
+    
+    input::placeholder {
+      font-size: 13px;
+    }
+
+    .form-control::placeholder {
+      font-size: 13px; /* Set your desired font size */
+         
+    }
+
+    .custom-link {
+      font-size: 14px;
+     
+  }
+
+
+  

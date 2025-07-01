@@ -1,0 +1,40 @@
+@import '../../../variables';
+
+.text-eye {
+  margin-right: 20px;
+  float: right;
+  margin-top: -30px;
+  position: relative;
+  z-index: 2;
+  color: blue;  
+}
+
+.text-eye ion-icon {    
+  font-size: 20px;
+}
+
+.text-ks {
+  margin-right: 20px;
+  float: right;
+  margin-top: -38px;
+  position: relative;
+  z-index: 2;
+  color: blue;  
+}
+
+::ng-deep {
+  .game-in-out-alert {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    //overflow-y: auto;
+  
+    min-height: calc(100vh - 60px);
+    & > .modal-content {
+      background-color: #e1dfe2 !important;
+    }
+  } 
+  input::placeholder {
+    font-size: 13px;
+  }
+}

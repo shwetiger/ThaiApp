@@ -1,0 +1,50 @@
+@import '../../../../variables';
+.topup-alert-title {
+  color: $first-color;
+}
+ul {
+  list-style-image: url('/assets/img/topup/circle.png') !important;
+  >li{
+    margin: 0px 0px 12px 20px !important;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .alert-notRound {
+    width: 150px; 
+    height: 40px; 
+  }
+}
+@media only screen and (min-width: 400px) {
+  .alert-notRound {
+    width: 130px;
+     height: 40px; 
+  }
+ 
+}
+
+::ng-deep {  
+  .withdraw-no-account-alert {
+     display: flex;
+     flex-direction: column;
+     justify-content: center;    
+     min-height: calc(100vh - 60px);
+   }
+}
+.withdraw-alert-title {
+ color: $first-color;
+}
+
+@media only screen and (max-width: 400px) {
+ .alert-notRound {
+   width: 150px; 
+   height: 40px; 
+ }
+}
+@media only screen and (min-width: 400px) {
+ .alert-notRound {
+   width: 130px;
+    height: 40px; 
+ } 
+}
+

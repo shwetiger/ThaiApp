@@ -1,0 +1,38 @@
+<app-not-appbar>{{ 'helloword' | translate }}</app-not-appbar>
+    <div id="appCapsule"> 
+        <div class="container">
+            <div class="pt-2">
+                <div class="text-center">
+                    <img src="assets/img/pendingimage.png" alt="pendingimage" width="100px" height="100px">
+                     <h4 class="pending-header" *ngIf="type == 'topup'">{{ 'tran_waiting_topup_title' | translate}}</h4>
+                     <h4 class="pending-header" *ngIf="type != 'topup'">{{ 'tran_waiting_withdrawal_title' | translate}}</h4>
+                </div>    
+                <div class="row d-flex justify-content-center">    
+                    <div class="box mt-2" style="width: 90%;">
+                        <div class="row mx-3 my-2">
+                            <div class="container-fluid">
+                                <div class="row phones pt-1">                            
+                                    <p class="pt-1">{{ 'serviceTime1' | translate}}</p>                           
+                                </div>                               
+                            </div>    
+                        </div>
+                    </div>
+                </div>
+                <div class=" pt-1 pl-1 pr-1">
+                   <h3 class="waiting-time" style="white-space: nowrap;" *ngIf="type == 'topup'">{{ tran_waiting_topup_desc1}}</h3> 
+                   <h3 class="waiting-time" *ngIf="type != 'topup'">{{ tran_waiting_withdrawal_desc1}}</h3> 
+                </div>
+                <div class="pt-2" style="display:flex;justify-content: center;">
+                    <!-- <button type="button" class="button" (click)="goHomePage()" style="width: 100%;">
+                       {{ 'tran_waiting_btn' | translate}}
+                    </button> -->
+
+                    <button type="button" class="btn shadowed" (click) = "goHomePage()"  
+                    style="width: 93%;align-content: center;background-color: #2456A6;border-radius: 5px;color: #fff;">
+                       {{ 'tran_waiting_btn' | translate}}
+                    </button>
+                </div> 
+            </div>
+        </div>
+   
+    </div>

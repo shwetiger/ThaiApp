@@ -1,0 +1,57 @@
+@import '../../../variables';
+
+
+.driver {
+    border-bottom: 1px solid #aabedd;
+    margin-left: 26px;
+    margin-right: 26px;
+}
+.setval-title {
+    color: #4e7bbb;
+}
+.categories{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0% 4%;
+}
+.setval{   
+    color: $second-color;
+}
+#gridcontainer {
+    margin-bottom: 60px;
+}
+.result-card-border {
+    border-radius: 5px;
+    background-color: #fff !important;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.root{
+    margin-top: 8px; 
+    display: flex;
+    flex-direction: column;
+}
+.section-name{
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+    justify-content:center;  
+    color: #2867c9;
+   // margin-bottom: 8px;
+}
+.date-card{
+    text-align: center; 
+    background-color: #2867c9;
+    color: white;
+    //margin-top:16px; 
+    margin-bottom:8px;   
+    padding: 8px 20px;
+    border-radius: 20px;
+    position: absolute;
+}
+
+
+
+
+  

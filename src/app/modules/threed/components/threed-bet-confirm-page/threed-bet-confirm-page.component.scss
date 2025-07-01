@@ -1,0 +1,108 @@
+@import '../../../../variables';
+
+.appHeader {
+    background: linear-gradient(to right, $first-color 0%, $second-color 100%);
+    .add-class {
+        color: #fff;
+        font-size: 40px !important;
+        margin-top: -22px;
+        padding-right: 0px;
+        padding-top: 20px;    
+    }
+}
+#appCapsule {
+    padding-top: 0px !important;
+    min-height: 100vh;
+    background-color: $background-color !important;
+    .bet-buttton {
+        background: $second-color;
+        color: #fff;
+        border-radius: 5px;
+        width: 70px;
+        height: 30px;
+    }
+    .totalAccountAmount {
+        background: #f4f2f2;
+        margin: 0px 10px;
+        border-radius: 10px;      
+        margin-top: 10px;
+        margin-bottom: 120px;    
+    }    
+}
+::ng-deep {
+    .threedBetEdit-class {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: calc(100vh - 60px);
+    }   
+    .threedBetAddClass {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: calc(100vh - 60px);
+    }
+}
+#navTwoDBetConfirm {
+    min-height: 56px;
+    position: fixed;
+    z-index: 999;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-evenly;
+    .betconfrimButton1 {
+        margin-top: 20px;
+        border-radius: 0px;
+       // padding: 25px 0px;
+        background: lightgray;
+        color: red;
+        margin-left: 10px;
+    
+    }
+    .betconfrimButton2 { 
+        margin-top: 20px;
+        border-radius: 0px;
+        //padding: 25px 0px;
+        background: $second-color;
+        color: #fff;
+        margin-right: 10px;
+    }
+}
+    
+
+
+
+.betamount-text, .betamount-text:focus{
+  width: 100%;
+  box-sizing: border-box;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 3px solid $second-color;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
+.bet-buttton {
+    background: $second-color;
+    color: #fff;
+    border-radius: 5px;
+   
+    height: 30px;
+}
+
+.error-color {
+    color: red;
+    font-size: 12px;
+    padding-top: 5px;
+}
+
+@media screen and (min-width: 1024px) {    
+    #navTwoDBetConfirm {
+        margin: 0px 35% !important;
+        max-width: 30% !important;
+    }    
+}

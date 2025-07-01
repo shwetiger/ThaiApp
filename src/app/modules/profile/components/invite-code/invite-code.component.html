@@ -1,0 +1,58 @@
+<app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<div id="appCapsule" *ngIf="common.refreshLoading==false">
+    <div class="pt-2">
+        <div class="text-center">
+            <img src="assets/img/money.png" alt="pendingimage" width="100px" height="100px">
+            <p class = "pendingText" style="color:'#2253A2'">{{'your_referal_code' | translate }} </p>
+    </div> 
+    <!-- <h2 class="pl-2">{{userProfileModel.referral_code }}</h2> -->
+       
+
+        <form [formGroup]="inviteCodeForm" (ngSubmit)="onSubmitting()"  novalidate>
+            <div class="row">
+                <div class="col justify-content-center text-center">
+                <h4 class="service-color">{{ 'ref_code_desc' | translate}} </h4>
+                <div class="col justify-content-center text-center" *ngIf="userProfileModel.referral_code!=null">
+                    <input type="text" maxlength="12" formControlName="refCode" [(ngModel)]="userProfileModel.referral_code" disabled
+                    class="form-control refCode" placeholder="{{ 'enterRef' | translate}}" >
+                </div>
+                
+                <div class="col justify-content-center text-center" *ngIf="userProfileModel.referral_code==null">
+                    <input type="text" maxlength="12" formControlName="refCode" [(ngModel)]="refModel.referral_code" 
+                    class="form-control refCode" placeholder="{{ 'enterRef' | translate}}" >
+                </div>
+
+                <div class="col justify-content-center text-center mt-3" *ngIf="userProfileModel.referral_phone_no!=null && userProfileModel.referral_phone_no!=''">
+                    <input type="text" maxlength="12" formControlName="refPhoneNumber"    [(ngModel)]="userProfileModel.referral_phone_no" disabled
+                    class="form-control refPhoneNumber" placeholder="{{ 'enter_ref_phno' | translate}}" >
+                </div>
+                
+                <div class="col justify-content-center text-center mt-3" *ngIf="userProfileModel.referral_phone_no==null ||userProfileModel.referral_phone_no=='' ">
+                    <input type="text" maxlength="12" formControlName="refPhoneNumber" [(ngModel)]="refModel.referral_phone_no" 
+                    class="form-control refCode" placeholder="{{ 'enter_ref_phno' | translate}}" >
+                </div>
+                <p id ="phoneErr" class="error-color ml-2" style="text-align: left; width: 100%;" ></p>
+                </div>  
+            </div>
+            <!-- <div *ngIf="inviteCodeForm.controls['refPhoneNumber'].invalid && (inviteCodeForm.controls['refPhoneNumber'].dirty || inviteCodeForm.controls['refPhoneNumber'].touched)">
+                <div *ngIf="inviteCodeForm.controls['refPhoneNumber'].errors.required" class="pb-1 ml-3 mt-2">
+                    <span class="text-danger font-weight-bold">{{ refPhoneNumberRequired() }}</span>
+              </div>
+            </div> -->
+            <div class="pt-2 saveBtn" style="display:flex;justify-content: center;" *ngIf="userProfileModel.referral_code==null || userProfileModel.referral_code=='' || userProfileModel.referral_phone_no==null || userProfileModel.referral_phone_no==''">
+                <button 
+                type="submit" 
+                
+                class="btn shadowed" 
+                style="width: 90%;align-content: center;background-color: #2456A6;border-radius: 5px;color: #fff;">
+                {{ 'next' | translate }}
+              </button>
+              <!-- [disabled]="!refModel.referral_code?.trim()"  -->
+            </div> 
+        </form>
+    </div>
+</div>
+
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

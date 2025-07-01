@@ -1,0 +1,39 @@
+@import "../../../../assets/sass/variables";
+
+.splash-screen-ads-slider {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 10;
+    z-index: 100000;
+    overflow: hidden;
+    .slideImg {
+        width: 100%;
+        height: 100vh;
+        display: block;
+        background-size: cover;
+        background-position: center;
+//margin-top: 10px;
+    }
+}
+
+.skip-btn {
+    color: $first-color !important;
+    background-color: rgb(255, 255, 255, 0.3);
+    font-weight: 600;
+    padding: 5px 15px;
+    border: 1px solid $first-color;
+    border-radius: 50px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1001;
+}
+
+::ng-deep {
+    .no-scroll {
+        overflow-y: hidden;
+    }
+}

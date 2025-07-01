@@ -1,0 +1,55 @@
+<div id="threed-close-time">
+    <div class="container no-padding">
+        <div class="row">
+            <div class="col-6 justify-content-start">
+                <div *ngIf="!common.balanceLoading">
+                    <div class="container no-padding">
+                        <div class="row">
+                            <div class="">
+                                <img src="assets/img/close_kyat.png" alt="image" class="close-imaged">
+                            </div>                    
+                            &nbsp;<h4 class="balance ml-1 font-weight-bold" style="padding: 5px 0 0 0;">{{ 'balance' | translate}}</h4>
+                        </div>
+                    </div>       
+                    <div class="pl-3">
+                        <h4 *ngIf="showBalane" class="balance font-weight-bold">0{{ 'ks' | translate}}</h4>     
+                        <h4 *ngIf="!showBalane" class="balance">{{ balance | number : '1.0-2'}}{{ 'ks' | translate}}</h4>  
+                    </div>
+                </div>   
+                <div class="loading-balance" *ngIf="common.balanceLoading">             
+                        <ngx-spinner  [name]="common.loading.balanceLoading.name"
+                        [size]="common.loading.balanceLoading.size" [color]="common.loading.balanceLoading.color"
+                        [type]="common.loading.balanceLoading.type" [fullScreen]="common.loading.balanceLoading.fullScreen"
+                        [bdColor]="common.loading.balanceLoading.bdColor"></ngx-spinner>                       
+                </div>  
+            </div>
+            <div class="col-6 d-flex justify-content-end">
+                <div class="bet-close" *ngIf="!common.threedCloseTimeLoading">        
+                    <ng-container>
+                        <div class="d-flex justify-content-end" >               
+                            <img [src]="threeDCloseTime? 'assets/img/clockpause.png' : 'assets/img/clock.png'" alt=""class="close-imaged">
+                            <h4  [class]="threeDCloseTime?'title-close font-weight-bold': 'title-open ml-1  font-weight-bold'" style="padding:4px 0 0 0; margin:0 0 0 0">{{ 'betclosetime' | translate }}</h4>
+                        </div>
+                        <div class="d-flex justify-content-end"> 
+                       <div *ngIf="threeDCloseTime"> <h4 style="margin: 0 0 0 0; color: #ff3f3f;white-space:nowrap;"> {{ 'threeDbet_time_close' | translate}}</h4></div>
+                        <ng-container *ngIf="!threeDCloseTime"><h4 [class]="threeDCloseTime?'': 'title-open' "  style="margin: 10px 0 0 0;"> {{closedate | date:'dd/MM/yyyy'}}</h4></ng-container>  </div>
+                        <div class="d-flex justify-content-end" > 
+                        <ng-container *ngIf="!threeDCloseTime"><h4 [class]="threeDCloseTime?'': 'title-open' "  style="margin: 10px 0 0 0;"> {{closetime|formatTime}}{{ TimeFormat }}</h4></ng-container>
+                        </div>
+                    </ng-container>     
+                          
+
+                </div>   
+                <div class="loading-balance" *ngIf="common.threedCloseTimeLoading">
+                    <ngx-spinner  [name]="common.loading.threedCloseTimeLoading.name"
+                    [size]="common.loading.threedCloseTimeLoading.size" [color]="common.loading.threedCloseTimeLoading.color"
+                    [type]="common.loading.threedCloseTimeLoading.type"
+                    [fullScreen]="common.loading.threedCloseTimeLoading.fullScreen"
+                    [bdColor]="common.loading.threedCloseTimeLoading.bdColor"></ngx-spinner>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    
+</div>

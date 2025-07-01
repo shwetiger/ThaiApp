@@ -1,0 +1,75 @@
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+
+<div *ngIf="!common.refreshLoading" id="topup-page">      
+    <!-- ***** -->
+    <div >
+        <h3 class="pt-2 text-center" >{{'topup' | translate }}</h3>
+        <h4 class="pt-1 mx-3">{{'chose_topup_account' | translate }}</h4>   
+        <div class="container">          
+                <div class="row justify-content-center">
+                    <div class="form-group col-md-12">
+                        <div class="row">
+                            <div id="paymentId" class="col-md-12"> 
+                                <div class="topup-card container no-padding">
+                                    <div class="row photos">                                        
+                                        <img id="{{item.id}}" (click)="changeAction(item.id)" [src]="(payment_id == item.id) ? item.image_url : disabledImage(item.image_url)" 
+                                        *ngFor = "let item of topuplistPayment">
+                                    </div>                                    
+                                </div> 
+                                <!-- <div class="card mt-2 mx-3 card-background">
+                                    <div class="card-body">
+                                        <div class="container-fluid">
+                                            <div class="photos">
+                                                <img id="{{item.id}}" (click)="changeAction(item.id)" [src]="(payment_id == item.id) ? item.image_url : disabledImage(item.image_url)" 
+                                                *ngFor = "let item of topuplistPayment">
+                                            </div>
+                                        </div>    
+                                    </div>
+                                </div>                       -->
+                                <p class="card-border">{{ 'balance' | translate }}:   <span> {{ userBalance | number : '1.0'}} </span>{{ 'ks' | translate }}   </p> 
+                        </div>
+                    </div>
+                </div>                
+            </div>
+        </div>
+        <div class="section full mt-2" *ngIf="showAmountFrom">      
+          
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div style="margin-bottom: 5px;font-size: 13px;"> <span class="pl-1">{{'topup-amount' | translate}}</span></div>
+                   
+                    <div class="col-12">
+                        <input type="number" id="topup_amount_incorrect" (keyup.enter)="enter($event)" (keyup) = "checkAmountTopup()" class="form-control incorrect-noborder-color"  
+                        placeholder="{{'withdrawal_cash_amount_hint' | translate}}"
+                        [(ngModel)]="topupAmount"  [ngModelOptions]="{standalone: true}" (keypress)="keyPressNumberfornumberintput($event)">                       
+                    </div>
+                    <div id="topupAmountErr" class="row justify-content-center ml-1"></div>
+                </div>    
+            </div>              
+            <div class="container-fluid">            
+                <div class="row d-flex justify-content-around">
+                    <div class="col-4 mb-1" *ngFor="let chooseTopupObj of chooseTopupAmount">
+                    <div [class]="chooseTopupObj.selected? 'amount-selected':'amount-notselected'" (click)="changeChooseTopup(chooseTopupObj.amount)"> {{ chooseTopupObj.amount | number : '1.0'}}</div>
+                    </div>
+                </div>            
+            </div>   
+            <div class="pt-2 row justify-content-center">               
+                <div class="mt-2 submitLoading" *ngIf="common.submitLoading" >                  
+                    <!-- submit loading -->
+                    <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+                    [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+                    [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+                </div>
+                <button type="button" style="width:88%" (click)="requestTopup()" *ngIf="!common.submitLoading" class="button-notRound">
+                {{ 'smallNext' | translate }}
+                </button>               
+            </div> 
+        </div>
+    </div>
+    <!-- ***appCapsule -->
+</div>  
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

@@ -1,0 +1,28 @@
+<app-not-appbar>{{ 'helloword' | translate }}</app-not-appbar>
+<div id="appCapsule">
+  <div class="container-fluid">
+    <div class="row pt-2 justify-content-center">
+      <i class="material-icons" style="font-size: 80px; color: #fff; border-radius: 50px; background-color: red;">cancel</i>         
+    
+    </div>
+    <div class="row justify-content-center">   
+
+      <p  class="text-danger text-center" >{{ 'game_transfer_failed' | translate}}</p>
+      <div *ngIf = "errorCode == 404" class="text-center">
+          <p class = "text-center">{{ 'incorrectPassword' | translate}}</p>
+      </div>
+      <div *ngIf = "errorCode == 406"  class="text-center">
+          <p  class = "text-center">{{ 'game_low_balance' | translate}}</p>
+      </div>
+      <div *ngIf = "errorCode == 700"  class="text-center">
+          <p  class = "text-center">{{ 'connect_service_team' | translate}}</p>
+      </div>
+      
+    </div>
+  </div>
+
+
+  <div class="section full  text-center mt-2" id="gameTransferFail">             
+    <button type="button" class="button"  (click)="goToGameList()" style="width: 80%">{{ 'tran_waiting_btn' | translate}}</button>
+  </div>
+</div>

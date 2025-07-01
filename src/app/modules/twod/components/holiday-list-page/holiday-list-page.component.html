@@ -1,0 +1,25 @@
+<!-- <appbar>{{'helloword' | translate }}</appbar> -->
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+
+<div id="appCapsule">
+    <h3 class="text-center mt-1" style="color:#2253A2;font-weight: bold;"> {{ 'holiday_header' | translate}}</h3>  
+    <div id="gridcontainer">
+        <div *ngFor="let item of newResultList | keyvalue: asIsOrder" style="margin-top: 0px;">
+            <div style="display: flex;flex-direction: row;
+                         justify-content: left;">
+
+                <div class="text">
+                    {{item.key}}
+                </div>
+            </div>
+
+            <div class="result-card" *ngFor="let result of item.value">
+                <div style="font-weight: bold;">{{getDate(result.date)}}</div>
+                <div>{{result.description}}</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

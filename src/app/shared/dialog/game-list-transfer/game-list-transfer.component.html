@@ -1,0 +1,42 @@
+
+<div class="modal-header">
+    <h4 class="modal-title pull-left"></h4>
+    <div  class="close pull-right">    
+      <i class="material-icons" (click)="close()" style="color: red;">cancel</i> 
+    </div>    
+   </div>    
+   <div class="modal-body" style="padding: 0px !important;">
+    <div style="text-align: center;">
+      <i class="material-icons"  style="font-size: 50px;">error</i>  
+    </div>
+    <div class="container">
+      <div class="row pt-1 gametransactionAlert">
+        <div class="col-12">{{ 'gametransactionAlert' | translate}}</div>
+      </div>
+
+      <div class="row  pt-1 walletlbl">
+        <div class="col-2">
+          <img src = './assets/img/game_kyat.png'  class="active-wallet"/>
+
+        </div>
+        <div class="col-10" style="padding: 15px 0px 0px 0px !important;">
+          <span class = "child-walletbalance" style="float: left;">{{ 'mainWallet' | translate}}</span>
+          <span  class = "child-walletbalance" style="float: right;"> {{ data.mainBalance | number : 0}}</span>
+        </div>            
+      </div> 
+      <div class="row walletlbl">
+        <div class="col-2">
+          <img src = './assets/img/game_wallet_img.png' class="active-wallet"/>
+        </div>
+        <div class="col-10" style="padding: 10px 0px 0px 0px !important;">
+          <span class = "child-walletbalance" style="float: left;">{{ 'gameWallet' | translate}}</span>
+          <span  class = "child-walletbalance" style="float: right;">{{ data.gameBalance | number : 0}}</span>
+        </div>
+      </div>
+
+      <div class="row d-flex justify-content-center pt-1 pb-3" (click) ="goTo()">
+        <button type="button" class="btn  btnGroup" style="background: #0054a6 !important; color: #fff !important;" >{{ 'game_balance_transfer' | translate}}</button>
+      </div>
+    </div>
+  </div>
+    

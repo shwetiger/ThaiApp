@@ -1,0 +1,58 @@
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+
+     <!-- App Capsule -->
+     <div id="appCapsule" class="extra-header-active">               
+        <div class="section full pt-1 justify-content-center">
+            <div class="row justify-content-center">
+            <div class="section-title register-title mb-2" style="color:#2253A2">{{ 'registerPage' | translate}}</div>
+        </div>
+            <form>
+                <div class="col">
+                    <input type="text" (keyup.enter)="enter($event)" class="form-control" id=""  placeholder="{{ 'namehint' | translate}}" [(ngModel)]="name" [ngModelOptions]="{standalone: true}" (keyup)="checkName()">
+                    <p id = "nameErr" class="error-color"></p>
+                </div>
+                <!-- <div class="section-title mb-2 text-muted opacity-20">{{ 'forget_password_dec1' | translate}}</div>
+                <div class="section-title mb-2 text-success">{{ 'forget_password_dec2' | translate}}</div>             -->
+                
+                <div class="col"> 
+                    <div class="passwrod-eye">
+                        <input [type]="passwordType" (keyup.enter)="enter($event)" class="form-control"  placeholder="{{ 'regpasswordHint' | translate}}"  [(ngModel)]="password" [ngModelOptions]="{standalone: true}" (keyup) ="checkPassword()">
+                        <span class="text-eye">
+                            <a  (click)="showPassword(!showPass)">
+                                <img src="assets/img/icon/register-eye-on.png" alt=""  width="20" *ngIf="showPass">  
+                                <img src="assets/img/icon/register-eye-off.png" alt=""  width="20" *ngIf="!showPass">  
+                            </a>
+                        </span>  
+                    </div>                 
+                                    
+                    <p id ="passwordErr" class="error-color"></p>
+                </div>
+                <div class="col"> 
+                    <div class="passwrod-eye">
+                        <input [type]="confirmpasswordType" (keyup.enter)="enter($event)" class="form-control"  placeholder="{{ 'regconfirmpasswordHint' | translate}}" [(ngModel)]="confirmPassword" [ngModelOptions]="{standalone: true}" (keyup)=" checkConfirmPassword()">
+                        <span class="text-eye">
+                            <a  (click)="showComfrimPassword(!showcomfirmPass)">
+                                <img src="assets/img/icon/register-eye-on.png" alt=""  width="20" *ngIf="showcomfirmPass">  
+                                <img src="assets/img/icon/register-eye-off.png" alt=""  width="20" *ngIf="!showcomfirmPass">  
+                            </a>
+                        </span>  
+                    </div>                                  
+                    <p id = "confirmPasswordErr" class="error-color"></p>
+                </div>
+                <div class="row mt-5 justify-content-center">
+                <button type="button" class="btn login-button" (click)="register()">{{ 'register' | translate}}</button>
+
+            </div>
+            </form>
+        </div>
+        <div class="row mx-4 pt-2  register-warning">
+            <span>{{ 'register-warning-text1' | translate }}</span>
+            <span>{{ 'register-warning-text2' | translate }}</span>
+            <span>{{ 'register-warning-text3' | translate }}</span>
+            <span style="color: red !important;">{{ 'register-warning-text4' | translate }}</span>                   
+        </div>
+
+    </div>
+    <!-- * App Capsule -->
+
+    <!-- <ngx-spinner bdColor = "rgb(6,56,107)" size = "large" color = "#fff" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner> -->

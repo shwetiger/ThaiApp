@@ -1,0 +1,85 @@
+
+@import '../../../variables';
+
+.show-account-wallet{ 
+  position: absolute;
+  min-width: calc(100% - 10px); 
+  z-index: 111;
+  top: calc(100% - 20%); 
+  margin: 0px 5px; 
+   
+  .loading-game {
+    @include box-shadow;  
+    background-color: #fff !important; 
+    border-radius: 10px;
+    padding: 20px 10px;
+  }
+  .show-wallet {
+    @include box-shadow;
+    background-color: #fff !important; 
+    border-radius: 10px;
+    padding: 0px 10px;
+  }
+  h4 {
+    color: $second-color; 
+    font-weight: 600; 
+    margin: 0px !important;
+  }
+  img {
+    border-radius: 5px;
+  }
+  .balance-line {
+    border-top: 2px solid #ccc;
+    margin: 0px 10px;
+    width: 100%;
+  }
+ 
+}
+.account-bgcolor {
+  position:relative;
+  text-align:center;
+  background: linear-gradient(60deg, $first-color 0%, $second-color 100%) !important;
+  color: #fff;
+  .open-wallet {
+    cursor: pointer;
+    color: #fff; 
+    padding: 0px;
+    margin: 0px;
+  }
+  .col-2{
+    padding-top: 15px;
+  }
+  .col-1 {
+    padding-top: 20px;
+    span {
+      top: 15px;
+      left:25px;
+      position:absolute;
+      background:red;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      h6 {
+        font-size: 8px;
+        color: #fff;
+      }
+    }
+  }
+  .active-img {
+    border-radius: 50%;
+  }
+}
+
+
+@media screen and (min-width: 1024px) {
+  .show-account-wallet {
+   min-width:  calc(100% - 4%);
+   top: 80%;  
+    margin: 0px 8px;     
+   }
+}
+
+  .account_login_text {
+    color: $second-color;
+    font-weight: 600;
+  }

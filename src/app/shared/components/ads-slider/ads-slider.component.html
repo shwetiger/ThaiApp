@@ -1,0 +1,30 @@
+
+ <div class="slider">
+  <owl-carousel-o [options]="customOptions">
+    <ng-container>
+        <ng-template carouselSlide *ngFor="let adsObj of this.adsList">           
+            <div class="slide">
+              <a [href]="adsObj.linkUrl+''+openUrl | safeUrl" *ngIf="adsObj.linkUrl !=null && !adsObj.linkUrl.includes('facebook.com')">
+              <!-- <a href=adsObj.linkUrl *ngIf="adsObj.linkUrl !=null" target="_blank" > -->
+                <img  [src]="adsObj.imageUrl" alt="AdsImage">
+              </a>      
+              <a [href]="adsObj.linkUrl | safeUrl" *ngIf="adsObj.linkUrl !=null && adsObj.linkUrl.includes('facebook.com')">
+                <!-- <a href=adsObj.linkUrl *ngIf="adsObj.linkUrl !=null" target="_blank" > -->
+                  <img  [src]="adsObj.imageUrl" alt="AdsImage">
+                </a> 
+              
+              <img  [src]="adsObj.imageUrl" alt="AdsImage" *ngIf="adsObj.linkUrl == null">
+            
+            </div>
+        </ng-template>  
+    </ng-container>  
+  </owl-carousel-o> 
+
+ <div class="overlay" *ngIf="marqueeText != null">
+  <marquee direction="left" scrollamount="3">
+    <h5>{{ marqueeText.marqueeText }}</h5>
+  </marquee>
+</div>
+ </div>
+ 
+  

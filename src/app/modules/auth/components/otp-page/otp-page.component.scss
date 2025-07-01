@@ -1,0 +1,134 @@
+
+@import '../../../../variables';
+
+#appCapsule {
+  background: $background-color !important;
+  padding-top: 0px !important; 
+  min-height: 100vh;
+  .phone-box {
+    @include box-shadow;  
+    border-radius: 5px;
+    margin: 2px 0px; 
+    & .col-4 {
+      height: 55px;
+      line-height: 50px;  
+      width: auto;  
+      vertical-align: middle;   
+    }  
+    .service-phone {
+      margin-top: 5px;
+     // margin-bottom: 0px !important;
+      font-size: 14px !important;
+      margin-left: 4px;
+    } 
+   & h5
+ {
+   //display: inline-block;  
+   font-size: 12px; 
+   font-weight: bold;  
+   padding-top: 28px; 
+  // line-height: 1.8;
+   vertical-align: middle; 
+ }
+ & h3
+ {
+   //display: inline-block;  
+   font-size: 18px !important; 
+   font-weight: bold;  
+   padding-top: 20px; 
+   //line-height: 1.8;
+   vertical-align: middle; 
+ }
+ & .row{
+   padding-top: 20px;
+ }
+  }
+
+}
+.telgram {
+  border: 1px solid #2da9df !important;
+  width: 80px;
+  border-radius: 5px;
+}
+
+.service-title {
+    font-weight: 900;
+    font-size: 13px;
+    text-align: center;
+    margin: 0 0 5px !important;
+}
+.service-color {
+    color: #2456A6;
+    font-size: 14px;
+ }
+
+ .wide-block {
+   background: transparent !important; 
+   border: none !important;
+ }
+ .exampleBox {
+   background-color: #fff !important;
+   border-radius: 5px;
+   border-top: 1px solid #E1E1E1;
+   border-bottom: 1px solid #E1E1E1;  
+   
+ }
+.exampleBox p{font-weight: 700;}
+ 
+.service-image {
+  width: 40px;
+ border-radius: 5px;
+}
+
+//@media screen and (max-width: 600px) {
+//  .service-image {
+//    width: 60px !important;      
+//    margin: 0px 2px !important;
+//  }
+ // .service-phone {
+ //   margin-top: 10px;
+ //   margin-bottom: 0px !important;
+    // font-size: 10px !important;
+//  } 
+//}
+//@media screen and (max-width: 320px) {
+ // .service-image {
+ //   width: 40px !important;      
+ //   margin: 0px 2px !important;
+//  }
+//  .service-phone {
+ //   margin-top: 5px;
+ //   margin-bottom: 0px !important;
+  //  font-size: 8px !important;
+ // } 
+//}
+
+#appCapsule {
+  padding-top: 0px !important;
+  padding-bottom: 100% !important;
+  
+}
+code-input {
+  --item-spacing: 10px;
+  --item-height: 3.5em;
+  --item-border: 2px solid #888888 ;
+  --item-border-bottom:  2px solid #888888;
+  --item-border-has-value: 2px solid #888888;
+  --item-border-bottom-has-value: 2px solid #888888;
+  --item-border-focused: 2px solid #2253A2;
+  --item-border-bottom-focused: 2px solid #2253A2;
+  --item-shadow-focused: none;
+  --item-border-radius: 10px;
+}
+
+.counterTimer {    
+    width: 40px;
+    height: 40px;
+    border: 2px solid #000;
+    border-radius: 50px;
+    color: #000;
+    margin-top: 10px; 
+    padding-top: 8px; 
+    text-align: center;
+    float: right;
+}

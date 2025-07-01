@@ -1,0 +1,19 @@
+@import '../../../variables';
+.active-wallet {  
+  width: 30px;
+  height: 30px;
+  margin-top: 8px;
+
+}
+::ng-deep {
+  .modal-header {
+    border: none !important;
+  }
+  .game-list-transfer-alert {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   
+    min-height: calc(100vh - 60px);
+  } 
+}
+

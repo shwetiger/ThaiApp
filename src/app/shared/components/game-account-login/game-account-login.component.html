@@ -1,0 +1,114 @@
+
+<!-- App Capsule  -->
+<div class="container no-padding bg-white" *ngIf="!isUserLoggedIn" >
+  <div class="row">
+    <div class="col-8 text-left">
+      <div style="margin-top: 5px;">
+        <a (click)="loginAccount()" >
+          <div style="align-items:center">            
+             <img src="assets/img/icons/no-image.png" alt="" style="vertical-align:middle ;margin-right:10px; width: 60px;">
+            <span class="account_login_text">{{ 'click_to_login' | translate}}</span>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="col-2 text-left" style="padding-top: 15px;">
+      <app-language-page></app-language-page>
+    </div>
+    <div class="col-1" style="padding-top: 20px;" *ngIf="!isUserLoggedIn">
+      <a (click)="goToNotiList()">
+        <div style="width: 50px;height: 50px;">
+          <i class="material-icons" style="font-size: 40px;margin-top: -3px !important;color: #2253A2;">notifications_none</i>        
+        </div>
+        <span *ngIf="notiCount>0"
+          style="top: 15px;left:34px; position:absolute;background:red;width: 20px;height: 20px;border-radius: 50%">
+          <h6 style="font-size:8px;color:white;"> </h6>
+        </span>
+      </a>
+    </div>
+  </div> 
+</div>
+<div class="container no-padding" *ngIf="isUserLoggedIn">
+  <div class="show-account-wallet">
+    <div class="container" [class]="{'loading-game': common.closeLoadingSubmit,'show-wallet': !common.closeLoadingSubmit}">
+      <div *ngIf="!common.closeLoadingSubmit">    
+      <div class="row" *ngFor="let gameUserBalanceObj of gameUserBalance;let i=index;" >
+          <div class="container" [class]="{'my-2': gameUserBalance.length == 1,'my-1':  gameUserBalance.length > 1}" >               
+            <div class="row no-padding">
+              <div class="col-3">
+                <div class="row">
+                  <img [src]="gameUserBalanceObj.dataUrl" alt="" width="35px" height="35px" >                
+                </div>         
+              </div>
+              <div class="col-5">
+                <h4 class="pt-1"> {{ gameUserBalanceObj.balance | number : '1.0-2'}} {{ 'ks' | translate}}</h4> 
+              </div> 
+              <div class="col-4 d-flex justify-content-around"> <!--selectGameListId(gameUserBalanceObj.providerId,gameUserBalanceObj.name,'in')-->
+                <span (click)="gameTransfer(gameUserBalanceObj.providerId,gameUserBalanceObj.name,'in')">
+                  <img src="assets/img/icon/game-innew.png" alt="" height="28" width="21" style="padding-top: 6px;margin-top: 2px;">    
+                </span>
+                <span  (click)="gameTransfer(gameUserBalanceObj.providerId,gameUserBalanceObj.name,'out')"> <!--selectGameListId(gameUserBalanceObj.providerId,gameUserBalanceObj.name,'out')-->
+                  <img src="assets/img/icon/game-out.png" alt=""  width="26" style="padding-top: 6px;">                  
+                </span> 
+              </div>          
+            </div>
+          </div>
+          <div class="balance-line" *ngIf="gameUserBalance.length > 1 && i !=gameUserBalance.length-1"></div>
+      </div>
+      </div>
+      <ngx-spinner *ngIf="common.closeLoadingSubmit" [name]="common.loading.closeLoadingSubmit.name"
+        [size]="common.loading.closeLoadingSubmit.size" [color]="common.loading.closeLoadingSubmit.color"
+        [type]="common.loading.closeLoadingSubmit.type" [fullScreen]="common.loading.closeLoadingSubmit.fullScreen"
+        [bdColor]="common.loading.closeLoadingSubmit.bdColor"></ngx-spinner>   
+    </div> 
+  </div>  
+  <div class="container-fluid account-bgcolor pb-3">
+    <div class="row">
+      <div class="col-8 text-left">
+        <div class="row">
+          <a (click)="goToProfileDetail()">
+              <div *ngIf="userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''">                 
+                <img src="assets/img/icons/login-image.png" alt="" class="py-2" width="60px;">  
+              </div>
+              <div *ngIf="userProfileModel.imageUrl != null && userProfileModel.imageUrl != ''">                    
+                 <img [src] = "userProfileModel.imageUrl" class="py-2 active-img" width="60px"  height="73px">  
+              </div>
+          </a>
+          <div class="col mt-2"> 
+            <h4 class="open-wallet" (click)="openWalletPage()">{{ changeName() }}</h4>
+            <h5 class="text-white">{{getPhoneNumber(userProfileModel.phone_no)}}</h5>            
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-2 text-left">
+        <app-language-page></app-language-page>
+      </div>
+   
+      <div class="col-1">
+        <a (click)="goToNotiList()">
+          <img src="assets/img/icon/noti_noactive.png" alt=""> 
+          <span *ngIf="notiCount>0" >
+            <h6>{{notiCount}} </h6>                
+          </span>
+        </a>
+      </div>
+    </div>    
+    
+  </div>
+  
+ </div>
+
+
+
+ 
+ 
+
+ 
+
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+
+<div id="appCapsule" >
+  
+<div class="container" style="margin: 0px !important; padding: 0px !important;">
+    <div class="row pt-1 justify-content-center">
+        <h3 style="color: #2253A2; font-weight: 600;">{{ 'history_result' | translate }}</h3>
+    </div>
+    <div *ngIf=showBothHeader class="row" style="margin: 0px !important; padding: 0px !important;">
+        <div [ngClass]="twoD_Active? 'header-active':'header'"  (click) ='changeResultType("2D")' style="padding-top: 5px;display: inline-block;">
+            <div class=" d-flex justify-content-center">
+                <img src="assets/img/history/2D.png" alt="" width="36" height="auto">                   
+            </div> 
+            <p [ngStyle]="twoD_Active?{'color': '#2253A2'} : {'color': 'black'}"  class="d-flex justify-content-center pt-1">{{'2D_result' | translate}}</p>            
+        </div>
+       
+        <div [ngClass]="threeD_Active? 'header-active':'header'"  (click) ='changeResultType("3D")' style="padding-top: 5px;display: inline-block;">
+            <div class=" d-flex justify-content-center">
+                <img src="assets/img/history/3D.png" alt="" width="36" height="auto">                   
+            </div> 
+            <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}"  class="d-flex justify-content-center pt-1">{{'3D_result' | translate}}</p>
+        </div>       
+    </div>
+
+    <div *ngIf=!showBothHeader class="row headerRow" style="margin: 0px !important; padding: 0px !important;">
+        <div *ngIf="twoD_Active" class='py-2 one-header-active' >
+            <h3  style="margin: 0px !important; padding: 0px !important;">{{'2D_result' | translate}}</h3>
+        </div>
+
+        <div *ngIf="threeD_Active"  class='py-2 one-header-active'>
+            <h3  style="margin: 0px !important; padding: 0px !important;">{{'3D_result' | translate}}</h3>
+        </div>
+    </div>
+
+    <div *ngIf="twoD_Active==true"  style="padding-bottom: 80%; background-color: #fff;">
+        <app-twod-result-page></app-twod-result-page>
+    </div>
+
+    <div *ngIf="threeD_Active==true"  style="padding-bottom: 50%; background-color: #fff;">
+        <app-threed-result></app-threed-result>
+    </div>
+
+</div>
+
+</div>

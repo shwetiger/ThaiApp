@@ -1,0 +1,68 @@
+<!-- <appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar> -->
+<div class="appHeader text-light">
+    <div class="left">
+      <a (click)="goBack()" class="headerButton">     
+        <img src="assets/img/icon/arrow_back.png" alt="">          
+     </a> 
+    </div>
+    <div class="pageTitle"> {{ 'helloword' | translate }} </div>
+    <div class="right">
+      <a class="headerButton">  
+        <img src="assets/img/icon/refresh.png" alt="" (click)="refreshPageHeader()">  
+    
+      </a>
+    </div>
+  </div>
+<div id="appCapsule" *ngIf="!common.refreshLoading">
+    <div class="extraHeader1">
+        <div class="container" >
+            <div class="row mx-2">
+                <div class="container no-padding" >
+                    <threed-close-time (myEvent)="refreshPage()" (closed)="threedClose($event)"></threed-close-time>
+                </div>              
+            </div>            
+            <div class="row">
+                <div class="container">
+                    <div class="row mx-2 threed-card">
+                        <div class="col-4">
+                            <div class="row justify-content-center">
+                                <img src="assets/img/history/3d_result_history_bet.png" alt="image" class="imaged init" (click)="betHistory()" > 
+                            </div>     
+                            <div class="row justify-content-center">   <p style="color: #2253A2;">{{ 'betHistory' | translate }}</p></div>                                     
+                        </div>
+                        <div class="col-4 ">
+                            <div class="row justify-content-center">
+                                <img src="assets/img/winner/3d_icon.png" alt="image" class="imaged init" (click)= "threeDWinner()">
+                            </div>   
+                            <div class="row justify-content-center"> <p style="color: #2253A2;">{{ 'winner' | translate }}</p>    </div>                                       
+                        </div>                        
+                        <div class="col-4">
+                            <div class="row justify-content-center">
+                                <img src="assets/img/history/3d_result_history.png" alt="image" class="imaged init"  (click)="goToResult()">
+                            </div>
+                            <div class="row justify-content-center"> <p style="color: #2253A2;">{{ 'result' | translate }}</p></div>
+                        </div>
+                    </div>
+                </div>               
+            </div>
+        </div>    
+    </div>
+    <div class="extraFooter">
+        <div class="container"  style="padding: 0px !important;margin: 0px !important;">
+            <app-threed-result></app-threed-result>
+        </div>
+    </div>    
+</div>
+
+ <!-- App Bottom Menu -->
+ 
+ <div class=" section full d-flex justify-content-center" id="navThreeDBet"  style="background-color: #fff;">
+    <div class="d-flex justify-content-center">
+        <button type="button" class="button-notRound mt-1"  style="width: 125px;height: 40px;" (click)= "threedBet()">{{ 'bet' | translate}}</button>
+    </div>
+</div>
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

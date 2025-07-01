@@ -1,0 +1,39 @@
+@import '../../../../variables';
+#appCapsule {
+    background-color: $background-color !important;
+    padding-top: 0px !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+.faq-searching-col {
+    // height:225px;
+    height: auto;
+   }
+
+.imaged.w64 {
+    width: 25px !important;
+    height:25px !important;
+}
+
+#navTwoDBet{
+    min-height: 56px;
+    position: fixed;
+    z-index: 999;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-evenly;
+  
+    & .button-notRound {
+      .submit{
+       background-color: #2253A2; 
+       color: #fff;
+       width: 250px;
+       height: 40px; 
+       border-radius: 5px;
+      }
+     }
+    }
+  

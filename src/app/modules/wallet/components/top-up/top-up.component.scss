@@ -1,0 +1,92 @@
+@import '../../../../variables';
+
+#topup-page {
+  background-color: $background-color !important;
+  min-height: 100vh;
+  overflow-x: hidden;
+  & h3,h4 {
+    font-weight: 600; 
+    color: $second-color;
+  }
+  & .topup-card {
+    @include box-shadow; 
+    border-radius: 5px; 
+    & .photos{
+      padding: 10px 5px !important;
+     
+    }
+  }
+  & .card-background {   
+    @include card-box;
+    & .card-body{
+      padding: 10px 5px !important;
+      & .container-fluid{
+        padding: 0px !important;
+      }
+    }
+  }
+  & .card-border {
+    //border-bottom: grey solid 2px;
+    text-align: center;
+    padding: 15px 15px;
+    margin: 0px 15px;    
+    color: $second-color;
+    & span {
+      font-weight: 600; 
+    }
+  }
+  & .submitLoading {
+    @include submit-loading();
+  }
+  & .button-notRound {
+    @include button-notRound();
+  }
+
+  & .photos{
+    display: flex;
+    flex-direction: row ;
+    flex-flow:row wrap;
+    justify-content: space-around;
+    border-radius: 5px;
+  }
+  & .amount-selected {
+    padding: 10px 25px;
+    border-radius: 5px;
+    border: 1px solid $second-color;
+    text-align: center;
+    background-color: $second-color;
+    color: #fff;
+  }  
+  & .amount-notselected {
+    padding: 10px 25px;
+    border-radius: 5px;
+    border: 1px solid $second-color;
+    text-align: center;
+  }  
+  input { 
+    background: $input-color !important;
+  }
+  input::placeholder {
+    font-size: 13px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .photos {
+    & img {
+      width: 60px !important;
+      height: 60px !important;
+      border-radius: 5px;
+    }
+  }
+ 
+}
+@media only screen and (min-width: 400px) { 
+  .photos {
+    & img {
+      width: 70px !important;
+      height: 70px !important;
+      border-radius: 5px;
+    }
+  }
+}

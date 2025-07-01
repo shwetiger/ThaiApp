@@ -1,0 +1,68 @@
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<threed-close-time (closed)="twodClose($event)"></threed-close-time>
+<div id="appCapsule">
+    <div class="row  mt-2 mr-1 ml-1">
+        <div class="col-3">
+            <div class="countnumber">{{ count }} </div>
+        </div>
+        <div class="col-9 justify-content-center">
+        <input type="number" (keyup.enter)="enter($event)" class="form-control amount-input"  placeholder="{{'amountHint' | translate}}" 
+        [(ngModel)]="amount" 
+            [ngModelOptions]="{standalone: true}" (keyup)="checkBetAmount()">
+        <p id = "betAmountErr" class="error-color"></p>
+    </div>
+    </div>
+
+   
+
+    <div class="container pt-2 pr-1"> 
+        <!-- <div class="row">
+            <p>ဂဏန်းအရေအတွက်: {{ count }} </p>  
+        <div class="col-2"></div> 
+       </div>    -->
+        
+        <div class="row">
+            <p>{{'tripplenumber' | translate}}</p>
+        </div>
+
+        <div class="row text-center text-white justify-content-center">
+            <div  *ngFor="let num1 of trippleNumbers"  (click)="selectTrippleNubmers(num1)" class="quickselect-betnumv2" 
+            [ngStyle]="{'background-color':num1.isUse == 0 ? 'lightgray' : '#2253A2','color':num1.isUse == 0 ?'	#555555':'white'} ">
+                {{ num1.betNumberValue}}  
+            </div> 
+        </div>
+    
+   
+        <div class="row mt-2">
+            <p>{{'hundrednumber' | translate}}</p>
+        </div>
+        <div class="row text-center justify-content-center">
+            <div *ngFor="let num1 of hundredNumbers"  (click)="selectHundredNubmers(num1)"
+              class="quickselect-bet100num" [ngStyle]="{'background-color':num1.isUse == 0 ? 'lightgray' : '#2253A2','color':num1.isUse == 0 ?'	#555555':'white' }">
+                {{ num1.betNumberValue}}  
+            </div> 
+        </div>    
+        
+        <!-- <div class="row">
+            <div class="container pt-2"> 
+                <div class="row justify-content-around">
+                    <div class="col-6 col-md-4"> 
+                        <button type="button" class="btn button-notRound clear "  
+                        (click)="quickSelectCancel()">{{ 'clean' | translate}}</button>  
+                    </div> 
+                    
+                    <div class="col-6 col-md-4">
+                       <button type="button" class="btn button-notRound submit"  
+                       (click)="quickSelectBet()">{{ 'bet' | translate}}</button>
+                    </div>
+                </div>             
+            </div>
+        </div>    -->
+    </div>
+</div> 
+
+<div class="section full d-flex justify-content-around bg-white" id="navTwoDBet" >    
+    <button type="button" class="btn button-notRound clear"  (click)="quickSelectCancel()" onclick="document.getElementById('betNumber').value = ''"  >{{ 'clean' | translate}}</button>           
+    <button type="button" class="btn button-notRound submit" (click)="quickSelectBet()" onclick="document.getElementById('betAmt').focus()">{{ 'bet' | translate}}</button>
+  </div>
+ 

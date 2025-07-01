@@ -1,0 +1,80 @@
+@import '../../../../variables';
+#appCapsule {
+  padding-top: 0px !important;
+  background-color: $background-color !important;
+  min-height: 100vh;
+  .btn-outline-primary:hover, .btn-outline-primary:active {
+    background: #fff !important;
+    border-color: none !important;
+    color: #000 !important;
+  }
+  .bank__image {
+   border: 3px solid #fff;
+   border-radius: 100%;
+   height: 45px;
+   width: 45px;
+   box-shadow: 0 0 0 0.3px grey;
+  }
+  .bank__number {
+      color :$second-color;
+     // padding-top:20px ;
+  }  
+  h3 {
+    color: $second-color;
+  }
+  // .withdraw__delete {
+  //   width: auto;
+  //   height: 40px;
+  //   background-color: white;
+  //   border: none;
+  //   border-radius: 15px;
+  //   margin-top: 5px;
+  //   color: #000;
+  //   font-size: 12px;
+  // }
+
+  
+}
+
+::ng-deep {
+  .logout-modal{
+    transform: none;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow-y: auto !important;
+    min-height: calc(100% - 100px) !important; 
+    max-width: 250px;
+    margin: 0 auto;
+  }
+  .logout-modal .modal-content > .modal-header, .modal-footer {
+      border:  none !important; 
+      padding: 5px 0px; 
+    }
+
+    .flex-container {
+      display: flex;
+      align-items: center;
+    }
+    
+    .flex-container img {
+      margin-top: 0px !important;
+    }
+    
+    .flex-container span {
+      margin-left: 5px;
+      margin-top: 0px !important; /* Adjust this if necessary */
+    }
+
+    .editname-text, .editname-text:focus{
+      width: 100%;
+      box-sizing: border-box;
+      border-top: none !important;
+      border-left: none !important;
+      border-right: none !important;
+      border-bottom: 2px solid $second-color;
+      -webkit-transition: 0.5s;
+      transition: 0.5s;
+      outline: none;
+    }
+}

@@ -1,0 +1,21 @@
+@import '../../../../variables';
+
+.game-amount {
+ color: $second-color;
+}
+#appCapsule {
+    background-color: #fff !important;
+    padding-top: 0px !important;
+}
+.bradius {
+    border : 3px;
+    border-color: #f5a545;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #2456A6;
+    padding:1px; 
+    border-style:solid;
+    width: 100px;
+    height: 100px;
+    margin: 10px 0px;
+}

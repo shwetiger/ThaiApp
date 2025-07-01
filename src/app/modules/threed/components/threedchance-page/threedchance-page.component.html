@@ -1,0 +1,88 @@
+<app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<div id="appCapsule">
+<div class="container">
+    <div class="row pt-2 justify-content-center">
+            <p class="text-center" style="color:#2253A2">{{'threed_chance_title' | translate}}</p>
+        </div>
+        <div class="row justify-content-center" >
+            <p style="font-size: 12px;text-align: center;">{{'threed_chance_desc' | translate}}</p>
+        </div>
+        <div class="row">
+        <div class = "col-12">
+            <p class="text-left" style="font-size: 12px;">{{'bet_color_meaning' | translate}}</p>
+        </div>
+        </div>
+        <div class="row pl-3 pr-2" >
+            <div class = "col-6 d-flex">
+                <span class="dot99lessthan"></span>&nbsp;
+                <p class="text-left bet-limit-text">
+                {{'bet_limit_between80to99' | translate}}</p>
+               
+            </div>
+            <div class = "col-6 d-flex">
+                <span class="dot99avobe"></span>&nbsp;
+                <p class="text-left bet-limit-text">
+                    {{'bet_limit_above90' | translate}}</p>
+             </div>
+        </div>
+        <div class="row mt-3">
+            
+            <div class="col-12 justify-content-center" *ngIf = "not3dLimit == true" >
+                <p class="text-center">
+                    {{'threed_chance_no_number' | translate}}
+                </p>
+            </div>
+
+            <div class="col-12" *ngIf = "betThreedNumber != null ">
+                <div class="section full my-3 bg-white">        
+                    <div class="container py-2 px-5 pb-2"> 
+                        <div class="row justify-content-center bet-number">
+                            <div
+                            *ngFor='let item of betThreedNumber;let i=index' >
+                            <div  [class]="item.selected?'card numberCard-selected': 'card numberCard'" *ngIf="item.betLimitColor != 100" (click)="betNumberSelected(item.number, !item.selected)">
+                                <p class="number pt-1 text-center">{{item.number}}</p>
+                                <div *ngIf="item.betLimitColor &lt;= 100">
+                                <div class="progress">    
+                                    <div class="progress-bar bg-danger" role="progressbar" [style.backgroundColor]="bgcolor" [style.width.%]="item.betLimitColor" [aria-valuenow]="item.betLimitColor"
+                                        aria-valuemin="0" aria-valuemax="100" *ngIf="item.betLimitColor &gt;= 80 && item.betLimitColor &lt;= 99"></div> 
+        
+                                    <div class="progress-bar bg-custom-grey" role="progressbar" [style.width.%]="item.betLimitColor" [aria-valuenow]="item.betLimitColor"
+                                        aria-valuemin="100" aria-valuemax="100" *ngIf="item.betLimitColor == 100"></div>
+                                </div>
+                            </div>
+                         </div>
+
+
+                         <div  [class]="item.selected?'card numberCard-selected': 'card fullnumberCard'" *ngIf="item.betLimitColor == 100" (click)="betNumberSelected(item.number, !item.selected)">
+                            <p class="number pt-1 text-center">{{item.number}}</p>
+                            <div *ngIf="item.betLimitColor &lt;= 100">
+                            <div class="progress">    
+                                <div class="progress-bar " role="progressbar" [style.backgroundColor]="bgcolor" [style.width.%]="item.betLimitColor" [aria-valuenow]="item.betLimitColor"
+                                    aria-valuemin="0" aria-valuemax="100" *ngIf="item.betLimitColor &gt;= 80 && item.betLimitColor &lt;= 99"></div> 
+    
+                                <div class="progress-bar bg-custom-grey" role="progressbar" [style.width.%]="item.betLimitColor" [aria-valuenow]="item.betLimitColor"
+                                    aria-valuemin="100" aria-valuemax="100" *ngIf="item.betLimitColor == 100"></div>
+                            </div>
+                        </div>
+                     </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <div class = "row" *ngIf = "buttonVisible == true">
+                    <div class="col-12 text-center" >
+                       <button  type="button" class = "button" style="background-color: #2253A2;color:white;width:90%;height:40px;border:none;border-radius:5px;" (click) ="goToBetPage()">
+                           {{ 'next' | translate }}
+                       </button>
+                    </div>
+                </div> 
+            </div>
+        
+            <div class="col-12" *ngIf = "buttonVisible == false">
+                <p class="text-center">
+                    {{'threed_chance_no_number' | translate}}
+                </p>
+            </div>
+        </div>
+</div>
+</div>

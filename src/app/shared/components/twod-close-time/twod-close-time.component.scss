@@ -1,0 +1,77 @@
+@import '../../../variables';
+#twod-close-time {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+          margin: 10px 12px;
+  & .loading-balance {
+    padding: 32px 30px;
+    position: relative;
+  }
+  & .close-imaged {  
+    margin-left: 5px;
+    width: 30px;
+   
+  }  
+  & .balance {
+    height: 65px;
+    position: relative;
+    padding-left: 10px;
+    img {
+      margin: 6px 10px 0 0;
+    }
+    span {
+      font-weight: 600;
+      color: $second-color;
+      position: relative;
+      top: 8px;
+    }
+    h4 {
+     color: $second-color;
+    }
+  }
+  
+  & .bet-close {
+    height: 65px;
+    position: relative;
+    padding-right: 10px;
+    img {
+      margin: 6px 10px 0 0;
+    }
+    span {
+      font-weight: 600;
+      color: $second-color;
+      position: relative;
+      top: 8px;
+    }    
+    h4 {
+      color: $second-color;
+      text-align: right;
+    }
+  }
+          
+}
+
+@media screen and (max-width: 300px) {  
+  .bet-close h4 , .balance h4 {
+    font-size: 12px !important;
+  }
+  .close-imaged {      
+    width: 26px !important;
+    height: 26px !important;   
+  }   
+  img {
+    margin: 6px 2px 0 0 !important;
+  }
+  .balance span, .bet-close span{
+    top: 5px !important;
+    font-size: 12px !important;   
+  }  
+}         

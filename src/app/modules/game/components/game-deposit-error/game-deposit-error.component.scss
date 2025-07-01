@@ -1,0 +1,36 @@
+.show-icon
+{
+    font-size: 80px;
+}
+
+.gameTransferFail
+{
+    min-height: 56px;
+    position: fixed;
+    z-index: 999;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-evenly;
+}
+.gameTransferFailButton
+{
+    margin-top: 20px;
+    border-radius: 0px;
+    padding: 25px 0px;
+    background: #2456a6;
+    color: #fff;
+    margin-right: 10px;
+}
+.errorMsg
+{
+   text-align: center;
+}
+
+
+#appCapsule {
+    background-color: #fff !important;
+    padding-top: 0px !important;
+}

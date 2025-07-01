@@ -1,0 +1,198 @@
+@import '../../../../variables';
+
+.no_account{
+   vertical-align:middle !important;
+   margin-right:10px !important;
+   width: 60px !important;
+   height: 73px !important;
+}
+.background-active {
+    background-color: $wind-all-color !important;
+    border-radius: 10px !important;
+    & h4 {
+        color: #fff !important;
+    }
+    
+}
+.game-header {   
+    background-color: #0054a5;
+    & h4 {
+        color: #fff !important;
+    }
+}
+.game-card {
+    background-color: #fff !important;
+    border-radius: 10px !important;
+}
+.game-img {   
+    width: 40px !important;
+    height: 40px;
+    border-radius: 5px;
+    background-color: $second-color;
+}
+.account-bgcolor {
+    background: linear-gradient(to right, $first-color 0%, $second-color 100%);
+}
+
+
+//old
+input::placeholder {
+    font-size: 13px;
+  }
+#appCapsule {
+    padding-top: 0px !important;
+    background-color: #e1dfe2 !important;
+    min-height: 100vh;
+}
+::ng-deep {
+    .gameList-class {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      //overflow-y: auto;
+      min-height: calc(100vh - 60px);
+    }
+    .game-play-now-modal  .modal-content {
+      border-radius: 10px;
+    }
+    
+  }
+.game-list-button {
+    padding: 5px 15px;
+    height: 30px;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+.game-list-imaged{
+    margin-top: 5px;
+    margin-left: 15px;
+    border: 2px solid #fff;
+    height: 40px;    
+    width: 40px;
+    margin-bottom: 5px;
+}
+.game-list {
+    padding: 5px 16px;
+    line-height: 1.4em;
+    background: #000 !important;
+    border-radius: 2px;
+}
+.card-text{
+    text-align: center;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+
+.amount-color {
+    color: $second-color;
+}
+.main_wallet{
+    font-size: 56px;
+    color: $second-color;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.form-group .input-wrapper{
+    width: 90% !important;
+}
+
+
+.service-color {
+    margin: 0px;
+}
+
+.account-amount {
+  margin: 0px 5px;
+  padding: 10px;
+}
+.wallet-change{
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin: 0px 5px; 
+}
+.card .card-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.wallet-image {
+    animation: rotation 4s infinite linear;
+  // transform: perspective(400px) scaleX(-1);
+  }
+@keyframes rotation {
+
+     0%   {transform: rotate(0deg);}
+      10%  { transform: rotate(0deg);}
+  25%  { transform: rotate(180deg);}
+  50%  { transform: rotate(180deg);}
+  70%  { transform: rotate(180deg);}
+  90% {transform: rotate(0deg);}
+  100% {transform: rotate(0deg);}
+
+    
+  }
+
+.card >.card-body {
+    padding: 0px;
+    margin: 0px;
+    //background-color: transparent !important;
+}
+
+.imaged{   
+    margin-left: 5px;
+    width: 50px;
+    margin-top: 0px;
+}
+
+.wallet-image {
+    width: 30px; 
+    height: 30px;   
+    cursor: pointer;
+}
+@media screen and (max-width: 400px) {      
+    .service-color {
+        font-size: 12px !important;
+    }
+}
+
+.label{
+    font-size: 15px;
+    font-weight: lighter;
+    margin-bottom: 5px !important;
+}
+
+.btn-block{
+    background-color: #2456A6 !important;
+    border-radius: 0px;
+    color: white;
+}
+
+.text-eye {
+    margin-right: 20px;
+    float: right;
+    margin-top: -30px;
+    position: relative;
+    z-index: 2;
+    color: blue;  
+}
+
+.text-eye ion-icon {    
+    font-size: 20px;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #2253A2;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

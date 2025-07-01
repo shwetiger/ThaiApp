@@ -1,0 +1,59 @@
+
+<div class="appHeader text-light">
+    <div class="left">
+      <a (click)="goToGame()" class="headerButton">        
+        <i class="material-icons" style="font-size: 26px;">arrow_back</i>    
+     </a> 
+    </div>
+    <div class="pageTitle"> {{ 'helloword' | translate}}</div>   
+</div>  
+<div id="appCapsule"> 
+    <!-- *ngIf="(game != 'gameList') || GamePlayResult "   -->
+        <div class="container" *ngIf="showUI==true">
+            <div class="row pt-3" style="justify-content: center;">
+                <img class="bradius" [src]="LaunchGameList.iconurl" alt="gameImage" >          
+            </div>
+            <div class="row d-flex justify-content-center" >         
+                <h4 style="color: #2253A2;text-align: center;"  *ngIf="(launchTag == null || launchTag == undefined || launchTag == '' ) " >{{ launchTagName }}</h4>
+                <p style="color: #2253A2;text-align: center;"  *ngIf="(launchTag != null && launchTag != undefined && launchTag != '' ) ">{{ launchTagName }}</p>
+            </div>        
+            <!-- <div class="container" style="background: #ddd; border-radius: 10px; padding: 10px;" *ngIf="(launchTag == null || launchTag == undefined || launchTag == '' ) " >
+                 <div class="row" >
+                            <div class="col-8 d-flex">
+                                <img src="assets/img/activewallet.png" alt="" width="20px" height="20px">&nbsp;<h5 class="game-amount" style="font-weight: 600;">{{ 'before-game-balance' |translate}}({{ 'ks' |translate}})</h5>
+                            </div>
+                            <div class="col-4" *ngIf="!loadingGameBalance"> <h4 class="game-amount">{{ GamePlayResult.balanceBefore| number : '1.0-2' }}</h4></div>
+                            <div style="position: relative; justify-content: center; background-color: red;" class="mt-2" *ngIf="loadingGameBalance" >
+                                <ngx-spinner size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8 d-flex">
+                                <img src="assets/img/game_wallet_img.png" alt="" width="20px" height="20px">&nbsp;<h5 class="game-amount" style="font-weight: 600;">{{ 'leave-post-game-balance' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+                            </div>
+                            <div class="col-4"  *ngIf="!loadingGameBalance"> <h4 class="game-amount">{{ GamePlayResult.postBalance | number : '1.0-2' }}</h4></div>
+                            <div style="position: relative; justify-content: center; background-color: red;" class="mt-2" *ngIf="loadingGameBalance" >
+                                <ngx-spinner size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-8 d-flex">
+                                <img *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) &lt; 0" src="assets/img/win.png" alt="" width="20px" height="20px">
+                                <img *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) &gt; 0" src="assets/img/loss.png" alt="" width="20px" height="20px">
+                                <img *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) == 0" src="assets/img/win.png" alt="" width="20px" height="20px">
+                                 &nbsp;
+                                <h5 style="font-weight: 600;" class="game-amount" *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) &lt; 0">{{ 'game-win' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+                                <h5 style="font-weight: 600;" class="game-amount" *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) &gt; 0">{{ 'game-lose' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+                                <h5 style="font-weight: 600;" class="game-amount" *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) == 0">{{ 'game-even' |translate}}&nbsp;({{ 'ks' |translate}})</h5>
+                            </div>
+                            <div class="col-4" *ngIf="!loadingGameBalance"><span class="game-amount" *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) &gt; 0" >(-)</span><span class="game-amount" *ngIf="(GamePlayResult.balanceBefore - GamePlayResult.postBalance) &lt; 0"> (+)</span> <span class="game-amount"> {{changeNumber(GamePlayResult.balanceBefore, GamePlayResult.postBalance) | number : '1.0-2' }}</span></div>
+                            <div style="position: relative; justify-content: center; background-color: red;" class="mt-2" *ngIf="loadingGameBalance" >
+                                <ngx-spinner size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+                            </div>
+                        </div>
+                
+            </div>       -->
+        </div>   
+</div>
+
+<ngx-spinner size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "true" *ngIf="game == 'gameList'"></ngx-spinner>

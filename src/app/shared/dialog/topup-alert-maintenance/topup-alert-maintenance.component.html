@@ -1,0 +1,21 @@
+<div class="modal-body pb-2">
+    <div class="row my-2 justify-content-center" > 
+      <div class="img-position">
+      <img [src]="data.imageUrl" width = "45px" hegith = "45px" calss = "alert-decagram" >
+      </div>
+   </div>
+   <div>
+   <div class="row" style="justify-content: center; padding-top: 20px;" >     
+   <h3 class="topup-alert-title"> {{ term_conditions }}</h3></div>
+  <div>
+  <div class="row" >
+   <ul>
+    <li *ngFor="let desObj of description;">
+      {{ desObj }}     
+    </li>
+   </ul>   
+  </div>
+   <div class="row" style="justify-content: space-around;">    
+   <button type="button" class="button-notRound" style="width: 92%; height: 40px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"  (click)="goWallet()">{{closeBtnName}}</button>            
+   
+   </div>

@@ -1,0 +1,88 @@
+
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>   
+    <div id="appCapsule"  *ngIf="!common.refreshLoading">            
+       <div class="container-fluid" style="padding: 0px !important; margin: 0px !important;">
+           <div class="row" style="padding: 0px !important; margin: 0px !important;">
+               <img src="assets/img/edit.jpg" width="100%" height="200">
+           </div>
+           <div class="profile"> 
+                 
+               <img src="./assets/img/ProfileNew.png" class="rounded-circle" id = "profileImg" *ngIf="userModel.imageUrl == null || userModel.imageUrl==''"> 
+               <!-- <img src="./assets/img/Profileedit.png" class="rounded-circle" id = "profileImg" *ngIf="userModel.imageUrl == null || userModel.imageUrl==''">  -->
+               
+               <img [src]="userModel.imageUrl" class="rounded-circle" width="80" id = "profileImg" *ngIf="userModel.imageUrl != null && userModel.imageUrl!=''"> 
+            
+                <!-- <label>
+                   <span class = "cameraIcon">
+                       <i class="material-icons" style="font-size: 40px; color: #0054a6;" (click)="logoutModel(myModal)">photo_camera</i>        
+                   </span>
+               </label>  -->
+               <label>
+                <span class="cameraIcon">
+                    <img src="./assets/img/editprofile.png" style="width: 30px; height: 30px;" (click)="logoutModel(myModal)">
+                </span>
+             </label>
+
+            
+           </div>           
+          
+           <div class="row mx-1"  style="justify-content: center;">
+            <div class="col-12 form-group mx-2">
+               <input type="text" class="form-control input"  (keyup.enter)="enter($event)" [(ngModel)]="userModel.name" [ngModelOptions]="{standalone: true}">
+            </div>
+          
+           </div>
+           <div class="row mx-1"  style="justify-content: center;">              
+               <div class="col-12 form-group ">
+                   <input type="text" class="form-control input" [(ngModel)]="userModel.phone_no" [ngModelOptions]="{standalone: true}" readonly>
+               </div>             
+           </div>
+           <div class="row" style="justify-content: center;">
+            <div class="mt-2" style="position: relative; justify-content: center;"   *ngIf="common.submitLoading" >                  
+                <!-- submit loading -->
+                <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+                [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+                [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+            </div>
+               <button  type="button"  (click) = "changeProfile()" style="width: 90%;background-color: #2253A2; color: #fff;border-radius: 5px;border:none;height:40px" *ngIf="!common.submitLoading" > {{'withdraw_save' | translate}}</button>
+           </div>          
+           
+       </div>
+    
+   </div>
+
+   <ng-template #myModal>  
+          
+    <div class="modal-header" style="height: 30px;">
+        <div style="position: absolute; top: 3px; right: 4px;">
+            <i class="material-icons" (click)="HidelogoutModel();" style="color: red; font-size: 30px;">cancel</i> 
+          </div>
+    </div>
+    <div class="modal-body justify-content-center" style="padding: 0px !important; max-height:400px; overflow-x: hidden;">
+        <div class="profilemodal">
+            <div class="row d-flex justify-content-center mb-2" >
+                <label for="file-input" style="display: flex; align-items: center;">
+                    <img src="assets/img/icons/gallery_new.png" alt="" width="20" height="20" style="margin-right: 5px;">
+                    <span style="font-weight: bold;color:#000; cursor: pointer;">{{'upload_photo' |translate}}</span>
+                    <input #file id="file-input" accept="image/*" type="file" style="display: none;"
+                    onchange="document.getElementById('profileImg').src = window.URL.createObjectURL(this.files[0])"
+                   [(ngModel)]="userModel.imageUrl" [ngModelOptions]="{standalone: true}"
+                   (change)="preview(file.files);HidelogoutModel()"/>
+                  </label> 
+              </div>
+            
+       <hr style="width: 100%; margin-top: 0; border-top: 1px solid #000; box-sizing: border-box;">
+       <div class="row d-flex justify-content-center mb-3" >
+              
+                <img src="assets/img/icons/delete_new.png" alt="" width="20" height="20" style="margin-right: 5px;">
+                <span style="font-weight: bold;color:#000; cursor: pointer;" (click)="deleteprofilephoto()">{{'remove_photo' |translate}}</span>
+           
+              </div>
+
+    </div>
+   </div>
+</ng-template>
+
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

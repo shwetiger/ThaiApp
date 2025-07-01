@@ -1,0 +1,127 @@
+@import '../../../../variables';
+
+input {   
+    border-radius: 5px;  
+    padding: 0px 20px;
+    font-weight: 600;
+    border: 1px solid #2253A2;
+    width: 100%;
+   
+}
+
+#appCapsule {
+    padding: 0px !important;
+    background-color: #fff !important;  
+    overflow-x: hidden;  
+    min-height: 100vh;
+}
+
+.user {
+    position: relative;
+    height: 55px;
+}
+
+.profile img {
+    height: 80px;
+    width: 80px;
+    margin-top: 2px
+}
+
+.profile {
+    position: relative;
+    top: -50px;
+    left: 38%;
+    height: 90px;
+    width: 90px;
+    border-radius: 50%;
+    z-index : 1;
+}
+
+.follow {
+    border-radius: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 35px
+}
+
+.stats span {
+    font-size: 29px
+}
+.cameraIcon
+{
+    position: absolute;
+    z-index:15;
+    margin-top: -40px;
+    right: 0;
+    cursor: pointer;
+   
+}
+.profile>input {
+    display: none;
+  }
+
+  ::ng-deep {
+    .logout-modal{
+      transform: none;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow-y: auto !important;
+      min-height: calc(100% - 100px) !important; 
+      max-width: 250px;
+      margin: 0 auto;
+    }
+    .logout-modal .modal-content > .modal-header, .modal-footer {
+        border:  none !important; 
+        padding: 5px 0px; 
+      }
+}
+
+::ng-deep {
+    .deletesucces-modal{
+      transform: none;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow-y: auto !important;
+      min-height: calc(100% - 100px) !important; 
+      max-width: 250px;
+      margin: 0 auto;
+    }
+    .deletesucces-modal .modal-content > .modal-header, .modal-footer {
+        border:  none !important; 
+        padding: 5px 0px; 
+      }
+}
+
+::ng-deep {
+    .myModal{
+        min-height: calc(100% - 100px) !important; 
+        transform: none;
+        overflow-y:hidden;
+        overflow-x: hidden;
+    }
+    .deletesucces-modal .modal-content > .modal-header, .modal-footer {
+        border:  none !important; 
+        padding: 5px 0px; 
+      }
+}
+
+  
+ 
+.custom-file-label {
+    // font-size: 10px;
+    // position: absolute;
+    // //z-index:2;
+    // margin-top: -30px;
+    // left: 20px;
+
+    cursor: pointer;
+}
+
+profilemodal>input {
+    display: none;
+    margin-top: 10px;
+    justify-items: center;
+  }
+ 

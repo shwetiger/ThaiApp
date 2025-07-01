@@ -1,0 +1,56 @@
+
+<div class="appBottomMenu" >                 
+    <a  (click)="openPage('/home')" class="item" [class]="(routerName=='/home' || routerName=='/home/'+deviceId) ? 'active':''" style="padding-top: 10px !important;">
+       
+        <div class="col"> 
+            <div>
+                <img [src]="(routerName=='/home' || routerName=='/home/'+deviceId) ?'assets/img/activeHome.png':'assets/img/inactiveHome.png'" *ngIf="(routerName=='/home' || routerName=='/home/'+deviceId) ?'img-active': 'img-inactive'" alt=" " width="25px">
+               
+                <br>
+                <span class="active-title" > <h5 style="font-size: 9px;padding: 0px !important; padding: 0px !important;">{{ 'homeTap' | translate}}</h5></span>
+            </div>
+           
+        </div>
+    
+    </a>
+    <a  (click)="openPage('/wallet')" class="item" [class]="routerName=='/wallet'? 'active':''" *ngIf="isUserLoggedIn" style="padding-top: 10px !important;">
+        <div class="col">
+            <div>
+                <img [src]="routerName=='/wallet'?'assets/img/activewallet.png':'assets/img/inactivewallet.png'" alt=" " width="25px"><br>
+                <span class="active-title"><h5 style="font-size: 9px;padding: 0px !important; padding: 0px !important;">{{ 'walletTap' | translate}}</h5></span>
+            </div>
+          
+        </div>
+    </a>
+    
+    <a  (click)="openPage('/promotions')" class="item"  [class]="routerName=='/promotions'? 'active':''" *ngIf="isUserLoggedIn" style="padding-top: 10px !important;">
+        <div class="col">
+            <div>
+                <img [src]="routerName=='/promotions'?'assets/img/activepromotion.png':'assets/img/inactivepromotion.png'" alt=" " width="25px"><br>
+                <span class="active-title"><h5 style="font-size: 9px;padding: 0px !important; padding: 0px !important;">{{ 'promotionTap' | translate}}</h5></span>
+            </div>
+            
+        </div>
+    </a>
+    <a (click)="openPage('/service-phone')" class="item" [class]="routerName=='/service-phone'? 'active':''"  style="padding-top: 10px !important;">
+        <div class="col">
+            <div>
+                <img [src]="routerName=='/service-phone'?'assets/img/activeservice.png':'assets/img/inactiveservice.png'" alt=" " width="25px"><br>
+                <span class="active-title"><h5 style="font-size: 9px;padding: 0px !important; padding: 0px !important;">{{ 'serviceTap' | translate}}</h5></span>
+            </div>
+        </div>
+    </a>
+    <a  (click)="openPage('/me-page')" class="item" [class]="routerName=='/me-page'? 'active':''" style="padding-top: 10px !important;">
+        <div class="col">
+            <div>
+                <img [src]="routerName=='/me-page'?'assets/img/activeme.png':'assets/img/inactiveme.png'" alt=" " width="25px"><br>
+                <span class="active-title"><h5 style="font-size: 9px;padding: 0px !important; padding: 0px !important;">{{ 'meTap' | translate}}</h5></span>
+            </div>
+
+        </div>
+    </a>
+
+</div>
+
+       
+

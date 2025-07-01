@@ -1,0 +1,43 @@
+@import '../../../variables';
+
+.img-position {
+  position: absolute;
+  top: -35px;
+  background: #fff;
+  border-radius: 100%;
+  padding: 12px;
+  box-shadow: rgba(4,109,99,0.1) 0px 19px 38px, rgba(4,109,99, 0.1) 0px 4px 4px !important;
+}
+::ng-deep {
+  .topup-maintenance-alert {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    //overflow-y: auto;
+    min-height: calc(100vh - 60px);
+  } 
+}
+.topup-alert-title {
+  color: $first-color;
+}
+ul {
+  list-style-type: decimal;
+  //list-style-image: url('/assets/img/topup/circle.png') !important;
+}
+ul li{
+  margin: 0px 0px 12px 20px !important;
+}
+@media only screen and (max-width: 400px) {
+  .alert-notRound {
+    width: 150px; 
+    height: 40px; 
+  }
+}
+@media only screen and (min-width: 400px) {
+  .alert-notRound {
+    width: 130px;
+     height: 40px; 
+  }
+ 
+}
+

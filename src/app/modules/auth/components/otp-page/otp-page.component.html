@@ -1,0 +1,70 @@
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+     <div id="appCapsule" class="extra-header-active" *ngIf="otptype=='firebaseotp'" >               
+        <div class="section full mx-1"  >
+            <div class="section-title register-title mb-2 mt-2">{{ 'otpdescription' | translate}}</div>
+            <div class="section-title register-title mb-2" style="justify-content: center;"> {{phoneNumber}} </div>
+            <div *ngIf="!recaptcha" class="section-title mb-2">{{ 'otptitle' | translate}}</div>
+            <form *ngIf="!recaptcha">  
+                <code-input #codeInput [isCodeHidden]="false" 
+                [codeLength]="6"  (codeChanged)="onCodeCompleted($event)" (Keyup) ="validateOtp()"></code-input>    
+                 <p id ="passErr" class="error-color" style="text-align: center; width: 100%;" ></p>                
+                <div class="counterTimer" *ngIf="coundDown >= 0">{{ coundDown }}</div>  
+                  
+                <a class="btn btn-text-primary float-right" (click)="signInWithPhoneNumber()" *ngIf="coundDown < 0" style="border: 1px solid red;
+                color: #000 !important;
+                font-weight: 600; color: #000 !important; font-weight: 600;">Resend OTP</a>
+                
+                <div class="row justify-content-center"  style="margin-top: 70px;">
+                    
+                       <button type="button"  (click)="common.actionType == 'NEWDIVICE'? UpdateDeviceIdwithfirebase(): handleClick()"
+                       style="background-color: #2253A2; color: #fff; width: 88% !important;height:40px;border:none;border-radius: 5px;"  
+                    *ngIf="!common.submitLoading">{{ 'next' | translate}}</button>
+                </div>
+                <div class="row justify-content-center mt-5">
+                    <a href="tel:09988432606{{openUrl}}"></a>                  
+                </div>
+              </form>
+              <div  id="recaptcha-container"></div>
+        </div>
+        <div class="section ful mx-3" >
+       
+    </div>
+    </div>
+  
+
+    <div id="appCapsule" class="extra-header-active" *ngIf="otptype=='smsotp'">               
+        <div class="section full mx-2">
+            <div class="section-title register-title mt-2" style="white-space:nowrap; justify-content: center;color:#2253A2" >{{ otpheader}}</div>
+            <!-- <div class="section-title register-title" style="white-space:nowrap; justify-content: center;color:#2253A2" *ngIf="commonFormtype !='register'">{{phoneNumber}}</div> -->
+            <div class="section-title register-title" style="white-space:nowrap; justify-content: center;color:#2253A2" >{{smssender}}</div>
+
+            <div class="section-title register-title mb-2 mt-3" style="justify-content: center; margin-top:0 !important;color:#2253A2"> {{otpdesciption}}</div>
+            <form>  
+                <code-input  #codeInput [isCodeHidden]="false" 
+                [codeLength]="6"  (codeChanged)="onCodeCompleted($event)" (Keyup) ="validateOtp()"></code-input>    
+                 <p id ="passErr" class="error-color" style="text-align: center; width: 95%;" ></p>                
+                <div class="counterTimer mr-2" *ngIf="coundDown >= 0">{{ coundDown }}</div>                
+                <a class="btn btn-text-primary float-right mr-2" (click)="common.actionType == 'NEWDIVICE'?getNewOtp():getOtp()" *ngIf="coundDown < 0" style="border: 1px solid red;
+                color: #000 !important;
+                font-weight: 600; color: #000 !important; font-weight: 600;">Resend OTP</a>
+                <div class="row justify-content-center" style="margin-top: 70px;">
+                    
+                    <button type="button" (click)="common.actionType == 'NEWDIVICE'? getNewDeviceOtp(): checkOtp()" 
+                    style="background-color: #2253A2; color: #fff; width: 88% !important;height:40px;border:none;border-radius: 5px;" 
+                    *ngIf="!common.submitLoading">{{ 'next' | translate}}</button>
+                </div>
+                
+                <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'otppage'}" [replaceUrl]="false" class="mr-2" style="margin-top:4px" ><h4 class="underline" style="color:#2253A2" *ngIf="commonFormtype!='register'&& common.actionType!='insertAccount'">{{'change_otp_method' | translate}}</h4> </a></div>
+                <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'withdrawaladd'}" [replaceUrl]="false" class="mr-2" style="margin-top:4px" ><h4 class="underline" style="color:#2253A2" *ngIf="commonFormtype!='register' && common.actionType=='insertAccount'">{{'change_otp_method' | translate}}</h4> </a></div>
+                <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'register'}" [replaceUrl]="false" class="mr-2" style="margin-top:4px" ><h4 class="underline" style="color:#2253A2" *ngIf="commonFormtype=='register'">{{'change_otp_method' | translate}}</h4> </a></div>
+                <div class="row justify-content-center mt-5">
+                    <a href="tel:09988432606{{openUrl}}"></a>                  
+                </div>
+              </form>
+        </div>
+    </div>
+    <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >
+        <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+    </div>

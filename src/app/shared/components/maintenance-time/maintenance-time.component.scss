@@ -1,0 +1,120 @@
+@import '../../../variables';
+#maintenance-time {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+          margin: 10px 12px;
+  & .loading-balance {
+    padding: 32px 30px;
+    position: relative;
+  }
+  & .close-imaged {  
+    margin-left: 5px;
+    width: 30px;
+   
+  }  
+  & .balance {
+    height: 65px;
+    position: relative;
+    padding-left: 10px;
+    img {
+      margin: 6px 10px 0 0;
+    }
+
+    
+    
+    h4 {
+     color: $second-color;
+    }
+  }
+  
+ 
+          
+}
+
+@media screen and (max-width: 300px) {  
+  .bet-close h4 , .balance h4 {
+    font-size: 12px !important;
+  }
+  .close-imaged {      
+    width: 26px !important;
+    height: 26px !important;   
+  }   
+  img {
+    margin: 6px 2px 0 0 !important;
+  }
+   
+}  
+
+@keyframes example {
+  
+ // from {background-color: red;}
+ // to {background-color: yellow;}
+ 
+//0% { transform: rotate(0deg); }
+ // 100% { transform: rotate(360deg); }
+
+ 0%, 50% {
+  z-index: -1;
+  transform: rotateX(90deg);
+  opacity: 0;
+}
+51% {
+  opacity: 1;
+}
+100% {
+  opacity: 1;
+  transform: rotateX(0deg);
+  z-index: 5;
+}
+}
+
+
+.button1{
+  margin: 10px 0 0 0;
+  width: 40px;
+  height: 50px;
+  border-radius: 5px 0 0 5px;
+  line-height: 3px;
+  border: 1.5px solid rgba(218, 236, 23, 0.804);
+  justify-content: center;
+  align-items: center;
+  background:#0054a6;
+  color:aliceblue;
+}
+.button2{
+  margin: 10px 0 0 0;
+  width: 40px;
+  height: 50px;
+ // border-radius: 5px 0 0 5px;
+  line-height: 3px;
+  border: 1.5px solid rgba(218, 236, 23, 0.804);
+  justify-content: center;
+  align-items: center;
+  background:#0054a6;
+  color:aliceblue;
+}
+
+.button3{
+  margin: 10px 0 0 0;
+  width: 40px;
+  height: 50px;
+  border-radius: 0 5px 5px 0;
+  line-height: 3px;
+  border: 1.5px solid rgba(218, 236, 23, 0.804);
+  justify-content: center;
+  align-items: center;
+  background:#0054a6;
+  color:aliceblue;
+}
+
+
+
+

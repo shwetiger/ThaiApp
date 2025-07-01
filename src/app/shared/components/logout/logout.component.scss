@@ -1,0 +1,25 @@
+.imaged.w64 {
+    width: 30px !important;
+}
+
+a.item:after {
+    background-image: url(/assets/img/arrow.svg) !important;
+}
+
+
+::ng-deep {
+    .logout-modal{
+      transform: none;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+      overflow-y: auto !important;
+      min-height: calc(100% - 100px) !important; 
+      max-width: 250px;
+      margin: 0 auto;
+    }
+    .logout-modal .modal-content > .modal-header, .modal-footer {
+        border:  none !important; 
+        padding: 5px 0px; 
+      }
+}

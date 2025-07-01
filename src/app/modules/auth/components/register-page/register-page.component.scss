@@ -1,0 +1,27 @@
+
+@import "../../../../variables";
+#appCapsule {
+    padding: 0px !important;
+    background-color: #fff !important;
+    height: 100% !important;
+  }
+
+  #gmailInput {
+    border: none;
+    outline: none;
+  }
+
+  #gmailInput:focus {
+    border: none;
+    outline: none;
+    box-shadow: none; /* This removes the shadow that might appear on focus */
+  }
+  
+  input::placeholder {
+    font-size: 13px;
+  }
+
+
+
+
+

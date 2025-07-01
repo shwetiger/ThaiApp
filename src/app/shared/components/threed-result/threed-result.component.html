@@ -1,0 +1,67 @@
+
+
+<div class="container " style="overflow-x: hidden ;" *ngIf="!loading" >
+    <div class="section full" *ngIf="showlivelink==true && showliveVideo!=null">       
+        <div class="wide-block" >   
+            <div class="video-container" (click)="handleVideoClick($event)">
+                <iframe [class.thumbnail]="" [src]="showliveVideo"
+                 frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                 <!-- <iframe [class.thumbnail]="thumbnail" src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/facebook/videos/1226100805039220/?mibextid=oFDknk/live"
+                 frameborder="0" allow="autoplay" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe> -->
+
+                 <!-- <iframe src="https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2F61552213580243%2Fvideos%2F1098318884700401%2F&show_text=false&width=560&t=0" width="560" height="314" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>   -->
+                <div *ngIf="deviceId!=null || issafariView==true">
+                    <img src="assets/img/vdplay2.png" alt="Click To Watch" (click)="openlive()" class="overlay-image">
+                </div>
+            </div>  
+
+        </div>
+         
+    </div> 
+    <div class="root">
+        <div id="gridcontainer">
+            <div class="" *ngFor="let result of resultList">
+                <div class="card result-card" >                   
+                        <div class="categories">
+                            <div class="setval">
+                                <label>{{'betDate' | translate}}</label>
+                                <label>{{getDate(result.for_date_time_Str)}}</label>
+                            </div>
+                            <div class="setval">
+                                <label>
+                                    3D
+                                </label>
+                                <label style="color: gold !important;">{{result.number}}</label>
+                            </div>
+                        </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    
+</div>
+<div *ngIf="loading" style="position: absolute; top: 80%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
+        <ngx-spinner size="small" color="rgb(6,56,107)" type="ball-spin-clockwise" [fullScreen]="false"></ngx-spinner>
+    </div>
+
+<!-- 
+<iframe
+src="https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/facebook/videos/1099990301316988/?mibextid=oFDknk/live"
+frameborder="0"
+scrolling="yes"
+target="_blank"
+allowfullscreen="false"
+allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+height="1000px"
+width="100%"
+>
+
+</iframe> -->
+
+
+<!-- <div style="position: relative; justify-content: center;" class="mt-2">
+    <ngx-spinner [name] = 'spinnerName' size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+    
+</div> -->

@@ -1,0 +1,55 @@
+@import '../../../../variables';
+
+#appCapsule {
+    padding-top: 0px !important;
+    background-color: $background-color !important;
+    min-height: 100vh;
+    .no_account{
+        vertical-align:middle !important;
+        margin-right:10px !important;
+        width: 60px !important;
+        height: 73px !important;
+     }
+     .background-active {
+        background-color: $wind-all-color !important;
+        border-radius: 10px !important;
+        & h4 {
+            color: #fff !important;
+        }
+        
+    }
+    .game-header {   
+        background-color: #0054a5;
+        & h4 {
+            color: #fff !important;
+        }
+    }
+    .game-card {
+        @include box-shadow;
+        background-color: #fff !important;
+        border-radius: 10px !important;
+    }
+    .game-img {   
+        width: 40px !important;
+        height: auto;
+        border-radius: 5px;
+        background-color: $second-color;
+    }
+    .account-bgcolor {
+        background: linear-gradient(to right, $first-color 0%, $second-color 100%);
+    }
+}
+
+::ng-deep {
+    .gameList-class {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      //overflow-y: auto;
+      min-height: calc(100vh - 60px);
+    }
+    .game-play-now-modal  .modal-content {
+      border-radius: 10px;
+    }
+    
+  }

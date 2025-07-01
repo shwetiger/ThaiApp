@@ -1,0 +1,59 @@
+
+::ng-deep{
+    @media screen and (min-width: 1024px) {     
+        .ngx-modal.modal.show .modal-dialog {
+            width: 100% !important;
+            margin: 0px 40% !important;        
+        }
+    }
+    @media only screen and (max-width: 900px) {   
+        .ngx-modal.modal.show .modal-dialog {
+            width: 100% !important;
+            margin: 0px 10% !important;        
+        }
+    }
+    .topup-alert {
+        background-color: #fff;
+        border-radius: 10px;
+    }
+    .topup-alert > .modal-header{
+        display: none;
+    }
+    .topup-alert > .modal-footer{
+        border-top: 0px !important;
+        margin: 0px !important;
+        padding: 0px 0px 5px 0px !important;
+        justify-content: space-evenly;
+
+    }
+    .topup-alert > .modal-body {
+        padding: 10px 0px 0px !important;
+    }
+    .topup-alert > .modal-footer .btn{
+        height: 30px;
+    }
+    .topup-alert > .modal-footer .confirm-btn{
+        width: 85px !important;
+        padding: 0 2px !important;
+    }
+}
+
+
+ 
+// @media only screen and (max-width: 600px) {
+//     .topup-alert {
+//         left: calc(100% - 86%) !important;
+//     }
+  
+//   }
+//   @media screen and (min-width: 400px) {
+//     .topup-alert {
+//         left: calc(100% - 82%) !important;
+//     }
+//   }
+  
+//   @media screen and (min-width: 800px) {
+//     .topup-alert {
+//         left: calc(100% - 86%) !important;
+//     }
+//   }

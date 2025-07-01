@@ -1,0 +1,252 @@
+<appbar *ngIf = "isFromAdd != 'add'" (myEvent)="refreshPage()" >{{ 'helloword' | translate }}</appbar>
+<app-not-refresh-appbar *ngIf = "isFromAdd == 'add'" >{{ 'helloword' | translate }}</app-not-refresh-appbar>
+
+<div id="appCapsule" *ngIf="!refreshLoading">     
+    <div class="container">
+        <h3 class="pt-2 text-center" style="font-weight: 600; color:#2253A2">{{'withdraw' | translate }}</h3>
+        <h4 class="pt-1" style="font-weight: 600; color:#2253A2" *ngIf="otpSms != undefined || withdrawLength == 0 || isFromAdd == 'add'">{{'withdraw_list_title' | translate }}</h4>        
+        <div class="row justify-content-center" *ngIf = "mywithdrawalBankAccList == '' || mywithdrawalBankAccList == undefined " id = "addNew">
+            <div class="form-group col-md-12" >
+                <div class="row">
+                    <div id="paymentId" class="col-md-12">
+                        <div class = "row justify-content-center" *ngIf="topupBankName == undefined">
+                        <a *ngFor = "let item of withdrawalBankAccList">
+                            <!-- <div class="col-lg-3" style="background-color: aqua;">                               -->
+                                <img id="{{item.id}}" (click) ="changeAction(item.id,item.name,item.id)"  
+                                [src]="withdrawpaymentImg == item.id?item.image_url:item.image_url.replace(item.name.toLowerCase().replace(' ', ''),item.name.toLowerCase().replace(' ', '')+'disable')" 
+                                 width = "70px" hegith = "70px" 
+                                calss="bankLogo">                              
+                            <!-- </div> -->
+                        </a>                       
+                        </div>
+                    </div>
+                    <div id="paymentId1" class="col-md-6">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "row" *ngIf="topupBankName != undefined" style="justify-content: center;">
+            <a *ngFor = "let item of newwithdrawalBankAccList">
+                <div class="col-lg-3 t">
+                    <img [src]="item.image_url" width = "70px" hegith = "70px" class="active-banklogo">
+                </div>
+            </a>
+        </div>
+
+        <div class="container-fluid" id="dataForm" style="display: none;">    
+            <div class="container">
+                <div style="margin-bottom: 5px;"> <span id = "add_withdraw_account_name"></span> </div>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" (keyup.enter)="enter($event)" class="form-control input" [(ngModel)]="bankAccModel.bankaccountName" [ngModelOptions]="{standalone: true}"
+                        id = "add_withdraw_account_name_hint" (keyup)="checkbankaccountname()">
+                        <p id = "bankNameErr" class="error-color"></p>
+                    </div>
+                </div>
+            </div>  
+            <div class="container">
+                <div style="margin-bottom: 5px;">  <span id = "add_withdraw_account"></span> </div>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" (keyup.enter)="enter($event)" class="form-control input" [(ngModel)]="bankAccModel.bankAccount" [ngModelOptions]="{standalone: true}"
+                        id = "add_withdraw_account_hint" (keyup)="checkbankAccount()">
+                        <p id = "bankAccountErr" class="error-color"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div style="margin-bottom: 5px;"> <span id = "add_withdraw_account_confirm">{{'add_withdraw_account_confirm' | translate}}</span></div>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" (keyup.enter)="enter($event)" class="form-control input" [(ngModel)]="bankAccModel.confirmbankAccount" [ngModelOptions]="{standalone: true}"
+                        id = "add_withdraw_account_confirm_hint" (keyup)="confirmbankAccount()">
+                        <p id = "confirmbankAccountErr" class="error-color"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                
+                <div class="row">
+                    <div class="col-12">
+                      <div class="bank_qr" *ngIf="imgURL == null" (click)="triggerFileInput()" style="cursor: pointer;"> 
+                        <div style="margin-top: 10px;">
+                          <img src="assets/img/uploadimage.png" alt="image" class="QRimage"> 
+                        </div>
+                        
+                        <p>{{ 'add_withdraw_account_image_hint' | translate }}</p>
+                        
+                        <!-- Multilingual upload icons -->
+                        <img src="assets/img/UploadQR.png" alt="image" class="uploadimage" *ngIf="lang == 'en'">  
+                        <img src="assets/img/myupload.png" alt="image" class="uploadimage" *ngIf="lang == 'my'">  
+                        <img src="assets/img/thaiupoad.png" alt="image" class="uploadimage" *ngIf="lang == 'th'">  
+                        <img src="assets/img/chineseupload.png" alt="image" class="uploadimage" *ngIf="lang == 'zh'">  
+                  
+                        <!-- Hidden file input -->
+                        <input #fileInput type="file" accept="image/*"
+                               style="display: none;"
+                               (change)="preview(fileInput.files)"
+                               [ngModelOptions]="{ standalone: true }" />
+                      </div>
+                  
+                      <!-- Image Preview -->
+                      <div class="row d-flex justify-content-center" *ngIf="imgURL != null">
+                        <div class="col-1"></div>
+                        <div class="col-10">
+                          <div class="img-wrap d-flex justify-content-center form-group row">
+                            <i class="material-icons close" style="color: red; font-size: 30px; float: right; margin-top: -10px; margin-right: -17px; z-index:1;" (click)="removeFns()">cancel</i>  
+                            <img [src]="imgURL" height="150" width="200" id="profileImg" style="border: 2px dotted #2253A2;">
+                          </div>
+                        </div>
+                        <div class="col-1"></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+            </div>
+            <div class="mt-2" style="position: relative; justify-content: center; background-color: red;" *ngIf="loadingInsertBankAcc" >                  
+                <ngx-spinner size = "medium" color = "rgb(6,56,107)" name="loadingInsertBankAcc" type = "ball-elastic-dots" [fullScreen] = "false"></ngx-spinner>
+            </div>
+            <div  id="recaptcha-container"></div>
+            <div class="pt-2 d-flex justify-content-center" *ngIf="!loadingInsertBankAcc">
+                <button type="button" class="button withdraw__button" (click)="InsertBankAccount()" >
+                {{ 'withdrawal_confrim' | translate}}
+                </button>
+            </div> 
+          
+            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;">
+                <a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber:phoneValue,formPage:'withdrawaladd'}" [replaceUrl]="false" class="mr-2" style="margin-top:4px" >
+                  <h4 class="underline" style="color:#2253A2">{{'change_otp_method' | translate}}</h4>
+                </a>
+              </div>
+            
+        </div>        
+        <div  *ngIf = "mywithdrawalBankAccList != '' && mywithdrawalBankAccList != undefined">
+            <p style="padding-top: 15px;text-align: left;" class="pl-3">{{'withdrawal_desc' | translate}}</p>
+            <div class="card mx-4 promotion-text" (click) ="withdrawalChangePage()">
+                <div class="card-body" >
+                    <div class="account">
+                        <img [src]="bankAccObj.imageUrl" alt="product" class="withdraw-imaged">                 
+                            <div class="col">                  
+                                <p class="card-text">{{bankAccObj.bank_name}}</p>
+                                <p class="card-text">{{getPhoneNumber(bankAccObj.account_number)}}</p>
+                            </div>
+                    
+                        <div class="pt-2" style="height:100%; vertical-align: middle;"> 
+                            
+                        <a data-toggle="modal">
+                            <span class="account-change-withdraw">
+                            {{'account_change' | translate}}
+                            </span>
+                        </a> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p *ngIf = "mywithdrawalBankAccList != '' && mywithdrawalBankAccList != undefined" style="text-align: center;color: #2456A6;font-weight: bold;margin-top:12px">
+            {{'balance' | translate}}: {{userBalance | number : '1.0-2'}} {{'ks' | translate}}</p>
+        <div class="container-fluid" *ngIf = "mywithdrawalBankAccList != '' &&  mywithdrawalBankAccList != undefined">      
+            <div class="container">
+              <div style="font-size: 14px;margin-bottom: 5px;"><span>{{'withdrawal_cash_amount' | translate}}</span></div>  
+                <div class="row">
+                    <div class="col-12">
+                        <input type="number" (keyup.enter)="enter($event)" (keyup) = "checkAmount(userBalance)" (input)="onAmountInput($event)" (keypress)="keyPressNumberfornumberintput($event)" class="form-control input"  
+                        placeholder="{{'withdrawal_cash_amount_hint' | translate}}"
+                        [(ngModel)]="withdrawalRequestModel.amount"  [ngModelOptions]="{standalone: true}">
+                        <p id = "withdrawAmountErr" class="error-color"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="container" id = "wavePassword" *ngIf="bankAccObj.bank_name == 'Wave Shop'">            
+                <p>{{'withdrawal_wave_shop_title' | translate}}</p>
+                <p style="color:#2456A6;">{{'withdrawal_wave_shop_desc' | translate}}</p>
+                <div class="row">
+                    <div class="col-12">
+                      
+                        <input type="number" #passwordInput maxlength="6"  (input)="onPasswordInput($event)" (keyup.enter)="enter($event)" class="form-control input"  (keyup) = "wavePasswordTypeErr()" placeholder="{{'transaction_no_hint' | translate}}"
+                        [(ngModel)]="withdrawalRequestModel.remark"  [ngModelOptions]="{standalone: true}" >
+                      
+                        <p id = "wavePassErr" class="error-color"></p>
+                    </div>                
+                </div>
+            </div>
+            <div class="container">
+               <div style="margin-bottom: 5px;"><span>{{'withdrawal_login_password' | translate}}</span></div> 
+                <div class="row">
+                    <div class="col-12">
+                        <input  id="pwId" [type]="passwordType" maxlength="21" (keyup.enter)="enter($event)" class="form-control input"  (keyup) = "loginPassError()" placeholder="{{'withdrawal_login_password_hint' | translate}}"
+                        [(ngModel)]="withdrawalRequestModel.login_password"  [ngModelOptions]="{standalone: true}">
+                        <span class="text-eye">
+                            <i class="material-icons" (click)="showPassword(!showPass)" style=" color: gray !important" *ngIf="showPass">visibility</i> 
+                            <i class="material-icons" (click)="showPassword(!showPass)" style=" color: gray !important" *ngIf="!showPass">visibility_off</i>
+                        </span>
+                        <p id = "loginPassErr" class="error-color"></p>
+                    </div>                
+                </div>
+            </div>
+            <div class="pt-2" style="display:flex;justify-content: center;">               
+                <div class="mt-2" style=" position: relative; justify-content: center;" *ngIf="common.submitLoading" >                  
+                    <!-- submit loading -->
+                    <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+                    [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+                    [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+                </div>
+                <button type="button" class="button withdraw__button"  (click) = "requestWithdrawal()" *ngIf="!common.submitLoading">
+                {{ 'topup_submit' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #mybankList>
+    <div class="modal-header">
+        <div  class="close pull-right">
+            <i class="material-icons" (click)="HideAccList()" style="color: red;">cancel</i>         
+          </div>
+      </div>
+    <div class="modal-body mb-5">             
+        <h3>{{'withdrawal_desc' | translate}}</h3>
+        <div *ngFor="let bankObj of mywithdrawalBankAccList">
+            <div class="card mx-1 mt-1">
+                <div class="card-body game-list" style="padding: 0px 2px !important;margin: 0px !important;">
+                    <div>            
+                        <a>                         
+                        <div class="row">
+                                        <div class="col-2">
+                                                <img [src]="bankObj.imageUrl"  alt="product" class="game-list-imaged" width="50px" height="50px">
+                                        </div>
+                                        <div class = "col-4 mt-2">
+                                            <p class="card-text">&nbsp;{{getPhoneNumber(bankObj.account_number)}}</p>
+                                       </div>
+                                     <div class="col-6 mt-1">
+                                        <div class="row"> 
+                                            <div class="d-flex">
+                                                <button type="button" class="btn game-list-button btn-sm"  (click)="selectAccountListId(bankObj.bank_account_id, 'sel')"
+                                                style="white-space: nowrap;background: #fff; color: 000;font-size: 10px;border-radius: 15px; border: 1px solid;" >
+                                                    {{'withdraw_select' | translate}}
+                                                </button>&nbsp;
+                                                <button type="button" class="btn game-list-button btn-sm" (click)="withdrawDelete(bankObj.payment_id,bankObj.bank_account_id, 'del')" style="background-color: white;border: none;border-radius: 15px;
+                                                color: green;font-size: 10px;white-space: nowrap;border: 1px solid;" > {{ 'withdraw_delete' | translate}}</button>
+                                            </div>
+                                           
+                                        </div> 
+                               </div>
+                        </div>
+                        </a>
+                    </div>    
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+</ng-template>
+
+<!-- refresh loading -->
+<ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+
+ 

@@ -1,0 +1,11 @@
+<div *ngIf="isShow == 'true' && adsList.length > 0" class="splash-screen-ads-slider">
+    <a (click)="closeAds()" class="skip-btn">{{ "skip" | translate }} {{ counter }}</a>
+    <owl-carousel-o [options]="customOptions">
+        <ng-template carouselSlide *ngFor="let adsObj of adsList">
+            <div class="slide">
+                <a *ngIf="adsObj.linkUrl != null"  class="slideImg"  [ngStyle]="{'background-image': 'url(' + adsObj.imageUrl + ')'}" [href]="adsObj.linkUrl | safeUrl" ></a>
+                <div *ngIf="adsObj.linkUrl == null"  class="slideImg" [ngStyle]="{'background-image': 'url(' + adsObj.imageUrl + ')'}"></div>
+            </div>    
+        </ng-template>
+    </owl-carousel-o>
+</div>

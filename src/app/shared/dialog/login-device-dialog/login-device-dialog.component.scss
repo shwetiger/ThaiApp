@@ -1,0 +1,28 @@
+::ng-deep {
+  .login-device {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   
+    min-height: calc(100vh - 60px);
+    max-width: 25%;
+  } 
+
+
+@media (max-width: 768px) {
+    .login-device {
+        max-width: 80%; /* Adjust the width for smaller screens */
+        top:10%;
+        left:8%;
+    }
+}
+
+  .modal-header {
+    margin: 0 auto; /* Center the header horizontally */
+    background-color: #f0f0f0;
+    padding: 0px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+
+}
+  

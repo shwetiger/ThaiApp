@@ -1,0 +1,40 @@
+
+
+#appCapsule {
+    background-color: #fff !important;
+    padding-top: 0px !important;
+    overflow-x: hidden;
+}
+.passwrod-eye {
+    display: flex;
+}
+.text-eye {
+    margin-left: -50px;
+    margin-top: 10px;   
+}
+.text-eye i{    
+    font-size: 20px;
+}
+
+.login-button {
+    width: 87%;   
+    border: 2px solid  #2253A2;
+    border-radius: 5px;
+    color:  #fff;
+    background-color: #2253A2;
+    margin-top: 0px;    
+}
+.register-warning {
+  display: inline-grid;
+}
+.register-warning > span {
+  color: #2253A2;
+  font-size: 14px;
+  font-weight: 600;
+  padding-bottom: 12px;
+ 
+}
+
+input::placeholder {
+    font-size: 13px;
+  }

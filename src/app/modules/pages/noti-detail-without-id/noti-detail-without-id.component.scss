@@ -1,0 +1,91 @@
+.root{
+    margin-top: 8px; 
+    min-height: 100vh;
+}
+.noti-card{
+    margin-top: 38px;
+    margin-bottom: 16px;
+    margin-left: 10px;
+    margin-right: 10px;
+    padding-top: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    position: relative;
+    width: auto;
+
+}
+.title{
+    color: blue;
+    text-align: center;
+    padding-bottom: 16px;
+    
+}
+.body{
+     padding-bottom: 16px;
+     text-align: center;
+}
+.imaged{
+    // left:42%;
+    // top: 62px;
+    // position: absolute;
+    width:60px;
+    height:60px;
+}
+.imgClass{
+    display: flex;
+    // width: 100%;
+    min-width: max-content;
+    left: calc(50% - 30px);
+    //left: 48%;
+    // text-align: center;
+    top: 62px;
+    position: absolute;
+    
+}
+.date{
+    display: flex;
+    align-self: center;
+    margin-top: 16px;
+}
+.number{
+    color: blue;
+}
+.twod_image {
+    background: #2253A2;
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+}
+.threed_image {
+    background: #000;
+    padding: 10px;
+    border-radius: 50px;
+    color: #fff;
+    margin: 0px 5px;
+}
+
+.img__box{
+    display: flex;       
+    min-width: max-content;
+    left: calc(50% - 30px);        
+    top: 62px;
+    position: absolute;
+    
+    .noti__imaged{   
+        width:60px;
+        height:60px;
+        border-radius: 10px;
+    }        
+}  
+
+.ql-editor em {
+    font-style: italic;
+  }
+  
+  .ql-editor strong {
+    font-weight: bold;
+  }
+  .ql-editor {
+    line-height: 1.5;
+  }

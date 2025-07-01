@@ -1,0 +1,51 @@
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+ 
+<div id="appCapsule">
+    <div class="section full" *ngIf="topup || withdrawal">       
+        <div class="wide-block">   
+            <div class="video-container" *ngIf="!loading">
+                <iframe [class.thumbnail]="thumbnail" [src]="showTopupVideo" 
+                 frameborder="0" webkitallowfullscreen mozallowfullscreen   allowfullscreen></iframe>               
+            </div>     
+            <div style="position: relative; justify-content: center;" class="mt-2" *ngIf="loading">
+                <ngx-spinner size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+            </div>            
+        </div>
+    </div> 
+
+    <div class="container-fluid" *ngIf="topup">   
+        <div class="row" *ngFor="let video of topupvideotutorialList; let i = index;" (click)="openVideo(i);">          
+            <div class="col-4">                   
+                <img class="responsive" [attr.src]="'https://img.youtube.com/vi/'+video.liveLink.replace('https://www.youtube.com/embed/','')+ '/0.jpg'" alt="" width="300" height="300" >
+            </div>
+            <div class="col-8" style="margin-top: 30px !important;">
+                
+                <h4 *ngIf="lang == 'en'" class="">{{ video.description_en}}</h4>
+                <h4 *ngIf="lang == 'my'" class="">{{ video.description_my}}</h4>
+                <h4 *ngIf="lang == 'th'" class="">{{ video.description_th}}</h4>
+                <h4 *ngIf="lang == 'zh'" class="">{{ video.description_zh}}</h4>
+                <!-- <h5 class="video-title">{{ video.bankType}}</h5> -->
+                
+                             
+        </div>
+    </div>
+    </div>
+
+    <div class="container-fluid" *ngIf="withdrawal">   
+        <div class="row" *ngFor="let video of withdrawalvideotutorialList; let i = index;" (click)="openVideo(i)">
+            <div class="col-4">                   
+                <img class="responsive" [attr.src]="'https://img.youtube.com/vi/'+video.liveLink.replace('https://www.youtube.com/embed/','')+ '/0.jpg'" alt="" width="300" height="300" >
+            </div>
+            <div class="col-8" style="margin-top: 30px !important;">
+                <h4 *ngIf="lang == 'en'" class="">{{ video.description_en}}</h4>
+                <h4 *ngIf="lang == 'my'" class="">{{ video.description_my}}</h4>
+                <h4 *ngIf="lang == 'th'" class="">{{ video.description_th}}</h4>
+                <h4 *ngIf="lang == 'zh'" class="">{{ video.description_zh}}</h4>
+                <!-- <h5 class="video-title">{{ video.bankType}}</h5>                -->
+            </div>
+        </div>
+    </div>
+   
+</div>
+
+<!-- <ngx-spinner bdColor = "rgb(6,56,107)" size = "large" color = "#fff" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner> -->

@@ -1,0 +1,142 @@
+
+@import '../../../../variables';
+
+#appCapsule {
+    padding-top: 0px !important;
+    background-color: $background-color !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.nav-tabs.lined .nav-item .nav-link {
+    height: 40px !important;
+}
+.history-game {
+    background-color: none !important;
+    border: 1px solid $second-color;
+}
+.history-game > li .nav-link.active{
+    background-color: $second-color !important;
+    color: #fff !important;   
+    border-bottom-color: transparent !important;
+}
+
+
+.driver {
+    margin-top: 10px;
+    line-height: 1.4em;   
+    border-bottom: 1px dashed $second-color;
+    width: 100%;    
+   
+}
+@media screen and (max-width: 768px) {
+    .driver{width:100%;}
+}
+#mainwallet > .nav-tabs.lined .nav-item .nav-link.active {
+    color: $first-color;
+    background: transparent;
+    border-bottom-color: $second-color !important;
+}
+#appCapsule.extra-header-active {
+    padding-top: 100px;
+    margin-top: -50px;
+}
+// #appCapsule1 {
+//     margin-top: -60px;
+// }
+#appCapsule {
+    padding-top: 10px !important;
+   // background: #ffffff !important;
+}
+
+.descText
+{
+    font-size: 10px;
+    color: green;
+}
+.imaged{
+   border-radius: 10px !important;
+    width: 50px;
+    height: 50px;
+    border: 2px;
+    background-color: white;
+    border-color: lightskyblue;
+    // margin-left: 30px;
+}
+
+
+.card-body{
+    display: flex;
+    flex-direction:row;
+    
+}
+.detailInfo{
+    margin-left: 20px;
+}
+.detail{
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.amount {
+    margin-top: 20px;
+    position: absolute;
+    right: 35px;
+}
+.message{
+    padding:0px 16px ;
+}
+
+.header{
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    width: 50%;
+}
+.header-active{
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    width: 50%;
+    height:50px;
+    border-bottom: solid 2px $second-color;  
+    box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+    z-index: 111;
+    
+} 
+
+.nav-tabs.style1 .nav-item .nav-link{
+    padding:0px;
+    border-radius: 0px; 
+    margin: 0px !important;   
+    height: 40px;
+    color: #2456a6;
+    border: 1px solid #2456a6 !important;
+}
+.nav-tabs.style1 .nav-item .nav-link.active {
+    padding:0px;
+    border-radius: 0px; 
+    margin: 0px !important;     
+    height: 40px;
+    color: #fff;
+    background: #2456a6;
+}
+
+.nav-tabs.lined .nav-item .nav-link {
+    color: #000;
+    
+}
+@media screen and (min-width: 1024px) {
+    
+    .container {
+        width: 400px !important;
+    }
+    .extraHeader {
+        left: 35% !important;
+        max-width: 30% !important;
+    }
+}
+[hidden]
+{
+    display: block;
+}

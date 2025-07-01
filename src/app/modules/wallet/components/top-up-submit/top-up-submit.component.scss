@@ -1,0 +1,155 @@
+@import '../../../../variables';
+
+#topup-submit {
+  background-color: $background-color !important;
+  min-height: 100vh;
+  overflow-x: hidden;
+  & .topup-submit-card {
+    @include box-shadow; 
+    border-radius: 5px; 
+    .imaged-detail {
+      width: 60px;
+      height: 60px;
+      border: 1px solid #fff;
+      border-radius: 10px;
+    
+    }
+    .imaged-QR {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #fff;
+      border-radius: 10px;
+    }
+    .card-text-submit {
+      color: $first-color;
+      margin: 0px !important;
+    }
+    .divder-amount {   
+       margin-top: 0px;
+       margin-bottom: 0px;
+      // border-right: $first-color solid 2px;
+      height:60px;
+      border-left:grey solid 1.5px;
+    }
+    .divder-account {   
+      margin-top: 15px;
+      margin-bottom: 5px;
+      border-bottom: grey  solid 1.5px;
+     
+    }
+    .divder {   
+      margin-top: 15px;
+      margin-bottom: 15px;
+      border-bottom: $first-color solid 2px;
+    }
+    .button-view {
+      background-color: #2253A2;
+      color: #fff;
+      border-radius: 5px;
+      font-size: 12px;
+      padding: 5px 10px;
+      margin-left: 10px;
+  }
+
+
+  .underline {
+    text-decoration: underline;
+    text-decoration-color: #2253A2;
+  }
+
+  }
+  & .topup-submit-phone-card {
+    height: 50px;
+    @include box-shadow; 
+    border-radius: 5px; 
+    margin: 2px 0px; 
+   // align-items: baseline;
+   // width :80px;
+    .phone-service-card {
+      display: flex;
+      font-size: 13px;
+      //justify-content: space-between;
+   
+      //padding: 8px 10px 0 10px;     
+     // border-radius: 6px;  
+      
+      p {
+        padding: 15px 0 0 0;
+        font-weight: 600;
+       // margin-top: 5px;
+      }
+      a {
+        text-decoration: none;
+      }
+      .service-contact {
+        display: flex;
+      
+        a {
+          color: unset;
+          text-align: center;
+          text-decoration: none;
+        
+          span {
+            display: block;
+            //position: relative;
+            top: -5px;
+          }
+        }
+       
+        .col-4 {
+          height: 55px;
+          line-height: 50px;  
+          width: auto;  
+         // vertical-align: middle; 
+        }
+        
+      }
+        
+      
+    }
+  }
+  .input{
+    height: 50px;
+    width: 100%;
+    background: $input-color !important;
+  }
+  input::placeholder {
+    font-size: 13px;
+  }
+  .error-color {
+      color: red;
+      font-size: 12px;
+      padding-top: 5px;
+  }
+}
+.arrow_title {
+ color: #2253A2;
+}
+.title-color {
+  color: $second-color;
+}
+@media screen and (max-width: 342px) {
+  .btn{
+    width: 70px;
+  }    
+}
+@media screen and (max-width: 270px) {
+  .btn{
+      width: 70px;
+  }
+
+ 
+}    
+
+.service-image {
+  width: 40px;
+  margin-top: 4px;
+  border-radius: 5px;
+ // margin-top:5px;
+}
+
+
+
+
+
+

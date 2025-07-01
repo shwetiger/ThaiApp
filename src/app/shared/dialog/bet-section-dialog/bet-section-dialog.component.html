@@ -1,0 +1,16 @@
+<div class="modal-header">         
+    <h3 class="modal-title">{{ 'select-bet-section' | translate}}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="sectiondiglogclose()">
+        <i class="material-icons">close</i>
+    </button>
+</div>
+<div class="modal-body">
+    <div *ngFor="let twodSectionListObj of twodSectionList">
+        <span *ngIf="twodSectionListObj.toTime != null" class="btn btn-block bet-section-button"
+        [ngClass]="{'not-bet' : twodSectionListObj.isClosed, 'active': twodSectionListObj.isSelected }"
+        (click)="betSectionSelect(twodSectionListObj.id)">{{ twodSectionListObj.sectionName}}</span>   
+    </div>
+    <div class="text-center mt-3">
+        <button type="button" class="btn btn-block twod-bet-btn" (click)="twoDbet()">{{ 'bet' | translate}}</button>
+    </div>
+</div>

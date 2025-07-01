@@ -1,0 +1,62 @@
+@import '../../../../variables';
+.root{        
+    display: flex;
+    flex-direction: column;
+    background-color: $background-color !important;
+}
+.gridcontainer {
+    /* position: absolute; */
+    left: 0; right: 0;
+    overflow: scroll;
+}
+
+.imaged{
+    width: 60px;
+    height: 60px;
+}
+// .noti-row{
+//     padding-top: 16px;
+//     margin-top: 16px;
+//     margin-bottom: 16px;
+//     margin-left: 16px;
+//     margin-right: 16px;
+// }
+
+.noti-row {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  
+}
+
+.divider {
+  height: 1px;
+  background: #E1E1E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0px;
+}
+.time-ago{
+    margin-top: 8px;
+    font-size: 12px;
+    color: gray;
+    font-weight: bold;
+}
+
+.twod_image {
+    background: #2253A2;
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+}
+.threed_image {
+    background: #000;
+    padding: 10px;
+    border-radius: 50px;
+    color: #fff;
+}

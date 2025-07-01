@@ -1,0 +1,109 @@
+@import '../../../../variables';
+
+.bet-amount-color {  
+    color: $second-color;
+}
+.bet-edit-class {
+    color: #2456a6;
+    padding-right: 5px;
+}
+#appCapsule {
+    padding-top: 0px !important;
+    background-color: #fff !important;
+    height: 100% !important;
+    padding-bottom: 10px !important;
+  }
+.totalbetamount {  
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    
+}
+
+.bet-confirm-font {
+    color: $second-color;
+    font-weight: 600;
+}
+
+
+#navTwoDBetConfirmFinal {
+    min-height: 56px;
+    position: fixed;
+    z-index: 999;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.betconfrimButton1 {
+    margin-top: 20px;
+    border-radius: 0px;
+    padding: 25px 0px;
+    background: lightgray;
+    color: #000;
+    margin-left: 10px;
+
+}
+.betconfrimButton2 { 
+    margin-top: 20px;
+    border-radius: 0px;
+    padding: 25px 0px;
+    background: #2456a6;
+    color: #fff;
+    margin-right: 10px;
+}
+.totalAccountAmount {
+    background: #f4f2f2;
+    margin: 0px 10px;
+    border-radius: 10px;
+   //box-shadow: 0 3px 6px 0 rgb(0 0 0 / 10%), 0 1px 3px 0 rgb(0 0 0 / 8%);  
+    margin-top: 10px;
+    margin-bottom: 120px;
+
+}
+
+.betamount-text,  .betamount-text:focus{
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 3px solid #2456a6;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  outline: none;
+}
+
+.bet-buttton {
+    width:90%;
+    background: #2456a6;
+    color: #fff;
+    border-radius: 5px;
+    border:none;
+}
+
+.error-color {
+    color: red;
+    font-size: 12px;
+    padding-top: 5px;
+}
+.underline {
+    text-decoration: underline;
+    text-decoration-color: #2456a6;
+  }
+
+@media screen and (min-width: 1024px) {
+    #navTwoDBetConfirmFinal {
+        margin: 0px 35% !important;
+        max-width: 30% !important;
+    }
+    .quickSelect-class {
+        top: 30% !important; 
+        min-width: 200px;         
+    }
+}
+

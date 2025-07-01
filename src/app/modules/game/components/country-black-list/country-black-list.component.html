@@ -1,0 +1,12 @@
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar> 
+
+<!-- App Capsule -->
+<div id="appCapsule">
+    <div class="row d-flex justify-content-center pt-2"><img src="./assets/img/vpnImage.png" width="50px" height="50px"></div>
+    <div class="listview-title d-flex justify-content-center mt-2">VPN ပိတ်ပြီးမှသာ Game ထဲသို့ဝင်ပါ</div>
+    <ol class="listview simple-listview mx-3" *ngFor="let qmBlackListObj of this.qmBlackList; let i = index">
+        <li>{{i+1}}. {{qmBlackListObj.countryName_mm}}</li>
+    </ol>
+
+</div>
+<!-- * App Capsule -->

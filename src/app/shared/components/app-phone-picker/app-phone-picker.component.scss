@@ -1,0 +1,139 @@
+
+@import "../../../variables";
+.input_prefix{
+    width: 100px !important;
+}
+.phone_dropdown {
+    border: 1px solid #d1d4d6;
+   border-color: #d1d4d6!important;
+   border-style: solid !important;
+    color: #02a8c0 !important;
+    border-top-left-radius:5px;
+    border-bottom-left-radius: 5px;
+}
+body{
+   background-color: white!important;
+}
+
+
+.appHeader {
+    
+    background:  linear-gradient(to right, $first-color 0%, $second-color 100%);
+}
+
+.login-image {
+    /* width: 100%; */
+    max-width: 100%; 
+    min-height: 300px;  
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: fill;
+}
+.nav-tabs.lined .nav-item .nav-link.active {   
+    background: transparent;
+    border-bottom-color: transparent !important;
+}
+.nav-link.active :is(h1, h2, h3, h4, h5, h6){
+    color: $first-color !important;
+
+}
+
+.dropdown-item.active{
+    color: #000;
+    text-decoration: none;
+    background-color: #ddd;
+}
+
+.error-color {
+    color: red;
+    font-size: 12px;
+    padding-top: 5px;
+}
+
+#appCapsule {
+    padding-top: 20px !important;
+}
+
+.login-button {
+   // width: 100%;   
+  background-image: linear-gradient(to right, $first-color  0%,$second-color 100%);
+    border-radius: 30px;
+    color:  white;
+    margin-top: 20px;   
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.forgotPassword {
+    color:  $second-color;
+}
+a{
+    color: #0e97bf;
+    font-weight: 600;
+}
+.menu-item {
+    display: flex;
+    align-items:center; /* Vertically center the image and text */
+  }
+  
+  .flag-icon {
+    margin-right: 10px; /* Add space between the image and text */
+  }
+  
+  .prefix, .country-name {
+    font-size: 14px; /* Set your desired font size */
+  }
+  
+  li[role="menuitem"] {
+  //  padding: 5px 10px; /* Add some padding if needed */
+    list-style: none;
+  /* Remove bullet point if necessary */
+  }
+
+  #loginPhone {
+    appearance: none;          /* Remove browser-specific styling */
+    -webkit-appearance: none;   /* Remove WebKit-specific styling */
+    -moz-appearance: none; 
+    border: none;
+    outline: none;
+    background-color: white !important;
+  }
+  #loginPhone:focus{
+    border: none;
+    outline: none;
+    box-shadow: none !important; /* Removes any focus shadow */
+    background-color: white !important;
+  }
+
+  #loginPhone:active{
+    border: none;
+    outline: none;
+    box-shadow: none !important; /* Removes any focus shadow */
+    background-color: white !important;
+  }
+
+  
+  #button-basic {
+    padding-left: 0 !important;
+    margin-left: 10px !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  #button-basic img {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .vertical-line {
+    width: 2px;             /* Thickness of the line */
+    height: 40px;          /* Height of the line */
+    background-color:#2253A2; /* Color of the line */
+    margin-left: 0px;      /* Optional: Space from the left */
+  }
+
+  input::placeholder {
+    font-size: 14px; /* Set the desired font size */
+    color: #888; /* Optionally set the color */
+  }

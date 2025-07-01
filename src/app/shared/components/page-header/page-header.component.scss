@@ -1,0 +1,7 @@
+$first: red;
+// .appHeader {
+//    background: $first;
+// }
+.appHeader {
+   background: linear-gradient(60deg, #3b5bb9 0%, #00acc1 100%);
+}

@@ -377,6 +377,13 @@ export class OtpPageComponent implements OnInit {
           );
 
         }
+        else{
+           this.toastr.error("", this.translateService.instant('invalid-otp-code'), {
+                    timeOut: 3000,
+                    positionClass: 'toast-bottom-center',
+                  });
+                  return false;
+        }
       
     }
   }

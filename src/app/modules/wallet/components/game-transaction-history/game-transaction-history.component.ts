@@ -74,9 +74,9 @@ export class GameTransactionHistoryComponent implements OnInit {
     this.gameWithdrawal=false;
     this.rowsOfPage = 20;
     this.pageNumber = 0;
-    const receivedData = this.dataService.getData();
+    const receivedData = this.storage.retrieve('transtype');
     if (receivedData) {
-      this.type=receivedData.message;
+      this.type=receivedData;
       if(this.type=='WITHDRAWAL')
       {
          this.getGameWithdrawTransactionHistory(0, this.type)
@@ -253,7 +253,6 @@ export class GameTransactionHistoryComponent implements OnInit {
         result => {
           this.dto.Response = result;
           this.gametransactionWithdrawalHistoryList = result.results;
-           console.log("GameResponse>>>"+JSON.stringify(this.gametransactionWithdrawalHistoryList))
           this.totalItems = result.totalRows;
           pageNumber = result.pageNumber;
           this.addWithGameList = [...this.addWithGameList, ...this.gametransactionWithdrawalHistoryList];
@@ -290,7 +289,6 @@ export class GameTransactionHistoryComponent implements OnInit {
         result => {
           this.dto.Response = result;
           this.gametransactionWithdrawalHistoryList = result.results;
-          console.log("GameResponse>>>"+JSON.stringify(this.gametransactionWithdrawalHistoryList))
           this.totalItems = result.totalRows;
           pageNumber = result.pageNumber;
           this.addWithGameList = [...this.addList, ...this.gametransactionWithdrawalHistoryList];
@@ -313,6 +311,7 @@ export class GameTransactionHistoryComponent implements OnInit {
   }
 
   goToRoute(){
+    this.storage.clear('transtype')
     this.router.navigate(['/wallet/history'], {replaceUrl: true});
   }
 
@@ -327,5 +326,48 @@ export class GameTransactionHistoryComponent implements OnInit {
     this.gamewithdrawaltab=true;
     this.gametopuptab=false;
     this.getGameWithdrawTransactionHistory(this.pageNumber,'WITHDRAWAL')
+  }
+
+  getTopupGameTransactionHistorytab(pageNumber,type)
+  {
+    this.storage.clear('transtype');
+    type='DEPOSIT';
+    this.isTopupTab = true;
+    this.isWithdrawalTab  = false;
+    this.gameTopup=true;
+    this.gameWithdrawal=false;
+
+    this.loadingMore= false;
+    this.loading= true;
+    this.spinner.show(this.transactionSpinner);
+    this.token = this.storage.retrieve('token');    
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', this.token); 
+    let params = new HttpParams();
+    pageNumber = 1;
+    this.gametransactionHistoryList = [];
+    this.addList = [];
+    params = params.set('searchKey', this.searchKey).set('pageNumber',this.pageNumber).set('rowsOfPage', this.rowsOfPage.toString()).set('type',type);
+    this.http.get( this.funct.ipaddress+'loginGS/getGameUserTransaction', { params: params,headers: headers })
+      .pipe(
+        catchError(this.handleError.bind(this))
+     )
+      .subscribe(
+        result => {
+          this.dto.Response = result;
+          this.gametransactionHistoryList = result.results;
+          this.totalItems = result.totalRows;
+          this.pageNumber = result.pageNumber;
+          this.addList = [...this.addList, ...this.gametransactionHistoryList];
+          localStorage.setItem('transactionHistoryList', JSON.stringify(this.addList));
+          if(this.addList.length == 0 || this.addList.length >= result.totalRows)
+          {
+            this.isLast = true;
+          }
+          this.loading= false;
+          this.loadingMore= true;
+          this.spinner.hide(this.transactionSpinner);
+        }
+      );
   }
 }

@@ -82,7 +82,7 @@ export class TwodDreamBookComponent implements OnInit {
     if (language == "my" || language == 'my_zawgyi') {
       return data.description_my != null ? data.description_my : data.name;
     } else if (language == "th") {
-      return data.description_zh != null ? data.description_zh : data.name;
+      return data.description_th != null ? data.description_th : data.name;
     } else if (language == "zh") {
       return data.description_zh != null ? data.description_zh : data.name;
     } else {

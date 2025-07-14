@@ -344,7 +344,6 @@ export class WithdrawComponent implements OnInit {
         result => {
           this.dto.Response = result;
           this.withdrawalBankAccList = this.dto.Response;
-          console.log("WithdrawlBankAcclist>>>>>"+JSON.stringify(this.withdrawalBankAccList))
           if (this.topupBankName == undefined || this.topupBankName == null) {
             this.refreshLoading = false;
             this.spinner.hide("refreshLoading");

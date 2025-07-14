@@ -10,6 +10,7 @@ import { FunctService } from './funct.service';
 import { DtoService } from './dto.service';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class CommonService {
   token: any;
   userProfileBalance : any;
   mainWallet : any;
-  subject = new Subject<string>();    
+  subject = new Subject<string>();  
+  dataSubject = new BehaviorSubject<any>(null);  
   //add ***
   refreshLoading: boolean=false;
   submitLoading: boolean=false;
@@ -128,14 +130,30 @@ export class CommonService {
   }
  
 
-  setData(data: any) {
-    this.data = data;
+  // setData(data: any) {
+  //   this.data = data;
+  // }
+
+  // getData(): any {
+  //   const temp = this.data;
+  //   this.data = null; // clear after use
+  //   return temp;
+  // }
+
+   setData(data: any) {
+    this.dataSubject.next(data);
   }
 
-  getData(): any {
-    const temp = this.data;
-    this.data = null; // clear after use
-    return temp;
+  getData() {
+    return this.dataSubject.asObservable(); // Use async pipe or subscribe
+  }
+
+  clearData() {
+    this.dataSubject.next(null);  // or undefined
+  }
+
+  getCurrentData() {
+    return this.dataSubject.getValue(); // Use this for sync access
   }
 
 

@@ -169,6 +169,9 @@ export class ThreedBetComponent implements OnInit {
       // num1=$("#number-swiper-value" ).val();
       num1=this.selectnum;
       if(num1==undefined || num1==''){
+         if( this.storage.retrieve('localSelectTwoDList') !=null){
+          this.betNumberList= this.storage.retrieve('localSelectTwoDList');
+          }
          this.toastr.error("", this.translateService.instant("select_numbers"), {
           timeOut: 3000,
           positionClass: 'toast-top-center',

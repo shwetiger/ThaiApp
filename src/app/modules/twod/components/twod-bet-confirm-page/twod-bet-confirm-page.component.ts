@@ -219,7 +219,7 @@ export class TwodBetConfirmPageComponent implements OnInit {
   this.betAddNumber="";
   this.betAddAmount="";    
   this.twodBetAdd = this.modalService.show(twodBetAdd, {   
-    class: "twodBetAddClass",
+    class: "twodBetAddClass modal-sm",
     backdrop: true,
     ignoreBackdropClick: true
   });
@@ -590,7 +590,7 @@ export class TwodBetConfirmPageComponent implements OnInit {
     }
     
     /*XXX*/
-    this.localUnBetLimitList= await this.getUnBetListNew();   
+    this.localUnBetLimitList= await this.getUnBetListNew(); 
     if(this.localUnBetLimitList==undefined)
     {
       this.toastr.error("", this.translateService.instant("select_numbers"), {
@@ -697,11 +697,14 @@ let response = await axios.post(this.funct.ipaddress + 'twodbet/Check2dBetLimitF
       return response.data;
     })
     .catch((error) => { 
-     
       if(error.response != undefined){
         if(error.response.status == 406){
           return error.response.data.message;   
-        }    
+        } 
+        // if(error.response.status==509)   
+        // {
+        //   return:
+        // }
         else{
           return error.response.data.message;
         }
@@ -736,14 +739,14 @@ async twodBetModalNew(number: number, amount: number)
         return;
     }
     /*May be total error*/
-    if(this.localUnBetLimitList == null || this.localUnBetLimitList == undefined || this.localUnBetLimitList =="" )
-    {
-      this.betTwoDList.find(x=>x.number == number).unbetstatus= false;
-      this.totalBetAmount();
-      await this.getUnBetListNew();
-      this.twodBetEdit.hide();
-      return;
-    }    
+    // if(this.localUnBetLimitList == null || this.localUnBetLimitList == undefined || this.localUnBetLimitList =="" )
+    // {
+    //   this.betTwoDList.find(x=>x.number == number).unbetstatus= false;
+    //   this.totalBetAmount();
+    //   await this.getUnBetListNew();
+    //   this.twodBetEdit.hide();
+    //   return;
+    // }    
     if(this.localUnBetLimitList !=null || this.localUnBetLimitList != undefined || this.localUnBetLimitList != "" )
     {
       for(let i=0; i< this.localUnBetLimitList.length; i++)
@@ -755,7 +758,7 @@ async twodBetModalNew(number: number, amount: number)
             this.betTwoDList.find(x=>x.number == number).unbetstatus= false;
             this.betTwoDList.find(x=>x.number == number).amount =amount;
             this.totalBetAmount();
-            await this.getUnBetListNew();   
+          //  await this.getUnBetListNew();   
             this.twodBetEdit.hide();  
             break;
           }
@@ -764,7 +767,7 @@ async twodBetModalNew(number: number, amount: number)
             this.betTwoDList.find(x=>x.number == number).unbetstatus= true;
             this.betTwoDList.find(x=>x.number == number).amount =amount;  
             this.totalBetAmount(); 
-            await this.getUnBetListNew(); 
+          //  await this.getUnBetListNew(); 
             this.twodBetEdit.hide();
             break;      
           }
@@ -773,7 +776,7 @@ async twodBetModalNew(number: number, amount: number)
         {
           this.betTwoDList.find(x=>x.number == number).unbetstatus= false;
           this.totalBetAmount();
-          await this.getUnBetListNew();   
+         // await this.getUnBetListNew();   
           this.twodBetEdit.hide();
         }
       }

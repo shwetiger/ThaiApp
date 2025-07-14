@@ -11,7 +11,7 @@
             <a class="nav-link" [ngClass]="{'active': historyMain}"  data-toggle="tab" (click)="goToRoute()"> {{ 'main_wallet' | translate }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'active': historyGame}" data-toggle="tab" href="#lined" (click) = "getTopupGameTransactionHistory(pageNumber,'DEPOSIT')"> {{ 'game_wallet_tran_text' | translate }}</a>
+            <a class="nav-link" [ngClass]="{'active': historyGame}" data-toggle="tab" href="#lined" (click) = "getTopupGameTransactionHistorytab(pageNumber,'DEPOSIT')"> {{ 'game_wallet_tran_text' | translate }}</a>
         </li>            
     </ul>
     

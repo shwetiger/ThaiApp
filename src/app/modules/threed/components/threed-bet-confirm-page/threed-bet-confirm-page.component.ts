@@ -132,7 +132,7 @@ export class ThreedBetConfirmPageComponent implements OnInit {
     this.betAddAmount='';
     this.betAddNumber='';
     this.twodBetAdd = this.modalService.show(twodBetAdd, {   
-      class: "threedBetAddClass",
+      class: "threedBetAddClass modal-sm",
       backdrop: true,
       ignoreBackdropClick: true
     });

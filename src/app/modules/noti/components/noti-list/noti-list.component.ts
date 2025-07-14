@@ -69,7 +69,6 @@ export class NotiListComponent implements OnInit {
         this.common.refreshLoading=false;
         this.spinner.hide("refreshLoading");
         this.dto.Response = result;
-        console.log("NotiList>>>>"+JSON.stringify(this.dto.Response))
         if(this.dto.Response.length > 0){
           this.storage.store('localNotiList', this.dto.Response);
           this.notiList = this.storage.retrieve('localNotiList');         

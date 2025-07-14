@@ -76,9 +76,9 @@ export class TransactionHistoryComponent implements OnInit {
     this.mainWithdrawal= false;
     this.rowsOfPage = 20;
     this.pageNumber = 0;
-    const receivedData = this.dataService.getData();
+    const receivedData = this.storage.retrieve('transtype');
     if (receivedData) {
-      this.type=receivedData.message;
+      this.type=receivedData;
       if(this.type=='WITHDRAW')
       {
          this.getWithdrawalMainTransactionHistory(1, this.type)

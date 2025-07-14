@@ -26,18 +26,17 @@
                                         </div>    
                                     </div>
                                 </div>                       -->
-                                <p class="card-border">{{ 'balance' | translate }}:   <span> {{ userBalance | number : '1.0'}} </span>{{ 'ks' | translate }}   </p> 
+                                
                         </div>
                     </div>
                 </div>                
             </div>
         </div>
-        <div class="section full mt-2" *ngIf="showAmountFrom">      
-          
+         <p class="card-border">{{ 'balance' | translate }}:   <span> {{ userBalance | number : '1.0'}} </span>{{ 'ks' | translate }}   </p>
+        <div class="section full" *ngIf="showAmountFrom">      
             <div class="container-fluid">
                 <div class="row mb-2">
-                    <div style="margin-bottom: 5px;font-size: 13px;"> <span class="pl-1">{{'topup-amount' | translate}}</span></div>
-                   
+                    <div style="margin-bottom: 5px;font-size: 13px;"> <span class="pl-1">{{'topup-amount' | translate}}</span></div>   
                     <div class="col-12">
                         <input type="number" id="topup_amount_incorrect" (keyup.enter)="enter($event)" (keyup) = "checkAmountTopup()" class="form-control incorrect-noborder-color"  
                         placeholder="{{'withdrawal_cash_amount_hint' | translate}}"

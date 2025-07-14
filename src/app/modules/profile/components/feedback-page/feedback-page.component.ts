@@ -32,6 +32,7 @@ export class FeedbackPageComponent implements OnInit {
   type:any;
   typeList:any;
   activeTab:any;
+  openQuestionId: number | null = null;
   
   constructor(   
     public common: CommonService,
@@ -208,7 +209,6 @@ getqusetionlist(typeId,question)
       result => {
         this.dto.Response = result;
         this.QuestionHeaderList=this.dto.Response;
-        console.log("QuestionList>>>"+JSON.stringify(this.QuestionHeaderList))
         this.questionlistshow = new Array(this.QuestionHeaderList.length).fill(false);
         this.typeList = Array.from(new Set(this.QuestionHeaderList.map(item => item.type_name)))
         .map(typeName => this.QuestionHeaderList.find(item => item.type_name === typeName)!);
@@ -217,17 +217,27 @@ getqusetionlist(typeId,question)
 
 }
 
-  QuestiondetaillistShow(FaqId:any,i)
-  {
-    this.questionlistshow[i]=true;
-    this.getqusetionbyId(FaqId)
-  }
-  QuestiondetaillistNotShow(i)
-  {
-    this.Questiondetaillist=[];
-    this.questionlistshow[i]=false;
+  // QuestiondetaillistShow(FaqId:any,i)
+  // {
+  //   this.questionlistshow[i]=true;
+  //   this.getqusetionbyId(FaqId)
+  // }
+
+  // QuestiondetaillistNotShow(i)
+  // {
+  //   this.Questiondetaillist=[];
+  //   this.questionlistshow[i]=false;
     
-  }
+  // }
+
+  QuestiondetaillistShow(questionId: number) {
+  this.openQuestionId = questionId;
+  this.getqusetionbyId(questionId)
+}
+
+QuestiondetaillistNotShow() {
+  this.openQuestionId = null;
+}
 
   search() {
   
@@ -257,5 +267,9 @@ getqusetionlist(typeId,question)
   switchTab(tabName: string): void {
     this.activeTab = tabName;
   }
+
+  filteredQuestions(typeName: string) {
+  return this.QuestionHeaderList.filter(item => item.type_name === typeName);
+}
  
 }

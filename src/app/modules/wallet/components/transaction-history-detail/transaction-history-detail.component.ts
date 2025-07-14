@@ -58,6 +58,8 @@ export class TransactionHistoryDetailComponent implements OnInit {
 
   ngOnInit()
   {
+    this.storage.clear('transtype');
+  
     this.listServicePhone();
     if(this.typeOfPage == 0)
     {
@@ -77,7 +79,7 @@ export class TransactionHistoryDetailComponent implements OnInit {
   }
 
   goBack(){
-    this.dataService.setData({ message: this.tranObj.type });
+    this.storage.store('transtype',this.tranObj.type);
     this._location.back();
   }
   goMainPage()
@@ -108,7 +110,7 @@ export class TransactionHistoryDetailComponent implements OnInit {
      axios.get(this.funct.ipaddress + 'transaction/Detail?tranId='+this.reqObj.id, config )
     .then((res) => {  
         this.tranObj =  res.data;
-        console.log("Detail>>>"+JSON.stringify(this.tranObj))
+        this.storage.store('transtype',this.tranObj.type);
         this.spinner.hide("spinnerName1"); 
         this.isSpinner = false;
         return res.data;
@@ -135,6 +137,7 @@ export class TransactionHistoryDetailComponent implements OnInit {
     .then((res) => {   
       this.spinner.hide("spinnerName1");  
         this.tranObj =  res.data;
+        this.storage.store('transtype',this.tranObj.type);
         this.isSpinner = false;
         return res.data;
   })

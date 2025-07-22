@@ -1019,6 +1019,7 @@ export class GameListComponent implements OnInit, OnDestroy {
                   this.dto.Response = {};
                   this.dto.Response = result;
                   this.launchGameResModel = this.dto.Response;
+                  console.log("skmResponse>>>"+JSON.stringify(this.launchGameModel))
                   this.common.gameLoading=false;
                   this.spinner.hide("gameLoading");
                   this.storage.store('localGamePlayProviderId',this.providerId);

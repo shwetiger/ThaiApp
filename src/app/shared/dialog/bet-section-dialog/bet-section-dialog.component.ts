@@ -38,7 +38,6 @@ export class BetSectionDialogComponent implements OnInit {
   }
 
   async ngOnInit() {
-
     if (this.twodSectionList == null || this.twodSectionList == undefined || this.twodSectionList.length == 0) {
       this.twodSectionList = await this.getSectionList();
     }
@@ -49,7 +48,6 @@ export class BetSectionDialogComponent implements OnInit {
   async getSectionList() {
     const axios = require('axios').default;
     const response = await axios.get(this.funct.ipaddress + 'twodsection/getTwodSectionList');
-   
     return response.data;
   }
 

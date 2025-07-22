@@ -1,0 +1,29 @@
+@import "../../../variables";
+
+.modal-header .close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: $second-color;
+  opacity: 1;
+  outline: none;
+}
+
+.modal-title {
+  padding: 0;
+  margin: 15px 0 0 0;
+  text-align: center;
+  padding: 6px 0;
+  color: $second-color;
+  font-weight: 600;
+  width: 100%;
+}
+
+::ng-deep {
+  .bet-section-closed-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: calc(100vh - 60px);
+  }
+}

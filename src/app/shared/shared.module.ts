@@ -56,6 +56,7 @@ import { MaintenanceTimeComponent } from './components/maintenance-time/maintena
 import { GameWebMobileViewComponent } from './dialog/game-web-mobile-view/game-web-mobile-view.component';
 import { QrViewDialogComponent } from './dialog/qr-view-dialog/qr-view-dialog.component';
 import { AppSplashScreenAdsComponent } from './components/app-splash-screen-ads/app-splash-screen-ads.component';
+import { BetSectionColsedComponent } from './dialog/bet-section-colsed/bet-section-colsed.component';
 //import { MaintenanceTimeComponent } from './maintenance-time/maintenance-time.component';
 
 
@@ -168,6 +169,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     GameWebMobileViewComponent,
     QrViewDialogComponent,
     AppSplashScreenAdsComponent,
+    BetSectionColsedComponent,
   ],
   imports: [
     ModalModule.forRoot(),

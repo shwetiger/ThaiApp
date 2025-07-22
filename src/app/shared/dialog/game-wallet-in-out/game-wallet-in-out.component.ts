@@ -9,6 +9,7 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { catchError } from 'rxjs/operators';
 import { DtoService } from '../../service/dto.service';
 import { FunctService } from '../../service/funct.service';
+import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
 
 
 
@@ -40,7 +41,8 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
     private storage: LocalStorageService,
     public bsModalRef: BsModalRef,
     private translateService: TranslateService, 
-    private router: Router,) {
+    private router: Router,
+    private readonly _zawgyiDetector: ZawgyiDetector) {
   
   }
  
@@ -89,6 +91,11 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
 
   checkPassword()
   {   
+   const myanmarRegex = /[\u1000-\u109F]/;
+
+    if (myanmarRegex.test(this.depositModel.password)) {
+      this.depositModel.password = this.depositModel.password.slice(0, -1);
+    }
         this.password_error_message="";
         if(this.depositModel.password.length > 20)        {
          // $("#passwordErr").html("Password must be maximum 20 digit or characters");

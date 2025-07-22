@@ -342,8 +342,8 @@
     "bet_morning": "Morning",
     "bet_evening": "Evening",
     "close_weekend": "Closed on Saturday and Sunday",
-    "close_holiday1": "Today is ",
-    "close_holiday2": " and the lottery is closed.",
+    "close_holiday1": "The lottery is closed due to",
+    "close_holiday2": " day.",
     "see_holiday": "Other Holidays",
     "save": "Save",
     "twod_result_section": "@section 2D result number is ", 
@@ -771,5 +771,11 @@
     "only_refcode_header":"Referral Code",
     "only_refcode_desc":"Please enter the referral code of the service who introduced you to the app.",
     "only_refcode_skip_desc":"If you do not have a referral code,You can skip it",
-    "only_refcode_alert":"Enter Referral Code"
+    "only_refcode_alert":"Enter Referral Code",
+    "pf_point":"Points",
+    "ref_footer_desc":"Earn deposit bonuses by inviting friends who use your phone number as referral. More invites, more rewards!",
+    "2d_allsec_colsed":"Today's lottery draw is closed. Please try again from 04:36 PM.",
+    "winner_list_header":"Top (100) Winner List 2D",
+     "winner_list_header_3d":"Top (100) Winner List 3D"
+  
   }

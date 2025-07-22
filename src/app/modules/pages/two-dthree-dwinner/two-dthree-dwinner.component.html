@@ -3,9 +3,16 @@
 <div id="appCapsule" *ngIf="!loadingRefresh">      
     <div class="container pb-2">
         <div class="container">
-            <div class="row pt-1">
-                <img [src]="(type=='2D')?twodimgeLink: 'assets/img/winner_3d.png'" alt="winner_2d" class="winner_2d" >                    
+            <div class="row pt-1 justify-content-center" style="background-color: #2253A2;">
+                <h2 *ngIf="type=='2D'" style="color:#fff;text-align: center;">{{'winner_list_header' |translate}}</h2>
+                 <h2 *ngIf="type=='3D'"  style="color:#fff;text-align: center;">{{'winner_list_header_3d' |translate}}</h2>
+                <!-- <img [src]="(type=='2D')?twodimgeLink: 'assets/img/winner_3d.png'" alt="winner_2d" class="winner_2d" >     -->
+                                
              </div>
+               <!-- <div class="row pt-1" style="background-color: red;">
+                <img [src]="(type=='2D')?twodimgeLink: 'assets/img/winner_3d.png'" alt="winner_2d" class="winner_2d" >    
+                                
+             </div> -->
         </div>
         <div class="container pt-2">
             <div class="row">          

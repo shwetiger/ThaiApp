@@ -46,10 +46,15 @@ export class GameOpenChromeComponent implements OnInit {
     this.bsModalRef.hide();
   }
   handleError(error: HttpErrorResponse){
-
-   
     this.spinner.hide();  
     this.spinner.hide("smallSpinner"); 
+     if(error.status==200){
+      this.toastr.error("",this.translateService.instant("skm-lock-time"), {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      });
+        return;
+     }
     if(error.status == 0){
       this.toastr.error("", 'check your internet connection', {
         timeOut: 1000,
@@ -252,7 +257,7 @@ export class GameOpenChromeComponent implements OnInit {
           this.dto.Response = {};
           this.dto.Response = result;
           var launchGameResModel = this.dto.Response; 
-        
+         // alert("SKMResponse>>>"+JSON.stringify(this.dto.Response))
           this.storage.store('localGamePlayProviderId',this.providerId);
           this.storage.store('localPreviousRoute','gameList')  
           sessionStorage.setItem('providerId',this.providerId);

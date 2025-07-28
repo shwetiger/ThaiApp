@@ -388,7 +388,6 @@ export class OtpPageComponent implements OnInit {
     }
   }
   getOtp(){ 
-   
     this.time=180;
     this.startCountdown(this.time);        
     if (this.commonFormtype== "forgetPassword") {       
@@ -468,7 +467,7 @@ export class OtpPageComponent implements OnInit {
     this.updateDeviceId.guid= this.storage.retrieve('localNewDeviceOtpSms').guid;
     this.updateDeviceId.request_id= this.storage.retrieve('localNewDeviceOtpSms').request_id;
     this.updateDeviceId.code= this.otpcode; 
-    this.updateDeviceId.deviceId=this.storage.retrieve('localLoginModel').deviceId;  
+    this.updateDeviceId.deviceId=this.storage.retrieve('localLoginModel').deviceId;
     this.http.post(this.funct.ipaddress+'user/updateDeviceId', this.updateDeviceId,  { headers: headers })
       .pipe(            
         catchError(this.handleErrorMessage.handleError.bind(this, 'otp'))

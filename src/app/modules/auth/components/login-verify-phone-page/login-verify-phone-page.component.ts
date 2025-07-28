@@ -203,7 +203,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
           result => {   
             this.common.submitLoading= false;   
             this.spinner.hide("submitLoading");         
-            this.dto.Response = result;    
+            this.dto.Response = result;  
             this.storage.store('localNewDeviceOtpSms',  this.dto.Response);
             this.newDeviceOtpSms = this.storage.retrieve('localNewDeviceOtpSms');
             this.storage.store("otptype",'smsotp');

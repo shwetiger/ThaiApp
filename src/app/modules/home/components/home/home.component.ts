@@ -241,6 +241,7 @@ getGameProviderList()
           this.spinner.hide("refreshLoading");       
           this.dto.Response = result;
           this.gameProviderList =  this.dto.Response;
+          console.log("ThisGameProviderList>>>>"+JSON.stringify(this.gameProviderList));
           this.storage.store('localgameProviderList', this.gameProviderList);
         }
       );

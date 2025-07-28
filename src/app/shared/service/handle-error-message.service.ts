@@ -32,7 +32,7 @@ export class HandleErrorMessageService {
   handleError(err: string, error: HttpErrorResponse) { 
     this.common.threedCloseTimeLoading = false;
     this.spinner.hide("threedCloseTimeLoading");
-    console.log("Error>>>>"+JSON.stringify(error))
+    //console.log("Error>>>>"+JSON.stringify(error))
     //gameLoading
     this.common.gameLoading = false;
     this.spinner.hide("gameLoading");

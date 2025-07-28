@@ -270,22 +270,39 @@ export class GameWalletComponent implements OnInit {
     this.spinner.hide("refreshLoading");  
   }
   
-  gameTransfer(data,tranfer){
-    this.gameproviderlist=this.storage.retrieve("localgameProviderList");
-    var checkmaintenance = this.gameproviderlist.find(x=>(x.id == parseInt(data.providerId)));
-    if(checkmaintenance.isMaintenance == true)
-    {
-        this.toastr.error("", this.translateService.instant("transfer_maintenance_alert"), {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });
-        return;
+ gameTransfer(data, tranfer) {
+  this.getGameProviderList(() => {
+    const checkmaintenance = this.gameproviderlist.find(x => x.id == parseInt(data.providerId));
+    if (checkmaintenance?.isMaintenance) {
+      this.toastr.error("", this.translateService.instant("transfer_maintenance_alert"), {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      });
+      return;
+    } else {
+      const list = {
+        list: data,
+        tranfer: tranfer,
+        gameWalletTransfer: this.gameWalletTransfer
+      };
+      this.showGameInOutDialog(list);
     }
-    else{
-    var list={'list':data,tranfer: tranfer,gameWalletTransfer: this.gameWalletTransfer};
-    this.showGameInOutDialog(list);
-    }
-  }
+  });
+}
+
+// getGameProviderList ကို callback function ထည့်နိုင်အောင် ပြင်ထားတယ်
+getGameProviderList(callback: () => void) {
+  const headers = new HttpHeaders();
+  this.http.get(this.funct.ipaddress + 'gameProvider/getGameProviderList', { headers: headers })
+    .pipe(catchError(this.handleError.bind(this)))
+    .subscribe(result => {
+      this.common.refreshLoading = false;
+      this.spinner.hide("refreshLoading");
+      this.dto.Response = result;
+      this.gameproviderlist = this.dto.Response;
+      if (callback) callback(); // ✅ callback ကို call
+    });
+}
 
   getGameList(provierId)
   {   

@@ -929,6 +929,11 @@ export class WithdrawComponent implements OnInit {
     document.getElementById(id).focus();
   }
   loginPassError() {
+     const myanmarRegex = /[\u1000-\u109F]/;
+
+    if (myanmarRegex.test(this.withdrawalRequestModel.login_password )) {
+      this.withdrawalRequestModel.login_password = this.withdrawalRequestModel.login_password .slice(0, -1);
+    }
     if (this.withdrawalRequestModel.login_password != '' && this.withdrawalRequestModel.login_password != undefined && this.withdrawalRequestModel.login_password != null) {
       $("#loginPassErr").html("");
       if (this.withdrawalRequestModel.login_password.length > 20) {
@@ -1020,6 +1025,7 @@ export class WithdrawComponent implements OnInit {
     this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: false });
   }
   wavePasswordTypeErr() {
+    
     $('#wavePassErr').html("");
     if (this.withdrawalRequestModel.remark == null || this.withdrawalRequestModel.remark == undefined) {
       $('#wavePassErr').html(this.translateService.instant('withdrawal_wave_shop_hint'));

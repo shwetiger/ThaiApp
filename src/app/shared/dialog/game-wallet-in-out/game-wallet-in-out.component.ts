@@ -32,6 +32,7 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
   loadingSubmiting: boolean=false;
   amount_error_message: any="";
   password_error_message: any;
+  gameproviderlist:any;
   constructor(    
     private dto: DtoService,
     private toastr: ToastrService,
@@ -166,7 +167,7 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
   {   
     this.loadingSubmiting=false;
     this.spinner.hide('loadingSubmiting');
-  
+   // console.log("Error>>>>>>>>>"+JSON.stringify(error));
     this.depositModel.password='';
     if(error.status == 0){
       this.toastr.error("", 'check your internet connection', {
@@ -184,6 +185,14 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
         });
         this.storage.clear('token');
         this.storage.clear('isUserLoggedIn');
+        return;
+    }
+     if(error.status == 429)
+    {
+      this.toastr.error("", this.translateService.instant("transfer_20min_lock"), {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+        });
         return;
     }
     if(error.status  == 307)
@@ -268,7 +277,17 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
    
     this.loadingSubmiting=true;
     this.spinner.show('loadingSubmiting');
-    
+    // this.getGameProviderList();
+    // var checkmaintenance = this.gameproviderlist.find(x=>(x.id == parseInt(this.depositModel.providerId)));
+    // if(checkmaintenance.isMaintenance == true)
+    // {
+    //     this.toastr.error("", this.translateService.instant("transfer_maintenance_alert"), {
+    //       timeOut: 3000,
+    //       positionClass: 'toast-top-center',
+    //     });
+    //     return;
+    // }
+    // else{
     if(this.gameType == 'in')
     {
       var gameIn = this.translateService.instant("game_from");
@@ -296,6 +315,15 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
                 });
                 return;
             }
+            if(this.dto.Response.message == "too many request"){
+              this.toastr.error("", this.translateService.instant("transfer_20min_lock"), {
+                timeOut: 3000,
+                positionClass: 'toast-top-center',
+                });
+                return;
+            }
+            //too many request
+            
             
             if(this.dto.Response.errCode == '70')
             {
@@ -342,8 +370,9 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
             this.dto.Response = result; 
             this.loadingSubmiting=false;
             this.spinner.hide('loadingSubmiting');
+            console.log("Gametransferresponse>>>>>"+JSON.stringify(this.dto.Response))
             if(this.dto.Response.status == "Error" ||this.dto.Response.message == "error" ){
-              this.toastr.error("", this.translateService.instant("submitting-request-time"), {
+              this.toastr.error("", this.translateService.instant("transfer_20min_lock"), {
                 timeOut: 3000,
                 positionClass: 'toast-top-center',
                 });
@@ -413,6 +442,14 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
                 });
                 return;
             }
+
+              if(this.dto.Response.message == "too many request"){
+              this.toastr.error("", this.translateService.instant("transfer_20min_lock"), {
+                timeOut: 3000,
+                positionClass: 'toast-top-center',
+                });
+                return;
+            }
             
             if(this.dto.Response.errMsg == ''){
               this.bsModalRef.hide();
@@ -468,7 +505,7 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
             this.spinner.show('loadingSubmiting');
             this.storage.store("transferAmount", this.depositModel.transferAmount);
             if(this.dto.Response.status == "Error" || this.dto.Response.message == "error" ){
-              this.toastr.error("", this.translateService.instant("submitting-request-time"), {
+              this.toastr.error("", this.translateService.instant("transfer_20min_lock"), {
                 timeOut: 3000,
                 positionClass: 'toast-top-center',
                 });
@@ -519,6 +556,7 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
     else{
       return;
     }
+  
   }
   
   enter(event)
@@ -527,6 +565,25 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy{
   }
   close(){
     this.bsModalRef.hide();
+  }
+
+  getGameProviderList()
+    {   
+      let headers = new HttpHeaders();    
+      this.http.get(this.funct.ipaddress + 'gameProvider/getGameProviderList', { headers: headers })
+      .pipe(
+        catchError(this.handleError.bind(this))
+        )
+      .subscribe(
+        result => {   
+          this.dto.Response = result;
+          this.gameproviderlist =  this.dto.Response;
+            this.loadingSubmiting=false;
+            this.spinner.show('loadingSubmiting');
+          console.log("GameproviderList>>>"+JSON.stringify(this.gameproviderlist))
+         // this.storage.store('localgameProviderList', this.gameproviderlist);
+        }
+      );
   }
 
 }

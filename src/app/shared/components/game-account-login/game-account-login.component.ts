@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams,HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
+import { Observable, Subscription, throwError, timer } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
@@ -240,27 +241,35 @@ export class GameAccountLoginComponent implements OnInit {
       this.router.navigate(['/game/wallet'],{state: {providerType: providerId,gameName: name, gameType: tranfer},replaceUrl: false});
      }
 
-    //instead of this function we need to show transfer alert
-    gameTransfer(providerId,providerName, action ){
-      this.gameproviderlist=this.storage.retrieve("localgameProviderList");
-    var data = this.gameproviderlist.find(x=>(x.id == parseInt(providerId)));
-    if(data.isMaintenance == true)
-    {
-      
-        this.toastr.error("", this.translateService.instant("transfer_maintenance_alert"), {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });
-          return;
+  gameTransfer(providerId: number, providerName: string, action: string) {
+  
+  this.getGameProviderList().subscribe((result: any) => {
+    this.gameproviderlist = result;
+
+    const data = this.gameproviderlist.find(x => x.id === parseInt(providerId.toString(), 10));
+    if (data?.isMaintenance) {
+      this.toastr.error("", this.translateService.instant("transfer_maintenance_alert"), {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      });
+      return;
     }
-       else{
-       this.storage.store('localGameProviderId',this.gameProviderId); 
-       this.data.display_name = providerName;
-       this.data.providerId = providerId;
-       var list = {'list':this.data,tranfer: action}; 
-       this.showGameInOutDialog(list);   
-       }       
-    }
+
+    this.storage.store('localGameProviderId', providerId);
+    this.data.display_name = providerName;
+    this.data.providerId = providerId;
+    const list = { list: this.data, tranfer: action };
+    this.showGameInOutDialog(list);
+  });
+}
+
+getGameProviderList(): Observable<any> {
+  const headers = new HttpHeaders();
+  return this.http.get(this.funct.ipaddress + 'gameProvider/getGameProviderList', { headers })
+    .pipe(
+      catchError(this.handleErrorMessage.handleError.bind(this, ''))
+    );
+}
     showGameInOutDialog(data) { 
       const initialState= {          
         title: '',

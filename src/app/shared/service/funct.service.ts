@@ -23,7 +23,7 @@ export class FunctService {
     //this.ipaddress ="https://apitestV1.thai2d3dgame.com/api/";    
     //prod Important
     //this.ipaddress= "http://148.72.246.131:89/api/"
-   //this.ipaddress = "https://api.thai2d3dgame.com/api/";
+  // this.ipaddress = "https://api.thai2d3dgame.com/api/";
    //  this.ipaddress = "https://97.74.95.175:88/api/";
    //this.ipaddress = "https://api.thaisinmyanmar.com/api/";
 

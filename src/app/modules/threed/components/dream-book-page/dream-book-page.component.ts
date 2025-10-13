@@ -54,8 +54,7 @@ export class DreamBookPageComponent implements OnInit {
     this.pageNumber=0;
     this.rowsOfPage=200;
     this.getDreamBookList(0);
-   this.addList =[]?[]: JSON.parse(localStorage.getItem('dreamBooks'));
-    
+    this.addList =[]?[]: JSON.parse(localStorage.getItem('dreamBooks'));
   }
 
   translate(key: string): string {
@@ -313,6 +312,7 @@ export class DreamBookPageComponent implements OnInit {
         });
         this.storage.clear('token');
         this.storage.clear('isUserLoggedIn');
+         this.router.navigate(['/login'], { replaceUrl: true });
     }
     if(error.status == 400)
     {
@@ -494,7 +494,7 @@ export class DreamBookPageComponent implements OnInit {
       || (element.number2.includes(this.dreambookSearchKey))){
         this.addList.push(element);
       }
-      else if(element.description_zh.includes( this.searchKey)
+      else if(element.description_zh.includes( this.dreambookSearchKey)
       || (element.number1.includes(this.dreambookSearchKey))
       || (element.number2.includes(this.dreambookSearchKey))){
         this.addList.push(element);

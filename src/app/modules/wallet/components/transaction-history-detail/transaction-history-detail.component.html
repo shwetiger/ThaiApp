@@ -19,7 +19,6 @@
            
            <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i> 
             <p class = "deniedIcon">{{'notification_toup_denied' | translate }} </p>
-            <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
        </div> 
 
         <div class="text-center" *ngIf = "tranObj.type == 'WITHDRAW' && tranObj.status == 'DENIED' ">
@@ -28,7 +27,6 @@
             </h4>
             <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i> 
             <p class = "deniedIcon">{{'notification_toup_denied' | translate }} </p>
-            <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
         </div> 
 
         <div class="text-center" *ngIf = "tranObj.type == 'WITHDRAW' && tranObj.status == 'APPROVED' ">
@@ -37,7 +35,6 @@
             </h4>
             <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i> 
             <p class = "successfulText">{{'successful' | translate }} </p>
-            <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
         </div>
 
         <div class="text-center" *ngIf = "tranObj.type == 'WITHDRAWAL'">
@@ -46,7 +43,6 @@
             </h4>
             <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i> 
             <p class = "successfulText">{{'successful' | translate }} </p>
-            <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
         </div>
 
         <div class="text-center" *ngIf = "tranObj.type == 'WITHDRAW' && tranObj.status == 'PENDING' ">
@@ -55,7 +51,6 @@
             </h4>
             <img src="assets/img/pendingimage.png" alt="pendingimage" width="30px" height="30px">
             <p class = "pendingText">{{'PENDING' | translate }} </p>
-            <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
         </div>
 
         <div class="text-center" *ngIf = "tranObj.type == 'TOPUP'  && tranObj.status == 'APPROVED'">
@@ -65,7 +60,6 @@
            
              <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i>                                             
              <p class = "successfulText">{{'successful' | translate }} </p>
-             <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
         </div> 
 
         <div class="text-center" *ngIf = "tranObj.type == 'DEPOSIT'">
@@ -75,7 +69,6 @@
            
            <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i>
             <p class = "successfulText">{{'successful' | translate }} </p>
-            <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
        </div> 
     
         <div class="text-center" *ngIf = "tranObj.type == 'TOPUP' && tranObj.status == 'PENDING' ">
@@ -83,10 +76,7 @@
                 {{ 'topup_pending_detail_title' | translate}}
            </h4>
             <img src="assets/img/pendingimage.png" alt="pendingimage" width="30px" height="30px">
-            <p class = "pendingText">{{'PENDING' | translate }} </p>
-            <p class="amount"> {{tranObj.amount | number : 0 }} {{'ks' | translate }} </p>
-
-            
+            <p class = "pendingText">{{'PENDING' | translate }} </p>       
        </div> 
     
         <div class="section full" >    

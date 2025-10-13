@@ -1,6 +1,9 @@
 @import '../../../variables';
 
-
+#appCapsule {
+    padding-top: 0px !important;
+    background-color: $background-color !important;
+    min-height: 100%;
 .driver {
     border-bottom: 1px solid #aabedd;
     margin-left: 26px;
@@ -51,7 +54,7 @@
     position: absolute;
 }
 
-
+}
 
 
   

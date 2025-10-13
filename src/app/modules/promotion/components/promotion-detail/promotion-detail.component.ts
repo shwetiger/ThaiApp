@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse  } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { LocalStorageService } from 'ngx-webstorage';
 import { catchError, delay, retry } from 'rxjs/operators';
@@ -18,14 +18,14 @@ import { FunctService } from 'src/app/shared/service/funct.service';
   styleUrls: ['./promotion-detail.component.scss']
 })
 export class PromotionDetailComponent implements OnInit {
-  promotionId : any;
-  token : any;
+  promotionId: any;
+  token: any;
   promotionDetailObj: any;
-  promotionCount : any;
-  promotionList : any;
-  linktext:any;
-  promolink:any;
-  openUrl:any;
+  promotionCount: any;
+  promotionList: any;
+  linktext: any;
+  promolink: any;
+  openUrl: any;
   constructor(
     private spinner: NgxSpinnerService,
     private handleErrorMessage: HandleErrorMessageService,
@@ -36,46 +36,43 @@ export class PromotionDetailComponent implements OnInit {
     private toastr: ToastrService,
     private storage: LocalStorageService,
     private sanitizer: DomSanitizer,
-    private route: ActivatedRoute,) { 
-     
-    }
+    private route: ActivatedRoute,) {
+  }
 
   ngOnInit(): void {
-    this.common.refreshLoading=true;
+    this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
     this.promotionId = this.route.snapshot.paramMap.get("id");
     this.promotionCount = this.storage.retrieve('localpromotionCount');
     this.promotionList = this.storage.retrieve('localpromotionList');
-    this.openUrl="?openinnewtap=1";
-    for(var i = 0 ; i < this.promotionList.length ; i++)
-    {
-      if(this.promotionList[i].id == this.promotionId && this.promotionList[i].readStatus == 0)
-      {
+    this.openUrl = "?openinnewtap=1";
+    for (var i = 0; i < this.promotionList.length; i++) {
+      if (this.promotionList[i].id == this.promotionId && this.promotionList[i].readStatus == 0) {
         this.promotionCount = this.promotionCount - 1;
       }
     }
-    this.storage.store('localpromotionCount',this.promotionCount);
+    this.storage.store('localpromotionCount', this.promotionCount);
     this.getPromotionById();
   }
-  getPromotionById()
-  {
+
+  getPromotionById() {
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    headers = headers.set('Authorization',  this.token);
+    headers = headers.set('Authorization', this.token);
     let params = new HttpParams();
-    params = params.set("id",this.promotionId);
+    params = params.set("id", this.promotionId);
     this.http.get(this.funct.ipaddress + 'promotion/GetPromotionDetail', { params: params, headers: headers })
-    .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this,''))
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
-    .subscribe(
-      result => {
-        this.common.refreshLoading=false;
-        this.spinner.hide("refreshLoading");
-        this.dto.Response = result;
-        this.storage.store('localpromotionObj',  this.dto.Response);
-        this.promotionDetailObj = this.storage.retrieve('localpromotionObj');
-         }
-    );
+      .subscribe(
+        result => {
+          this.common.refreshLoading = false;
+          this.spinner.hide("refreshLoading");
+          this.dto.Response = result;
+          this.storage.store('localpromotionObj', this.dto.Response);
+          this.promotionDetailObj = this.storage.retrieve('localpromotionObj');
+        }
+      );
   }
 }

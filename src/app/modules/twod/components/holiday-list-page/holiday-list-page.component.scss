@@ -1,11 +1,14 @@
 @import '../../../../variables';
+
 #appCapsule {
     padding-top: 0px !important;
     min-height: 100vh;
+
     #gridcontainer {
         padding-top: 0px !important;
         margin-bottom: 60px;
     }
+
     .text {
         text-align: left;
         color: $second-color;
@@ -15,29 +18,21 @@
         margin-right: 8px;
         margin-bottom: 4px;
         font-weight: bold;
-    
+
     }
-    .result-card{
+
+    .result-card {
         @include box-shadow;
-        background-color:white;
-        margin-top:8px; 
+        background-color: white;
+        margin-top: 8px;
         color: $second-color;
-        margin-bottom:8px;
-        margin-left:8px ;
+        margin-bottom: 8px;
+        margin-left: 8px;
         margin-right: 8px;
         padding: 16px;
         text-align: center;
         font-size: 14px;
         border-radius: 10px;
     }
-    
+
 }
-
-
-
-
-
-
-
-
-  

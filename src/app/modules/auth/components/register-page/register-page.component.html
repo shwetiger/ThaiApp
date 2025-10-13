@@ -1,47 +1,53 @@
-
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
-     <!-- App Capsule -->
-     <div id="appCapsule" class="extra-header-active">               
-        <div class="section full pt-2 mx-2">
-            <div class="section-title register-title mb-2" style="justify-content: center;color: #2253A2;font-weight: 600;">{{ 'registerPage' | translate}}</div>
-            <div style="display:inherit;" class="section-title mb-1 ">{{ 'make_user_receiveable_sms' | translate}}</div>
-            <form>
-                    <div class="row  justify-content-center">
-                        <div  style="width:90%;height:42px; border: 2px solid #2253A2 ; border-radius: 5px;margin-left:0 !important">
-                            <app-phone-picker [prefix]="prefix" [phoneValue]="phoneValue" 
-                                [regularExpressionPhone]="regularExpressionPhone"></app-phone-picker>
-                        </div>
+<div id="appCapsule" class="extra-header-active">
+    <div class="section full pt-2 mx-2">
+        <div class="section-title register-title mb-2" style="justify-content: center;color: #2253A2;font-weight: 600;">
+            {{ 'registerPage' | translate}}</div>
+        <div style="display:inherit;" class="section-title mb-1 ">{{ 'make_user_receiveable_sms' | translate}}</div>
+        <form>
+            <div class="row  justify-content-center">
+                <div
+                    style="width:90%;height:42px; border: 2px solid #2253A2 ; border-radius: 5px;margin-left:0 !important">
+                    <app-phone-picker [prefix]="prefix" [phoneValue]="phoneValue"
+                        [regularExpressionPhone]="regularExpressionPhone"></app-phone-picker>
+                </div>
+            </div>
+            <div style="display:inherit;" class="section-title mt-3">{{ 'enter_gamil_text' | translate}}</div>
+            <div class="row  justify-content-center">
+                <div
+                    style="width:90%;height:42px; border: 2px solid #2253A2 ; border-radius: 5px;margin-left:0 !important">
+                    <div class="input-group input-wrapper">
+                        <input type="text" [(ngModel)]="registerModel.email_address"
+                            [ngModelOptions]="{standalone: true}" class="form-control mx-2" id="gmailInput"
+                            placeholder="{{ 'email_address' | translate}}" style="border-radius: 5px !important;">
                     </div>
-                    <div style="display:inherit;" class="section-title mt-3">{{ 'enter_gamil_text' | translate}}</div>
-                    <div class="row  justify-content-center">
-                        <div  style="width:90%;height:42px; border: 2px solid #2253A2 ; border-radius: 5px;margin-left:0 !important">
-                            <div class="input-group input-wrapper">
-                                <input type="text" [(ngModel)]="registerModel.email_address"  [ngModelOptions]="{standalone: true}"
-                                 class="form-control mx-2" id="gmailInput" placeholder="{{ 'email_address' | translate}}"  style="border-radius: 5px !important;">  
-                                </div>  
-                                <div style="margin-top: 5px;"><span style="font-size: 0.8rem;color:black">{{'reg_email_des'|translate}}</span></div>
-                        </div>
-                    </div>
-                        
-                    <div class="row mt-4 justify-content-center" id="recaptcha-container"></div>
-              
-                <div class="row mt-2 justify-content-center">
-                    <button type="button"style="border:none;border-radius:5px;height:40px;width:90%; background-color: #2253A2; color: #fff;" (click)="Usefirebase == true? getregisterotpfirebase(): getOtp()" *ngIf="!common.submitLoading && !recaptcha" >{{ 'next' | translate}}</button>
-                </div>  
-                    <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >                  
-                        <!-- submit loading -->
-                        <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-                        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-                        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
-                    </div>
-
-                    <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber:phoneValue,email:registerModel.email_address,formPage:'registerpage'}" [replaceUrl]="false" class="mr-2" style="margin-top:4px" ><h4 class="underline" style="color:#2253A2">{{'change_otp_method' | translate}}</h4> </a></div>
-                              
-              </form>
-        </div>
-
+                    <div style="margin-top: 5px;"><span
+                            style="font-size: 0.8rem;color:black">{{'reg_email_des'|translate}}</span></div>
+                </div>
+            </div>
+            <div class="row mt-4 justify-content-center" id="recaptcha-container"></div>
+            <div class="row mt-2 justify-content-center">
+                <button type="button"
+                    style="border:none;border-radius:5px;height:40px;width:90%; background-color: #2253A2; color: #fff;"
+                    (click)="getOtp()"
+                    *ngIf="!common.submitLoading && !recaptcha">{{ 'next' | translate}}</button>
+            </div>
+            <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2"
+                *ngIf="common.submitLoading">
+                <!-- submit loading -->
+                <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+                    [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+                    [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+            </div>
+            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
+                    [routerLink]="['/me-page/default-otp']"
+                    [queryParams]="{phoneNumber:phoneValue,email:registerModel.email_address,formPage:'registerpage'}"
+                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
+                    <h4 class="underline" style="color:#2253A2">{{'change_otp_method' | translate}}</h4>
+                </a></div>
+        </form>
     </div>
-    <!-- * App Capsule -->
+</div>
 
-    <ngx-spinner bdColor = "rgb(6,56,107)" size = "large" color = "#fff" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
-  
+<ngx-spinner bdColor="rgb(6,56,107)" size="large" color="#fff" type="ball-spin-clockwise"
+    [fullScreen]="true"></ngx-spinner>

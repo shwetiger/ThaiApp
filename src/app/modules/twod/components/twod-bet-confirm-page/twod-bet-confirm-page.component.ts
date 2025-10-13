@@ -37,15 +37,10 @@ export class TwodBetConfirmPageComponent implements OnInit {
   token: any;
   userProfileModel: any=[];
   finalBetTwoDList: any;
-
-
   betAddNumber: any;
   betAddAmount: any;
   cannotSmallThan: any;
-
   newUnbetLimitList= [];
-
-
   doBetModel: any;
   total_amount: any;
   sectionId: any;  
@@ -68,11 +63,8 @@ export class TwodBetConfirmPageComponent implements OnInit {
   private router: Router, 
   private storage: LocalStorageService, 
   private funct: FunctService,
-  private _location: Location,) {  
-     
+  private _location: Location,) {    
     this.betTwoDList=history.state.betTwoDList;
-   // 
- 
   }
   async ngOnInit(): Promise<void> {
     this.common.refreshLoading=true;
@@ -98,35 +90,21 @@ export class TwodBetConfirmPageComponent implements OnInit {
     this.getBalance();
     this.localUnBetLimitList= '';
     this.twodsection=this.storage.retrieve('localSection');
-    
     this.getCurrentDate();
-    await this.getUnBetList();
-    
+    await this.getUnBetList(); 
   }
-
-  // checkMaxLength(event: any) {
-  //   const inputValue = event.target.value;
-    
-  //   if (inputValue.length > this.maxlength) {
-  //     this.betAmount = parseInt(inputValue.slice(0, this.maxlength), 10);
-  //   }
-  // }
 
   keyPressNumbers(event: KeyboardEvent) {
     const allowedKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     const key = event.key;
-  
-    // Cast event.target to HTMLInputElement to access 'value'
     const inputElement = event.target as HTMLInputElement;
-  
-    // Prevent input if it's not a number or if the max length is reached
     if (!allowedKeys.includes(key) || inputElement.value.length >= this.maxlength) {
       event.preventDefault();
     }
   }
+
   //dreamBook SingleR
   twodSingleR(number, amount){
-   
     let newArray= [];
     let newR= {"id": "", "number": number.toString().split('').reverse().join(''),"selected":true,"unbetstatus":false,
     "amount":amount,"checked": false,"isR": false};
@@ -159,8 +137,6 @@ export class TwodBetConfirmPageComponent implements OnInit {
   twodAllR(){ 
     let newArr=[];
     let removenumber=[]
-    
-    //let twinNumbers = ['00', '11', '22', '33', '44', '55', '66', '77', '88', '99'];
     for(let i=0; i<this.betTwoDList.length; i++){
       let isremove=false;
       if(this.betTwoDList[i].isR){
@@ -173,11 +149,9 @@ export class TwodBetConfirmPageComponent implements OnInit {
         {
           if(newR.number==this.betTwoDList[j].number)
           {
-
             isremove=true;
             removenumber.push(newR.number)
           }
-        
         }
         if(isremove==false)
         {
@@ -185,10 +159,8 @@ export class TwodBetConfirmPageComponent implements OnInit {
         }
       }
       else{
-        
         newArr.push(this.betTwoDList[i]);
       }
-
     }
    
     this.betTwoDList = newArr;
@@ -201,7 +173,6 @@ export class TwodBetConfirmPageComponent implements OnInit {
               }); 
             }  
   }
-
   twodBetEditModal(twodBetEdit: TemplateRef<any>,number: number, amount: number,) {
     const betModal = {
       number : number,
@@ -586,6 +557,7 @@ export class TwodBetConfirmPageComponent implements OnInit {
         timeOut: 1000,
         positionClass: 'toast-top-center',
         });
+        this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
     

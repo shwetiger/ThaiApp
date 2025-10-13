@@ -1,58 +1,56 @@
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
-<div class="root" *ngIf="isUserLoggedIn && !common.refreshLoading" >
+<div class="root" *ngIf="isUserLoggedIn && !common.refreshLoading">
     <div *ngIf="notiDetailObj.isFirstTopup != '1' && notiDetailObj.type=='TOPUP'">
         <div class="card noti-card">
             <div class="title" *ngIf="notiDetailObj.title=='Topup Successful'">
                 <span style="font-size: 17px;">{{'topup_title' | translate}}</span>
             </div>
-              <div class="title" *ngIf="notiDetailObj.title!='Topup Successful'">
+            <div class="title" *ngIf="notiDetailObj.title!='Topup Successful'">
                 <span style="font-size: 17px;">{{notiDetailObj.title}}</span>
             </div>
-            <div class="noti__body">               
-                <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')" style="color:  red;">{{ notiDetailObj.description }}</span>
-                <span *ngIf="(notiDetailObj.description == null  || notiDetailObj.description == 'null')">{{ getTopupNotiStr(notiDetailObj.state) }}</span>
+            <div class="noti__body">
+                <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')"
+                    style="color:  red;">{{ notiDetailObj.description }}</span>
+                <span *ngIf="(notiDetailObj.description == null  || notiDetailObj.description == 'null')">{{
+                    getTopupNotiStr(notiDetailObj.state) }}</span>
             </div>
             <div class="divider">
             </div>
             <div class="noti__date">
                 {{'topup_time' | translate}}{{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
             </div>
-
         </div>
         <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
         </div>
     </div>
-
     <div *ngIf="notiDetailObj.type=='WITHDRAW'">
         <div class="card noti-card">
-            <div class="title"  *ngIf="notiDetailObj.title=='Withdrawal denied'">
-                <span style="font-size: 17px;"> {{'withdrawal_denied_title' | translate}}</span> 
+            <div class="title" *ngIf="notiDetailObj.title=='Withdrawal denied'">
+                <span style="font-size: 17px;"> {{'withdrawal_denied_title' | translate}}</span>
             </div>
-             <div class="title" *ngIf="notiDetailObj.title=='Withdrawal Successful'">
-                <span style="font-size: 17px;" > {{'withdrawal_sucess_title' | translate}}</span> 
+            <div class="title" *ngIf="notiDetailObj.title=='Withdrawal Successful'">
+                <span style="font-size: 17px;"> {{'withdrawal_sucess_title' | translate}}</span>
             </div>
-            <div class="noti__body" >
-                <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')" style="color:  red;">{{ notiDetailObj.description }}</span>
-                <span *ngIf="(notiDetailObj.description == null || notiDetailObj.description == 'null')" style="color:  red;">{{getWithdrawNotiStr(notiDetailObj.state)}}</span>              
+            <div class="noti__body">
+                <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')"
+                    style="color:  red;">{{ notiDetailObj.description }}</span>
+                <span *ngIf="(notiDetailObj.description == null || notiDetailObj.description == 'null')"
+                    style="color:  red;">{{getWithdrawNotiStr(notiDetailObj.state)}}</span>
             </div>
             <div class="divider">
             </div>
             <div class="noti__date">
                 {{'withdrawal_time' | translate}} {{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
             </div>
-
         </div>
         <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
         </div>
     </div>
 
-
     <div *ngIf="notiDetailObj.type=='2D Results'">
-
         <div class="card noti-card">
-            
             <div class="title">
                 <span style="font-size: 17px;"> {{notiDetailObj.title}}</span>
             </div>
@@ -67,98 +65,72 @@
 
             <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
                 {{'noti_date' | translate}} {{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
             <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
                 {{'noti_date' | translate}} {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
-
-
-
         </div>
         <div class="img__box">
-           
-            <img  src="{{imgLink}}" alt="image" class="noti__imaged">
-            <!-- <img *ngIf="notiDetailObj.fortime == '12:01 PM'" src="assets/img/2D-2.jpg" alt="image" class="noti__imaged">
-            <img *ngIf="notiDetailObj.fortime == '02:30 PM'" src="assets/img/2D-3.jpg" alt="image" class="noti__imaged">
-            <img *ngIf="notiDetailObj.fortime == '04:30 PM'" src="assets/img/2D-4.jpg" alt="image" class="noti__imaged"> -->
-            
+            <img src="{{imgLink}}" alt="image" class="noti__imaged">
         </div>
     </div>
 
-
     <div *ngIf="notiDetailObj.type=='3D Results'">
-
         <div class="card noti-card">
             <div class="title">
-                <span style="font-size: 17px;">  {{notiDetailObj.title}}</span>
+                <span style="font-size: 17px;"> {{notiDetailObj.title}}</span>
             </div>
             <div class="noti__body">
                 <span>{{'threed_result' | translate}}</span>
                 <span class="number">{{notiDetailObj.number}}</span>
                 <span>{{ 'towd_is' | translate}}</span>
-                <!-- {{notiDetailObj.body}} -->
             </div>
             <div class="divider">
             </div>
-
-          
             <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
                 {{'noti_date' | translate}} {{notiDetailObj.sendTime | date:'dd/MM/yyyy'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
             <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
                 {{'noti_date' | translate}} {{notiDetailObj.currentdate | date:'dd/MM/yyyy'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
 
         </div>
-        <div class="img__box">            
+        <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
         </div>
     </div>
 
-    <div *ngIf="notiDetailObj.type=='All' || notiDetailObj.type== 'Football' || notiDetailObj.type== 'Maintenance' || notiDetailObj.type== 'Advertising'">
+    <div
+        *ngIf="notiDetailObj.type=='All' || notiDetailObj.type== 'Football' || notiDetailObj.type== 'Maintenance' || notiDetailObj.type== 'Advertising'">
 
         <div class="card noti-card">
             <div class="title">
-                <span style="font-size: 17px;line-height: 1.7;">  {{notiDetailObj.title}}</span>
+                <span style="font-size: 17px;line-height: 1.7;"> {{notiDetailObj.title}}</span>
             </div>
             <div class="" *ngIf="notilink==''">
-               <div *ngIf="notiDetailObj.bodyForPushNoti==null"> {{notiDetailObj.body}}  </div> 
-                <!-- <div [innerHTML]="getSanitizedContent(notiDetailObj.bodyForPushNoti)"></div> -->
-                <!-- <div quill-view-html [content]="notiDetailObj.bodyForPushNoti"></div> -->
-                <div style="width: 100%" class="ql-editor" (click)="handleClick($event)" [innerHTML]="getSanitizedContent(this.notiDetailObj.bodyForPushNoti)" *ngIf="notiDetailObj.bodyForPushNoti!=null"></div>
-
-                
-
+                <div style="width: 100%" class="ql-editor" (click)="handleClick($event)"
+                    [innerHTML]="getSanitizedContent(this.notiDetailObj.bodyForPushNoti)"
+                    *ngIf="notiDetailObj.bodyForPushNoti!=null"></div>
             </div>
             <div class="noti__body" style="white-space: pre-line;text-align: center;" *ngIf="notilink!=''">
                 <span>{{linktext}}</span>
-                <a href="{{notilink}}" > {{notilink}} </a> 
+                <a href="{{notilink}}"> {{notilink}} </a>
             </div>
-            
+
             <div class="divider mt-2">
 
             </div>
 
             <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
                 {{'noti_date' | translate}} {{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
             <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
                 {{'noti_date' | translate}} {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
-
-
-
         </div>
         <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
         </div>
-
     </div>
 
     <div *ngIf="notiDetailObj.type=='WINNER'">
@@ -168,26 +140,20 @@
             </div>
             <div class="noti__body">
                 <div style="font-weight: bold;font-size: 16;">{{userProfileModel.name}}</div>
-
                 <div *ngIf="notiDetailObj.category == '2D'"
                     style="padding-top: 10px;padding-bottom: 10px;font-size: 14;">
                     {{'noti_winner_title2D'| translate}}
                 </div>
-
                 <div *ngIf="notiDetailObj.category != '2D'"
                     style="padding-top: 10px;padding-bottom: 10px;font-size: 14;">
                     {{'noti_winner_title3D'| translate}}
                 </div>
-
                 <div style="padding-top: 10px; font-size:18px;color: blue;">
                     {{ notiDetailObj.balance | number : '1.0-2'}}
                 </div>
-
             </div>
-
             <div class="divider">
             </div>
-
             <div class="row" style="justify-content:space-between;padding-top: 10px;">
                 <div class="col">
                     {{'bet_time'| translate}}
@@ -196,8 +162,6 @@
                     {{getWinnerDate() | date:'dd/MM/yyyy hh:mm a'}}
                 </div>
             </div>
-
-
             <div class="row" style="justify-content:space-between;padding-top: 10px;">
                 <div class="col">
                     {{'noti_winner_number'| translate}}
@@ -206,8 +170,6 @@
                     {{notiDetailObj.number}}
                 </div>
             </div>
-
-
             <div class="row" style="justify-content:space-between;padding-top: 10px;">
                 <div class="col">
                     {{'bet_amount'| translate}}
@@ -225,13 +187,6 @@
                     {{ notiDetailObj.odd }}
                 </div>
             </div>
-
-
-
-            <!-- <div class="noti__date">
-            {{'point_time' | translate}} {{getDate(notiDetailObj.currentdate)}} 
-        </div> -->
-
         </div>
         <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
@@ -240,28 +195,22 @@
     <div *ngIf="notiDetailObj.type=='TOPUP' && notiDetailObj.isFirstTopup == '1'">
         <div class="card noti-card">
             <div class="title">
-                <span style="font-size: 17px;">   {{notiDetailObj.title}} </span>
+                <span style="font-size: 17px;"> {{notiDetailObj.title}} </span>
             </div>
             <div class="noti__body">
                 <span>{{getFirstTopUpStr()}}</span>
-
             </div>
             <div class="divider">
-
             </div>
-
             <div class="noti__date">
                 {{'point_time' | translate}}
                 {{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
-                <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
             <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
                 {{'point_time' | translate}}{{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
             <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
                 {{'point_time' | translate}} {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
             </div>
 
         </div>
@@ -270,58 +219,28 @@
         </div>
     </div>
 
-    <!-- <div *ngIf="notiDetailObj.type=='Point'">
-        <div class="card noti-card">
-            <div class="title">
-                <span style="font-size: 17px;"> {{'referal_bonus_point' | translate}} </span>
-            </div>
-            <div class="noti__body">
-                <span>{{getNotiPoint()}}</span>
-
-            </div>
-            <div class="divider">
-
-            </div>
-
-          
-            <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
-                {{'point_time' | translate}}{{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
-            </div>
-            <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
-                {{'point_time' | translate}} {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
-            </div>
-
-        </div>
-        <div class="img__box">
-            <img src="{{imgLink}}" alt="image" class="noti__imaged">
-        </div>
-    </div> -->
-
-
     <!-- bankslip -->
     <div *ngIf="notiDetailObj.type=='BankSlip'">
         <div class="card noti-card">
             <div class="title">
-                <!-- {{notiDetailObj.title}} -->
-                <span style="font-size: 17px;" *ngIf="notiDetailObj.state != 'DENIED'"> {{'bankslip_approved_title' | translate}} </span>
-                <span style="font-size: 17px;" *ngIf="notiDetailObj.state == 'DENIED'">{{'bankslip_reject_title' | translate}}</span>
+                <span style="font-size: 17px;" *ngIf="notiDetailObj.state != 'DENIED'"> {{'bankslip_approved_title' |
+                    translate}} </span>
+                <span style="font-size: 17px;" *ngIf="notiDetailObj.state == 'DENIED'">{{'bankslip_reject_title' |
+                    translate}}</span>
             </div>
             <div class="noti__body">
-                <!-- <span> {{notiDetailObj.body}}</span> -->
                 <span *ngIf="notiDetailObj.state != 'DENIED'">{{'bankslip_approved_body' | translate}}</span>
                 <span *ngIf="notiDetailObj.state == 'DENIED'">{{'bankslip_reject_body' | translate}}</span>
 
             </div>
             <div class="divider">
             </div>
-          
+
             <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
-               {{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
+                {{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
             </div>
             <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
-               {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
-                 <!--{{getDateTime(notiDetailObj.currentdate)}}-->
+                {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
             </div>
 
         </div>
@@ -330,23 +249,19 @@
         </div>
     </div>
 
-
     <div *ngIf="notiDetailObj.type=='Point' && notiDetailObj.state=='RECEIVED'">
         <div class="card noti-card">
             <div class="title">
                 <span style="font-size: 17px;">{{'referal_bonus_point' | translate}}</span>
             </div>
-         
-            <div class="noti__body">               
-                <!-- <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')" style="color:  red;">{{ notiDetailObj.description }}</span> -->
-                <span >{{ getNotiPoint(notiDetailObj.state)}}</span>
+            <div class="noti__body">
+                <span>{{ getNotiPoint(notiDetailObj.state)}}</span>
             </div>
             <div class="divider">
             </div>
             <div class="noti__date">
-              {{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
+                {{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
             </div>
-
         </div>
         <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
@@ -358,51 +273,39 @@
             <div class="title">
                 <span style="font-size: 17px;">{{'referal_pt_trans_success' | translate}}</span>
             </div>
-         
-            <div class="noti__body">               
-                <!-- <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')" style="color:  red;">{{ notiDetailObj.description }}</span> -->
-                <span >{{ getNotiPoint(notiDetailObj.state)}}</span>
+            <div class="noti__body">
+                <span>{{ getNotiPoint(notiDetailObj.state)}}</span>
             </div>
             <div class="divider">
             </div>
             <div class="noti__date">
-              {{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
+                {{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
             </div>
-
         </div>
         <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
         </div>
     </div>
-
     <div *ngIf="notiDetailObj.type=='Point' && notiDetailObj.state=='DENIED'">
         <div class="card noti-card">
             <div class="title">
                 <span style="font-size: 17px;">{{'referal_pt_trans_denied' | translate}}</span>
             </div>
-         
-            <div class="noti__body">               
-                <!-- <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')" style="color:  red;">{{ notiDetailObj.description }}</span> -->
-                <span >{{ getNotiPoint(notiDetailObj.state)}}</span>
+            <div class="noti__body">
             </div>
             <div class="divider">
             </div>
             <div class="noti__date">
-              {{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
+                {{notiDetailObj.request_date | date:'dd/MM/yyyy hh:mm a'}}
             </div>
-
         </div>
         <div class="img__box">
             <img src="{{imgLink}}" alt="image" class="noti__imaged">
         </div>
     </div>
-
 </div>
-
 
 <!-- refresh loading -->
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
-  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
-  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
-
-
+    [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+    [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

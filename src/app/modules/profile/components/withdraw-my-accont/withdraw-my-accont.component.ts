@@ -12,7 +12,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 
-
 @Component({
   selector: 'app-withdraw-my-accont',
   templateUrl: './withdraw-my-accont.component.html',

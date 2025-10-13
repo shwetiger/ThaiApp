@@ -1,45 +1,38 @@
-
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
-     <!-- App Capsule -->
-     <div id="appCapsule" class="extra-header-active">               
-        <div class="section full pt-1 mx-3">
-           
-            <div class="section-title mb-2">{{ 'login_phone_confirm_message' | translate}}</div>
-            <form>
-
-                <div class="row  justify-content-center">
-                    <div  style="border: 2px solid #2253A2;border-radius: 5px;Height:'42px';width:'80%'">
-                <div style="width: 100%; padding: 0px 5px;">
-                        <app-phone-picker  [(prefix)]="prefix" [(phoneValue)]="phoneValue" [(actionType)]="actionType" [(regularExpressionPhone)]="regularExpressionPhone">
+<div id="appCapsule" class="extra-header-active">
+    <div class="section full pt-1 mx-3">
+        <div class="section-title mb-2">{{ 'login_phone_confirm_message' | translate}}</div>
+        <form>
+            <div class="row  justify-content-center">
+                <div style="border: 2px solid #2253A2;border-radius: 5px;Height:'42px';width:'80%'">
+                    <div style="width: 100%; padding: 0px 5px;">
+                        <app-phone-picker [(prefix)]="prefix" [(phoneValue)]="phoneValue" [(actionType)]="actionType"
+                            [(regularExpressionPhone)]="regularExpressionPhone">
                         </app-phone-picker>
-                    </div>  
-                </div>
-                </div>
-                <div class="row mt-3 justify-content-center">
-                    <div  id="recaptcha-container"></div>
-                    <!-- <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >                  
-                   
-                        <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-                        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-                        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
-                    </div> -->
-
-                    <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >                  
-                        <!-- submit loading -->
-                        <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-                        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-                        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
                     </div>
-                    <button type="button"  style="background-color: #2253A2; color: #fff;border:none;border-radius:5px;width:80%;height:40px"  (click)="Usefirebase == true? signInWithPhoneNumber(): getOtp()" *ngIf="!recaptcha && !common.submitLoading ">{{ 'next' | translate}}</button>
-                   
-                </div>              
-              </form>
-
-              <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;">
-                <a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber:phoneValue}" [replaceUrl]="false" class="mr-2" style="margin-top:4px" >
-                  <h4 class="underline" style="color:#2253A2">{{'change_otp_method' | translate}}</h4> 
-                </a>
-              </div>
+                </div>
+            </div>
+            <div class="row mt-3 justify-content-center">
+                <div id="recaptcha-container"></div>
+                <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2"
+                    *ngIf="common.submitLoading">
+                    <!-- submit loading -->
+                    <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+                        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+                        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+                </div>
+                <button type="button"
+                    style="background-color: #2253A2; color: #fff;border:none;border-radius:5px;width:80%;height:40px"
+                    (click)="getOtp()"
+                    *ngIf="!recaptcha && !common.submitLoading ">{{ 'next' | translate}}</button>
+            </div>
+        </form>
+        <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;">
+            <a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber:phoneValue}" [replaceUrl]="false"
+                class="mr-2" style="margin-top:4px">
+                <h4 class="underline" style="color:#2253A2">{{'change_otp_method' | translate}}</h4>
+            </a>
         </div>
-
     </div>
+
+</div>

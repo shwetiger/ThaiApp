@@ -1,11 +1,11 @@
-<div *ngIf="!loading">
+<div id="appCapsule" *ngIf="!loading">
 <div class="container-fluid"*ngFor="let item of groupArrays" style=" margin: 0px !important; padding: 0px !important; overflow-x: hidden;">
     <div class="row d-flex mt-3 justify-content-center date-top-card">
         <div class="card date-card">
             <span style="text-align: center;">{{ changeDateFormat(item.date) }}</span>
         </div>
     </div>
-    <div class="row mx-3  mt-3 mb-1 result-card-border">
+    <div class="row mx-3 mb-1 mt-3 result-card-border">
         <div class="container result-card" *ngFor="let result of item.resultList;let i=index;">
             <div class="row" [ngClass]="{'driver': (i &gt; 0) }"></div>    
             <div class="row pt-2 section-name">

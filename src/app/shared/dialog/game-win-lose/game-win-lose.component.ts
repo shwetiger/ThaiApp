@@ -77,6 +77,7 @@ export class GameWinLoseComponent implements OnInit{
         });
         this.storage.clear('token');
         this.storage.clear('isUserLoggedIn');
+         this.router.navigate(['/login'], { replaceUrl: true });
         return;
     }
     if(error.status == 400)

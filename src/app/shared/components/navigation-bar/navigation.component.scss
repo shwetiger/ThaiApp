@@ -56,3 +56,42 @@
     font-size: 7px !important;
   }
 }
+
+// .bottom-wrapper {
+//   position: fixed;
+//   bottom: 0;
+//   width: 100%;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: stretch;
+//   z-index: 1000;
+// }
+
+// .app-footer {
+//   position: fixed;
+//   left: 0;
+//   right: 0;
+//   bottom: calc(60px + env(safe-area-inset-bottom)); /* nav bar height 만큼 အပေါ် */
+//   width: 100%;
+//   text-align: center;
+//   background: #fff;
+//   color: red;
+//   padding: 3px 0;
+//   z-index: 1000;
+//   box-sizing: border-box;
+// }
+
+
+// .appBottomMenu {
+//   position: fixed;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   height: 60px;
+//   background: #f5f5f5;
+//   display: flex;
+//   justify-content: space-around;
+//   align-items: center;
+//   z-index: 999;
+// }
+

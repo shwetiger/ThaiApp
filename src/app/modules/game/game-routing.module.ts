@@ -9,12 +9,12 @@ import { GameDepositErrorComponent } from './components/game-deposit-error/game-
 import { CountryBlackListComponent } from './components/country-black-list/country-black-list.component';
 
 const routes: Routes = [
-  {path:'', component: GameListComponent},
+  { path: '', component: GameListComponent },
   {
-    path: 'gameList/:providerId' , component: GameListComponent
+    path: 'gameList/:providerId', component: GameListComponent
   },
   {
-    path: 'gamecategory/:catId',component: GamecategoryComponent
+    path: 'gamecategory/:catId', component: GamecategoryComponent
   },
   {
     path: 'play', component: GameWinLosePageComponent
@@ -29,10 +29,10 @@ const routes: Routes = [
     path: 'deposit-error/:errorCode', component: GameDepositErrorComponent
   },
   {
-    path: 'country-black-list' , component: CountryBlackListComponent
+    path: 'country-black-list', component: CountryBlackListComponent
   },
-  
-  
+
+
 ];
 
 @NgModule({

@@ -11,7 +11,7 @@ export class IosDownloadPageComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  refreshPage(){
+  refreshPage() {
     this.ngOnInit();
   }
 }

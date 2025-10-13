@@ -76,3 +76,17 @@ input::placeholder {
   font-size: 16px;
   color: rgb(215, 212, 212);
 }
+
+.app-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  background: #fff;
+  color: red;
+  padding: 3px 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}

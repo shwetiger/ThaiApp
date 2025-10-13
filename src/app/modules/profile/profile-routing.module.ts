@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { FeedbackPageComponent } from './components/feedback-page/feedback-page.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { InviteCodeComponent } from './components/invite-code/invite-code.component';
-import { WithdrawMyAccontComponent } from  './components/withdraw-my-accont/withdraw-my-accont.component';
+import { WithdrawMyAccontComponent } from './components/withdraw-my-accont/withdraw-my-accont.component';
 import { BetHistoryPageComponent } from '../pages/bet-history-page/bet-history-page.component';
 import { ResultComponent } from '../pages/result/result.component';
 import { ChangePasswordComponent } from './components/change-password/change-password.component';
@@ -25,7 +25,7 @@ const routes: Routes = [
     path: 'user-guide', component: UserGuideComponent
   },
   {
-    path : 'invite-code', component: InviteCodeComponent
+    path: 'invite-code', component: InviteCodeComponent
   },
   {
     path: 'withdrawl-account-list', component: WithdrawMyAccontComponent
@@ -34,10 +34,10 @@ const routes: Routes = [
     path: 'bet-history', component: BetHistoryPageComponent
   },
   {
-    path :'result',component: ResultComponent
+    path: 'result', component: ResultComponent
   },
   {
-    path :'change-password',component: ChangePasswordComponent
+    path: 'change-password', component: ChangePasswordComponent
   },
   {
     path: 'profile-edit', component: ProfileEditPageComponent
@@ -53,7 +53,7 @@ const routes: Routes = [
   {
     path: 'email-otp-comfirm', component: EmailOtpConfirmComponent
   },
-  
+
   {
     path: 'points-history', component: PointsHistoryComponent
   }

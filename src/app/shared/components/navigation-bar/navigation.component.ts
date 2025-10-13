@@ -8,7 +8,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { DtoService } from '../../service/dto.service';
 import { UtilService } from '../../service/util.service';
 import { FunctService } from '../../service/funct.service';
-
+import { AppVersionService } from '../../service/app-version.service';
 
 @Component({
   selector: 'app-navigation-bar',
@@ -17,6 +17,7 @@ import { FunctService } from '../../service/funct.service';
 })
 
 export class AppNavigationBarComponent implements OnInit {
+   version: string | null = null;
   promotionCount : any;
   promotionList : any;
   token : any;
@@ -33,7 +34,8 @@ export class AppNavigationBarComponent implements OnInit {
     private util: UtilService, 
     private router: Router, 
     private storage: LocalStorageService,
-    private funct: FunctService) 
+    private funct: FunctService,
+    private versionService:AppVersionService) 
     {
     
     }
@@ -43,6 +45,9 @@ export class AppNavigationBarComponent implements OnInit {
     this.isUserLoggedIn= this.storage.retrieve('isUserLoggedIn');
     this.routerName=this.router.url;
     this.promotionCount = this.storage.retrieve('localpromotionCount');
+      this.versionService.currentVersion$.subscribe(v => {
+      this.version = v;
+    });
     // this.getAllPromotions();
     this.openPage(this.routeUrl)
   }

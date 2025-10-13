@@ -1,64 +1,86 @@
 <appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
-    <div id="appCapsule" *ngIf="!refreshLoading">   
-        <div class="container-fluid account-bgcolor" >
-            <div class="row py-1">  
-                <div (click)="goToProfile()"> 
-                    <img src="{{userimageUrl}}" [ngClass]="{'no_account': userimageUrl == null || userimageUrl == ''}" 
-                     class="py-2" width="60px" height="73px" style="border-radius: 50%;">  
-                </div>  
-                  <div class="col py-2">
-                     <div class="row no-padding">
-                      <h4 class="no-padding text-white">{{ changeName() }}</h4>
-                     </div>
-                    <div class="row no-padding">                 
-                      <h5 class="text-white no-padding">{{ 'balance' | translate}}:&nbsp;</h5>                
-                        <h4 *ngIf="showBalance > 0 " class="text-white no-padding">{{ showBalance | number : '1.2-2'}}</h4>
-                        <h4 *ngIf="showBalance == 0 " class="text-white no-padding">{{ showBalance}}</h4>
-                        <h4 *ngIf="showBalance == '*****' " class="text-white no-padding">{{ showBalance}}</h4>
-                      <h4 class="text-white no-padding"> &nbsp;{{ 'ks' | translate}}</h4>
-                      <span class="text-eye no-padding">
-                        <a (click)="showMainPassword(!showAmount)">
-                          <i class="material-icons open-wallet text-white" style= "margin-left: 2px; font-size: 20px;" *ngIf="showAmount">visibility</i> 
-                          <i class="material-icons open-wallet text-white" style="margin-left: 2px; font-size: 20px;" *ngIf="!showAmount">visibility_off</i>
-                        </a>
-                      </span>
-                    </div>   
-                    <div class="row" style="padding-left: 8px !important;">
-                      <h5 class="mb-2 text-white no-padding">{{ 'my-points' | translate}} &nbsp;<span style=" font-weight: 600;">{{userProfileModel.referral_point_wallet| number:'1.0':'en-US'}}</span> <span> &nbsp;({{ 'ks' | translate}})</span></h5>
-                    </div>
-                    
-                  </div>   
-            </div>
-        </div>     
-        <div class="container">           
-            <h3 class="pt-2 text-center"  style="font-weight: 600;color:#2253A2">{{'gameWalletTitle' | translate }}</h3>
-            <div class="row game-header mb-1 py-2">
-                <div class="col-4"><h4 class="no-padding">{{ 'game_type' | translate }}</h4></div>
-                <div class="col-4"><h4 class="no-padding">{{ 'game_wallet' | translate }}</h4></div>
-                <div class="col-2"><h4 class="no-padding">{{ 'in' | translate }}</h4></div>
-                <div class="col-2"><h4 class="no-padding">{{ 'out' | translate }}</h4></div>
-            </div>
-            <ng-container *ngFor="let item of gameBalanceList">
-                <div class="row mb-1 pt-1" [class]="activeProviderId == item.providerId? 'background-active':'game-card'">        
-                  <div class="col-4"><img [src]="item.imageUrl" [alt]="item.display_name" class="game-img"></div>
-                  <div class="col-4">  <h4 class="no-padding pt-1" *ngIf="providerBalances[item.providerCode] !== undefined; else loading">
-                   {{ providerBalances[item.providerCode] | number : '1.0-2' }} {{ 'ks' | translate }}
-                    </h4>
-                    <ng-template #loading>
-                     <h4 class="no-padding pt-1 ml-2"><div class="spinner"></div></h4> 
-                    </ng-template></div>
-                  <div class="col-2" (click)="gameTransfer(item,'in')"><i class="material-icons" style="font-size: 26px;color: #00ab4c; padding-top: 6px;">add_circle</i></div>
-                  <div class="col-2" (click)="gameTransfer(item,'out')"><i class="material-icons" style="font-size: 26px; color: #004d9f; padding-top: 6px;">do_not_disturb_on</i></div>
-                </div>
-            </ng-container>
-            <div class="row game-card mb-2 py-3">        
-                <div class="col-4 "><h4 class="no-padding">{{ 'game_total' | translate }} </h4></div>
-                <div class="col-4 "><h4 class="no-padding">{{ total_balance | number : '1.0-2'}} {{ 'ks' | translate }}</h4></div>
-                <div class="col-2 "></div>
-                <div class="col-2 "></div>
-            </div> 
-        </div>        
-    </div> 
+<div id="appCapsule" *ngIf="!refreshLoading">
+  <div class="container-fluid account-bgcolor">
+    <div class="row py-1">
+      <div (click)="goToProfile()">
+        <img src="{{userimageUrl}}" [ngClass]="{'no_account': userimageUrl == null || userimageUrl == ''}" class="py-2"
+          width="60px" height="73px" style="border-radius: 50%;">
+      </div>
+      <div class="col py-2">
+        <div class="row no-padding">
+          <h4 class="no-padding text-white">{{ changeName() }}</h4>
+        </div>
+        <div class="row no-padding">
+          <h5 class="text-white no-padding">{{ 'balance' | translate}}:&nbsp;</h5>
+          <h4 *ngIf="showBalance > 0 " class="text-white no-padding">{{ showBalance | number : '1.2-2'}}</h4>
+          <h4 *ngIf="showBalance == 0 " class="text-white no-padding">{{ showBalance}}</h4>
+          <h4 *ngIf="showBalance == '*****' " class="text-white no-padding">{{ showBalance}}</h4>
+          <h4 class="text-white no-padding"> &nbsp;{{ 'ks' | translate}}</h4>
+          <span class="text-eye no-padding">
+            <a (click)="showMainPassword(!showAmount)">
+              <i class="material-icons open-wallet text-white" style="margin-left: 2px; font-size: 20px;"
+                *ngIf="showAmount">visibility</i>
+              <i class="material-icons open-wallet text-white" style="margin-left: 2px; font-size: 20px;"
+                *ngIf="!showAmount">visibility_off</i>
+            </a>
+          </span>
+        </div>
+        <div class="row" style="padding-left: 8px !important;">
+          <h5 class="mb-2 text-white no-padding">{{ 'my-points' | translate}} &nbsp;<span
+              style=" font-weight: 600;">{{userProfileModel.referral_point_wallet| number:'1.0':'en-US'}}</span> <span>
+              &nbsp;({{ 'ks' | translate}})</span></h5>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <h3 class="pt-2 text-center" style="font-weight: 600;color:#2253A2">{{'gameWalletTitle' | translate }}</h3>
+    <div class="row game-header mb-1 py-2">
+      <div class="col-4">
+        <h4 class="no-padding">{{ 'game_type' | translate }}</h4>
+      </div>
+      <div class="col-4">
+        <h4 class="no-padding">{{ 'game_wallet' | translate }}</h4>
+      </div>
+      <div class="col-2">
+        <h4 class="no-padding">{{ 'in' | translate }}</h4>
+      </div>
+      <div class="col-2">
+        <h4 class="no-padding">{{ 'out' | translate }}</h4>
+      </div>
+    </div>
+    <ng-container *ngFor="let item of gameBalanceList">
+      <div class="row mb-1 pt-1" [class]="activeProviderId == item.providerId? 'background-active':'game-card'">
+        <div class="col-4"><img [src]="item.imageUrl" [alt]="item.display_name" class="game-img"></div>
+        <div class="col-4">
+          <h4 class="no-padding pt-1" *ngIf="providerBalances[item.providerCode] !== undefined; else loading">
+            {{ providerBalances[item.providerCode] | number : '1.0-2' }} {{ 'ks' | translate }}
+          </h4>
+          <ng-template #loading>
+            <h4 class="no-padding pt-1 ml-2">
+              <div class="spinner"></div>
+            </h4>
+          </ng-template>
+        </div>
+        <div class="col-2" (click)="gameTransfer(item,'in')"><i class="material-icons"
+            style="font-size: 26px;color: #00ab4c; padding-top: 6px;">add_circle</i></div>
+        <div class="col-2" (click)="gameTransfer(item,'out')"><i class="material-icons"
+            style="font-size: 26px; color: #004d9f; padding-top: 6px;">do_not_disturb_on</i></div>
+      </div>
+    </ng-container>
+    <div class="row game-card mb-2 py-3">
+      <div class="col-4 ">
+        <h4 class="no-padding">{{ 'game_total' | translate }} </h4>
+      </div>
+      <div class="col-4 ">
+        <h4 class="no-padding">{{ total_balance | number : '1.0-2'}} {{ 'ks' | translate }}</h4>
+      </div>
+      <div class="col-2 "></div>
+      <div class="col-2 "></div>
+    </div>
+  </div>
+</div>
 
 <!-- refresh loading -->
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"

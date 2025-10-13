@@ -1,9 +1,7 @@
-
-
-<app-page-header  (myEvent)="refreshPage()">{{ 'helloword' | translate }}</app-page-header>
-<div id="appCapsule" *ngIf="!common.refreshLoading"> 
-    <div class="container">    
-        <div class="" *ngFor="let promotionListObj of promotionList">   
+<app-page-header (myEvent)="refreshPage()">{{ 'helloword' | translate }}</app-page-header>
+<div id="appCapsule" *ngIf="!common.refreshLoading">
+    <div class="container">
+        <div class="" *ngFor="let promotionListObj of promotionList">
             <a [routerLink]="['/promotions/detail', promotionListObj.id]" [replaceUrl]="false">
                 <div class="card mt-1 promotion-text">
                     <div class="card-body">
@@ -12,15 +10,15 @@
                                 <!-- Image Section -->
                                 <div class="col-2 d-flex justify-content-center align-items-center">
                                     <img [src]="promotionListObj.imageUrl" alt="image" class="imaged">
-                                </div>                            
-                                
+                                </div>
+
                                 <!-- Text and Arrow Section -->
-                                <div class="col-10 d-flex justify-content-between align-items-center">                           
+                                <div class="col-10 d-flex justify-content-between align-items-center">
                                     <div class="col-10">
-                                        <p class="card-text text-white">{{promotionListObj.title}}</p>                    
+                                        <p class="card-text text-white">{{promotionListObj.title}}</p>
                                         <p class="card-text text-white">{{promotionListObj.brief}}</p>
                                     </div>
-    
+
                                     <!-- Forward Arrow -->
                                     <div class="col-2 d-flex justify-content-center align-items-center">
                                         <a>
@@ -29,10 +27,10 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>    
-                    </div>           
+                        </div>
+                    </div>
                 </div>
-    
+
                 <!-- "New" Badge -->
                 <div class="row new d-flex justify-content-end">
                     <img src="assets/img/new2.png" alt="image" *ngIf="promotionListObj.readStatus != 1">
@@ -40,11 +38,11 @@
             </a>
         </div>
     </div>
-     
+
 </div>
 <app-navigation-bar></app-navigation-bar>
 
 <!-- refresh loading -->
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
-  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
-  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+    [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+    [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

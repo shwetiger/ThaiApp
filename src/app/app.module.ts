@@ -33,6 +33,8 @@ import { AngularFireModule } from "@angular/fire";
 import { firebase } from '../environments/firebase';
 import { FacebookModule } from 'ngx-facebook';
 import { AppSplashScreenAdsComponent } from './shared/components/app-splash-screen-ads/app-splash-screen-ads.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
   return () => new Promise<any>((resolve: any) => {
@@ -92,7 +94,8 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     SharedModule,
     ZawgyiDetectorModule,
     AngularFireModule.initializeApp(firebase.firebaseConfig),
-    FacebookModule.forRoot()
+    FacebookModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     DatePipe,

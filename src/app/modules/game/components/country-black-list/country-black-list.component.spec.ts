@@ -8,9 +8,9 @@ describe('CountryBlackListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CountryBlackListComponent ]
+      declarations: [CountryBlackListComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

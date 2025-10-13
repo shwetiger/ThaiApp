@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse  } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { catchError, delay, retry } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
@@ -18,21 +18,19 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 
 export class TwoDThreeDWinnerComponent implements OnInit {
 
-  spinnerName : string;
+  spinnerName: string;
   type: any;
   token: any;
   parentLink: any;
-
   winnerList: any;
-  lastResultModel : any;
-
+  lastResultModel: any;
   getWinnerListModel: any;
   likeUnlikeModel: any;
   twodimgeLink: string;
   resultObj: any;
   loadingRefresh: boolean;
-  
- constructor(
+
+  constructor(
     private translateService: TranslateService,
     private dto: DtoService,
     private funct: FunctService,
@@ -42,26 +40,24 @@ export class TwoDThreeDWinnerComponent implements OnInit {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private storage: LocalStorageService,
-    private sanitizer: DomSanitizer) {   
-  
-      this.spinnerName ="refreshLoading";
-      this.token = this.storage.retrieve('token');
-      this.type = history.state.type;
-      this.type = this.route.snapshot.paramMap.get("type");    
+    private sanitizer: DomSanitizer) {
+    this.spinnerName = "refreshLoading";
+    this.token = this.storage.retrieve('token');
+    this.type = history.state.type;
+    this.type = this.route.snapshot.paramMap.get("type");
   }
 
   ngOnInit(): void {
-    this.loadingRefresh=true;
+    this.loadingRefresh = true;
     this.spinner.show('loadingRefresh');
-    //this.type = "3D";
-    if(this.type=='2D'){
+    if (this.type == '2D') {
       this.changeTwoDImageLink();
-      this.parentLink="/twod-page";
+      this.parentLink = "/twod-page";
     }
-    else{
-      this.parentLink="/threed-page";
+    else {
+      this.parentLink = "/threed-page";
     }
-    this.winnerList =[];
+    this.winnerList = [];
     this.resultObj = {
       datetime2d: '',
       datetime3d: '',
@@ -76,71 +72,67 @@ export class TwoDThreeDWinnerComponent implements OnInit {
     this.getWinnerList();/*XXXX*/
   }
 
-  handleError(error: HttpErrorResponse){
-    this.loadingRefresh=false;
+  handleError(error: HttpErrorResponse) {
+    this.loadingRefresh = false;
     this.spinner.hide('loadingRefresh');
-    if(error.status == 417)
-    {
+    if (error.status == 417) {
       this.toastr.error("", this.translateService.instant("youNeedLogin"), {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
-        return;
+      });
+       this.router.navigate(['/login'], { replaceUrl: true });
+      return;
     }
-    //return throwError(error);
   }
 
-  async getLastResult()
- {
+  async getLastResult() {
     const axios = require('axios').default;
     await axios.get(this.funct.ipaddress + 'result/GetLastResult')
-    .then((res) => 
-    {
-      this.resultObj =res.data;
-      return res.data;
-    });
- }
- async getWinnerList()
-  {
+      .then((res) => {
+        this.resultObj = res.data;
+        return res.data;
+      });
+  }
+
+  async getWinnerList() {
     this.spinner.show("loadingRefresh");
     await this.getLastResult()
-    this.token = this.storage.retrieve('token');    
+    this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
     let params = new HttpParams();
     params = params.set("resultId", "");
-    var newType= (this.type == "2D") ? "winner/Get2dWinnerList" : "winner/Get3dWinnerList";
-      this.http.get(this.funct.ipaddress + newType , {params:params})
+    var newType = (this.type == "2D") ? "winner/Get2dWinnerList" : "winner/Get3dWinnerList";
+    this.http.get(this.funct.ipaddress + newType, { params: params })
       .pipe(
         catchError(this.handleError.bind(this))
       )
       .subscribe(
         result => {
-          this.dto.Response = result;        
-          this.winnerList= this.dto.Response.results; 
-          this.loadingRefresh=false;
+          this.dto.Response = result;
+          this.winnerList = this.dto.Response.results;
+          this.loadingRefresh = false;
           this.spinner.hide('loadingRefresh');
         });
-     
   }
 
 
-  changeTwoDImageLink(){
-    var lang=this.storage.retrieve('localLanguage');
-    switch(lang) {     
+  changeTwoDImageLink() {
+    var lang = this.storage.retrieve('localLanguage');
+    switch (lang) {
       case 'my':
-        this.twodimgeLink="assets/img/winner/winner_2d_my.png";
+        this.twodimgeLink = "assets/img/winner/winner_2d_my.png";
         break;
       case 'th':
-        this.twodimgeLink="assets/img/winner/winner_2d.png";
+        this.twodimgeLink = "assets/img/winner/winner_2d.png";
         break;
       case 'zh':
-        this.twodimgeLink="assets/img/winner/winner_2d.png";
-        break;  
+        this.twodimgeLink = "assets/img/winner/winner_2d.png";
+        break;
       default:
-        this.twodimgeLink="assets/img/winner/winner_2d.png";
+        this.twodimgeLink = "assets/img/winner/winner_2d.png";
     }
-    
+
   }
 
 }

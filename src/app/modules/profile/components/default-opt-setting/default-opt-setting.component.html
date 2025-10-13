@@ -66,7 +66,7 @@
     <div class="pt-2 saveBtn" style="display:flex;justify-content: center;">
    
     </div>
-  
+    <div id="recaptcha-container"></div>
     <div class="section d-flex justify-content-around bg-white" id="navTwoDBet" style="position: relative;">
       <!-- Button -->
       <button 
@@ -78,7 +78,6 @@
       >
         {{ 'save' | translate }}
       </button>
-    
       <!-- Loading Spinner -->
       <div 
         *ngIf="common.submitLoading" 

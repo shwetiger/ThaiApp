@@ -9,9 +9,9 @@ export const environment = {
   jsKey:'MyWd0ieW0bK5YQEbdzvhGdKh9JVJc5DBmXlEh04j',
  // keyParseServerUrl : 'https://parseapi.back4app.com',
   keyParseServerUrl : 'https://thai2d3d.b4a.io',
-  
   keyLiveQueryUrl : 'https://happy7788.b4a.io',
-  facebookAppId: 'YOUR_FACEBOOK_APP_ID'
+  facebookAppId: 'YOUR_FACEBOOK_APP_ID',
+  version: '1.0.3'
   // firebaseConfig: {
   //   apiKey: "AIzaSyAvrrVr5SUbISFv5gbE9HKcx9pHo3Gu3Jc",
   //   authDomain: "thairetrievesms.firebaseapp.com",

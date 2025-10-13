@@ -1,6 +1,6 @@
   @import '../../../../variables';
   #game__list {   
-    min-height: 1၅၀vh;
+    min-height: 120vh;
     .extraHeader1 {
       position: fixed;
       left: 0;
@@ -12,7 +12,7 @@
       margin-top: env(safe-area-inset-top);
       display: flex;
       align-items: center;
-      background: #E1DFE2;
+      //background: #E1DFE2;
       z-index: 1000;
       margin-left: 0px !important;
       margin-right: 0px !important;

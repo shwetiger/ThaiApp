@@ -7,7 +7,6 @@
 //         messagingSenderId: "191880840210",
 //         appId: "1:191880840210:web:3b82d926c4efc3d6b944cb",
 //         measurementId: "G-2SCHEG8G7Q"
-      
 //       }
 
    export const firebase = {

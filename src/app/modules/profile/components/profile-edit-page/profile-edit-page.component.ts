@@ -1,5 +1,5 @@
-import { Component, OnInit ,TemplateRef} from '@angular/core';
-import { HttpClient, HttpHeaders ,HttpErrorResponse} from '@angular/common/http';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
@@ -22,16 +22,16 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 })
 export class ProfileEditPageComponent implements OnInit {
   logout: BsModalRef;
-  delete:BsModalRef;
+  delete: BsModalRef;
   fileInput: any;
   active: string;
   activeLang: any;
-  supportLanguages = ['en','my','th','zh'];
-  userModel : any;
-  token : any;
-  imagePath : any;
-  imgURL : any;
-  message : string;
+  supportLanguages = ['en', 'my', 'th', 'zh'];
+  userModel: any;
+  token: any;
+  imagePath: any;
+  imgURL: any;
+  message: string;
   phoneNumber: any;
   parentLink: any;
   refreshLoading: boolean;
@@ -39,244 +39,189 @@ export class ProfileEditPageComponent implements OnInit {
     private handleErrorMessage: HandleErrorMessageService,
     public common: CommonService,
     private translateService: TranslateService,
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private spinner: NgxSpinnerService,
-    private dto: DtoService, 
-    private http: HttpClient, 
-    private util: UtilService, 
-    private router: Router, 
-    private storage: LocalStorageService, 
+    private dto: DtoService,
+    private http: HttpClient,
+    private util: UtilService,
+    private router: Router,
+    private storage: LocalStorageService,
     private funct: FunctService,
     private _location: Location,
     private modalService: BsModalService,) {
-     
-      this.translateService.addLangs(this.supportLanguages);
-
-      if(this.storage.retrieve('localLanguage') == null || this.storage.retrieve('localLanguage') == '')
-      {
-        this.storage.store('localLanguage', 'en');
-        this.activeLang=this.storage.store('localLanguage', 'en');
-       
-      }     
-      else{
-        this.translateService.setDefaultLang(this.storage.retrieve('localLanguage')); 
-        this.activeLang=this.storage.retrieve('localLanguage');       
-      } 
+    this.translateService.addLangs(this.supportLanguages);
+    if (this.storage.retrieve('localLanguage') == null || this.storage.retrieve('localLanguage') == '') {
+      this.storage.store('localLanguage', 'en');
+      this.activeLang = this.storage.store('localLanguage', 'en');
+    }
+    else {
+      this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
+      this.activeLang = this.storage.retrieve('localLanguage');
+    }
   }
 
-  ngOnInit(): void { 
-    this.common.refreshLoading=true;
-    this.spinner.show("refreshLoading"); 
+  ngOnInit(): void {
+    this.common.refreshLoading = true;
+    this.spinner.show("refreshLoading");
     this.userModel = {
-      name :'',
-      phone_no :'',
-      imageUrl : '',
-      image64BaseData :''
+      name: '',
+      phone_no: '',
+      imageUrl: '',
+      image64BaseData: ''
     }
     this.getUserProfile();
-    
   }
 
-    getUserProfile(){
-      this.token = this.storage.retrieve('token');    
-      let headers = new HttpHeaders();
-      headers = headers.set('Authorization', this.token);    
-      this.http.get(this.funct.ipaddress + 'user/PointUserProfile', { headers: headers })
+  getUserProfile() {
+    this.token = this.storage.retrieve('token');
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', this.token);
+    this.http.get(this.funct.ipaddress + 'user/PointUserProfile', { headers: headers })
       .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this,''))
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
       .subscribe(
         result => {
-          this.common.refreshLoading=false;
-          this.spinner.hide("refreshLoading");           
+          this.common.refreshLoading = false;
+          this.spinner.hide("refreshLoading");
           this.dto.Response = {};
           this.dto.Response = result;
-          this.userModel= this.dto.Response; 
+          this.userModel = this.dto.Response;
           this.getPhoneNumber(this.userModel.phone_no);
-          
-        }); 
-     
-    }
-  
+        });
+  }
+
   preview(files) {
-      if (files.length === 0)
-        return;
-      var mimeType = files[0].type;
-      if (mimeType.match(/image\/*/) == null) {
-        this.message = "Only images are supported.";
-        return;
-      }
-      var reader = new FileReader();
-      this.imagePath = files;
-      reader.readAsDataURL(files[0]);
-      reader.onload = (_event) => {
-        this.imgURL = reader.result;
-      }
+    if (files.length === 0)
+      return;
+    var mimeType = files[0].type;
+    if (mimeType.match(/image\/*/) == null) {
+      this.message = "Only images are supported.";
+      return;
     }
+    var reader = new FileReader();
+    this.imagePath = files;
+    reader.readAsDataURL(files[0]);
+    reader.onload = (_event) => {
+      this.imgURL = reader.result;
+    }
+  }
 
- changeProfile()
-  {
-
-    this.common.submitLoading= true;   
-    this.spinner.show("submitLoading"); 
-
-    this.token = this.storage.retrieve('token');    
+  changeProfile() {
+    this.common.submitLoading = true;
+    this.spinner.show("submitLoading");
+    this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token); 
-    if(this.userModel.name.length == 0 || this.userModel.name == null || this.userModel.name == undefined)
-    {
-       this.common.submitLoading= false;   
-       this.spinner.hide("submitLoading"); 
-       this.toastr.error('', this.translateService.instant("editByUserName"), {
+    headers = headers.set('Authorization', this.token);
+    if (this.userModel.name.length == 0 || this.userModel.name == null || this.userModel.name == undefined) {
+      this.common.submitLoading = false;
+      this.spinner.hide("submitLoading");
+      this.toastr.error('', this.translateService.instant("editByUserName"), {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
-        return;
+      });
+      return;
     }
-    if (this.imgURL != undefined) 
-    {
-      if(this.imgURL.includes('data:image/jpeg;base64,'))
-        this.userModel.image64BaseData = this.imgURL.replace("data:image/jpeg;base64,","");
-      if(this.imgURL.includes('data:image/png;base64,'))
-        this.userModel.image64BaseData = this.imgURL.replace("data:image/png;base64,","");
-      if(this.imgURL.includes('data:image/gif;base64,'))
-        this.userModel.image64BaseData = this.imgURL.replace("data:image/gif;base64,","");
-     }
-    this.http.post(this.funct.ipaddress + 'user/editByUser', this.userModel,{ headers: headers })
-     .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this,''))
+    if (this.imgURL != undefined) {
+      if (this.imgURL.includes('data:image/jpeg;base64,'))
+        this.userModel.image64BaseData = this.imgURL.replace("data:image/jpeg;base64,", "");
+      if (this.imgURL.includes('data:image/png;base64,'))
+        this.userModel.image64BaseData = this.imgURL.replace("data:image/png;base64,", "");
+      if (this.imgURL.includes('data:image/gif;base64,'))
+        this.userModel.image64BaseData = this.imgURL.replace("data:image/gif;base64,", "");
+    }
+    this.http.post(this.funct.ipaddress + 'user/editByUser', this.userModel, { headers: headers })
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
-     .subscribe(
-       result => {
-        this.common.submitLoading= false;   
-        this.spinner.hide("submitLoading");
-         this.dto.Response = result;
-         if(this.dto.Response.status == 'Success')
-         { 
-          this.toastr.success("", this.translateService.instant("success_message"), {
-            timeOut: 3000,
-            positionClass: 'toast-top-center',
-            });       
-           this._location.back();
-         }
-       }
-     );
-    }
- 
-  selectLang(lang: string){
+      .subscribe(
+        result => {
+          this.common.submitLoading = false;
+          this.spinner.hide("submitLoading");
+          this.dto.Response = result;
+          if (this.dto.Response.status == 'Success') {
+            this.toastr.success("", this.translateService.instant("success_message"), {
+              timeOut: 3000,
+              positionClass: 'toast-top-center',
+            });
+            this._location.back();
+          }
+        }
+      );
+  }
+
+  selectLang(lang: string) {
     this.translateService.use(lang);
     this.storage.store('localLanguage', lang);
     this.active = 'active';
-    
   }
-  getPhoneNumber(phone: any){    
-    if(phone !=null){ 
-      this.userModel.phone_no =phone.substring(1, 3).toString()+
-      phone.substring(3,6).toString() + "*****" + phone.substring(phone.length - 2,phone.length).toString();   
-      // this.userModel.phone_no= phone.substring(0, 4).toString()+" "+
-      // phone.substring(4,7).toString() + " *** ***";
-     
-    } 
+
+  getPhoneNumber(phone: any) {
+    if (phone != null) {
+      this.userModel.phone_no = phone.substring(1, 3).toString() +
+        phone.substring(3, 6).toString() + "*****" + phone.substring(phone.length - 2, phone.length).toString();
+    }
   }
-  enter(event)
-  {
+
+  enter(event) {
     event.target.blur();
   }
 
-  refreshPage(){
-    
-    this.ngOnInit(); 
-
-    setTimeout(() =>
-    {
-      this.common.refreshLoading=false;
-      this.spinner.hide("refreshLoading");  
+  refreshPage() {
+    this.ngOnInit();
+    setTimeout(() => {
+      this.common.refreshLoading = false;
+      this.spinner.hide("refreshLoading");
     }, 1000);
-    
   }
 
-  logoutModel(logout: TemplateRef<any>){
-    this.logout=this.modalService.show(logout,
+  logoutModel(logout: TemplateRef<any>) {
+    this.logout = this.modalService.show(logout,
       {
         class: "logout-modal",
-        ignoreBackdropClick: true, 
+        ignoreBackdropClick: true,
         keyboard: false
-      });       
+      });
   }
- 
-  HidelogoutModel(){
+
+  HidelogoutModel() {
     this.logout.hide();
   }
- 
+
   onFileSelected(event: any) {
     this.fileInput = event.target;
     const selectedFile = event.target.files[0];
     if (selectedFile) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-            const imageUrl = e.target.result;
-        };
-        reader.readAsDataURL(selectedFile);
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const imageUrl = e.target.result;
+      };
+      reader.readAsDataURL(selectedFile);
     }
-}
-deleteprofilephoto()
-{
-  this.userModel.imageUrl='';
-  this.token = this.storage.retrieve('token');  
-  let headers = new HttpHeaders();
-  headers = headers.set('Authorization', this.token); 
-  this.http.get(this.funct.ipaddress + 'user/deleteByUser',{ headers: headers })
-  .pipe(
-   catchError(this.handleErrorMessage.handleError.bind(this,''))
-   )
-  .subscribe(
-    result => {
-     this.common.submitLoading= false;   
-     this.spinner.hide("submitLoading");
-      this.dto.Response = result;
-      
-      if(this.dto.Response.status == 'Success')
-      { 
-        this.HidelogoutModel();
-        this.toastr.success("", this.translateService.instant("success_message"), {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-          }); 
-       
-      }
-    }
-  );
- // this.HidelogoutModel();
-}
+  }
 
-// openFilePicker() {
-//   // Create a hidden file input element
-//   const fileInput = document.createElement('input');
-//   fileInput.type = 'file';
-//   fileInput.accept = 'image/*';
-//   fileInput.style.display = 'none';
-//   fileInput.click();
-
-//   fileInput.onchange = (event) => {
-//     const files = (event.target as HTMLInputElement).files;
-//     if (files && files.length > 0) {
-//       this.userModel.selectedFile = files[0];
-//       const reader = new FileReader();
-//       reader.onload = () => {
-//         this.userModel.imageUrl = reader.result as string;
-//       };
-//       reader.readAsDataURL(this.userModel.selectedFile);
-//     }
-//   };
-
-//   // Clean up the file input after selection
-//   fileInput.addEventListener('focusout', () => {
-//     fileInput.remove();
-//   });
-  
-//   // Append the file input to the DOM
-//   document.body.appendChild(fileInput);
-//   this.HidelogoutModel();
-
-// }
+  deleteprofilephoto() {
+    this.userModel.imageUrl = '';
+    this.token = this.storage.retrieve('token');
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', this.token);
+    this.http.get(this.funct.ipaddress + 'user/deleteByUser', { headers: headers })
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
+      )
+      .subscribe(
+        result => {
+          this.common.submitLoading = false;
+          this.spinner.hide("submitLoading");
+          this.dto.Response = result;
+          if (this.dto.Response.status == 'Success') {
+            this.HidelogoutModel();
+            this.toastr.success("", this.translateService.instant("success_message"), {
+              timeOut: 3000,
+              positionClass: 'toast-top-center',
+            });
+          }
+        }
+      );
+  }
 }

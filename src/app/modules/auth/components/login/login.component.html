@@ -1,80 +1,93 @@
-
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
 <div [ngClass]="{'keyboard-visible': isKeyboardVisible}">
-     <div id="appCapsule" class="extra-header-active">  
+    <div id="appCapsule" class="extra-header-active">
         <img src="assets/img/wallpaper6.png" alt="" width="100%">
-
-    
-        <!-- Extra Header -->
-        <div class="pt-1" style="background-color:#fff">          
+        <div class="pt-1" style="background-color:#fff">
             <ul class="nav lined" role="tablist" style="justify-content: center;width:100%">
-                <li class="nav-item"  [class]="activeLang == lang  ? 'active' : ''" *ngFor="let lang of supportLanguages" (click)="selectLang($event.target.value)">
-                    <a [class]="activeLang == lang  ? 'nav-link' : 'nav-link'" data-toggle="tab" href="#login-form" role="tab">
+                <li class="nav-item" [class]="activeLang == lang  ? 'active' : ''" *ngFor="let lang of supportLanguages"
+                    (click)="selectLang($event.target.value)">
+                    <a [class]="activeLang == lang  ? 'nav-link' : 'nav-link'" data-toggle="tab" href="#login-form"
+                        role="tab">
                         <h5 style="font-weight: bold;" *ngIf="lang == 'en'" value="{{lang}}"> English</h5>
                         <h5 class="ml-2" style="font-weight: bold;" *ngIf="lang == 'my'" value="{{lang}}"> မြန်မာ</h5>
-                        <h5 class="ml-2" style="font-weight: bold;" *ngIf="lang == 'th'" value="{{lang}}"> ประเทศไทย</h5>
+                        <h5 class="ml-2" style="font-weight: bold;" *ngIf="lang == 'th'" value="{{lang}}"> ประเทศไทย
+                        </h5>
                         <h5 class="ml-2" style="font-weight: bold;" *ngIf="lang == 'zh'" value="{{lang}}"> 中文</h5>
                     </a>
-                </li>      
+                </li>
             </ul>
         </div>
-       
-        <!-- * Extra Header -->
+
         <div class="tab-content mt-1">
-            <!-- Login tab -->
-            <div class="tab-pane fade show active" id="login-form" role="tabpanel"> 
+            <div class="tab-pane fade show active" id="login-form" role="tabpanel">
                 <div class="section full mt-1 mx-1">
-                    <form>                        
-                      <!-- <div class="form-row"> -->
+                    <form>
                         <div class="row  justify-content-center">
-                            <div  style="border: 2px solid #2253A2;border-radius: 5px;Height:'42px';width:'85%'">
-                        <div style="width: 100%;"><app-phone-picker [prefix]="prefix"  [phoneValue]="phoneValue" 
-                            [regularExpressionPhone]="regularExpressionPhone"></app-phone-picker></div>
-                        </div>
+                            <div style="border: 2px solid #2253A2;border-radius: 5px;Height:'42px';width:'85%'">
+                                <div style="width: 100%;"><app-phone-picker [prefix]="prefix" [phoneValue]="phoneValue"
+                                        [regularExpressionPhone]="regularExpressionPhone"></app-phone-picker></div>
+                            </div>
                         </div>
                         <div class="row mt-4 justify-content-center">
-                        <div  style="border: 2px solid #2253A2;border-radius: 5px;Height:'42px';width:'85%'">
-                        <div class="input-group input-wrapper">
-                        <input [type]="passwordType" maxlength = "21" (keyup) = 'checkPassword()' [(ngModel)]="loginModel.password" (keyup.enter)="enter($event)"
-                        [ngModelOptions]="{standalone: true}" class="form-control mx-2" id="loginPassword" placeholder="{{ 'passwordHint' | translate}}"  style="border-radius: 5px !important;">  
-                        <i class="text-eye" (click)="showPassword(!showPass)" >                          
-                            <i class="material-icons open-wallet" style="margin-left: 2px; font-size: 20px;color: gray;" *ngIf="showPass">visibility</i> 
-                            <i class="material-icons open-wallet" style="margin-left: 2px; font-size: 20px; color: gray;" *ngIf="!showPass">visibility_off</i>
-                        </i>
-                        </div>   
-                    </div>   
-                    </div> 
-                        <div class="row justify-content-center">  
-                        <div style="width:85%">              
-                        <p id ="passErr" class="error-color pb-1" style="text-align: left; " ></p>
-                        </div>
-                    </div>
-                        <div class="row justify-content-center" >
-                            <div class="mt-2" style=" position: relative; justify-content: center;" *ngIf="common.submitLoading" >                  
-                                <!-- submit loading -->
-                                <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-                                [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-                                [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+                            <div style="border: 2px solid #2253A2;border-radius: 5px;Height:'42px';width:'85%'">
+                                <div class="input-group input-wrapper">
+                                    <input [type]="passwordType" maxlength="21" (keyup)='checkPassword()'
+                                        [(ngModel)]="loginModel.password" (keyup.enter)="enter($event)"
+                                        [ngModelOptions]="{standalone: true}" class="form-control mx-2"
+                                        id="loginPassword" placeholder="{{ 'passwordHint' | translate}}"
+                                        style="border-radius: 5px !important;">
+                                    <i class="text-eye" (click)="showPassword(!showPass)">
+                                        <i class="material-icons open-wallet"
+                                            style="margin-left: 2px; font-size: 20px;color: gray;"
+                                            *ngIf="showPass">visibility</i>
+                                        <i class="material-icons open-wallet"
+                                            style="margin-left: 2px; font-size: 20px; color: gray;"
+                                            *ngIf="!showPass">visibility_off</i>
+                                    </i>
+                                </div>
                             </div>
-                            <button type="button" (click) = "login()"  style="border-radius:5px;background-color: #2253A2; color: #fff;border:none;width:85% ;height:40px" *ngIf="!common.submitLoading" >{{ 'loginButton' | translate}}</button>
-                          </div>
-                          <div class="row text-right pt-1 mr-3" >
-                           <a style="width: 100%;font-weight: bold;text-decoration: underline;" [routerLink]="['/login/initial-forgot-password']"  [replaceUrl]="false" class="forgotPassword"> {{ 'forgotPassword' | translate}} </a>
-                          </div>
-                          <div class="line-container">
+                        </div>
+                        <div class="row justify-content-center">
+                            <div style="width:85%">
+                                <p id="passErr" class="error-color pb-1" style="text-align: left; "></p>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="mt-2" style=" position: relative; justify-content: center;"
+                                *ngIf="common.submitLoading">
+                                <ngx-spinner [name]="common.loading.submitLoading.name"
+                                    [size]="common.loading.submitLoading.size"
+                                    [color]="common.loading.submitLoading.color"
+                                    [type]="common.loading.submitLoading.type"
+                                    [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+                            </div>
+                            <button type="button" (click)="login()"
+                                style="border-radius:5px;background-color: #2253A2; color: #fff;border:none;width:85% ;height:40px"
+                                *ngIf="!common.submitLoading">{{ 'loginButton' | translate}}</button>
+                        </div>
+                        <div class="row text-right pt-1 mr-3">
+                            <a style="width: 100%;font-weight: bold;text-decoration: underline;"
+                                [routerLink]="['/login/initial-forgot-password']" [replaceUrl]="false"
+                                class="forgotPassword"> {{ 'forgotPassword' | translate}} </a>
+                        </div>
+                        <div class="line-container">
                             <div class="line"></div>
-                            <span class="text-or">Or</span>
+                            <span class="text-or">{{'login_or' | translate}}</span>
                             <div class="line"></div>
-                          </div>
-                          <div class="row mt-2 mb-2 justify-content-center">
-                           <button type="button" style="border-radius: 5px; background-color: #fff;border:2px solid #2253A2;color:#2253A2;width: 85%;height:40px" [routerLink] = "['/login/register']"  [replaceUrl]="false" >{{ 'creadeAccount' | translate}}</button>
-                         </div>                    
+                        </div>
+                        <div class="row mt-2 mb-2 justify-content-center">
+                            <button type="button"
+                                style="border-radius: 5px; background-color: #fff;border:2px solid #2253A2;color:#2253A2;width: 85%;height:40px"
+                                [routerLink]="['/login/register']" [replaceUrl]="false">{{ 'creadeAccount' |
+                                translate}}</button>
+                        </div>
                     </form>
                 </div>
             </div>
-            <!-- * Login tab -->
-        </div> 
+        </div>
     </div>
-
-    <!-- * App Capsule -->
 </div>
+
+<footer class="app-footer" style="color:red">
+  <small>Version: {{ version }}</small>
+</footer>

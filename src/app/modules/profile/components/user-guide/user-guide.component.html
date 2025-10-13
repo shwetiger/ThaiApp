@@ -12,9 +12,8 @@
        <div class="card" id="navTwoDBetConfirm" >
        <div class="row ml-2 mt-1">{{Questiondetaillisshow.stepNo}}</div>
        <div class="row ml-2 mr-2" style="white-space: pre-line;text-align: justify;">{{Questiondetaillisshow.describe}}</div>
-     
         <div class="row mt-3 justify-content-center">
-            <div class="progress" style="width: 80%; height: 8px; border-radius: 0;"> <!-- Adjust width as needed -->
+            <div class="progress" style="width: 80%; height: 8px; border-radius: 0;">
                 <div class="progress-bar bg-custom-blue" role="progressbar" [style.width.%]="currentpercent" [attr.aria-valuenow]="currentpercent" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
@@ -25,7 +24,6 @@
             <button type="button" class="button" (click)="gotoprevious()" [disabled]="isPreviousDisabled" [ngStyle]="{ 'color': isPreviousDisabled ? disabledButtonColor : '' }" style=" width:120px !important;border:none ">&laquo; Previous</button>
             </div>
             </div>
-            <!-- <button type="button" class="button" (click)="gotonext()" class="next">Next &raquo;</button> -->
             <div class="col-6">
                 <div class="d-flex justify-content-end">
             <button type="button"  class="button" (click)="gotonext()" [disabled]="isNextDisabled" [ngStyle]="{ 'color': isNextDisabled ? disabledButtonColor : '' }" style=" width: 85px !important;border:none; ">Next &raquo;</button>
@@ -34,12 +32,3 @@
 </div>
 </div>
 
-
-<!-- <div class="section full d-flex justify-content-center" id="navTwoDBetConfirm"  style="background-color: #f4f2f2;">   
-    <button type="button" class="text-danger btn btn-lg btn-block  betconfrimButton1 mb-3">{{ 'reselect' | translate}}</button>   
-    <div class="mt-5" style=" position: relative; justify-content: center; background-color: transparent !important; width: 100%; height: 100%;"  >                  
-      
-  </div>
-    <button type="button" class="btn btn-lg btn-block  betconfrimButton2 mb-3" >{{ 'bet' | translate}}</button>
-   
-  </div> -->

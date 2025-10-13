@@ -229,6 +229,7 @@ export class TwodInitialPageComponent implements OnInit {
         timeOut: 1000,
         positionClass: 'toast-top-center',
         });
+         this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
     this.router.navigate(['/twod/bet-history','2D'], {state: {type: '2D',pagefrom:'2dinitial'},replaceUrl: false} );

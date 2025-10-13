@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ThreedBetComponent } from './threed-bet.component';
 
 describe('ThreedBetComponent', () => {
@@ -8,9 +7,9 @@ describe('ThreedBetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ThreedBetComponent ]
+      declarations: [ThreedBetComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -28,7 +28,6 @@ export class NotRefreshAppbarComponent implements OnInit {
   }
   goBack(){    
     this._location.back();   
-   
   }
  
 }

@@ -139,8 +139,10 @@ export class GameShowFreePlayComponent implements OnInit {
       const axios = require('axios').default;
       await axios.get(this.funct.ipaddress + 'loginGS/getBalanceV129', config )
       .then((res) => {      
-        this.gameUserBalance = res.data.balance;           
+        this.gameUserBalance = res.data.data.balance;
+        this.storage.store('localGameBalanceBefore',this.gameUserBalance)        
         return res.data.balance;
+      
     })
       .catch((error) => {          
         if (error.response) {        
@@ -177,7 +179,6 @@ export class GameShowFreePlayComponent implements OnInit {
  
   play()
   {
-   
     this.gameLoadingtwo=true;
     this.spinner.show("gameLoadingtwo");   
     let params = new HttpParams();
@@ -193,7 +194,19 @@ export class GameShowFreePlayComponent implements OnInit {
     .subscribe(
       result => {        
         this.dto.Response = result; 
-        if(this.dto.Response.balance < 1000)
+        if(this.dto.Response.data==null)
+        {
+        this.bsModalRef.hide(); 
+        this.toastr.error("", this.translateService.instant("transaction_wait_5sec"), {
+        timeOut: 1000,
+        positionClass: 'toast-top-center',
+        });
+
+          return;
+        }
+        const parsedData = JSON.parse(this.dto.Response.data); 
+        this.gameUserBalance = parsedData.balance;
+       if(this.gameUserBalance < 1000)
         {
           this.launchGameModel.gameId = this.data.list.providercode+"_"+this.data.list.code;
           this.launchGameModel.providerCode = this.data.providerName;          
@@ -205,7 +218,7 @@ export class GameShowFreePlayComponent implements OnInit {
           var data={            
             "id": this.data.providerId,
             "mainBalance": this.userProfileBalance,
-            "gameBalance": this.dto.Response.balance,
+            "gameBalance": this.gameUserBalance,
             "categoryId": "",
             "name": this.data.providerName,
             "LiveGameLaunch": this.data.list
@@ -244,7 +257,8 @@ export class GameShowFreePlayComponent implements OnInit {
                     this.spinner.hide("smallSpinner");               
                     this.dto.Response = result;
                     this.launchGameResModel = this.dto.Response;           
-                    this.gameUserBalance = await this.getGameUserBalance();  
+                    //this.gameUserBalance =await this.getGameUserBalance();  
+                    this.gameUserBalance= this.storage.retrieve('localGameBalanceBefore');
                     this.storage.store('localGamePlayProviderId',this.data.providerId);             
                     this.storage.store('localPreviousRoute','gameList')  
                     sessionStorage.setItem('providerId',this.data.providerId);
@@ -293,7 +307,8 @@ export class GameShowFreePlayComponent implements OnInit {
                 this.spinner.hide("smallSpinner");            
                 this.dto.Response = result;
                 this.launchGameResModel = this.dto.Response;           
-                this.gameUserBalance = await this.getGameUserBalance();  
+                //this.gameUserBalance = await this.getGameUserBalance();  
+                this.gameUserBalance= this.storage.retrieve('localGameBalanceBefore');
                 this.storage.store('localGamePlayProviderId',this.data.providerId);             
                 this.storage.store('localPreviousRoute','gameList')  
                 sessionStorage.setItem('providerId',this.data.providerId);
@@ -327,7 +342,7 @@ export class GameShowFreePlayComponent implements OnInit {
           
         }
       }
-    );
+   );
   }
   gameLanguage()
   {

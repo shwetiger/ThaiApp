@@ -8,9 +8,9 @@ describe('ThreedBetConfirmPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ThreedBetConfirmPageComponent ]
+      declarations: [ThreedBetConfirmPageComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

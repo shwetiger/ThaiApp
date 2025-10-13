@@ -1,221 +1,227 @@
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
-        <!-- App Capsule -->
-        <div id="appCapsule" class="extra-header-active">             
-            <h3 class="text-center pt-2" style="color: #2253A2;font-weight: bold;">{{'checking-personal-info' | translate }}</h3>
-            <div class="row justify-content-center">
-              <!-- <div class="col-1"></div> -->
-              <div class="col-12">
-              <div class="card mx-4">
-                  <div class="card-body btn-primary" style="color: #fff !important;border-radius : 5px;"> 
-                      <div class="container-fluid  px-2">                                                                              
-                        <div class="row pb-1"> 
-                          <div class="d-flex">
-                            <div style="margin-top: 2px;">                            
-                              <i class="material-icons" style="color: yellow; font-size: 20px;">warning</i>  
-                            </div>
-                            <span style="line-height: 2;">{{ 'forget-suspend-desc' | translate }}</span>    
-                          </div>                                                 
-                        </div>
-                        <div class="row pb-1">          
-                          <div class="d-flex">
-                            <div style="margin-top: 5px;">                             
-                              <i class="material-icons" style="color: #fff; font-size: 14px;">remove</i>  
-                            </div>
-                            <span style="line-height: 2;">{{ 'forget-suspend-desc-one' | translate }}</span>    
-                          </div>                
-                        </div> 
-                        <div class="row pb-1">
-                          <div class="col-12" style="padding-left: 60px !important;">{{'or' | translate}}</div>                       
-                        </div>                            
-                        <div class="row">
-                          <div class="d-flex">
-                            <div style="margin-top: 5px;">
-                              <i class="material-icons" style="color: #fff; font-size: 14px;">remove</i>  
-                            </div>
-                            <span style="line-height: 2;">{{ 'forget-suspend-desc-two' | translate }}</span>    
-                          </div>                         
-                        </div>  
-                      </div>   
-                  </div>
-              </div>
-              </div>
-              <div class="col-1"></div>
-            </div> 
-            <br/>
-            <div class="row justify-content-center">
-              <h4 style="color: #2253A2; font-weight: 600;">{{ 'forget-suspend-title-one' | translate }}</h4>
-            </div>
-            <div class="row mx-3">   
-              <!-- <div class="col-1"></div> -->
-              <div class="col-12" >       
-                <select name="bankType" id="bankType" class="bank-type-select custom-select bankType ">                    
-                </select>                  
-                <p id="errBankList" class="error-color pb-1" style="text-align: left; width: 100%;"></p>
-              </div>
-              <div class="col-1"></div>                      
-           </div>          
-           <br/>
-           <div class="row mx-3">
-            <!-- <div class="col-1"></div> -->
-            <div class="col-12 justify-content-center">
-                <input type = "number" class="form-control" (keyup)="checkAmt()" (keyup.enter)="enter($event)"  
-                [ngModelOptions]="{standalone: true}"  [(ngModel)]="topupAmt" placeholder="{{'latest-topup-amount' | translate}}" style="font-size: 14px;">
-                <p id="errAmt" class="error-color pb-1" style="text-align: left; width: 100%;"></p>
-            </div>
-            <div class="col-1"></div>
-          </div>
-          <br/>
-          <div class="row mx-3">
-           <!-- <div class="col-1"></div> -->
-           <div class="col-12 justify-content-center">     
-            <div class="row date">
-              <div class="col-4 ">  
-                <select name="forgetDay" id="forgetDay" class="day custom-select forgetDay">                    
-                </select>
-              </div>
-              <div class="col-4">
-                <select name="forgetMonth" id="forgetMonth" class="month custom-select forgetMonth">                    
-                </select>
-              </div>
-              <div class="col-4">              
-                <select name="forgetYear" id="forgetYear" class="year custom-select forgetYear">                    
-                </select>
-              </div>
-            </div>      
-            <div class="row">
-              <p id="errDate" class="error-color pb-1 pl-1" style="text-align: left; width: 100%;"></p>
-            </div>             
-            </div>              
-           <div class="col-1"></div>
-          </div>
-           <br/>
-           <div class="row">
-             <div class="col-5">
-             </div>
-             <div class="col-2">
-                {{'or' | translate}}
-            </div>
-            <div class="col-5">
-            </div>
-           </div>
-           <br/>
-           <div class="row justify-content-center">
-            <h4 style="color: #2253A2; font-weight: 600;">{{ 'forget-suspend-title-two' | translate }}</h4>
-          </div>
-            <div class="row d-flex justify-content-center text-center">
-              <div class="col-1">
-              </div>
-              <!-- <div class="col-9">
-                 <p> {{'latest-bank-trasfer-slip' | translate}} </p>
-              </div> -->
-               <div class="col-1">
-              </div>
-           </div>
-           <div class="row d-flex justify-content-center" [class]="isHidden?'h':'nh'">
-            <div class="col-1">
-            </div>
-            <div class="col-10">
-                  <input #file type="file" accept='image/*' [(ngModel)]="imgURL" 
-                      (change)="preview(file.files)" id = "upload" hidden />
-                  <label for="upload" class="forUpload d-flex justify-content-center">
-                          <img src="assets/img/forgotcamera.png" style="width : 30px ; height : 30px;position: relative;" class="mr-1"/>
-                          <span style="padding-top: 5px;">{{'upload_bank_slip' |translate}}</span>
-                  </label>
-            </div>
-            <div class="col-1">
-           </div>
-           </div>
 
-           <div class="row d-flex justify-content-center" [hidden] = "(imgURL != null && imgURL !='' && imgURL != undefined)? false : true">
-              <div class="col-1">
+<div id="appCapsule" class="extra-header-active">
+  <h3 class="text-center pt-2" style="color: #2253A2;font-weight: bold;">{{'checking-personal-info' | translate }}</h3>
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="card mx-4">
+        <div class="card-body btn-primary" style="color: #fff !important;border-radius : 5px;">
+          <div class="container-fluid  px-2">
+            <div class="row pb-1">
+              <div class="d-flex">
+                <div style="margin-top: 2px;">
+                  <i class="material-icons" style="color: yellow; font-size: 20px;">warning</i>
+                </div>
+                <span style="line-height: 2;">{{ 'forget-suspend-desc' | translate }}</span>
               </div>
-              <div class="col-10">
-                    <div class="img-wrap d-flex justify-content-center form-group row" [hidden] = "(imgURL != null && imgURL !='' && imgURL != undefined)? false : true">
-                     
-                      <i class="material-icons close" [hidden] = "(imgURL != null && imgURL !='' && imgURL != undefined)? false : true" 
-                      style="color: red !important;
+            </div>
+            <div class="row pb-1">
+              <div class="d-flex">
+                <div style="margin-top: 5px;">
+                  <i class="material-icons" style="color: #fff; font-size: 14px;">remove</i>
+                </div>
+                <span style="line-height: 2;">{{ 'forget-suspend-desc-one' | translate }}</span>
+              </div>
+            </div>
+            <div class="row pb-1">
+              <div class="col-12" style="padding-left: 60px !important;">{{'or' | translate}}</div>
+            </div>
+            <div class="row">
+              <div class="d-flex">
+                <div style="margin-top: 5px;">
+                  <i class="material-icons" style="color: #fff; font-size: 14px;">remove</i>
+                </div>
+                <span style="line-height: 2;">{{ 'forget-suspend-desc-two' | translate }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-1"></div>
+  </div>
+  <br />
+  <div class="row justify-content-center">
+    <h4 style="color: #2253A2; font-weight: 600;">{{ 'forget-suspend-title-one' | translate }}</h4>
+  </div>
+  <div class="row mx-3">
+    <div class="col-12">
+      <select name="bankType" id="bankType" class="bank-type-select custom-select bankType ">
+      </select>
+      <p id="errBankList" class="error-color pb-1" style="text-align: left; width: 100%;"></p>
+    </div>
+    <div class="col-1"></div>
+  </div>
+  <br />
+  <div class="row mx-3">
+    <div class="col-12 justify-content-center">
+      <input type="number" class="form-control" (keyup)="checkAmt()" (keyup.enter)="enter($event)"
+        [ngModelOptions]="{standalone: true}" [(ngModel)]="topupAmt" placeholder="{{'latest-topup-amount' | translate}}"
+        style="font-size: 14px;">
+      <p id="errAmt" class="error-color pb-1" style="text-align: left; width: 100%;"></p>
+    </div>
+    <div class="col-1"></div>
+  </div>
+  <br />
+  <div class="row mx-3">
+    <div class="col-12 justify-content-center">
+      <div class="row date">
+        <div class="col-4 ">
+          <select name="forgetDay" id="forgetDay" class="day custom-select forgetDay">
+          </select>
+        </div>
+        <div class="col-4">
+          <select name="forgetMonth" id="forgetMonth" class="month custom-select forgetMonth">
+          </select>
+        </div>
+        <div class="col-4">
+          <select name="forgetYear" id="forgetYear" class="year custom-select forgetYear">
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <p id="errDate" class="error-color pb-1 pl-1" style="text-align: left; width: 100%;"></p>
+      </div>
+    </div>
+    <div class="col-1"></div>
+  </div>
+  <br />
+  <div class="row">
+    <div class="col-5">
+    </div>
+    <div class="col-2">
+      {{'or' | translate}}
+    </div>
+    <div class="col-5">
+    </div>
+  </div>
+  <br />
+  <div class="row justify-content-center">
+    <h4 style="color: #2253A2; font-weight: 600;">{{ 'forget-suspend-title-two' | translate }}</h4>
+  </div>
+  <div class="row d-flex justify-content-center text-center">
+    <div class="col-1">
+    </div>
+    <div class="col-1">
+    </div>
+  </div>
+  <div class="row d-flex justify-content-center" [class]="isHidden?'h':'nh'">
+    <div class="col-1">
+    </div>
+    <div class="col-10">
+      <input #file type="file" accept='image/*' [(ngModel)]="imgURL" (change)="preview(file.files)" id="upload"
+        hidden />
+      <label for="upload" class="forUpload d-flex justify-content-center">
+        <img src="assets/img/forgotcamera.png" style="width : 30px ; height : 30px;position: relative;" class="mr-1" />
+        <span style="padding-top: 5px;">{{'upload_bank_slip' |translate}}</span>
+      </label>
+    </div>
+    <div class="col-1">
+    </div>
+  </div>
+
+  <div class="row d-flex justify-content-center"
+    [hidden]="(imgURL != null && imgURL !='' && imgURL != undefined)? false : true">
+    <div class="col-1">
+    </div>
+    <div class="col-10">
+      <div class="img-wrap d-flex justify-content-center form-group row"
+        [hidden]="(imgURL != null && imgURL !='' && imgURL != undefined)? false : true">
+
+        <i class="material-icons close" [hidden]="(imgURL != null && imgURL !='' && imgURL != undefined)? false : true"
+          style="color: red !important;
                       font-size: 30px !important;                     
                       float: right;
                       margin-top: -13px;
                       margin-right: -17px;
                       z-index:1;
-                      cursor: pointer;" (click) = "removeFns()">cancel</i>  
-                      <img [src]="imgURL" height="150" width="200" *ngIf="imgURL" style="border: 2px dotted #2253A2 !important;">
-                    </div>
-
-                    
-                    
-              </div>
-              <div class="col-1">
-              </div>
-           </div>          
-          <div class="row justify-content-center pt-2 pb-2">
-              <div class="col-1">
-              </div>
-              <div class="col-10" *ngIf="Usefirebase == false">
-               
-                 <!-- submit loading -->
-                 <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-                 [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-                 [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
-                <button type="button"  *ngIf="!common.submitLoading" class="button" (click)="ForgotPasswordValidation(forgetPassword,forgetPassword1)" style="border-radius : 5px; background-color: #2253A2; color: #fff; width: 100% !important;">{{ 'topup_submit' | translate}}</button>
-              </div>
-
-              <div class="col-10" *ngIf="Usefirebase == true">
-                <div id="recaptcha-container"></div>
-                <!-- submit loading -->
-               <button type="button"  *ngIf="!recaptcha" class="button" (click)="ForgotPasswordValidation(forgetPassword,forgetPassword1)" style="border-radius : 5px; background-color: #2253A2; color: #fff; width: 100% !important;">{{ 'topup_submit' | translate}}</button>
-
-             </div>
-              <div class="col-1 ">
-              </div>
-          </div>
+                      cursor: pointer;" (click)="removeFns()">cancel</i>
+        <img [src]="imgURL" height="150" width="200" *ngIf="imgURL" style="border: 2px dotted #2253A2 !important;">
       </div>
-    
-     
-      <ng-template #forgetPassword>           
-             <div class="modal-body">
-              <div class="d-flex justify-content-center">              
-                <i class="material-icons" style="color: red;font-size: 30px;">cancel</i>
-              </div>
-               
-               <p style="color: red; font-size: 15px;">{{ 'incorrect-info-title1' | translate }}</p>
-                <ul style="list-style-type: disc;" class="ml-2">
-                  <li style="color : #2253A2 !important">{{ 'incorrect-info-desc' | translate }}</li>
-                </ul>
-               <div style="text-align: right;">
-                 <button type="button" class="btn" (click) = "HideAlertOne()">{{ 'close' | translate}}</button>
-               </div>
-             </div>   
-      </ng-template>
 
 
-       <ng-template #forgetPassword1>    
-               
-        <div class="modal-body">
-          <div class="d-flex justify-content-center"> 
-            <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i>            
-          </div>     
-          <p style="color: red; font-size: 15px;">{{ 'incorrect-info-title' | translate }}</p>
-           <ul style="list-style-type: disc;" class="ml-2">
-             <li style="color : #2253A2 !important">{{ 'incorrect-info-desc1' | translate }}</li>
-           </ul>
-           <div class="card mt-2">
-             <div class="card-body" style="background-color: #95b7f0 !important; border-radius: 5px; text-align: center; padding : 10px 0px  !important">
-              <p class = "card-text" style="color : #000 !important;">{{ 'incorrect-info-desc2' | translate }}</p>
-             </div>
-           </div>           
-           <div class="row mt-2">
-             <div class="col-6">
-              <div style="text-align: right;">
-                <button type="button" class="btn btn-success" (click) = "goCustomerServicePage()" style="white-space: nowrap;width: 100%;font-size: 13px;">{{ 'btn-customer-service' | translate}}</button>
-              </div>
-            </div>
-            <div class="col-6">
-              <div style="text-align: right;">
-                <button type="button" class="btn btn-primary" (click) = "HideAlert()" style="width : 100%">{{ 'ok' | translate}}</button>
-              </div>
-            </div>
-         </div>
-        </div>   
-       </ng-template>
+
+    </div>
+    <div class="col-1">
+    </div>
+  </div>
+  <div class="row justify-content-center pt-2 pb-2">
+    <div class="col-1">
+    </div>
+    <div class="col-10" *ngIf="(Usefirebase == true && smstype != 'sms_poh') || 
+         (Usefirebase == false && (smstype == 'vmg_viber' || smstype == 'sms_poh' || smstype == 'email'))">
+
+      <!-- submit loading -->
+      <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+      <button type="button" *ngIf="!common.submitLoading" class="button"
+        (click)="ForgotPasswordValidation(forgetPassword,forgetPassword1)"
+        style="border-radius : 5px; background-color: #2253A2; color: #fff; width: 100% !important;">{{ 'topup_submit' |
+        translate}}</button>
+    </div>
+
+    <div class="col-10" *ngIf="Usefirebase == true && smstype =='sms_poh'">
+      <div id="recaptcha-container"></div>
+      <!-- submit loading -->
+      <button type="button" *ngIf="!recaptcha" class="button"
+        (click)="ForgotPasswordValidation(forgetPassword,forgetPassword1)"
+        style="border-radius : 5px; background-color: #2253A2; color: #fff; width: 100% !important;">{{ 'topup_submit' |
+        translate}}</button>
+
+    </div>
+    <div class="col-1 ">
+    </div>
+  </div>
+</div>
+
+
+<ng-template #forgetPassword>
+  <div class="modal-body">
+    <div class="d-flex justify-content-center">
+      <i class="material-icons" style="color: red;font-size: 30px;">cancel</i>
+    </div>
+
+    <p style="color: red; font-size: 15px;">{{ 'incorrect-info-title1' | translate }}</p>
+    <ul style="list-style-type: disc;" class="ml-2">
+      <li style="color : #2253A2 !important">{{ 'incorrect-info-desc' | translate }}</li>
+    </ul>
+    <div style="text-align: right;">
+      <button type="button" class="btn" (click)="HideAlertOne()">{{ 'close' | translate}}</button>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #forgetPassword1>
+
+  <div class="modal-body">
+    <div class="d-flex justify-content-center">
+      <i class="material-icons" style="color: red;font-size: 30px;">cancel</i>
+    </div>
+    <p style="color: red; font-size: 15px;">{{ 'incorrect-info-title' | translate }}</p>
+    <ul style="list-style-type: disc;" class="ml-2">
+      <li style="color : #2253A2 !important">{{ 'incorrect-info-desc1' | translate }}</li>
+    </ul>
+    <div class="card mt-2">
+      <div class="card-body"
+        style="background-color: #95b7f0 !important; border-radius: 5px; text-align: center; padding : 10px 0px  !important">
+        <p class="card-text" style="color : #000 !important;">{{ 'incorrect-info-desc2' | translate }}</p>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-6">
+        <div style="text-align: right;">
+          <button type="button" class="btn btn-success" (click)="goCustomerServicePage()"
+            style="white-space: nowrap;width: 100%;font-size: 13px;">{{ 'btn-customer-service' | translate}}</button>
+        </div>
+      </div>
+      <div class="col-6">
+        <div style="text-align: right;">
+          <button type="button" class="btn btn-primary" (click)="HideAlert()" style="width : 100%">{{ 'ok' |
+            translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

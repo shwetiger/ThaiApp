@@ -2,44 +2,55 @@
 
 #appCapsule {
     background-color: $background-color !important;
-    min-height: 100vh;   
+    min-height: 100vh;
 }
+
 .bet-selected-count-icon {
-        color: #000;
-        font-weight: 600;
-        text-align: center;
-        width: 28px;
-        height: 28px;
-        border-radius: 100%;
-        background-color: $yellow-color;
-        display: inline-block;
-        position: absolute;
-        right: -8px;
-        top: -8px;
-        padding: 3px 0 0 0;
-        transform-origin: 50% 5em;
-        animation: wiggle 2s linear;
+    color: #000;
+    font-weight: 600;
+    text-align: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 100%;
+    background-color: $yellow-color;
+    display: inline-block;
+    position: absolute;
+    right: -8px;
+    top: -8px;
+    padding: 3px 0 0 0;
+    transform-origin: 50% 5em;
+    animation: wiggle 2s linear;
 }
+
 @keyframes wiggle {
-    0%, 7% {
+
+    0%,
+    7% {
         transform: rotateZ(0);
     }
+
     15% {
         transform: rotateZ(-15deg);
     }
+
     20% {
         transform: rotateZ(10deg);
     }
+
     25% {
         transform: rotateZ(-10deg);
     }
+
     30% {
         transform: rotateZ(6deg);
     }
+
     35% {
         transform: rotateZ(-4deg);
     }
-    40%, 100% {
+
+    40%,
+    100% {
         transform: rotateZ(0);
     }
 }
@@ -52,6 +63,7 @@
     background: $second-color;
     border-radius: 5px;
     position: relative;
+
     &::after {
         content: "";
         position: absolute;
@@ -61,64 +73,61 @@
         height: 30px;
         background: url('/assets/img/icons/new.png') top center / 100% no-repeat;
     }
+
     &:disabled {
         opacity: 1;
         color: #000;
         background-color: #e8e8e8;
         border: 2px solid #d4d4d4;
+
         &::after {
             background: url('/assets/img/icons/new-disabled.png') top center / 100% no-repeat;
         }
     }
 }
 
+.extraHeader1 {
+    position: fixed;
+    left: 0;
+    top: 56px;
+    height: auto;
+    right: 0;
+    width: 100%;
+    margin-top: env(safe-area-inset-top);
+    display: flex;
+    align-items: center;
+    background: #fff;
+    z-index: 1000;
 
-.extraHeader1 {    
-        position: fixed;
-        left: 0;
-        top: 56px;
-        height: auto;
-        right: 0;
-        width: 100%;        
-        margin-top: env(safe-area-inset-top);
-        display: flex;
-        align-items: center;
-        background: #fff;
-        z-index: 1000;      
-    
-    & .reverse-btn {  
-        color: #fff;  
-        background-color: $second-color !important;     
+    & .reverse-btn {
+        color: #fff;
+        background-color: $second-color !important;
+
         &:active {
             border: 1px solid $second-color !important;
             color: $second-color !important;
-            background-color: transparent !important;                 
+            background-color: transparent !important;
         }
+
         &:focus {
-            outline: none !important;  
+            outline: none !important;
         }
     }
-    & .reverse-disable-btn {  
-        color: #fff;  
-        background-color: grey !important; 
-        border: 1px solid grey ; 
-        // &:active {
-        //     border: 1px solid $second-color !important;
-        //     color: $second-color !important;
-        //     background-color: transparent !important;                 
-        // }
-        // &:focus {
-        //     outline: none !important;  
-        // }
+
+    & .reverse-disable-btn {
+        color: #fff;
+        background-color: grey !important;
+        border: 1px solid grey;
     }
+
     & .wallet-text {
-        border: 5px solid #3474db !important;   
-        background-color:  $second-color;
+        border: 5px solid #3474db !important;
+        background-color: $second-color;
         border-radius: 10px;
-        width: 100% !important;   
-       
+        width: 100% !important;
     }
-    & .colorDialog{
+
+    & .colorDialog {
         border-radius: 14px;
         margin-left: 21px;
         width: 25px;
@@ -130,14 +139,16 @@
     & .button-notRound {
         border-radius: 10px;
         width: 100px;
-        height: 40px; 
+        height: 40px;
         padding: 0px !important;
     }
-    & .input{
+
+    & .input {
         border: 1px solid grey;
         background: #ddd;
-        height: 50px;        
+        height: 50px;
         border-color: lightslategray;
+
         &::placeholder {
             font-size: 13px;
         }
@@ -146,7 +157,7 @@
 
 .extraFooter {
     margin-top: 210px;
-    & .footer-select-number{
+    & .footer-select-number {
         margin-bottom: 80px !important;
     }
     & .reverse-icon {
@@ -175,23 +186,22 @@
         right: -5px;
         top: -5px;
     }
-    & .numberCard{
+    & .numberCard {
         width: 50px;
         height: 45px;
         background-color: lightgray;
         position: relative;
         margin: 5px 10px;
     }
-    & .numberCard-not-selected{
+    & .numberCard-not-selected {
         width: 50px;
         height: 45px;
         background-color: gray;
         position: relative;
         margin: 5px 10px;
-        //color: #fff;
     }
-    
-    & .numberCard-selected{
+
+    & .numberCard-selected {
         width: 50px;
         height: 45px;
         background-color: $second-color !important;
@@ -199,103 +209,109 @@
         margin: 5px 10px;
         color: #fff;
     }
-    & .number{
+
+    & .number {
         font-weight: bold;
         text-align: center;
         padding-top: 5px;
     }
-    & .progress{
+
+    & .progress {
         height: 5px;
         border-radius: 6px;
         margin: 0px 5px;
-    }    
+    }
 }
+
 .button-notRound {
     &.clear {
-        width: 125px ; 
-        height: 40px ;
-        color: red ;
-        border: 1px solid #ddd ; 
-        border-radius: 5px ;
+        width: 125px;
+        height: 40px;
+        color: red;
+        border: 1px solid #ddd;
+        border-radius: 5px;
     }
+
     &.submit {
         width: 125px;
         height: 40px;
         position: relative;
     }
 }
+
 ::ng-deep {
     .colorMeaning-class {
         display: flex;
         flex-direction: column;
         justify-content: center;
         min-height: calc(100vh - 60px);
-      }
+    }
     .quick {
-        border-radius: 10px;width: 100px;height: 40px; padding: 0px !important;
+        border-radius: 10px;
+        width: 100px;
+        height: 40px;
+        padding: 0px !important;
     }
     .quick-wide-block {
         background: transparent !important;
         border: none !important;
     }
-    
-    .quickSelect-class{
+    .quickSelect-class {
         display: flex;
         flex-direction: column;
         justify-content: center;
         height: calc(100vh - 60px);
-       
-      }      
-      .quickSelect-class{
+    }
+
+    .quickSelect-class {
         display: flex;
         flex-direction: column;
         justify-content: center;
         min-height: calc(100% - 60px);
-        width: calc(100% - 12px);   
-    
-      }
-      
+        width: calc(100% - 12px);
+    }
+
     .quickSelect-class {
         background: $second-color;
         border-radius: 10px;
         border: 3px solid #fff !important;
         color: #fff;
     }
-    .quickSelect-class{   
+
+    .quickSelect-class {
         border-radius: 10px;
         border: 3px solid #fff !important;
         color: #fff;
     }
-    .quickSelect-class > .modal-content {
+
+    .quickSelect-class>.modal-content {
         overflow-y: scroll;
         background-color: $second-color !important;
     }
-    /* Hide scrollbar for Chrome, Safari and Opera */
-    .quickSelect-class > .modal-content::-webkit-scrollbar {
+
+    .quickSelect-class>.modal-content::-webkit-scrollbar {
         display: none;
     }
-    
-    /* Hide scrollbar for IE, Edge and Firefox */
-    .quickSelect-class > .modal-content {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
+
+    .quickSelect-class>.modal-content {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
     }
 
     @media screen and (min-width: 1024px) {
         .quickSelect-class {
-             width: 420px;       
-         }
-         
-     }
+            width: 420px;
+        }
+    }
 }
+
 .twodBetEdit-class {
-  
     justify-content: center;
     min-height: calc(100vh - 60px);
     margin-top: 100px;
 }
 
-.btn{
+.btn {
     padding: 0px 5px;
     height: 30px;
     border-width: 0px;
@@ -303,106 +319,108 @@
 }
 
 .close-icon {
-    font-size: 30px; 
+    font-size: 30px;
     text-align: right;
     padding: 0px 20px;
     margin-top: 10px;
 }
+
 .bet-limit-color {
     width: 20px;
-    height: 20px;    
+    height: 20px;
     margin-right: 5px;
     border-radius: 20px;
     display: inline-block;
 }
 
 .quick-btn {
-  background: #fff;
-  color: #000;
-  width: 60px;
-  border-radius: 5px;
-  margin-bottom: 5px;
-
-
+    background: #fff;
+    color: #000;
+    width: 60px;
+    border-radius: 5px;
+    margin-bottom: 5px;
 }
 
 .quick-wide-block {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-  }
+}
 
 @media screen and (max-width: 740px) {
     .quick-btn {
         width: 45px;
     }
-  }
+}
 
-  
 .quick-btn-1 {
-  background: #fff;
-  color: #000;
-  width: 330px;
-  border-radius: 5px;
-  margin-bottom: 5px;
-  padding: 20px 0px;
+    background: #fff;
+    color: #000;
+    width: 330px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    padding: 20px 0px;
 }
 
 @media screen and (max-width: 768px) {
     .quick-btn-1 {
-      width:260px;
-      /* Adjust the width for smaller screens */
+        width: 260px;
     }
-  }
-.quick-btn-2 {
-  background: #fff;
-  color: #000;
-  width: 60px;
-  border-radius: 5px;
-  margin-bottom: 5px;
 }
-.select-close-icon {    
+
+.quick-btn-2 {
+    background: #fff;
+    color: #000;
+    width: 60px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.select-close-icon {
     opacity: 1 !important;
     color: #fff !important;
-    font-size: 30px; 
+    font-size: 30px;
 }
-.akhway-button-disable
-{
-    background-color:grey; 
-    color: #fff; 
-    border: 2px solid #ddd; 
+
+.akhway-button-disable {
+    background-color: grey;
+    color: #fff;
+    border: 2px solid #ddd;
     border-radius: 5px;
-    height: 35px !important; 
-    width:110px;
-    padding: 5px !important;  
+    height: 35px !important;
+    width: 110px;
+    padding: 5px !important;
 }
+
 .akhway-button {
-    background-color: #2253A2; 
-    color: #fff; 
-    border: 1px solid #ddd; 
+    background-color: #2253A2;
+    color: #fff;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    height: 35px !important; 
-    width:110px;
-    padding: 5px !important;  
+    height: 35px !important;
+    width: 110px;
+    padding: 5px !important;
 }
-.akhway-colse-button
-{
-    background-color: #fff; 
-    color: rgb(231, 75, 75); 
-    border: 1px solid #ddd; 
+
+.akhway-colse-button {
+    background-color: #fff;
+    color: rgb(231, 75, 75);
+    border: 1px solid #ddd;
     border-radius: 5px;
-    height: 35px !important; 
-    width:110px;
-   // padding: 5px !important;  
+    height: 35px !important;
+    width: 110px;  
 }
-.numbertext{
+
+.numbertext {
     width: 300px;
     height: 30px;
 }
+
 input::placeholder {
     font-size: 13px;
-  }
-#navTwoDBet{
+}
+
+#navTwoDBet {
     min-height: 56px;
     position: fixed;
     z-index: 999;
@@ -419,6 +437,7 @@ input::placeholder {
         margin: 0px 35% !important;
         max-width: 30% !important;
     }
+
     .extraHeader1 {
         left: 35% !important;
         /* margin: 0px 35% !important; */
@@ -429,29 +448,27 @@ input::placeholder {
 #appCapsule {
     min-height: 100vh !important;
     img {
-        margin: 0px auto !important;       
+        margin: 0px auto !important;
     }
     .button {
         width: 100%;
     }
 }
 
-/* Add this to your styles.css or component's styles */
 .custom-modal-header {
-    padding: 0px 5px; /* Reduce padding for smaller height */
-    height: 30px; /* Set a custom height if needed */
-  }
-  
-  .custom-modal-header .modal-title {
-    font-size: 18px; /* Adjust the font size if necessary */
-    line-height: 1.0; /* Control the line height to fit the new height */
-  }
-  
-  .custom-modal-header .close {
-    margin-top: -10px; /* Adjust to align the close button better */
-  }
-  
-  .custom-modal-header i.material-icons {
-    font-size: 22px; /* Adjust the icon size if necessary */
-  }
-  
+    padding: 0px 5px;
+    height: 30px;
+}
+
+.custom-modal-header .modal-title {
+    font-size: 18px;
+    line-height: 1.0;
+}
+
+.custom-modal-header .close {
+    margin-top: -10px;
+}
+
+.custom-modal-header i.material-icons {
+    font-size: 22px;
+}

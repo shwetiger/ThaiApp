@@ -1,130 +1,115 @@
-
-<appbar (myEvent)="refreshPage()" >{{ 'helloword' | translate }}</appbar>
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
 <threed-close-time (closed)="twodClose($event)"></threed-close-time>
 <div id="appCapsule">
     <div class="container-fluid">
-        <div class="row" style="padding: 0px !important;"> 
+        <div class="row" style="padding: 0px !important;">
             <div class="col-auto px-2 pt-1">
-                <button type="button" class="btn py-2 dream-count" (click)= "count > 0 ?dreamCountModal(dreamCount): ''">
+                <button type="button" class="btn py-2 dream-count" (click)="count > 0 ?dreamCountModal(dreamCount): ''">
                     {{ count === 1 ? translate('round') : count }}
                 </button>
             </div>
-           
+
             <div class="col pt-1" style="padding-left: 15px;">
-                <input type="number"  minlength="3" class="form-control input"  placeholder="{{'amountHint' | translate}}"
-                [(ngModel)]="amount" id="betAmount" (keyup.enter)="enter($event)"
+                <input type="number" minlength="3" class="form-control input" placeholder="{{'amountHint' | translate}}"
+                    [(ngModel)]="amount" id="betAmount" (keyup.enter)="enter($event)"
                     [ngModelOptions]="{standalone: true}" (keyup)="checkBetAmount()">
-                <p id = "betAmountErr" class="error-color"></p>
+                <p id="betAmountErr" class="error-color"></p>
             </div>
         </div>
 
-        <div class="row justify-content-end mb-1" style="margin-top: -10px;">    
+        <div class="row justify-content-end mb-1" style="margin-top: -10px;">
             <div class="col-12 justify-content-end">
-                <div class="dream-searching-col" >
+                <div class="dream-searching-col">
                     <div class="input-container">
-                      <input 
-                        type="text" 
-                        placeholder="{{'game_serach' | translate}}" 
-                        (keyup)="search()" 
-                        [(ngModel)]="dreambookSearchKey" 
-                        [ngModelOptions]="{standalone: true}" 
-                        class="dream-searching" 
-                      />
-                      <img src="assets/img/icons/search.png" alt="search" class="dream-searching-icon" />
+                        <input type="text" placeholder="{{'game_serach' | translate}}" (keyup)="search()"
+                            [(ngModel)]="dreambookSearchKey" [ngModelOptions]="{standalone: true}"
+                            class="dream-searching" />
+                        <img src="assets/img/icons/search.png" alt="search" class="dream-searching-icon" />
                     </div>
-                  </div>
-                
-            </div>
-        </div>
-   </div>
+                </div>
 
-
-
-<div class="dream">
-    <div class="dreamBooks">
-        <div class="dreamCard mb-1 mt-1" *ngFor="let book of addList;let i=index">
-            <p class="dream-des"> 
-                {{ changeLanguage(book) }}
-            </p>
-            <img src={{book.imageUrl}} alt="image" class="dreamCardPhoto">
-            <div>
-            
-                <button class="btn selected" [class]="book.isSelected1? 'blue-left':'not-selected-left'"  (click)="dreambookSelected(book.number1, !book.isSelected1)">
-                    {{ book.number1 }}
-                </button>
-                <button class="btn selected" [class]="book.isSelected2? 'blue-right':'not-selected-right'" (click)="dreambookSelected(book.number2, !book.isSelected2)" >
-                    {{ book.number2 }}
-                </button>   
             </div>
         </div>
     </div>
-    <div style="display:flex;justify-content: center;" class="mt-2">
-        <button type="button"  style="height:40px;width:80%; background-color: #2456A6;color:#fff;border-radius: 5px;border:none" [hidden]=isLast (click)="getDreamBookList(pageNumber)" *ngIf="loadingMore">
-            {{'morebtn' | translate}}
-        </button>
-        <!-- <p [hidden]=!isLast>
-            No More Data
-        </p> -->
-    </div>
-</div>
- 
-</div>
-<ng-template #dreamCount>
-    <!-- <div class="modal-header">
-        <h4 class="modal-title pull-left">Modal</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-            <span aria-hidden="true">×</span>
-        </button>
-    </div> -->
-    <div class="modal-body">             
-      <div class="section full"> 
-        <div class="section-title">{{ 'selectdNumbers' | translate}}</div>
-        <div class="container" >           
-           <div class="row">
-               <div class="col-2 py-1 mr-2" *ngFor="let countDream of modalService.config.initialState.list;let i=index">
-                <button class="btn selected btn-sm" [class]="countDream.isUse? 'blue':'not-selected'"
-                (click)="dreamListSelected(countDream.number, !countDream.isUse)" >
-                    {{ countDream.number }}
-                </button>
-               </div>
-           </div>
-          
-        </div>
-        <div class="wide-block mt-1">
-            <input type="number" (keyup.enter)="enter($event)" class="form-control dream-input-amount" [(ngModel)]="modalService.config.initialState.amount" id="dreamBetAmount"
-            [ngModelOptions]="{standalone: true}" value={{modalService.config.initialState.amount}} (keyup)="checkCountAmount()" placeholder="{{'amountHint' | translate}}">
-            <p id="countAmountErr" class="error-color"></p>
 
-          </div>  
-        
-        
-      </div>
-      <div class="section full">   
-            <div class="wide-block mt-1">
-                <div class="row justify-content-end">                                  
-                    <button type="button" class="btn btn-sm bet-buttton-cancel mr-1" (click)="dreamCountCancel()">
-                    {{ 'cancel' | translate}}
-                    </button>  
-                    
-                    <button  type="button" class="btn btn-sm bet-buttton" (click)="dreamCountBet()" onclick="document.getElementById('dreamBetAmount').focus()">
-                    {{ 'bet' | translate}}
-                </button>  
+    <div class="dream">
+        <div class="dreamBooks">
+            <div class="dreamCard mb-1 mt-1" *ngFor="let book of addList;let i=index">
+                <p class="dream-des">
+                    {{ changeLanguage(book) }}
+                </p>
+                <img src={{book.imageUrl}} alt="image" class="dreamCardPhoto">
+                <div>
+                    <button class="btn selected" [class]="book.isSelected1? 'blue-left':'not-selected-left'"
+                        (click)="dreambookSelected(book.number1, !book.isSelected1)">
+                        {{ book.number1 }}
+                    </button>
+                    <button class="btn selected" [class]="book.isSelected2? 'blue-right':'not-selected-right'"
+                        (click)="dreambookSelected(book.number2, !book.isSelected2)">
+                        {{ book.number2 }}
+                    </button>
                 </div>
             </div>
-      </div> 
+        </div>
+        <div style="display:flex;justify-content: center;" class="mt-2">
+            <button type="button"
+                style="height:40px;width:80%; background-color: #2456A6;color:#fff;border-radius: 5px;border:none"
+                [hidden]=isLast (click)="getDreamBookList(pageNumber)" *ngIf="loadingMore">
+                {{'morebtn' | translate}}
+            </button>
+        </div>
     </div>
-    <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-default" (click)="modalRef.hide()">Close</button>
-    </div> -->
-    </ng-template>
-<div style="position: relative; justify-content: center;" class="mt-2" *ngIf="loading">
-    <ngx-spinner size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
 </div>
 
-<div class="section full d-flex justify-content-around bg-white mt-1" id="navTwoDBet" >    
-  <button type="button" class="btn dream-book-clean shadowed mr-1 mb-1" (click)="threedBetDreamClean()" >{{ 'clean' | translate}}</button>  
-  <button type="button" class="button-notRound"  style="width: 125px;height: 40px;font-size: 14px;"  (click)="threedBetDream()"  onclick="document.getElementById('betAmount').focus()">
-            {{ 'bet' | translate}}</button>
-  </div>
-  <!--XXX spinner MH-->
-  <ngx-spinner name = "refreshLoading" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
+<ng-template #dreamCount>
+    <div class="modal-body">
+        <div class="section full">
+            <div class="section-title">{{ 'selectdNumbers' | translate}}</div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-2 py-1 mr-2"
+                        *ngFor="let countDream of modalService.config.initialState.list;let i=index">
+                        <button class="btn selected btn-sm" [class]="countDream.isUse? 'blue':'not-selected'"
+                            (click)="dreamListSelected(countDream.number, !countDream.isUse)">
+                            {{ countDream.number }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="wide-block mt-1">
+                <input type="number" (keyup.enter)="enter($event)" class="form-control dream-input-amount"
+                    [(ngModel)]="modalService.config.initialState.amount" id="dreamBetAmount"
+                    [ngModelOptions]="{standalone: true}" value={{modalService.config.initialState.amount}}
+                    (keyup)="checkCountAmount()" placeholder="{{'amountHint' | translate}}">
+                <p id="countAmountErr" class="error-color"></p>
+            </div>
+        </div>
+        <div class="section full">
+            <div class="wide-block mt-1">
+                <div class="row justify-content-end">
+                    <button type="button" class="btn btn-sm bet-buttton-cancel mr-1" (click)="dreamCountCancel()">
+                        {{ 'cancel' | translate}}
+                    </button>
+                    <button type="button" class="btn btn-sm bet-buttton" (click)="dreamCountBet()"
+                        onclick="document.getElementById('dreamBetAmount').focus()">
+                        {{ 'bet' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<div style="position: relative; justify-content: center;" class="mt-2" *ngIf="loading">
+    <ngx-spinner size="small" color="rgb(6,56,107)" type="ball-spin-clockwise" [fullScreen]="false"></ngx-spinner>
+</div>
+
+<div class="section full d-flex justify-content-around bg-white mt-1" id="navTwoDBet">
+    <button type="button" class="btn dream-book-clean shadowed mr-1 mb-1" (click)="threedBetDreamClean()">{{ 'clean' |
+        translate}}</button>
+    <button type="button" class="button-notRound" style="width: 125px;height: 40px;font-size: 14px;"
+        (click)="threedBetDream()" onclick="document.getElementById('betAmount').focus()">
+        {{ 'bet' | translate}}</button>
+</div>
+
+<ngx-spinner name="refreshLoading" bdOpacity=0.9 size="medium" color="rgb(50,205,50)" type="ball-spin-clockwise"
+    [fullScreen]="true"></ngx-spinner>

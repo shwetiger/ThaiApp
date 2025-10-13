@@ -1,159 +1,133 @@
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
 <div id="appCapsule">
-
-    <div class="container">
-        <div class="row">
-            <div [ngClass]="feedbackTab? 'header-active':'header'" (click)='GotoFeedback()'
-                style="padding-top: 5px;display: flex;">
-                <h3 [ngStyle]="feedbackTab?{'color': '#2253A2'} : {'color': 'black'}"
-                    class="d-flex justify-content-center pt-1">{{'feedbackheader' | translate}}</h3>
+  <div class="container">
+    <div class="row">
+      <div [ngClass]="feedbackTab? 'header-active':'header'" (click)='GotoFeedback()'
+        style="padding-top: 5px;display: flex;">
+        <h3 [ngStyle]="feedbackTab?{'color': '#2253A2'} : {'color': 'black'}"
+          class="d-flex justify-content-center pt-1">{{'feedbackheader' | translate}}</h3>
+      </div>
+      <div [ngClass]="faqTab? 'header-active':'header'" (click)='GotoFaq()' style="padding-top: 5px;display: flex;">
+        <h3 [ngStyle]="faqTab?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1">
+          {{'Faqheader' | translate}}</h3>
+      </div>
+    </div>
+    <div *ngIf="feedbackTab==true">
+      <div class="row-12 pt-2">
+        <form [formGroup]="requiredForm" (ngSubmit)="onSubmitting()" novalidate>
+          <div class="form-group">
+            <div class="input-wrapper">
+              <input type="text" class="form-control" formControlName="title"
+                placeholder="{{ 'feedbacktitleHint' | translate}}">
             </div>
-    
-            <div [ngClass]="faqTab? 'header-active':'header'" (click)='GotoFaq()'
-                style="padding-top: 5px;display: flex;">
-                <h3 [ngStyle]="faqTab?{'color': '#2253A2'} : {'color': 'black'}"
-                    class="d-flex justify-content-center pt-1">{{'Faqheader' | translate}}</h3>
+            <div style="margin-top: 5px;"
+              *ngIf="requiredForm.controls['title'].invalid && (requiredForm.controls['title'].dirty || requiredForm.controls['title'].touched)">
+              <div *ngIf="requiredForm.controls['title'].errors.required" class="pb-1">
+                <span class="text-danger font-weight-bold"> {{ titleRequired() }}</span>
+              </div>
             </div>
-    
-        </div>
-        <div *ngIf="feedbackTab==true">
-        <div class="row-12 pt-2"  >
-            <form [formGroup]="requiredForm" (ngSubmit)="onSubmitting()" novalidate>
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <input type="text" class="form-control" formControlName="title"
-                            placeholder="{{ 'feedbacktitleHint' | translate}}">
-                    </div>
-                    <div style="margin-top: 5px;" *ngIf="requiredForm.controls['title'].invalid && (requiredForm.controls['title'].dirty || requiredForm.controls['title'].touched)">
-                        <div *ngIf="requiredForm.controls['title'].errors.required" class="pb-1">
-                            <span class="text-danger font-weight-bold"> {{ titleRequired() }}</span>
-                        </div>
-                    </div>
-                </div>
-                
-                 
-                <div class="form-group">
-                    <div class="input-wrapper">
-                        <textarea class="form-control" cols="100" rows="10" formControlName="description"
-                            placeholder="{{ 'feedbackbodyHint' | translate}}"> </textarea>       
-                    </div>
-                    <div style="margin-top: 5px;"
-                    *ngIf="requiredForm.controls['description'].invalid && (requiredForm.controls['description'].dirty || requiredForm.controls['description'].touched)">
-                    <div *ngIf="requiredForm.controls['description'].errors.required" class="pb-1">
-                        <span class="text-danger font-weight-bold">{{ descriptionRequired() }}</span>
-                    </div>
-                </div>
-                </div>
-         
-               
-                <div class="form-group">
-                    <div class="row d-flex justify-content-around">
-                        <div class="col-4">
-                            <button class="btn btn-block" style="background-color: grey; color: #fff;" type="reset"
-                                (click)="goBack()">{{ 'cancel' | translate }} </button>
-                        </div>
-                        <div class="col-4">
-                            <button class="btn btn-block" style="background-color: #2253A2;color: #fff;" type="submit"
-                                [disabled]="!requiredForm.valid">{{'send' | translate}}</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+          </div>
+          <div class="form-group">
+            <div class="input-wrapper">
+              <textarea class="form-control" cols="100" rows="10" formControlName="description"
+                placeholder="{{ 'feedbackbodyHint' | translate}}"> </textarea>
+            </div>
+            <div style="margin-top: 5px;"
+              *ngIf="requiredForm.controls['description'].invalid && (requiredForm.controls['description'].dirty || requiredForm.controls['description'].touched)">
+              <div *ngIf="requiredForm.controls['description'].errors.required" class="pb-1">
+                <span class="text-danger font-weight-bold">{{ descriptionRequired() }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="row d-flex justify-content-around">
+              <div class="col-4">
+                <button class="btn btn-block" style="background-color: grey; color: #fff;" type="reset"
+                  (click)="goBack()">{{ 'cancel' | translate }} </button>
+              </div>
+              <div class="col-4">
+                <button class="btn btn-block" style="background-color: #2253A2;color: #fff;" type="submit"
+                  [disabled]="!requiredForm.valid">{{'send' | translate}}</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
 
-
-     <div  *ngIf="faqTab==true">
-        <div class="row d-flex justify-content-center">
-            <div class="col-md-12">
-            <div class="card faq-searching-col mt-2 mb-2">
-                <div class="card-body d-flex flex-column justify-content-center ">
-                    <div class="row">
-                  <div class="col-1"> <img src="assets/img/icons/search.png" alt="" class="faq-searching-icon"></div>
-                   <div class="col-10" style="margin-top: 6px;">
-                        <!-- <input type="text"  [placeholder]="'game_serach' | translate" (keyup)="search()" (click)="search()" [(ngModel)]="searchKey"
-                            [ngModelOptions]="{standalone: true}" class="faq-searching"> -->
-
-                            <input type="text" #searchInput [placeholder]="'game_serach' | translate" (keyup.enter)="onEnter()" (keyup)="search()" (click)="search()"
-                            [(ngModel)]="searchKey"[ngModelOptions]="{ standalone: true }"class="faq-searching"/>
-                        </div>
-                        </div>
+    <div *ngIf="faqTab==true">
+      <div class="row d-flex justify-content-center">
+        <div class="col-md-12">
+          <div class="card faq-searching-col mt-2">
+            <div class="card-body d-flex flex-column justify-content-center ">
+              <div class="row">
+                <div class="col-1"> <img src="assets/img/icons/search.png" alt="" class="faq-searching-icon"></div>
+                <div class="col-10" style="margin-top: 6px;">
+                  <input type="text" #searchInput [placeholder]="'game_serach' | translate" (keyup.enter)="onEnter()"
+                    (keyup)="search()" (click)="search()" [(ngModel)]="searchKey"
+                    [ngModelOptions]="{ standalone: true }" class="faq-searching" />
                 </div>
+              </div>
             </div>
+          </div>
         </div>
-        </div>
-        <div class="row pt-2">
-            <div class="col-md-12">
-               <div *ngFor="let typeListObj of typeList; let j = index">
-                <div class="card mb-2">
-                 <div class="card-body pt-1">
-                  <h3>{{ typeListObj.type_name }}</h3>
-         <ng-container *ngIf="filteredQuestions(typeListObj.type_name).length > 0">
-         <div *ngFor="
+      </div>
+      <div class="row pt-2">
+        <div class="col-md-12">
+          <div *ngFor="let typeListObj of typeList; let j = index">
+            <div class="card mb-2">
+              <div class="card-body pt-1">
+                <h3>{{ typeListObj.type_name }}</h3>
+                <ng-container *ngIf="filteredQuestions(typeListObj.type_name).length > 0">
+                  <div *ngFor="
             let QuestionHeaderListObj of filteredQuestions(typeListObj.type_name);
             let i = index;
             let last = last">
-          <div class="row mt-1 mb-3" justify-content-end>
-            <div class="col" style="font-size: 16px; font-weight: bold; padding-top: 0">
-              {{ QuestionHeaderListObj.question }}
-            </div>
-            <div class="toggle-icon justify-content-end">
-              <i
-                (click)="QuestiondetaillistNotShow()"
-                *ngIf="openQuestionId === QuestionHeaderListObj.id"
-                class="fa-chevron-down"
-              >
-                <img src="assets/img/Downarrow.png" alt="" width="20" />
-              </i>
-              <i
-               (click)="QuestiondetaillistShow(QuestionHeaderListObj.id)"
-                 *ngIf="openQuestionId !== QuestionHeaderListObj.id"
-                class="fa-chevron-up"
-              >
-                <img src="assets/img/Uparrow.png" alt="" width="20" />
-              </i>
-            </div>
-          </div>
+                    <div class="row mt-1 mb-3" justify-content-end>
+                      <div class="col" style="font-size: 16px; font-weight: bold; padding-top: 0">
+                        {{ QuestionHeaderListObj.question }}
+                      </div>
+                      <div class="toggle-icon justify-content-end">
+                        <i (click)="QuestiondetaillistNotShow()" *ngIf="openQuestionId === QuestionHeaderListObj.id"
+                          class="fa-chevron-down">
+                          <img src="assets/img/Downarrow.png" alt="" width="20" />
+                        </i>
+                        <i (click)="QuestiondetaillistShow(QuestionHeaderListObj.id)"
+                          *ngIf="openQuestionId !== QuestionHeaderListObj.id" class="fa-chevron-up">
+                          <img src="assets/img/Uparrow.png" alt="" width="20" />
+                        </i>
+                      </div>
+                    </div>
 
-          <div class="row-12 pt-1 ml-1 mr-1" style="white-space: pre-line; text-align: justify"
-            *ngIf="openQuestionId === QuestionHeaderListObj.id">
-            <ol
-              [class.numbered-list]="
-                (QuestionHeaderListObj.answer | listPipe).length > 1" >
-              <li *ngFor="
+                    <div class="row-12 pt-1 ml-1 mr-1" style="white-space: pre-line; text-align: justify"
+                      *ngIf="openQuestionId === QuestionHeaderListObj.id">
+                      <ol [class.numbered-list]="
+                (QuestionHeaderListObj.answer | listPipe).length > 1">
+                        <li *ngFor="
                   let item of QuestionHeaderListObj.answer | listPipe;
                   let index = index" style="font-size: 15px">
-                {{ item.text }}
-                <br />
-                <a href="{{ item.link + '?openinnewtap=1' }}" target="_blank" class="custom-link"
-                 style="text-align: justify; display: block">{{ item.link }}</a
-                >
-              </li>
-            </ol>
-          </div>
+                          {{ item.text }}
+                          <br />
+                          <a href="{{ item.link + '?openinnewtap=1' }}" target="_blank" class="custom-link"
+                            style="text-align: justify; display: block">{{ item.link }}</a>
+                        </li>
+                      </ol>
+                    </div>
 
-          <div
-            class="row mt-1 justify-content-end"
-            *ngIf="QuestionHeaderListObj.hasGuide == true"
-          >
-            <a
-              class="underline-link"
-              (click)="gotouserguide(QuestionHeaderListObj.id, QuestionHeaderListObj.question)"
-              [routerLink]="['/me-page/user-guide', { FaqId: QuestionHeaderListObj.id, Question: QuestionHeaderListObj.question }]"
-              [replaceUrl]="false"
-              >{{ 'user_guide' | translate }}</a
-            >
+                    <div class="row mt-1 justify-content-end" *ngIf="QuestionHeaderListObj.hasGuide == true">
+                      <a class="underline-link"
+                        (click)="gotouserguide(QuestionHeaderListObj.id, QuestionHeaderListObj.question)"
+                        [routerLink]="['/me-page/user-guide', { FaqId: QuestionHeaderListObj.id, Question: QuestionHeaderListObj.question }]"
+                        [replaceUrl]="false">{{ 'user_guide' | translate }}</a>
+                    </div>
+                    <hr *ngIf="!last" />
+                  </div>
+                </ng-container>
+              </div>
+            </div>
           </div>
-          <hr *ngIf="!last" />
         </div>
-        </ng-container>
-       </div>
-       </div>
-       </div>
-
-        </div>
-        </div>
-        </div>
+      </div>
     </div>
+  </div>
 </div>
-

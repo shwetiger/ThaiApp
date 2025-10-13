@@ -1,21 +1,21 @@
-
-<app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
 <div id="appCapsule" *ngIf="!common.refreshLoading">
     <div class="container ">
         <div class="row pt-2">
-            <img [src]="promotionDetailObj.imageUrl" alt="image" class="imaged" > 
+            <img [src]="promotionDetailObj.imageUrl" alt="image" class="imaged">
         </div>
         <div class="row mt-2">
             {{promotionDetailObj.title}}
         </div>
         <div class="row mt-2">
-            <p class="card-text" style="white-space: pre-line;"> {{promotionDetailObj.description}}</p> 
-            <a href="{{promotionDetailObj.url}}" > {{promotionDetailObj.url}} </a>           
+            <p class="card-text" style="white-space: pre-line;"> {{promotionDetailObj.description}}</p>
+            <a href="{{promotionDetailObj.url}}"> {{promotionDetailObj.url}} </a>
         </div>
-    </div>    
+    </div>
 </div>
 <!-- * App Capsule -->
+
 <!-- refresh loading -->
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
-  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
-  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+    [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+    [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

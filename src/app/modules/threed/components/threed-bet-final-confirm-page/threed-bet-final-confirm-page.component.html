@@ -1,54 +1,55 @@
-
-
-<appbar (myEvent)="refreshPage()" >{{ 'helloword' | translate }}</appbar>
-<!-- <h3 class="pt-2 text-center" style="color:#2253A2">{{ 'confirm_bet_list' | translate}}</h3> -->
-<div id="appCapsule" *ngIf="!common.refreshLoading">    
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+<div id="appCapsule" *ngIf="!common.refreshLoading">
   <h3 class="text-center" style="color:#2253A2">{{ 'confirm_bet_list' | translate}}</h3>
-<div class="section full">
-    <div class="wide-block" >
-        <div class="row" style="justify-content: center;">
-            <div class="col-12">
-                <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        <th scope="col" style="font-weight: bold;">{{ 'bet_list_number'  | translate}}</th>
-                        <th scope="col" class="text-center" style="font-weight: bold;">{{ 'odds' | translate}}</th>
-                        <th scope="col" class="text-right" style="font-weight:bold;">{{ 'bet_list_amount' | translate}}</th>                        
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let betTwoDListObj of betTwoDList;let i=index;">                       
-                        <td>{{betTwoDListObj.number}}</td>
-                        <td class="text-center">{{ odd }}</td>
-                        <td class="text-right">{{betTwoDListObj.amount | number:'1.0':'en-US'}}</td>    
-                      </tr>  
-                      <tr>
-                        <td colspan="2" class="text-left font-weight-bold" style="color:#2253A2"> {{ 'total_amount' | translate }}</td>
-                        <td class="text-right"> <h4 class="bet-amount-color" style="font-weight: 600;">{{totalAmount | number:'1.0':'en-US'}} {{ 'ks' | translate }}</h4></td>
-                      </tr>                         
-                    </tbody>
-                  </table>                  
-                  <div class="row totalbetamount" *ngIf="limitedAmt != null && discountAmount !=null">
-                    <div class="col-6 my-2 text-center">
-                      Discount {{ discountPercent }} %
-                    </div>
-                    <div class="col-6 my-2">
-                      {{ discountAmount | number:'1.0':'en-US' }} {{ 'ks' | translate }}
-                    </div>
-                  </div>                    
-                
+  <div class="section full">
+    <div class="wide-block">
+      <div class="row" style="justify-content: center;">
+        <div class="col-12">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col" style="font-weight: bold;">{{ 'bet_list_number' | translate}}</th>
+                <th scope="col" class="text-center" style="font-weight: bold;">{{ 'odds' | translate}}</th>
+                <th scope="col" class="text-right" style="font-weight:bold;">{{ 'bet_list_amount' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let betTwoDListObj of betTwoDList;let i=index;">
+                <td>{{betTwoDListObj.number}}</td>
+                <td class="text-center">{{ odd }}</td>
+                <td class="text-right">{{betTwoDListObj.amount | number:'1.0':'en-US'}}</td>
+              </tr>
+              <tr>
+                <td colspan="2" class="text-left font-weight-bold" style="color:#2253A2"> {{ 'total_amount' | translate
+                  }}</td>
+                <td class="text-right">
+                  <h4 class="bet-amount-color" style="font-weight: 600;">{{totalAmount | number:'1.0':'en-US'}} {{ 'ks'
+                    | translate }}</h4>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="row totalbetamount" *ngIf="limitedAmt != null && discountAmount !=null">
+            <div class="col-6 my-2 text-center">
+              Discount {{ discountPercent }} %
             </div>
+            <div class="col-6 my-2">
+              {{ discountAmount | number:'1.0':'en-US' }} {{ 'ks' | translate }}
+            </div>
+          </div>
+
         </div>
+      </div>
 
     </div>
-</div>
-<div class="row totalAccountAmount">                        
-  <div class="col-12 d-block my-2 text-center bet-amount-color">
-    {{ 'balance' | translate }}:  {{ userProfileModel.balance | number : '1.0'}}
-    {{ 'ks' | translate }}                         
   </div>
-  <div class="col-12 d-block mb-1 text-center">
-    <!-- <a (click)="twodBetLowBalance()">
+  <div class="row totalAccountAmount">
+    <div class="col-12 d-block my-2 text-center bet-amount-color">
+      {{ 'balance' | translate }}: {{ userProfileModel.balance | number : '1.0'}}
+      {{ 'ks' | translate }}
+    </div>
+    <div class="col-12 d-block mb-1 text-center">
+      <!-- <a (click)="twodBetLowBalance()">
       <div class="row">
         <div class="col-10 text-center" style="color: #2253A2;">
           {{ 'low_balance_fill' | translate}}
@@ -59,37 +60,39 @@
          
       </div>
   </a>     -->
-  
-  <a (click)="twodBetLowBalance()" >
 
-    <div class="row">
-      <div class="col-12 underline d-block my-2  text-center" style="color: #2456a6;white-space: nowrap;font-weight: bold;">
-        {{ 'low_balance_fill' | translate}}
-      </div>
-     
-       
+      <a (click)="twodBetLowBalance()">
+
+        <div class="row">
+          <div class="col-12 underline d-block my-2  text-center"
+            style="color: #2456a6;white-space: nowrap;font-weight: bold;">
+            {{ 'low_balance_fill' | translate}}
+          </div>
+
+
+        </div>
+      </a>
     </div>
-  </a>   
   </div>
-</div>
 
 
-<!-- App Bottom Menu -->
-<div class=" section full  d-flex justify-content-center" id="navTwoDBetConfirm"  style="background-color: #f4f2f2;">           
-  <div class="mt-2" style=" position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >                  
-    <!-- submit loading -->
-    <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-    [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-    [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
-  </div>     
-  <button type="button" class="mt-1 bet-buttton" (click)="doBet()" *ngIf="!common.submitLoading">{{ 'confirm_bet' | translate}}</button>
-</div>
-<!-- * App Bottom Menu -->
+  <!-- App Bottom Menu -->
+  <div class=" section full  d-flex justify-content-center" id="navTwoDBetConfirm" style="background-color: #f4f2f2;">
+    <div class="mt-2" style=" position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading">
+      <!-- submit loading -->
+      <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
+        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+    </div>
+    <button type="button" class="mt-1 bet-buttton" (click)="doBet()" *ngIf="!common.submitLoading">{{ 'confirm_bet' |
+      translate}}</button>
+  </div>
+  <!-- * App Bottom Menu -->
 
 </div>
 <!-- * App Capsule -->
 
 <!-- refresh loading -->
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
-[color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
-[fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

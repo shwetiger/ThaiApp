@@ -23,6 +23,7 @@
     "@angular/platform-browser": "~10.0.6",
     "@angular/platform-browser-dynamic": "~10.0.6",
     "@angular/router": "~10.0.6",
+    "@angular/service-worker": "~10.0.6",
     "@fortawesome/angular-fontawesome": "^0.7.0",
     "@hyperblob/ngx-wheel-selector": "^1.1.6",
     "@ionic/angular": "^5.9.1",

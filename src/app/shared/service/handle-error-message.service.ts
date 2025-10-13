@@ -30,9 +30,9 @@ export class HandleErrorMessageService {
   ) { }
 
   handleError(err: string, error: HttpErrorResponse) { 
+    console.log("ThreebetError>>>"+JSON.stringify(error))
     this.common.threedCloseTimeLoading = false;
     this.spinner.hide("threedCloseTimeLoading");
-    //console.log("Error>>>>"+JSON.stringify(error))
     //gameLoading
     this.common.gameLoading = false;
     this.spinner.hide("gameLoading");
@@ -75,6 +75,7 @@ export class HandleErrorMessageService {
       //    });
          this.storage.clear('token');
          this.storage.clear('isUserLoggedIn');
+         this.router.navigate(['/login'], { replaceUrl: true });
          return;
      }
      
@@ -393,6 +394,7 @@ export class HandleErrorMessageService {
     this.toastr.error("", this.translateService.instant("youNeedLogin"), {
       timeOut: 3000,
       positionClass: 'toast-top-center',
-      });     
+      });   
+      this.router.navigate(['/login'], { replaceUrl: true });  
   }
 }

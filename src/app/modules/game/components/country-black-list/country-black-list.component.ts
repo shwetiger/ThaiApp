@@ -9,19 +9,18 @@ import { Location } from '@angular/common';
   styleUrls: ['./country-black-list.component.scss']
 })
 export class CountryBlackListComponent implements OnInit {
-
-  qmBlackList :[];
-  providerId : any;
+  qmBlackList: [];
+  providerId: any;
   constructor(
     private _location: Location,
     private router: Router,
     private storage: LocalStorageService) { }
 
   ngOnInit(): void {
-   this.qmBlackList =  this.storage.retrieve('localcountryBlackList');
-   this.providerId = this.storage.retrieve("localproviderId");
+    this.qmBlackList = this.storage.retrieve('localcountryBlackList');
+    this.providerId = this.storage.retrieve("localproviderId");
   }
-  gameList(){  
-   this._location.back()
+  gameList() {
+    this._location.back()
   }
 }

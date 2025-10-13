@@ -80,28 +80,6 @@
  border-radius: 5px;
 }
 
-//@media screen and (max-width: 600px) {
-//  .service-image {
-//    width: 60px !important;      
-//    margin: 0px 2px !important;
-//  }
- // .service-phone {
- //   margin-top: 10px;
- //   margin-bottom: 0px !important;
-    // font-size: 10px !important;
-//  } 
-//}
-//@media screen and (max-width: 320px) {
- // .service-image {
- //   width: 40px !important;      
- //   margin: 0px 2px !important;
-//  }
-//  .service-phone {
- //   margin-top: 5px;
- //   margin-bottom: 0px !important;
-  //  font-size: 8px !important;
- // } 
-//}
 
 #appCapsule {
   padding-top: 0px !important;
@@ -132,3 +110,17 @@ code-input {
     text-align: center;
     float: right;
 }
+
+.otp-service-card {
+    @include box-shadow; 
+    border-radius: 5px; 
+    .imaged-detail {
+      width: 60px;
+      height: 60px;
+      border: 1px solid #fff;
+      border-radius: 10px;
+    
+    }
+  }
+
+  

@@ -9,37 +9,40 @@ import { Location } from '@angular/common';
   styleUrls: ['./game-deposit-success.component.scss']
 })
 export class GameDepositSuccessComponent implements OnInit {
-
-  gameFrom : any;
-  gameTo : any;
-  transferAmount : any;
+  gameFrom: any;
+  gameTo: any;
+  transferAmount: any;
   gameProviderId: any;
-  granParent : any;
+  granParent: any;
   gameWalletTransfer: any;
-  isFromGameAccountLogin :any;
-  constructor(  
+  isFromGameAccountLogin: any;
+  providerId
+  constructor(
     private router: Router,
     private storage: LocalStorageService,
     private _location: Location) {
-   }
+  }
 
   ngOnInit(): void {
     this.gameFrom = this.storage.retrieve("gameFrom");
     this.gameTo = this.storage.retrieve("gameTo");
     this.transferAmount = this.storage.retrieve("transferAmount");
-    this.gameProviderId = this.storage.retrieve("localGameProviderId");   
+    this.gameProviderId = this.storage.retrieve("localGameProviderId");
+    this.providerId = this.storage.retrieve('localGamePlayProviderId');
     this.isFromGameAccountLogin = this.storage.retrieve("from-game-account-login");
   }
-  
-  goToGameList()
-  {
-    if(this.isFromGameAccountLogin == "fg")
-    {
-      localStorage.setItem("from-game-account-login",null)
-      this.router.navigate(['game/gameList/'+this.gameProviderId],{replaceUrl: true});
+
+  goToGameList() {
+    if (this.isFromGameAccountLogin == "fg") {
+      if (this.providerId == 8 || this.providerId == 2) {
+        this.router.navigate(['/game/gamecategory', this.providerId], { state: { catId: this.providerId, gameProviderId: this.providerId }, replaceUrl: true });
+      }
+      else {
+        localStorage.setItem("from-game-account-login", null)
+        this.router.navigate(['game/gameList/' + this.gameProviderId], { replaceUrl: true })
+      }
     }
-    else
-    {
+    else {
       this._location.back();
     }
   }

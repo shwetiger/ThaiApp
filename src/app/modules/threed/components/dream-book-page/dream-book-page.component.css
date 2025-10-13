@@ -1,4 +1,5 @@
 @import '../../../variables';
+
 .dream-searching-col {
   width: 100% !important;
   text-align: center;
@@ -19,7 +20,7 @@
 
 .dream-searching:focus {
   border: 3px solid #2253A2 !important;
-  outline-color:#5497ce ;
+  outline-color: #5497ce;
 }
 
 .game-searching-col {
@@ -28,13 +29,13 @@
 }
 
 .game-searching-icon {
-  margin-left: -30px;    
+  margin-left: -30px;
   margin-bottom: -5px;
-  width: 20px;    
+  width: 20px;
 }
 
 .game-searching {
-  width: 75%;   
+  width: 75%;
   padding: 8px;
   border: 1px solid #2253A2;
   margin-top: 10px;
@@ -44,7 +45,7 @@
 .game-searching:focus {
   border: 3px solid #2253A2 !important;
   outline: none !important;
-} 
+}
 
 
 #appCapsule {
@@ -65,11 +66,11 @@
   display: flex;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   min-height: calc(100vh - 60px);
 }
 
@@ -195,8 +196,8 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
 }
 
 .input {
@@ -211,12 +212,12 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-wrap: wrap;
   -ms-flex-pack: distribute;
-      justify-content: space-around;
+  justify-content: space-around;
 }
 
 .dreamCard {
@@ -245,19 +246,21 @@
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
 }
 
 @media screen and (min-width: 1024px) {
   .dreamCard {
     width: 100px;
   }
+
   .selected {
     width: 50px !important;
   }
 }
+
 /*# sourceMappingURL=dream-book-page.component.css.map */

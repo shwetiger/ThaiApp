@@ -13,19 +13,19 @@ import { BetHistoryDetailPageComponent } from '../pages/bet-history-detail-page/
 import { TwoDThreeDWinnerComponent } from '../pages/two-dthree-dwinner/two-dthree-dwinner.component';
 const routes: Routes = [
   {
-    path: '' , component: ThreedInitialPageComponent
+    path: '', component: ThreedInitialPageComponent
   },
-  {      
+  {
     path: 'bet', component: ThreedBetComponent
   },
   {
-    path: 'chancepage',component:ThreedchancePageComponent
+    path: 'chancepage', component: ThreedchancePageComponent
   },
   {
-    path: 'quick-select3d',component: Quickselect3dComponent
-  }, 
+    path: 'quick-select3d', component: Quickselect3dComponent
+  },
   {
-    path : 'dream-book', component: DreamBookPageComponent
+    path: 'dream-book', component: DreamBookPageComponent
   },
   {
     path: 'bet-confirm', component: ThreedBetConfirmPageComponent
@@ -46,7 +46,7 @@ const routes: Routes = [
     path: 'winner-page/:type', component: TwoDThreeDWinnerComponent
   },
 ];
- 
+
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]

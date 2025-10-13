@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewEncapsulation } from '@angular/core';
-import { HttpClient, HttpHeaders ,HttpErrorResponse,HttpParams} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/map';
-import { Router ,ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
@@ -9,7 +9,7 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, retry } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import {Location} from '@angular/common';
+import { Location } from '@angular/common';
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { UtilService } from 'src/app/shared/service/util.service';
@@ -21,180 +21,150 @@ import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
   styleUrls: ['./register-invite-code.component.scss']
 })
 export class RegisterInviteCodeComponent implements OnInit {
-  token : any;
-  refModel : any;
-  loadingSubmiting : any;
+  token: any;
+  refModel: any;
+  loadingSubmiting: any;
   loadingSubmitingOne: any;
-  regularExpression= "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
-  regularExpressionPhone ="^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
-  constructor( 
+  regularExpression = "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
+  regularExpressionPhone = "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
+  constructor(
     private translateService: TranslateService,
-    private toastr: ToastrService, 
-    private spinner: NgxSpinnerService, 
-    private dto: DtoService, 
-    private http: HttpClient, 
-    private util: UtilService, 
-    private router: Router, 
-    private storage: LocalStorageService, 
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+    private dto: DtoService,
+    private http: HttpClient,
+    private util: UtilService,
+    private router: Router,
+    private storage: LocalStorageService,
     private funct: FunctService,
     private location: Location,
     private route: ActivatedRoute,
     private readonly _zawgyiDetector: ZawgyiDetector) {
-      this.refModel= history.state.registerModel; 
-     }
-
-  ngOnInit(): void { 
-
+    this.refModel = history.state.registerModel;
+  
   }
 
-  // checkPhoneNumber()
-  // {
-  //   if(this.refModel.referral_phone_no==undefined ||this.refModel.referral_phone_no=='')
-  //   {
-  //   $("#phoneErr").html("");
-  //   }
-
-  //   let pattern = RegExp(this.regularExpressionPhone);// /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/;
-
-  //   if (!pattern.test(this.refModel.referral_phone_no)) {    
-  //      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
-  //      return false;
-  //   }
-  //   return true;
-    
-  // }
+  ngOnInit(): void {
+  
+  }
 
   checkPhoneNumber() {
     if (!this.refModel.referral_phone_no) {
-      $("#phoneErr").html("");  
-      return true;  
+      $("#phoneErr").html("");
+      return true;
     }
     const pattern = new RegExp(this.regularExpressionPhone);
     if (!pattern.test(this.refModel.referral_phone_no)) {
       $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
       return false;
     }
-
     $("#phoneErr").html("");
     return true;
   }
 
+  handleError(error: HttpErrorResponse) {
+    this.loadingSubmiting = false;
+    this.spinner.hide("loadingSubmiting");
+    this.loadingSubmitingOne = false;
+    this.spinner.hide("loadingSubmitingOne");
 
-
-  handleError(error: HttpErrorResponse){
-    this.loadingSubmiting=false;
-    this.spinner.hide("loadingSubmiting"); 
-    this.loadingSubmitingOne=false;
-    this.spinner.hide("loadingSubmitingOne");    
-    
-    if(error.status == 0){
+    if (error.status == 0) {
       this.toastr.error("", 'check your internet connection', {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
-        return;
+      });
+      return;
     }
-    if(error.status==400 && error.error.message=='The email address is already used by another user')
-    {
+    if (error.status == 400 && error.error.message == 'The email address is already used by another user') {
       this.toastr.error("", this.translateService.instant("email_already_used"), {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
-        return;
+      });
+      return;
     }
-    
-    if(error.status == 423)
-    {
+    if (error.status == 423) {
       this.toastr.error("", this.translateService.instant("youNeedLogin"), {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
-        this.storage.clear('token');
-        this.storage.clear('isUserLoggedIn');
-        return;
+      });
+      this.storage.clear('token');
+      this.storage.clear('isUserLoggedIn');
+      this.router.navigate(['/login'], { replaceUrl: true });
+      return;
     }
-    if(error.status == 400)
-    {
-      if(error.error.errors.registerKey == "Register Key is required"){
+    if (error.status == 400) {
+      if (error.error.errors.registerKey == "Register Key is required") {
         this.toastr.error("", 'Illegal register', {
           timeOut: 3000,
           positionClass: 'toast-top-center',
-          });
-          return;
+        });
+        return;
       }
-      else{
+      else {
         this.toastr.error("Invalid Referral Code.", 'Invalid!', {
           timeOut: 3000,
           positionClass: 'toast-top-center',
-          });
-          return;
-      }      
-       
-    }
-    if(error.status == 403 )
-    {
-
-      if(error.error.message==' Invite code/agent code  does not exist!')
-        {
-          this.toastr.error("", this.translateService.instant("invalid_invitecode"), {
-            timeOut: 3000,
-            positionClass: 'toast-top-center',
-            });
-            return;
-        }
-
-        if(error.error.message==" Invite mobile number does not exist!")
-          {
-            this.toastr.error("", this.translateService.instant("invalid_ref_phoneno"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-              });
-              return;
-          }
-        
-        else{
-        this.toastr.error("", error.error.message.toString(), {
-        timeOut: 3000,
-        positionClass: 'toast-top-center',
-        });        
+        });
         return;
       }
-    }  
+    }
+    if (error.status == 403) {
+      if (error.error.message == ' Invite code/agent code  does not exist!') {
+        this.toastr.error("", this.translateService.instant("invalid_invitecode"), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+        return;
+      }
+      if (error.error.message == " Invite mobile number does not exist!") {
+        this.toastr.error("", this.translateService.instant("invalid_ref_phoneno"), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+        return;
+      }
+      else {
+        this.toastr.error("", error.error.message.toString(), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+        return;
+      }
+    }
   }
- 
-  registerInviteCode(inviteCode: boolean) { 
+
+  registerInviteCode(inviteCode: boolean) {
     if (inviteCode) {
       this.loadingSubmitingOne = true;
       this.spinner.show("loadingSubmitingOne");
-      if(this.refModel.referral_code && this.refModel.referral_code.includes(' '))
-      {
+      if (this.refModel.referral_code && this.refModel.referral_code.includes(' ')) {
         this.toastr.error("", this.translateService.instant('invalid_invitecode'), {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
         this.loadingSubmitingOne = false;
-        this.spinner.hide("loadingSubmitingOne"); 
+        this.spinner.hide("loadingSubmitingOne");
         return;
       }
-      if( 
-          (this.refModel.referral_phone_no && this.refModel.referral_phone_no.includes(' '))) {
-           this.toastr.error("", this.translateService.instant('phoneInvaild'), {
+      if (
+        (this.refModel.referral_phone_no && this.refModel.referral_phone_no.includes(' '))) {
+        this.toastr.error("", this.translateService.instant('phoneInvaild'), {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
         this.loadingSubmitingOne = false;
-        this.spinner.hide("loadingSubmitingOne"); 
+        this.spinner.hide("loadingSubmitingOne");
         return;
       }
-  
-      if (this.refModel.referral_code == '' && 
-         (this.refModel.referral_phone_no == undefined || this.refModel.referral_phone_no == '')) {
-          this.toastr.error("", this.translateService.instant('only_refcode_alert'), {
+
+      if (this.refModel.referral_code == '' &&
+        (this.refModel.referral_phone_no == undefined || this.refModel.referral_phone_no == '')) {
+        this.toastr.error("", this.translateService.instant('only_refcode_alert'), {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
         this.loadingSubmitingOne = false;
-        this.spinner.hide("loadingSubmitingOne"); 
+        this.spinner.hide("loadingSubmitingOne");
         return;
       }
     } else {
@@ -202,25 +172,23 @@ export class RegisterInviteCodeComponent implements OnInit {
       this.loadingSubmiting = true;
       this.spinner.show("loadingSubmiting");
     }
-  
-    this.token = this.storage.retrieve('token');    
-    let headers = new HttpHeaders().set('Authorization', this.token); 
-  
+    this.token = this.storage.retrieve('token');
+    let headers = new HttpHeaders().set('Authorization', this.token);
     this.http.post(this.funct.ipaddress + 'Authenticate/register', this.refModel)
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe(result => {
-        this.dto.Response = result; 
-        this.storage.clear('localEmail');  
-  
-        if (this.dto.Response.status == "Success") { 
+        this.dto.Response = result;
+        this.storage.clear('localEmail');
+        if (this.dto.Response.status == "Success") {
           this.loadingSubmiting = false;
-          this.spinner.hide("loadingSubmiting"); 
+          this.spinner.hide("loadingSubmiting");
           this.loadingSubmitingOne = false;
-          this.spinner.hide("loadingSubmitingOne"); 
-          this.router.navigate(['/login/success'], { 
-            state: { 'loginModel': this.refModel }, 
-            replaceUrl: true 
-          });          
+          this.spinner.hide("loadingSubmitingOne");
+          this.storage.clear('registeropttype');
+          this.router.navigate(['/login/success'], {
+            state: { 'loginModel': this.refModel },
+            replaceUrl: true
+          });
         } else {
           this.toastr.error("Tip", this.dto.Response.message.toString(), {
             timeOut: 3000,
@@ -230,6 +198,4 @@ export class RegisterInviteCodeComponent implements OnInit {
         }
       });
   }
-
 }
-  

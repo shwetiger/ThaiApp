@@ -1,199 +1,193 @@
 <app-page-header (myEvent)="refreshPage()">{{ 'helloword' | translate }}</app-page-header>
-        
-            <div class="" *ngIf="!isUserLoggedIn && !common.refreshLoading" style=" overflow-x: hidden;overflow-y: hidden;">
-                <div class="header">               
-                    <div class="row p-1" (click)="loginAccount()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" >
-                        <!-- <div class="col-2">
-                            <img src="assets/img/icons/no-image.png" alt="" class="profile-not-login-img" style="width: 60px;height: 60px;">
-                        </div> -->
-                        <!-- <div class="col-10 d-flex justify-content-start" >
-                            <h3 class="pt-2" style="color: #2253A2; font-weight: 600; font-size: 14px;">{{ 'click_to_login' | translate}}</h3>
-                        </div> -->
-                        <div style="align-items:center"> 
-                            <img src="assets/img/icons/no-image.png" alt="" style="vertical-align:middle ;margin-right:10px;margin-left:10px; width: 60px;">
-                            <span class="account_login_text">{{ 'click_to_login' | translate}}</span>
-                          </div>
-                    </div> 
-                </div>
-            </div>
-            <div class="wallet-account"  *ngIf="isUserLoggedIn && !common.refreshLoading">
-                <a [routerLink]="['/me-page/profile-edit']" [replaceUrl]="false"  [state]="{parentLink: '/me-page'}">
-                    <div class="account-bgcolor ml-1">            
-                        <div *ngIf="userProfileModel == undefined || userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''">               
-                         <img src="assets/img/icons/login-image.png" alt="" class="account-login-active py-2" style="width: 60px;">
-                        </div> 
-                        <div *ngIf="userProfileModel.imageUrl != null && userProfileModel.imageUrl !=''">                     
-                            <img [src] = "userProfileModel.imageUrl" class="aaccount-login-active py-2" width="60px"  height="74px" style="border-radius: 50%;">    
-                        </div> 
-                        <div class="row">
-                            <div class="container mt-2 ml-1">
-                                <div class="row" style="padding: 0px !important;"><h4 class="account-title-active" *ngIf="userProfileModel != undefined || userProfileModel.imageUrl != null">{{changeName()}}</h4></div>
-                                <div class="row" style="padding: 0px !important;"><h4 class="account-title-active">{{userProfileModel.phone_no}}</h4></div>
-                            </div>                           
-                        </div>                       
-                    </div>
-                </a>      
-                
-            </div>
-        
-        <!-- end header -->
-       
-        <div id="appCapsule" *ngIf="!common.refreshLoading"> 
-            <div class="container">
-            <ul class="listview image-listview media flush pt-1 pb-2">
-                <li *ngIf="isUserLoggedIn">
-                    <a class="item" (click)="betHistory()">
-                        <div class="imageWrapper">
-                            <img src="assets/img/bethistory.png" alt="image" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                            {{ 'betHistory' | translate}}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li *ngIf="!isUserLoggedIn || isUserLoggedIn ">
-                    <a class="item" (click)="goToResult()">
-                        <div class="imageWrapper">
-                            <img src="assets/img/result.png" alt="image" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ 'result' | translate}}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li *ngIf="isUserLoggedIn">
-                    <a class="item" (click)="PointHistory()">
-                        <div class="imageWrapper">
-                            <img src="assets/img/star.png" alt="Version" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ 'my-points' | translate}} &nbsp;&nbsp;&nbsp;<span style="color: #2253A2; font-weight: 600;">{{total_points| number:'1.0':'en-US'}}</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-               
-                <li *ngIf="isUserLoggedIn">
-                    <a class="item" (click)="bankAccounts()">
-                        <div class="imageWrapper">
-                            <img src="assets/img/bankacc.png" alt="image" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ 'my_bank_accounts' | translate}}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li *ngIf="isUserLoggedIn">
-                    <a [routerLink]="['/me-page/change-password']" [replaceUrl]="false" class="item">
-                        <div class="imageWrapper">
-                            <img src="assets/img/cpassword.png" alt="image" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ 'changePwd' | translate}}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li *ngIf="isUserLoggedIn">
-                    <a [routerLink]="['/me-page/invite-code']" [replaceUrl]="false" class="item">
-                        <div class="imageWrapper">
-                            <img src="assets/img/referralcode.png" alt="image" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ 'enterRef' | translate}}
-                                <span *ngIf = "userProfileModel.referral_code != null" style="color: #2253A2; font-weight: 600;">{{userProfileModel.referral_code}}</span>
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li  *ngIf="isUserLoggedIn ">
-                    <a (click)="gotofeedback()" [routerLink]="['/me-page/feedback',{type:'feedback'}]" [replaceUrl]="false" class="item">
-                        <div class="imageWrapper">
-                            <img src="assets/img/feedback.png" alt="image" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ 'feedback' | translate}}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li *ngIf="isUserLoggedIn">
-                    <a  class="item not-show">
-                        <div class="imageWrapper"> 
-                            <img src="assets/img/version.png" alt="Version" class="imaged w64">
-                        </div>
-                       
-                        <div class="in">
-                            <div>
-                                {{ 'version' | translate}} {{ version }}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-
-                <li *ngIf="isUserLoggedIn">
-                    
-                    <a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber: phoneNumber}"  [replaceUrl]="false" class="item">
-                        <div class="imageWrapper"> 
-                            <img src="assets/img/otpsetting.png" alt="Version" class="imaged w64">    
-                        </div>
-                        <div class="in">
-                            <div style="margin: 0; font-size: 0.9rem; line-height: 1.2;">
-                               <span>{{ 'otp_setting' | translate}}</span> <br>
-                               <!-- <span style="font-size: 0.7rem;;">{{'otp_setting_desc' | translate}}</span> -->
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li *ngIf="isUserLoggedIn">
-                    
-                    <a [routerLink]="['/me-page/email-address']"   [replaceUrl]="false" class="item">
-                        <div class="imageWrapper"> 
-                            <img src="assets/img/email.png" alt="Version" class="imaged w64">    
-                        </div>
-                        <div class="in">
-                            <div style="margin: 0; ">
-                                {{'email_address' | translate}}
-                             
-                            </div>
-                        </div>
-                    </a>
-                </li>
-                <li *ngIf="deviceId != null">
-                    <a [href]="'/me-page/'+deviceId" [replaceUrl]="true" class="item">
-                    <!-- <a [routerLink]="['/me-page',deviceId]"  class="item"> -->
-                        <div class="imageWrapper">
-                            <img src="assets/img/version-update.png" alt="image" class="imaged w64">
-                        </div>
-                        <div class="in">
-                            <div>
-                                {{ 'cleanCache' | translate}}
-                            </div>
-                        </div>
-                    </a>
-                </li>
-            
-                <li *ngIf="isUserLoggedIn">
-                    <logout></logout>            
-                </li>
-            </ul>
+<div class="" *ngIf="!isUserLoggedIn && !common.refreshLoading" style=" overflow-x: hidden;overflow-y: hidden;">
+    <div class="header">
+        <div class="row p-1" (click)="loginAccount()" routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: true}">
+            <div style="align-items:center">
+                <img src="assets/img/icons/no-image.png" alt=""
+                    style="vertical-align:middle ;margin-right:10px;margin-left:10px; width: 60px;">
+                <span class="account_login_text">{{ 'click_to_login' | translate}}</span>
             </div>
         </div>
-    
-       
+    </div>
+</div>
+<div class="wallet-account" *ngIf="isUserLoggedIn && !common.refreshLoading">
+    <a [routerLink]="['/me-page/profile-edit']" [replaceUrl]="false" [state]="{parentLink: '/me-page'}">
+        <div class="account-bgcolor ml-1">
+            <div
+                *ngIf="userProfileModel == undefined || userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''">
+                <img src="assets/img/icons/login-image.png" alt="" class="account-login-active py-2"
+                    style="width: 60px;">
+            </div>
+            <div *ngIf="userProfileModel.imageUrl != null && userProfileModel.imageUrl !=''">
+                <img [src]="userProfileModel.imageUrl" class="aaccount-login-active py-2" width="60px" height="74px"
+                    style="border-radius: 50%;">
+            </div>
+            <div class="row">
+                <div class="container mt-2 ml-1">
+                    <div class="row" style="padding: 0px !important;">
+                        <h4 class="account-title-active"
+                            *ngIf="userProfileModel != undefined || userProfileModel.imageUrl != null">{{changeName()}}
+                        </h4>
+                    </div>
+                    <div class="row" style="padding: 0px !important;">
+                        <h4 class="account-title-active">{{userProfileModel.phone_no}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>
+<!-- end header -->
+<div id="appCapsule" *ngIf="!common.refreshLoading">
+    <div class="container">
+        <ul class="listview image-listview media flush pt-1 pb-2">
+            <li *ngIf="isUserLoggedIn">
+                <a class="item" (click)="betHistory()">
+                    <div class="imageWrapper">
+                        <img src="assets/img/bethistory.png" alt="image" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'betHistory' | translate}}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="!isUserLoggedIn || isUserLoggedIn ">
+                <a class="item" (click)="goToResult()">
+                    <div class="imageWrapper">
+                        <img src="assets/img/result.png" alt="image" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'result' | translate}}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <a class="item" (click)="PointHistory()">
+                    <div class="imageWrapper">
+                        <img src="assets/img/star.png" alt="Version" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'my-points' | translate}} &nbsp;&nbsp;&nbsp;<span
+                                style="color: #2253A2; font-weight: 600;">{{total_points| number:'1.0':'en-US'}}</span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <a class="item" (click)="bankAccounts()">
+                    <div class="imageWrapper">
+                        <img src="assets/img/bankacc.png" alt="image" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'my_bank_accounts' | translate}}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <a [routerLink]="['/me-page/change-password']" [replaceUrl]="false" class="item">
+                    <div class="imageWrapper">
+                        <img src="assets/img/cpassword.png" alt="image" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'changePwd' | translate}}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <a [routerLink]="['/me-page/invite-code']" [replaceUrl]="false" class="item">
+                    <div class="imageWrapper">
+                        <img src="assets/img/referralcode.png" alt="image" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'enterRef' | translate}}
+                            <span *ngIf="userProfileModel.referral_code != null"
+                                style="color: #2253A2; font-weight: 600;">{{userProfileModel.referral_code}}</span>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn ">
+                <a (click)="gotofeedback()" [routerLink]="['/me-page/feedback',{type:'feedback'}]" [replaceUrl]="false"
+                    class="item">
+                    <div class="imageWrapper">
+                        <img src="assets/img/feedback.png" alt="image" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'feedback' | translate}}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <a class="item not-show">
+                    <div class="imageWrapper">
+                        <img src="assets/img/version.png" alt="Version" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'version' | translate}} {{ version }}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <a [routerLink]="['/me-page/default-otp']" [queryParams]="{phoneNumber: phoneNumber}"
+                    [replaceUrl]="false" class="item">
+                    <div class="imageWrapper">
+                        <img src="assets/img/otpsetting.png" alt="Version" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div style="margin: 0; font-size: 0.9rem; line-height: 1.2;">
+                            <span>{{ 'otp_setting' | translate}}</span> <br>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <a [routerLink]="['/me-page/email-address']" [replaceUrl]="false" class="item">
+                    <div class="imageWrapper">
+                        <img src="assets/img/email.png" alt="Version" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div style="margin: 0; ">
+                            {{'email_address' | translate}}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="deviceId != null">
+                <a [href]="'/me-page/'+deviceId" [replaceUrl]="true" class="item">
+                    <div class="imageWrapper">
+                        <img src="assets/img/version-update.png" alt="image" class="imaged w64">
+                    </div>
+                    <div class="in">
+                        <div>
+                            {{ 'cleanCache' | translate}}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            <li *ngIf="isUserLoggedIn">
+                <logout></logout>
+            </li>
+        </ul>
+    </div>
+</div>
 <app-navigation-bar></app-navigation-bar>
 
 <!-- refresh loading -->
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
-  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
-  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+    [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+    [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

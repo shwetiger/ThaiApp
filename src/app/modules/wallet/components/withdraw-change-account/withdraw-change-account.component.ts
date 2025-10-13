@@ -112,6 +112,7 @@ export class WithdrawChangeAccountComponent implements OnInit {
         });
         this.storage.clear('token');
         this.storage.clear('isUserLoggedIn');
+         this.router.navigate(['/login'], { replaceUrl: true });
     }
     if(error.error.message=='Bank Account Delete fail , withdrawal pending state')
     {

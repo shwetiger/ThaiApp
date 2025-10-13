@@ -3,7 +3,8 @@
 #appCapsule {
     background-color: $background-color !important;
     padding-top: 0px !important;
-    min-height: 120vh;
+    max-height: 100%;
+    overflow: auto;
     h3 {
         color: $second-color; 
         font-weight: 700;
@@ -75,15 +76,15 @@
 }
 
 .container {
-  position: fixed;
+  position:static;
   top: 50px; /* or adjust as needed */
   left: 0 !important; /* or adjust as needed */
   right: 0 !important; /* or adjust as needed */
   overflow-y: auto; /* Allow vertical scrolling if content exceeds viewport */
-  width:30%;
+  width:100%;
   scrollbar-width: none;
- // background-color: aqua;
   height: 100%;
+  
 }
 
 

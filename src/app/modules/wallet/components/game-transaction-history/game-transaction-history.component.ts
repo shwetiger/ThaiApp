@@ -138,6 +138,7 @@ export class GameTransactionHistoryComponent implements OnInit {
         });
         this.storage.clear('token');
         this.storage.clear('isUserLoggedIn');
+         this.router.navigate(['/login'], { replaceUrl: true });
     }
     if(error.status == 400)
     {

@@ -1,178 +1,181 @@
 <div class="appHeader text-light" *ngIf="!common.refreshLoading">
   <div class="left">
-    <a (click)="goBack()" class="headerButton">             
-      <img src="assets/img/icon/arrow_back.png" alt="">     
-   </a> 
+    <a (click)="goBack()" class="headerButton">
+      <img src="assets/img/icon/arrow_back.png" alt="">
+    </a>
   </div>
   <div class="pageTitle"> {{ 'helloword' | translate}}</div>
-  <div class="right">   
-    <i class="material-icons add-class" (click)="twodBetAddModal(twodBetAdd)">add</i> 
-   
-  </div>  
-</div>
-<!-- <h3 class="text-center mt-1" *ngIf="!common.refreshLoading"> {{ 'list_of_bet' | translate}}</h3> -->
-
-<div id="appCapsule" *ngIf="!common.refreshLoading">   
-    <div class="container">    
-      <div class="row ">
-        <div class="col-12 justify-content-center"><h3 class="text-center mt-1" style="color:#2253A2;margin-bottom: 5px;"> {{ 'list_of_bet' | translate}}</h3></div>
-        
-      </div>  
-      <div class="row">
-        <div class="col-6  d-flex justify-content-start"><span class=" text-center" style="font-weight: 600;"> {{ 'section' | translate}}</span></div>
-        <div class="col-6 d-flex justify-content-end"><span class="  text-center" style="font-weight: 600;">{{currentDate | date:'dd/MM/yyyy'}} {{twodsection.sectionName}}</span></div>
-        <!-- <div class="col-4 d-flex justify-content-center"> {{twodsection.sectionName}} </div>  -->
-      </div>
-      <div class="row ">
-        <!-- <div class="col-7 d-flex justify-content-end"><h3 class="text-center mt-1"> {{ 'list_of_bet' | translate}}</h3></div> -->
-        <div class="col-11 d-flex justify-content-end">  <button type="button" class="btn btn-block round-btn" (click)="twodAllR()" *ngIf="dreamBook">All R</button></div> 
-      </div>
-   
-  
-      <div class="row">
-          <div class="col-12">
-              <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col" class="bet-confirm-font justify-content-center">{{ 's/n' | translate}}</th>
-                      <th scope="col" class="bet-confirm-font justify-content-center">{{ 'bet_list_number' | translate}}</th>
-                      <th scope="col" class="bet-confirm-font justify-content-center">{{ 'bet_list_amount' | translate}}</th>
-                      <th scope="col" class="bet-confirm-font justify-content-center text-center" *ngIf="dreamBook">R</th>
-                      <th scope="col" class="bet-confirm-font justify-content-center">{{ 'edit/delete' | translate}}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let betTwoDListObj of betTwoDList;let i=index;">
-                      <th scope="row ">{{ i+1 }}</th>
-                      <td ><span [class]="betTwoDListObj.unbetstatus?'text-red': ''">&nbsp;&nbsp;{{betTwoDListObj.number}}</span></td>
-                      <td ><span [class]="betTwoDListObj.unbetstatus?'text-red': ''">{{betTwoDListObj.amount | number:'1.0':'en-US' }}</span></td>
-                      <td *ngIf="dreamBook">
-                        <span  [ngClass]="{'round-active-btn': betTwoDListObj.isR, 'round-noactive-btn' : !betTwoDListObj.isR }"
-                         (click)="betTwoDListObj.isR? twodSingleR(betTwoDListObj.number,betTwoDListObj.amount) :'' ">R</span>                        
-                      </td>
-                      <td >                     
-                         <img src="assets/img/icons/edit.png" alt="Edit" style="margin-right: 20px; margin-bottom: 3px !important;" 
-                         (click)="twodBetEditModal(twodBetEdit,betTwoDListObj.number,betTwoDListObj.amount)">                                       
-                          <img src="assets/img/icons/delete.png" alt="Delete"  (click)="twodBetDelete(betTwoDListObj.number)">                         
-                        </td>
-                    </tr>  
-                    <tr>
-                      <td [attr.colspan]="dreamBook ? '3' : '2'" class="text-center" style="color:#2253A2"> 
-                        {{ 'total_amount' | translate }}
-                      </td>
-                      <td [attr.colspan]="dreamBook ? '3' : '2'" style="color:#2253A2">
-                        {{totalAmount | number:'1.0':'en-US'}} {{ 'ks' | translate }}
-                      </td>
-                    </tr>  
-                    <tr>
-                      <td *ngIf="dreamBook"></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>                      
-                  </tbody>
-                </table>
-          </div>
-      </div>
-
+  <div class="right">
+    <i class="material-icons add-class" (click)="twodBetAddModal(twodBetAdd)">add</i>
   </div>
-    <div class="row totalAccountAmount">                        
-      <div class="col-6 d-block my-2 text-center" style="color:#2253A2">
-        {{ 'balance' | translate }}                         
-      </div>
-      <div class="col-6 d-block my-2 text-center" style="color:#2253A2">
-       {{ userProfileModel.balance | number:'1.0':'en-US'}}
-        {{ 'ks' | translate }}                       
+</div>
+<div id="appCapsule" *ngIf="!common.refreshLoading">
+  <div class="container">
+    <div class="row ">
+      <div class="col-12 justify-content-center">
+        <h3 class="text-center mt-1" style="color:#2253A2;margin-bottom: 5px;"> {{ 'list_of_bet' | translate}}</h3>
       </div>
     </div>
+    <div class="row">
+      <div class="col-6  d-flex justify-content-start"><span class=" text-center" style="font-weight: 600;"> {{
+          'section' | translate}}</span></div>
+      <div class="col-6 d-flex justify-content-end"><span class="  text-center" style="font-weight: 600;">{{currentDate
+          | date:'dd/MM/yyyy'}} {{twodsection.sectionName}}</span></div>
+    </div>
+    <div class="row ">
+      <div class="col-11 d-flex justify-content-end"> <button type="button" class="btn btn-block round-btn"
+          (click)="twodAllR()" *ngIf="dreamBook">All R</button></div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col" class="bet-confirm-font justify-content-center">{{ 's/n' | translate}}</th>
+              <th scope="col" class="bet-confirm-font justify-content-center">{{ 'bet_list_number' | translate}}</th>
+              <th scope="col" class="bet-confirm-font justify-content-center">{{ 'bet_list_amount' | translate}}</th>
+              <th scope="col" class="bet-confirm-font justify-content-center text-center" *ngIf="dreamBook">R</th>
+              <th scope="col" class="bet-confirm-font justify-content-center">{{ 'edit/delete' | translate}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let betTwoDListObj of betTwoDList;let i=index;">
+              <th scope="row ">{{ i+1 }}</th>
+              <td><span [class]="betTwoDListObj.unbetstatus?'text-red': ''">&nbsp;&nbsp;{{betTwoDListObj.number}}</span>
+              </td>
+              <td><span [class]="betTwoDListObj.unbetstatus?'text-red': ''">{{betTwoDListObj.amount |
+                  number:'1.0':'en-US' }}</span></td>
+              <td *ngIf="dreamBook">
+                <span [ngClass]="{'round-active-btn': betTwoDListObj.isR, 'round-noactive-btn' : !betTwoDListObj.isR }"
+                  (click)="betTwoDListObj.isR? twodSingleR(betTwoDListObj.number,betTwoDListObj.amount) :'' ">R</span>
+              </td>
+              <td>
+                <img src="assets/img/icons/edit.png" alt="Edit"
+                  style="margin-right: 20px; margin-bottom: 3px !important;"
+                  (click)="twodBetEditModal(twodBetEdit,betTwoDListObj.number,betTwoDListObj.amount)">
+                <img src="assets/img/icons/delete.png" alt="Delete" (click)="twodBetDelete(betTwoDListObj.number)">
+              </td>
+            </tr>
+            <tr>
+              <td [attr.colspan]="dreamBook ? '3' : '2'" class="text-center" style="color:#2253A2">
+                {{ 'total_amount' | translate }}
+              </td>
+              <td [attr.colspan]="dreamBook ? '3' : '2'" style="color:#2253A2">
+                {{totalAmount | number:'1.0':'en-US'}} {{ 'ks' | translate }}
+              </td>
+            </tr>
+            <tr>
+              <td *ngIf="dreamBook"></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row totalAccountAmount">
+    <div class="col-6 d-block my-2 text-center" style="color:#2253A2">
+      {{ 'balance' | translate }}
+    </div>
+    <div class="col-6 d-block my-2 text-center" style="color:#2253A2">
+      {{ userProfileModel.balance | number:'1.0':'en-US'}}
+      {{ 'ks' | translate }}
+    </div>
+  </div>
 </div>
 <!-- * App Capsule -->
 
-<ng-template #twodBetEdit>  
-  <div class="modal-body">  
+<ng-template #twodBetEdit>
+  <div class="modal-body">
     <div class="container">
       <div class="row">
         <h4>{{ modalService.config.initialState.number }}</h4>
-        <input type="number" maxlength="3" class="betamount-text" [(ngModel)]="modalService.config.initialState.amount" 
-        [ngModelOptions]="{standalone: true}" value={{modalService.config.initialState.amount}} (keyup)="checkBetAmount()"
-        (input)="checkMaxLength($event)" (keypress)="keyPressNumbers($event)">
-        <p id = "betAmountErr" class="error-color"></p>
-        
+        <input type="number" maxlength="3" class="betamount-text" [(ngModel)]="modalService.config.initialState.amount"
+          [ngModelOptions]="{standalone: true}" value={{modalService.config.initialState.amount}}
+          (keyup)="checkBetAmount()" (input)="checkMaxLength($event)" (keypress)="keyPressNumbers($event)">
+        <p id="betAmountErr" class="error-color"></p>
       </div>
-      
       <div class="row pt-1">
-        <div class="container-fluid"> 
-            <div class="row justify-content-end">
-              <div class="col-3 col-md-3">
+        <div class="container-fluid">
+          <!-- <div class="row justify-content-end">
+            <div class="col-3 col-md-3">
               <button type="button" class="btn btn-block edit-button" (click)="twodBetModalDelete()">
                 {{ 'cancel' | translate}}
-              </button>  
-            </div> 
-              <div class="col-3 col-md-3"> <!--twodBetModal -->
-
-
-              <button type="button" class="btn btn-block edit-button" (click)="twodBetModalNew(modalService.config.initialState.number, modalService.config.initialState.amount)">
-               {{ 'ok' | translate}}
-              </button> 
-              </div>
-            </div>             
-        </div>
-      </div> 
-    </div>
-  </div>                  
-</ng-template>
- 
-<ng-template #twodBetUnBetList>                           
-  <div class="modal-body">  
-    <button type="button" class="close pull-right" aria-label="Close" (click)="unBetLimitListModalDelete()">
-      <span aria-hidden="true">×</span>                                    
-   </button>                                   
-    <div class="section full"> 
-        <div class="row mt-3">
-          <div class="col-6" *ngFor="let unBetLimitListObj of modalService.config.initialState.unBetLimitList;">
-            {{ unBetLimitListObj.number }} = {{ unBetLimitListObj.amount | number:'1.0':'en-US'}} {{'ks' | translate}}
+              </button>
+            </div>
+            <div class="col-3 col-md-3"> 
+              <button type="button" class="btn btn-block edit-button"
+                (click)="twodBetModalNew(modalService.config.initialState.number, modalService.config.initialState.amount)">
+                {{ 'ok' | translate}}
+              </button>
+            </div>
+          </div> -->
+          <div class="row justify-content-end">
+            <button type="button" class="btn btn-sm bet-buttton mr-1" style="width:75px" (click)="twodBetModalDelete()">
+              {{ 'cancel' | translate}}
+            </button>
+            <button type="button" class="btn btn-sm bet-buttton" style="width:75px"
+              (click)="twodBetModalNew(modalService.config.initialState.number, modalService.config.initialState.amount)">
+              {{ 'ok' | translate}}
+            </button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #twodBetUnBetList>
+  <div class="modal-body">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="unBetLimitListModalDelete()">
+      <span aria-hidden="true">×</span>
+    </button>
+    <div class="section full">
+      <div class="row mt-3">
+        <div class="col-6" *ngFor="let unBetLimitListObj of modalService.config.initialState.unBetLimitList;">
+          {{ unBetLimitListObj.number }} = {{ unBetLimitListObj.amount | number:'1.0':'en-US'}} {{'ks' | translate}}
+        </div>
+      </div>
     </div>
     <div class="mt-1">
       <p class="text-danger">{{'unbetlist_text' | translate}}</p>
     </div>
-   
-  </div>                           
+
+  </div>
 </ng-template>
 
-<ng-template #twodBetAdd>            
-  <div class="modal-body">             
-    <div class="section full"> 
-      <div class="section-title">{{ 'twoDbetAddTitle' | translate}}</div>  
+<ng-template #twodBetAdd>
+  <div class="modal-body">
+    <div class="section full">
+      <div class="section-title">{{ 'twoDbetAddTitle' | translate}}</div>
       <div class="wide-block mt-1">
         <label for="">{{ 'bet_list_number' | translate}}</label>
-        <input type="tel" class="betamount-text" [(ngModel)]="betAddNumber" maxlength="2" [ngModelOptions]="{standalone: true}"
-         (keyup)="checkBetAddNumber()" (keypress)="keyPressNumbers($event)">
-        <p id = "betAddNumberErr" class="error-color"></p>
+        <input type="tel" class="betamount-text" [(ngModel)]="betAddNumber" maxlength="2"
+          [ngModelOptions]="{standalone: true}" (keyup)="checkBetAddNumber()" (keypress)="keyPressNumbers($event)">
+        <p id="betAddNumberErr" class="error-color"></p>
       </div>
       <div class="wide-block mt-1">
         <label for="">{{ 'bet_list_amount' | translate}}</label>
-        <input type="number"  minlength="3" class="betamount-text" [(ngModel)]="betAddAmount"  minlength="3" [ngModelOptions]="{standalone: true}" (keyup)="checkBetAddAmount()" 
-        (keypress)="keyPressNumbers($event)">
-        <p id = "betAddAmountErr" class="error-color"></p>
-
+        <input type="number" minlength="3" class="betamount-text" [(ngModel)]="betAddAmount" minlength="3"
+          [ngModelOptions]="{standalone: true}" (keyup)="checkBetAddAmount()" (keypress)="keyPressNumbers($event)">
+        <p id="betAddAmountErr" class="error-color"></p>
       </div>
-      
     </div>
-    <div class="section full">   
+    <div class="section full">
       <div class="wide-block mt-1">
-          <div class="row justify-content-end">                                  
-              <button type="button" class="btn btn-sm bet-buttton mr-1" (click)="betAddModelRemove()">
-                 {{ 'cancel' | translate}}
-              </button>  
-              <button type="button" class="btn btn-sm bet-buttton" (click)="betAddModelNumber()">
-                {{ 'twoDbetAddButton' | translate}}
-             </button>  
-          </div>
+        <div class="row justify-content-end">
+          <button type="button" class="btn btn-sm bet-buttton mr-1" style="width: 80px" (click)="betAddModelRemove()">
+            {{ 'cancel' | translate}}
+          </button>
+          <button type="button" class="btn btn-sm bet-buttton" style="width: 80px" (click)="betAddModelNumber()">
+            {{ 'twoDbetAddButton' | translate}}
+          </button>
+        </div>
       </div>
-  </div> 
+    </div>
   </div>
 </ng-template>
 
@@ -180,18 +183,21 @@
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
   [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
   [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
- 
- <!-- App Bottom Menu -->
-<div class=" section full d-flex justify-content-center" id="navTwoDBetConfirm"  style="background-color: #f4f2f2;">   
-  <button type="button" class="text-danger btn btn-lg btn-block  betconfrimButton1 mb-3" (click)="goBack()">{{ 'reselect' | translate}}</button>   
-  <div class="mt-5" style=" position: relative; justify-content: center; background-color: transparent !important; width: 100%; height: 100%;" *ngIf="common.betLoading" >                  
+
+<!-- App Bottom Menu -->
+<div class=" section full d-flex justify-content-center" id="navTwoDBetConfirm" style="background-color: #f4f2f2;">
+  <button type="button" class="text-danger btn btn-lg btn-block  betconfrimButton1 mb-3" (click)="goBack()">{{
+    'reselect' | translate}}</button>
+  <div class="mt-5"
+    style=" position: relative; justify-content: center; background-color: transparent !important; width: 100%; height: 100%;"
+    *ngIf="common.betLoading">
     <!-- submit loading -->
     <ngx-spinner [name]="common.loading.betLoading.name" [size]="common.loading.betLoading.size"
-    [color]="common.loading.betLoading.color" [type]="common.loading.betLoading.type"
-    [fullScreen]="common.loading.betLoading.fullScreen"></ngx-spinner>
-</div>
-  <button type="button" class="btn btn-lg btn-block  betconfrimButton2 mb-3" (click)="twodBetUnBetListModal(twodBetUnBetList)" *ngIf="!common.betLoading">{{ 'bet' | translate}}</button>
- 
+      [color]="common.loading.betLoading.color" [type]="common.loading.betLoading.type"
+      [fullScreen]="common.loading.betLoading.fullScreen"></ngx-spinner>
+  </div>
+  <button type="button" class="btn btn-lg btn-block  betconfrimButton2 mb-3"
+    (click)="twodBetUnBetListModal(twodBetUnBetList)" *ngIf="!common.betLoading">{{ 'bet' | translate}}</button>
+
 </div>
 <!-- * App Bottom Menu -->
-

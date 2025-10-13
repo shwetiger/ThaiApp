@@ -1,29 +1,29 @@
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
-    
-
-    <div id="appCapsule" class="extra-header-active">               
-        <div class="section full mx-2">
-            <div class="section-title register-title mt-2" style="white-space:nowrap; justify-content: center;color:#2253A2" >{{'emailotp_header' | translate}}</div>
-            <div class="section-title register-title mb-3 mt-3 text-center" style="justify-content: center; margin-top:0 !important;color:#2253A2">{{emailotpdesc}} </div>
-            <form>  
-            
-                 <code-input  #codeInput [isCodeHidden]="false" 
-                [codeLength]="6"  (codeChanged)="onCodeCompleted($event)" (Keyup) ="validateOtp()"></code-input>    
-                
-                 <p id ="passErr" class="error-color" style="text-align: center; width: 95%;" ></p>                
-                                
-                <div class="row justify-content-center" style="margin-top: 70px;">
-                    
-                    <button type="button" (click)="SaveEmail()" 
-                    style="background-color: #2253A2; color: #fff; width: 88% !important;height:40px;border:none;border-radius: 5px;" 
+<div id="appCapsule" class="extra-header-active">
+    <div class="section full mx-2">
+        <div class="section-title register-title mt-2"
+            style="white-space:nowrap; justify-content: center;color:#2253A2">{{'emailotp_header' | translate}}</div>
+        <div class="section-title register-title mb-3 mt-3 text-center"
+            style="justify-content: center; margin-top:0 !important;color:#2253A2">{{emailotpdesc}} </div>
+        <form>
+            <code-input #codeInput [isCodeHidden]="false" [codeLength]="6" (codeChanged)="onCodeCompleted($event)"
+                (Keyup)="validateOtp()"></code-input>
+            <p id="passErr" class="error-color" style="text-align: center; width: 95%;"></p>
+              <div class="counterTimer" *ngIf="coundDown >= 0">{{ coundDown }}</div>
+                <a class="btn btn-text-primary float-right mr-2"
+                (click)="getOtp()" *ngIf="coundDown < 0" style="border: 1px solid red;
+                color: #000 !important;
+                font-weight: 600; color: #000 !important; font-weight: 600;">Resend OTP</a>
+            <div class="row justify-content-center" style="margin-top: 70px;">
+                <button type="button" (click)="SaveEmail()"
+                    style="background-color: #2253A2; color: #fff; width: 88% !important;height:40px;border:none;border-radius: 5px;"
                     *ngIf="!common.submitLoading">{{ 'email_save' | translate}}</button>
-                </div>
-                     
-              </form>
-        </div>
+            </div>
+        </form>
     </div>
-    <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >
-        <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
+</div>
+<div class="mt-2" style="position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading">
+    <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
         [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
         [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
-    </div>
+</div>

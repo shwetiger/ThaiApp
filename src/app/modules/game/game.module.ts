@@ -23,14 +23,14 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
   return () => new Promise<any>((resolve: any) => {
     const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
     locationInitialized.then(() => {
-      let lang=localStorage.getItem('ngx-webstorage|locallanguage');
+      let lang = localStorage.getItem('ngx-webstorage|locallanguage');
       let langToSet;
-      if(lang == null){
+      if (lang == null) {
         langToSet = 'my';
       }
-      else{
-        langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
+      else {
+        langToSet = lang.toString().replace(/['"]+/g, '')
+      }
       translate.setDefaultLang(langToSet);
       translate.use(langToSet).subscribe(() => {
       }, err => {
@@ -47,31 +47,31 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     GameWinLosePageComponent,
     GameWalletComponent,
     GameDepositSuccessComponent,
-    GameDepositErrorComponent,    
+    GameDepositErrorComponent,
     CountryBlackListComponent,
-  ], 
-  
+  ],
+
   imports: [
     SharedModule,
     CommonModule,
     GameRoutingModule,
     TranslateModule.forChild({
       loader: {
-          provide: TranslateLoader,
-          useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
+        provide: TranslateLoader,
+        useFactory: (http: HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json'); },
+        deps: [HttpClient]
       }
     }),
-    NgxSpinnerModule, 
-    FormsModule, 
+    NgxSpinnerModule,
+    FormsModule,
     ModalModule,
     CarouselModule,
-    ToastrModule.forRoot(),    
+    ToastrModule.forRoot(),
   ],
   providers: [
     BsModalService,
     BsModalService,
-    CommonService,   
+    CommonService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
@@ -79,6 +79,6 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       multi: true
     }
   ],
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class GameModule { }

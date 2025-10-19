@@ -131,13 +131,14 @@
   position: fixed;
   left: 0;
   right: 0;
-  bottom: calc(60px + env(safe-area-inset-bottom)); /* nav bar height 만큼 အပေါ် */
+  bottom: calc(50px + env(safe-area-inset-bottom)); /* nav bar height 만큼 အပေါ် */
   width: 100%;
   text-align: center;
   background: #fff;
   color: red;
-  padding: 3px 0;
+  padding: 0;
   z-index: 1000;
+  height:30px;
   box-sizing: border-box;
 }
 

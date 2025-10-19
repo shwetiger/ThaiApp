@@ -701,6 +701,7 @@ export class WithdrawComponent implements OnInit {
   signInWithPhoneNumber() {
     this.recaptcha = true;
     this.spinner.hide("loadingInsertBankAcc");
+    this.prefix = this.storage.retrieve('localPhonePrefix')
     this.phoneValue = this.storage.retrieve('localPhoneValue');
     let phoneNumber;
     if (this.phoneValue.startsWith("0")) {
@@ -766,7 +767,6 @@ export class WithdrawComponent implements OnInit {
         result => {
           this.dto.Response = {};
           this.dto.Response = result;
-
           this.SMSoperatorList = this.dto.Response;
           if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
 
@@ -1157,9 +1157,19 @@ export class WithdrawComponent implements OnInit {
   }
 
   getsmstype() {
+     this.prefix = this.storage.retrieve('localPhonePrefix')
+    let phoneNumber;
+    if (this.phoneValue.startsWith("0")) {
+      phoneNumber = this.prefix + this.phoneValue.substring(
+        1, this.phoneValue.length);
+    }
+    if (!this.phoneValue.startsWith("0")) //XXXX 
+    {
+      phoneNumber = this.prefix + this.phoneValue;
+    }
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + this.phoneValue, { headers: headers })
+    this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleError.bind(this))
       )

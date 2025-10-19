@@ -44,7 +44,8 @@ export class WithdrawMyAccontComponent implements OnInit {
       
     }
 
-  ngOnInit(): void {
+  ngOnInit(): void 
+  {
     this.editName='';
    this.getMyWithdrawAccounts();
    this.withdrawalBankAccDelete= {

@@ -32,7 +32,6 @@ startVersionCheck() {
     )
     .subscribe((data) => {
       if (data.version) {
-       // console.log("Version>>>>", data.version);
         this.currentVersion$.next(data.version);
         this.handleVersion(data.version);
       } else {

@@ -116,33 +116,34 @@ export class OtpPageComponent implements OnInit {
     this.registerottype = this.storage.retrieve('registeropttype');
     this.emailaddress = this.storage.retrieve('localEmail')
     this.commonFormtype = this.storage.retrieve('formPageType')
-    if (this.commonFormtype == 'NEWDIVICE') {
-      const startAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').start_at);     // Backend start time
-      const expiredAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at);
-      const totalDurationMs = expiredAt.getTime() - startAt.getTime();
-      this.targetTime = new Date(Date.now() + totalDurationMs);
-      //this.targetTime = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at)
-    }
-    else if (this.commonFormtype == 'withdrawaladd') {
-      const startAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').start_at);     // Backend start time
-      const expiredAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at);
-      const totalDurationMs = expiredAt.getTime() - startAt.getTime();
-      this.targetTime = new Date(Date.now() + totalDurationMs);
-      // this.targetTime = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at)
+    if (this.remainingSeconds == null) {
+      if (this.commonFormtype == 'NEWDIVICE') {
+        const startAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').start_at);     // Backend start time
+        const expiredAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at);
+        const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+        this.targetTime = new Date(Date.now() + totalDurationMs);
+        //this.targetTime = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at)
+      }
+      else if (this.commonFormtype == 'withdrawaladd') {
+        const startAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').start_at);     // Backend start time
+        const expiredAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at);
+        const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+        this.targetTime = new Date(Date.now() + totalDurationMs);
+        // this.targetTime = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at)
+      }
+      else {
+        const startAt = new Date(this.storage.retrieve('localOtpSms').start_at);     // Backend start time
+        const expiredAt = new Date(this.storage.retrieve('localOtpSms').expired_at);
+        const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+        this.targetTime = new Date(Date.now() + totalDurationMs);
+        //this.targetTime = new Date(this.storage.retrieve('localOtpSms').expired_at)
+      }
     }
     else {
-      const startAt = new Date(this.storage.retrieve('localOtpSms').start_at);     // Backend start time
-      const expiredAt = new Date(this.storage.retrieve('localOtpSms').expired_at);
-      const totalDurationMs = expiredAt.getTime() - startAt.getTime();
-      this.targetTime = new Date(Date.now() + totalDurationMs);
-      //this.targetTime = new Date(this.storage.retrieve('localOtpSms').expired_at)
+      this.targetTime = new Date(Date.now() + this.remainingSeconds * 1000);
     }
 
-    // if (this.remainingSeconds == null) {
-    //   this.remainingSeconds = 180;
-    // }
     this.checkResendTime();
-    // this.startCountdown(this.time);
     this.updateDeviceId = {
       deviceId: '',
       phone_no: '',
@@ -741,7 +742,7 @@ export class OtpPageComponent implements OnInit {
           const expiredAt = new Date(this.storage.retrieve('localOtpSms').expired_at);
           const totalDurationMs = expiredAt.getTime() - startAt.getTime();
           this.targetTime = new Date(Date.now() + totalDurationMs);
-        //  this.targetTime = new Date(this.storage.retrieve('localOtpSms').expired_at)
+          //  this.targetTime = new Date(this.storage.retrieve('localOtpSms').expired_at)
           this.checkResendTime();
           if (this.dto.Response.statusCode == 200) {
             if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {

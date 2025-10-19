@@ -149,6 +149,7 @@ export class EmailAddressComponent implements OnInit {
               this.storage.store("emailaddress", this.emailModel.email_address);
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
+              this.storage.clear('Timer');
               this.router.navigate(['/me-page/email-otp-comfirm'], { replaceUrl: true });
             }
             else {

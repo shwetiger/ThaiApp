@@ -76,6 +76,7 @@ export class InitialForgotPasswordComponent implements OnInit {
       this.istxtdisable = true;
     }
   }
+
   handleError(error: HttpErrorResponse) {
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
@@ -542,9 +543,22 @@ export class InitialForgotPasswordComponent implements OnInit {
   }
 
   getsmstype() {
+    let phoneNumber;
+    this.phoneValue = this.storage.retrieve('localPhoneValue');
+    this.prefix = this.storage.retrieve('localPhonePrefix');
+    if (this.phoneValue == null || this.phoneValue == undefined || this.phoneValue == "") {
+      return;
+    }
+    if (this.phoneValue.startsWith("0")) {
+      phoneNumber = this.prefix + this.phoneValue.substring(
+        1, this.phoneValue.length);
+    }
+    else {
+      phoneNumber = this.prefix + this.phoneValue;
+    }
     // this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + this.phoneValue, { headers: headers })
+    this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleError.bind(this))
       )

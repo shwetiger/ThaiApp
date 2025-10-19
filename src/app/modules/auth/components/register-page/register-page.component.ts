@@ -269,7 +269,6 @@ export class RegisterPageComponent implements OnInit {
                     result => {
                       this.dto.Response = {};
                       this.dto.Response = result;
-                      console.log("Registerotpresponse>>>>"+JSON.stringify(this.dto.Response));
                       if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
                         this.common.submitLoading = false;
                         this.spinner.hide("submitLoading");

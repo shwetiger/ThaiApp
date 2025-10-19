@@ -456,8 +456,8 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   getSMSOperators() {
-    this.phoneNumber = this.storage.retrieve('localPhoneValue');
-    var phoneno = this.phoneNumber.substring(2, this.phoneNumber.length);
+    const PhoneNumber = this.storage.retrieve('localPhoneValue');
+    var phoneno = PhoneNumber.substring(2,PhoneNumber.length);
     this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ''))

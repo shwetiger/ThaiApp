@@ -10,12 +10,7 @@ import { AppVersionService } from './shared/service/app-version.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  template: `
-    <div class="version-info" style="color:red">
-      Version: {{ version }}
-    </div>
-  `
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
   constructor(

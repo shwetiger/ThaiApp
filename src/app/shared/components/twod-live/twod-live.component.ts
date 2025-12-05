@@ -505,7 +505,3 @@ async getLiveData() {
 
 }
 
-function OnDestroy() {
-    throw new Error('Function not implemented.');
-}
-

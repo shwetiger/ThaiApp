@@ -25,7 +25,6 @@
     "@angular/router": "~10.0.6",
     "@angular/service-worker": "~10.0.6",
     "@fortawesome/angular-fontawesome": "^0.7.0",
-    "@hyperblob/ngx-wheel-selector": "^1.1.6",
     "@ionic/angular": "^5.9.1",
     "@microsoft/signalr": "^7.0.0",
     "@myanmartools/ng-zawgyi-detector": "^1.2.6",

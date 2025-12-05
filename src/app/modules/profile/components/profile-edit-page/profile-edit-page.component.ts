@@ -201,6 +201,15 @@ export class ProfileEditPageComponent implements OnInit {
   }
 
   deleteprofilephoto() {
+    if( this.userModel.imageUrl=='' || this.userModel==undefined)
+    {
+            this.toastr.error("", this.translateService.instant("no_profilimage"), {
+              timeOut: 3000,
+              positionClass: 'toast-top-center',
+            });
+            return;
+    }
+    else{
     this.userModel.imageUrl = '';
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
@@ -224,4 +233,5 @@ export class ProfileEditPageComponent implements OnInit {
         }
       );
   }
+}
 }

@@ -920,7 +920,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     let headers = new HttpHeaders();
     this.OtpSms = [];
     this.OtpSms = this.storage.retrieve('localOtpSms');
-    this.http.get(this.funct.ipaddress + 'user/getForgotPassowrdOTP?phoneNo=' + phoneNumber, { headers: headers })
+    this.http.get(this.funct.apaddressv1 + 'user/getForgotPassowrdOTP?phoneNo=' + phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ""))
       )

@@ -261,7 +261,7 @@ export class RegisterPageComponent implements OnInit {
               this.spinner.hide("submitLoading");
               if (this.isEmailExist == false) {
                 this.storage.store("localEmail", this.registerModel.email_address)
-                this.http.get(this.funct.ipaddress + 'user/getRegisterOTP?phoneNo=' + phoneNumber + '&type=' + this.registerottype + '&email=' + this.registerModel.email_address, { headers: headers })
+                this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTP?phoneNo=' + phoneNumber + '&type=' + this.registerottype + '&email=' + this.registerModel.email_address, { headers: headers })
                   .pipe(
                     catchError(this.handleError.bind(this))
                   )

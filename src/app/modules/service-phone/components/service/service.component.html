@@ -41,15 +41,26 @@
                                     </div>
                                     <div class="col-4" *ngIf="servicePhoneObj.telegram_id==''">
                                     </div>
-                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
+                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no != '' && isWebviewforPh">
                                         <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
+                                            <img class="service-image mr-2" src="assets/img/phone.png" alt="">
+                                        </a>
+                                    </div>
+
+                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no != '' && !isWebviewforPh">
+                                        <a [href]="'tel:' + servicePhoneObj.phone_no">
                                             <img class="service-image mr-2" src="assets/img/phone.png" alt="">
                                         </a>
                                     </div>
                                     <div class="col-3" *ngIf="servicePhoneObj.phone_no ==''">
                                     </div>
-                                    <div class="col-4" *ngIf="servicePhoneObj.viber!=''">
-                                        <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
+                                    <div class="col-4" *ngIf="servicePhoneObj.viber !='' && isWebviewforPh"> <a
+                                            [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
+                                            <img class="service-image" src="assets/img/viber.png" alt=""> </a> </div>
+
+                                  <div class="col-4" *ngIf="servicePhoneObj.viber != '' && !isWebviewforPh">
+                                        <a
+                                            [href]="'viber://chat?number='+servicePhoneObj.viber | safeUrl">
                                             <img class="service-image" src="assets/img/viber.png" alt="">
                                         </a>
                                     </div>
@@ -88,18 +99,32 @@
                                     </div>
                                     <div class="col-4" *ngIf="servicePhoneObj.telegram_id==''">
                                     </div>
-                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
+                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no != '' && isWebviewforPh">
                                         <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
                                             <img class="service-image mr-2" src="assets/img/phone.png" alt="">
                                         </a>
                                     </div>
+
+                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no != '' && !isWebviewforPh">
+                                        <a [href]="'tel:' + servicePhoneObj.phone_no">
+                                            <img class="service-image mr-2" src="assets/img/phone.png" alt="">
+                                        </a>
+                                    </div>
+
                                     <div class="col-3" *ngIf="servicePhoneObj.phone_no ==''">
                                     </div>
-                                    <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
-                                        <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
+
+                                    <div class="col-4" *ngIf="servicePhoneObj.viber !='' && isWebviewforPh"> <a
+                                            [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
+                                            <img class="service-image" src="assets/img/viber.png" alt=""> </a> </div>
+
+                                    <div class="col-4" *ngIf="servicePhoneObj.viber != '' && !isWebviewforPh">
+                                        <a
+                                            [href]="'viber://chat?number='+servicePhoneObj.viber | safeUrl">
                                             <img class="service-image" src="assets/img/viber.png" alt="">
                                         </a>
                                     </div>
+
                                     <div class="col-4" *ngIf="servicePhoneObj.viber ==''">
                                     </div>
                                 </div>
@@ -136,13 +161,24 @@
                                     </div>
                                     <div class="col-3" *ngIf="servicePhoneObj.phone_no==''">
                                     </div>
-                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
+                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no != '' && isWebviewforPh">
                                         <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
                                             <img class="service-image mr-2" src="assets/img/phone.png" alt="">
                                         </a>
                                     </div>
-                                    <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
-                                        <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
+
+                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no != '' && !isWebviewforPh">
+                                        <a [href]="'tel:' + servicePhoneObj.phone_no">
+                                            <img class="service-image mr-2" src="assets/img/phone.png" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="col-4" *ngIf="servicePhoneObj.viber !='' && isWebviewforPh"> <a
+                                            [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
+                                            <img class="service-image" src="assets/img/viber.png" alt=""> </a> </div>
+
+                                     <div class="col-4" *ngIf="servicePhoneObj.viber != '' && !isWebviewforPh">
+                                        <a
+                                            [href]="'viber://chat?number='+servicePhoneObj.viber | safeUrl">
                                             <img class="service-image" src="assets/img/viber.png" alt="">
                                         </a>
                                     </div>
@@ -169,8 +205,13 @@
                                         src="assets/img/telegram channel.png" alt="">
                                 </a>
                             </div>
-                            <div class="col-6" *ngIf="servicePhoneObj.viber_link!=''">
+                            <div class="col-6" *ngIf="servicePhoneObj.viber_link!='' && isWebviewforPh" >
                                 <a [href]="servicePhoneObj.viber_link+''+openUrl | safeUrl">
+                                    <img class="service-channel-image" src="assets/img/viber channel.png" alt="">
+                                </a>
+                            </div>
+                              <div class="col-6" *ngIf="servicePhoneObj.viber_link!='' && !isWebviewforPh" >
+                                <a [href]="servicePhoneObj.viber_link | safeUrl">
                                     <img class="service-channel-image" src="assets/img/viber channel.png" alt="">
                                 </a>
                             </div>

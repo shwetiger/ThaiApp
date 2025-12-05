@@ -150,6 +150,10 @@ export class RegistrationPageComponent implements OnInit {
       $("#passwordErr").html(passwordRequired);
       return false;
     }
+     if (this.password.length > 20) {
+      $("#passwordErr").html(this.translateService.instant("charlength"));
+      return false;
+    }
     return true;
   }
 
@@ -157,6 +161,10 @@ export class RegistrationPageComponent implements OnInit {
     $("#confirmPasswordErr").html('');
     if (this.password && this.password.length == this.confirmPassword.length && this.password == this.confirmPassword) {
       return true;
+    }
+    if (this.password.length > 20) {
+      $("#confirmPasswordErr").html(this.translateService.instant("charlength"));
+      return false;
     }
     else {
       $("#confirmPasswordErr").html(this.translateService.instant("confirmPassIncorrect"));

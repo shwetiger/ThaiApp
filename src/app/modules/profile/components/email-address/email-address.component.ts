@@ -135,7 +135,7 @@ export class EmailAddressComponent implements OnInit {
       headers = headers.set('Authorization', this.token);
       let params = new HttpParams();
       params = params.set("email", this.emailModel.email_address.trim());
-      this.http.get(this.funct.ipaddress + 'user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
+      this.http.get(this.funct.apaddressv1 + 'user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
         .pipe(
           catchError(this.handleErrorMessage.handleError.bind(this, 'emailRequired'))
         )
@@ -152,12 +152,16 @@ export class EmailAddressComponent implements OnInit {
               this.storage.clear('Timer');
               this.router.navigate(['/me-page/email-otp-comfirm'], { replaceUrl: true });
             }
-            else {
-              this.toastr.success("", this.translateService.instant("bank_accname_success"), {
+              if(this.dto.Response.message=='too many request'){
+              this.common.submitLoading = false;
+              this.spinner.hide("submitLoading");
+              this.toastr.error("", this.translateService.instant("transaction_wait_5sec"), {
                 timeOut: 3000,
-                positionClass: 'toast-top-center',
+                positionClass: 'toast-bottom-center',
               });
             }
+            
+            
           }
         );
     }

@@ -132,3 +132,7 @@ card {
     }
 }
 
+.ngx-spinner {
+  z-index: 9999;  /* Ensure it's on top of other elements */
+}
+

@@ -212,6 +212,9 @@ outline: none !important;
     justify-content: center;
     //overflow-y: auto;
     min-height: calc(100vh - 60px);
+     max-width: 350px !important;
+      width: 90%;
+      margin: auto;
   }
   .game-play-now-modal  .modal-content {
     border-radius: 10px;

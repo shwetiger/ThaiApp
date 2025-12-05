@@ -107,19 +107,19 @@
 </div>
 
 <ng-template #transferAlert>
-  <div class="modal-header">
+  <!-- <div class="modal-header">
     <h4 class="modal-title pull-left"></h4>
     <div class="close pull-right">
       <i class="material-icons" (click)="HideAlert()" style="color: red;">cancel</i>
     </div>
-  </div>
-  <div class="modal-body" style="padding: 0px !important;">
+  </div> -->
+  <div class="modal-body mt-2" style="padding: 0px !important;">
     <div style="text-align: center;">
-      <i class="material-icons" style="font-size: 50px;">error</i>
+      <i class="material-icons" style="font-size: 50px;color:#0054a6">error</i>
     </div>
-    <div class="container pt-1">
-      <div class="row gametransactionAlert">
-        <div class="col-12">{{ 'gametransactionAlert' | translate}}</div>
+    <div class="container pt-1 justify-content-center">
+      <div class="row gametransactionAlert ">
+        <div style="text-align: center;font-size: 13px;color: black;white-space: nowrap;">{{ 'gametransactionAlert' | translate}}</div>
       </div>
       <div class="row walletlbl" *ngIf="userProfileBalance != undefined">
         <div class="col-2">
@@ -128,21 +128,21 @@
         </div>
         <div class="col-10" style="padding: 15px 0px 0px 0px !important;">
           <span class="child-walletbalance" style="float: left;">{{ 'mainWallet' | translate}}</span>
-          <span class="child-walletbalance" style="float: right;"> {{this.userProfileBalance | number : 0}}</span>
+          <span class="child-walletbalance" style="float: right;"> {{this.userProfileBalance | number : 0}}  {{'ks'|translate}}</span>
         </div>
       </div>
-      <div class="row walletlbl">
-        <div class="col-2">
+      <div class="row walletlbl mt-2">
+        <!-- <div class="col-2">
           <img src='./assets/img/game_wallet_img.png' class="active-wallet" />
-        </div>
-        <div class="col-10" style="padding: 10px 0px 0px 0px !important;">
-          <span class="child-walletbalance" style="float: left;">{{ 'gameWallet' | translate}}</span>
-          <span class="child-walletbalance" style="float: right;">{{ gameUserBalance }}</span>
+        </div> -->
+        <div class="col-12 mt-2 mb-2" style="padding: 10px 0px 0px 0px !important;">
+          <span class="child-walletbalance">{{ 'gameWallet' | translate}}</span>
+          <span class="child-walletbalance">{{ gameUserBalance }} {{'ks'|translate}}</span>
         </div>
       </div>
-      <div class="row d-flex justify-content-center pt-1 pb-3">
-        <button type="button" class="btn  btnGroup" (click)="goToWallet()"
-          style="background: #0054a6 !important; color: #fff !important;">{{ 'game_balance_transfer' |
+      <div class="row d-flex justify-content-center mt-2 pt-1 pb-3">
+        <button type="button" class="btn  btnGroup"  (click)="goToWallet()"
+          style="background: #0054a6 !important; color: #fff !important;width: 50%;font-size: 16px;height: 50px;align-items: center;">{{ 'game_balance_transfer' |
           translate}}</button>
       </div>
     </div>

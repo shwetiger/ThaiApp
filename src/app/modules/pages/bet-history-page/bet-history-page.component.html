@@ -92,7 +92,7 @@
         
                 <div style="display:flex;justify-content: center;" class="mt-2">
                     <button type="button"  style="width: 90%; height: 40px; border-radius: 5px; border:2px solid;border-color:#2253A2;color:#2253A2 ;background-color: #fff;"  [hidden]=isLast (click)="getBetHistory(pageNumber)" *ngIf="loadingMore">
-                        More
+                       {{'morebtn' | translate}}
                     </button>
                     <!-- <p [hidden]=!isLast>
                         No More Data
@@ -129,7 +129,7 @@
         
                 <div style="display:flex;justify-content: center;" class="mt-2">
                     <button type="button" class="button" [hidden]=isLast (click)="getBetHistory(pageNumber)" *ngIf="loadingMore">
-                        More
+                       {{'morebtn' | translate}}
                     </button>
                     <!-- <p [hidden]=!isLast>
                         No More Data

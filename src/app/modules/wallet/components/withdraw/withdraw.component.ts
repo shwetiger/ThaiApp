@@ -630,7 +630,7 @@ export class WithdrawComponent implements OnInit {
                       this.signInWithPhoneNumber();
                     }
                     else {
-                      this.http.get(this.funct.ipaddress + 'transaction/getWithdrawOTP', { headers: headers })
+                      this.http.get(this.funct.apaddressv1 + 'transaction/getWithdrawOTP', { headers: headers })
                         .pipe(
                           catchError(this.handleError.bind(this))
                         )

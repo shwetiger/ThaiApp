@@ -18,9 +18,9 @@ export class GameCategoryTransferComponent implements OnInit {
   constructor(private storage: LocalStorageService,public bsModalRef: BsModalRef,private translateService: TranslateService,private modalService: BsModalService, private router: Router,) {
    
   } 
+  
   ngOnInit() 
   {  
-    
     this.closeBtnName= this.translateService.instant('cancel');
     this.transferdata = {
     display_name: '',

@@ -168,13 +168,14 @@ export class DefaultOptSettingComponent implements OnInit {
   getGmailOTP() {
     this.token = this.storage.retrieve('token');
     const headers = new HttpHeaders();
-    this.http.get(this.funct.ipaddress + 'user/getemailotp?email=' + this.email, { headers: headers })
+    this.http.get(this.funct.apaddressv1 + 'user/getemailotp?email=' + this.email, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
       .subscribe(
         result => {
           this.dto.Response = result;
+          console.log("OtpResponse4>>>>>"+JSON.stringify(this.dto.Response));
           this.changeotpprocess = true;
           this.storage.store('changeotpprocess', this.changeotpprocess);
           this._location.back();
@@ -193,13 +194,14 @@ export class DefaultOptSettingComponent implements OnInit {
   SaveOtptypeandgetotp() {
     this.token = this.storage.retrieve('token');
     const headers = new HttpHeaders();
-    this.http.post(this.funct.ipaddress + 'user/setusersmstypeAndGetOTP?type=' + this.selectedType + '&phone_no=' + this.phoneNumber + '&funcionName=' + this.funcionName, { headers: headers })
+    this.http.post(this.funct.apaddressv1 + 'user/setusersmstypeAndGetOTP?type=' + this.selectedType + '&phone_no=' + this.phoneNumber + '&funcionName=' + this.funcionName, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
       )
       .subscribe(
         result => {
           this.dto.Response = result;
+          console.log("OtpResponse1>>>>>"+JSON.stringify(this.dto.Response));
           if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
             this.storage.store('localOtpSms', this.dto.Response);
             this.storage.store('localNewDeviceOtpSms', this.dto.Response);
@@ -320,13 +322,14 @@ export class DefaultOptSettingComponent implements OnInit {
         this.spinner.hide("submitLoading");
       }
       else {
-        this.http.get(this.funct.ipaddress + 'user/getRegisterOTP?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType + '&email=' + this.email, { headers: headers })
+        this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTP?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType + '&email=' + this.email, { headers: headers })
           .pipe(
             catchError(this.handleErrorMessage.handleError.bind(this, ''))
           )
           .subscribe(
             result => {
               this.dto.Response = result;
+              console.log("OtpResponse2>>>>>"+JSON.stringify(this.dto.Response));
               this.gmailResponse = this.dto.Response;
               if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
                 this.gmailResponse.to = this.email;
@@ -360,7 +363,7 @@ export class DefaultOptSettingComponent implements OnInit {
       }
     }
     else {
-      this.http.get(this.funct.ipaddress + 'user/getRegisterOTPNew?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType, { headers: headers })
+      this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTPNew?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType, { headers: headers })
         .pipe(
           catchError(this.handleErrorMessage.handleError.bind(this, ''))
         )
@@ -368,6 +371,7 @@ export class DefaultOptSettingComponent implements OnInit {
           result => {
             this.dto.Response = {};
             this.dto.Response = result;
+            console.log("OtpResponse3>>>>>"+JSON.stringify(this.dto.Response));
             if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");

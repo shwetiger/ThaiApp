@@ -39,11 +39,9 @@ export class TopupTranscationWaitingPageComponent implements OnInit {
     private storage: LocalStorageService, 
     private funct: FunctService, 
     private _location: Location) { 
-    
       this.translateService.addLangs(this.supportLanguages);
       this.translateService.setDefaultLang(this.storage.retrieve('localLanguage')); 
       this.type=history.state.type;
-     
     }
 
   ngOnInit(): void {
@@ -51,11 +49,8 @@ export class TopupTranscationWaitingPageComponent implements OnInit {
     this.storage.clear('transfer_payment_id')
     this.tran_waiting_topup_desc1=this.translateService.instant("tran_waiting_topup_desc1");
     this.tran_waiting_topup_desc1=this.tran_waiting_topup_desc1.toString().replace("@time", 10);
-
-
     this.tran_waiting_withdrawal_desc1=this.translateService.instant("tran_waiting_withdrawal_desc1");
     this.tran_waiting_withdrawal_desc1=this.tran_waiting_withdrawal_desc1.toString().replace("@time", 30);
-
   }
 
   goHomePage()

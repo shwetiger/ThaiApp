@@ -230,7 +230,7 @@ export class TopUpSubmitComponent implements OnInit {
     document.execCommand('copy');
     document.body.removeChild(selBox);
 
-    this.toastr.warning('', val + ' ' + this.translateService.instant('copy_success'),
+    this.toastr.success('', val + ' ' + this.translateService.instant('copy_success'),
       {
         timeOut: 1000,
         positionClass: 'toast-bottom-center',
@@ -408,7 +408,10 @@ export class TopUpSubmitComponent implements OnInit {
       $("#TopupTransErr").html(topupTransactionRequired);
       return false;
     }
-
+    if (transactionNumber.includes('-')) {
+    $("#TopupTransErr").html(topupTransactionRequired); 
+    return false;
+    }
 
     if (transactionNumber.length >= 6 && transactionNumber.length < 10) {
       // $('#toput_submit_incorrect').addClass('incorrect-noborder-color');
@@ -429,7 +432,8 @@ export class TopUpSubmitComponent implements OnInit {
       $("#TopupTransErr").html(topupTransactionRequired);
       return false;
     }
-
+ 
+  
   }
 
   // onPasswordInput(event: Event): void {

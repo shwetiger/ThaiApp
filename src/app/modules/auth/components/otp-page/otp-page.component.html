@@ -9,7 +9,7 @@
     <div class="pageTitle"> <ng-content></ng-content>{{ 'helloword' | translate }} </div>
 </div>
 <!-- {{firebaseUI}} -->
-<div id="appCapsule" class="extra-header-active" *ngIf="firebaseUI == true">
+<!-- <div id="appCapsule" class="extra-header-active" *ngIf="firebaseUI == true">
     <div class="section full mx-1">
         <div class="section-title register-title mt-2"
             style="white-space:nowrap; justify-content: center;color:#2253A2">{{ otpheader}}</div>
@@ -63,9 +63,9 @@
     </div>
     <div class="section ful mx-3">
     </div>
-</div>
+</div> -->
 
-<div id="appCapsule" class="extra-header-active" *ngIf="smsUI == true ">
+<div id="appCapsule" class="extra-header-active">
     <div class="section full mx-2">
         <div class="section-title register-title mt-2"
             style="white-space:nowrap; justify-content: center;color:#2253A2">{{ otpheader}}</div>
@@ -101,29 +101,6 @@
                     <h4 class="underline" style="color:#2253A2">{{'change_otp_method' |
                         translate}}</h4>
                 </a></div>
-            <!-- <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
-                    [routerLink]="['/me-page/default-otp']"
-                    [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'NEWDIVICE'}"
-                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
-                    <h4 class="underline" style="color:#2253A2"
-                        *ngIf="commonFormtype=='NEWDIVICE'">{{'change_otp_method' |
-                        translate}}</h4>
-                </a></div>
-            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
-                    [routerLink]="['/me-page/default-otp']"
-                    [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'withdrawaladd'}"
-                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
-                    <h4 class="underline" style="color:#2253A2"
-                        *ngIf="commonFormtype!='register' && common.actionType=='insertAccount'">{{'change_otp_method' |
-                        translate}}</h4>
-                </a></div>
-            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
-                    [routerLink]="['/me-page/default-otp']"
-                    [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'register'}"
-                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
-                    <h4 class="underline" style="color:#2253A2" *ngIf="commonFormtype=='register'">{{'change_otp_method'
-                        | translate}}</h4>
-                </a></div> -->
             <div class="row justify-content-center mt-5">
                 <a href="tel:09988432606{{openUrl}}"></a>
             </div>

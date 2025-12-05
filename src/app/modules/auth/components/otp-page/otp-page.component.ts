@@ -122,7 +122,6 @@ export class OtpPageComponent implements OnInit {
         const expiredAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at);
         const totalDurationMs = expiredAt.getTime() - startAt.getTime();
         this.targetTime = new Date(Date.now() + totalDurationMs);
-        //this.targetTime = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at)
       }
       else if (this.commonFormtype == 'withdrawaladd') {
         const startAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').start_at);     // Backend start time
@@ -484,7 +483,7 @@ export class OtpPageComponent implements OnInit {
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
     this.storage.store('localInsertBankAccountList', this.bankAccountList); //store for next otp page
-    this.http.get(this.funct.ipaddress + 'transaction/getWithdrawOTP', { headers: headers })
+    this.http.get(this.funct.apaddressv1 + 'transaction/getWithdrawOTP', { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
@@ -492,7 +491,11 @@ export class OtpPageComponent implements OnInit {
         result => {
           this.dto.Response = result;
           this.localInsertAccountOtpSms = this.dto.Response;
-          this.targetTime = new Date(this.localInsertAccountOtpSms.expired_at);
+          // this.targetTime = new Date(this.localInsertAccountOtpSms.expired_at);
+          const startAt = new Date(this.localInsertAccountOtpSms.start_at);     // Backend start time
+          const expiredAt = new Date(this.localInsertAccountOtpSms.expired_at);
+          const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+          this.targetTime = new Date(Date.now() + totalDurationMs);
           this.checkResendTime();
         }
       );
@@ -516,13 +519,23 @@ export class OtpPageComponent implements OnInit {
       )
       .subscribe(result => {
         this.dto.Response = result;
+        console.log("ResendResponse>>>>>"+JSON.stringify(this.dto.Response));
         if (this.dto.Response?.expired_at) {
-          this.targetTime = new Date(this.dto.Response.expired_at);
+          const startAt = new Date(this.dto.Response.start_at);     // Backend start time
+          const expiredAt = new Date(this.dto.Response.expired_at);
+          const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+          this.targetTime = new Date(Date.now() + totalDurationMs);
+          this.checkResendTime();
         } else {
-          // console.warn('No expires_date in response!');
+              if(this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')){
+                 this.remainingSeconds = this.storage.retrieve('Timer');
+                 this.targetTime = new Date(Date.now() + this.remainingSeconds * 1000);
+                 this.checkResendTime();
+              }
+               
           return;
         }
-        this.checkResendTime();
+        // this.checkResendTime();
         this.storage.store('localNewDeviceOtpSms', this.dto.Response);
         if (this.dto.Response.statusCode === 200) {
           const bodyMsg = this.dto.Response.body?.toString()?.trim();
@@ -624,11 +637,18 @@ export class OtpPageComponent implements OnInit {
               this.storage.store('token', this.dto.token);
               this.storage.store('isUserLoggedIn', this.util.isLogged);
               this.storage.clear('localLoginModel');
+              // this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+              //   // Prevent browser back
+              //   history.pushState(null, '', location.href);
+              //   window.addEventListener('popstate', () => {
+              //     history.pushState(null, '', location.href);
+              //   });
+              // });
+
               this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
-                // Prevent browser back
-                history.pushState(null, '', location.href);
+                history.replaceState(null, '', location.href); // replaceState is safer
                 window.addEventListener('popstate', () => {
-                  history.pushState(null, '', location.href);
+                  history.replaceState(null, '', location.href);  // prevent navigation
                 });
               });
             }
@@ -708,11 +728,18 @@ export class OtpPageComponent implements OnInit {
               this.storage.store('isUserLoggedIn', this.util.isLogged);
               this.storage.clear('localLoginModel');
               // history.go(-4);
+              // this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+              //   // Prevent browser back
+              //   history.pushState(null, '', location.href);
+              //   window.addEventListener('popstate', () => {
+              //     history.pushState(null, '', location.href);
+              //   });
+              // });
+
               this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
-                // Prevent browser back
-                history.pushState(null, '', location.href);
+                history.replaceState(null, '', location.href); // replaceState is safer
                 window.addEventListener('popstate', () => {
-                  history.pushState(null, '', location.href);
+                  history.replaceState(null, '', location.href);  // prevent navigation
                 });
               });
             }
@@ -729,7 +756,7 @@ export class OtpPageComponent implements OnInit {
 
   ResendOtp(url) {
     let headers = new HttpHeaders();
-    this.http.get(this.funct.ipaddress + url + this.phoneNumber, { headers: headers })
+    this.http.get(this.funct.apaddressv1 + url + this.phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
@@ -1001,12 +1028,12 @@ export class OtpPageComponent implements OnInit {
       this.otpheader = this.otpheader.toString().replace("@type", this.viberorsmsotptype);
       this.otpdesciption = this.translateService.instant("otpdescription");
       this.otpdesciption = this.otpdesciption.toString().replace("@type", this.viberorsmsotptype);
-      if (this.registerottype == 'sms_poh' && this.otptype == 'firebaseotp') {
-        this.firebaseUI = true;
-      }
-      else {
-        this.smsUI = true;
-      }
+      // if (this.registerottype == 'sms_poh' && this.otptype == 'firebaseotp') {
+      //   this.firebaseUI = true;
+      // }
+      // else {
+      //   this.smsUI = true;
+      // }
     }
     else {
       this.token = this.storage.retrieve('token');
@@ -1040,12 +1067,12 @@ export class OtpPageComponent implements OnInit {
             this.otpheader = this.otpheader.toString().replace("@type", this.viberorsmsotptype);
             this.otpdesciption = this.translateService.instant("otpdescription");
             this.otpdesciption = this.otpdesciption.toString().replace("@type", this.viberorsmsotptype);
-            if (this.smstype == 'sms_poh' && this.otptype == 'firebaseotp') {
-              this.firebaseUI = true;
-            }
-            else {
-              this.smsUI = true;
-            }
+            // if (this.smstype == 'sms_poh' && this.otptype == 'firebaseotp') {
+            //   this.firebaseUI = true;
+            // }
+            // else {
+            //   this.smsUI = true;
+            // }
             return;
           });
     }

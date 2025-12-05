@@ -57,12 +57,15 @@
 
 .dream-book-button {
     padding: 0px 12px !important;
-    height: 45px !important;
+    height: 43px !important;
     color: #fff;
     font-size: 13px;
     background: $second-color;
-    border-radius: 5px;
+    //border-radius: 5px;
     position: relative;
+    border-radius: 10px;
+    width: 100px;
+   // height: 40px;
 
     &::after {
         content: "";

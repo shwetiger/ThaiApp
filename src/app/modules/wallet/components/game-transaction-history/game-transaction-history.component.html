@@ -179,9 +179,16 @@
         </div>   
     
     </div>
-    <div style="position: relative; justify-content: center;" class="mt-2" *ngIf="loading">
-        <ngx-spinner [name] = "transactionSpinner" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
+    <div style="justify-content: center;  position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;" class="mt-2" *ngIf="loading">
+        <ngx-spinner [name] = "transactionSpinner" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
     </div>
+
+    
 </div>
+
       <!--XXX spinner MH-->
-<ngx-spinner [name] = "spinnerName" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
+<!-- <ngx-spinner [name] = "spinnerName" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner> -->

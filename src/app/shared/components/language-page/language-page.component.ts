@@ -23,6 +23,7 @@ import { ModalDialogService } from 'ngx-modal-dialog';
 })
 export class LanguagePageComponent implements OnInit {
 
+  isDropdownOpen = false;
   selectedIndex: any;
   // supportLanguages: any;
   lang: any;
@@ -33,7 +34,6 @@ export class LanguagePageComponent implements OnInit {
   }
 
   ngOnInit() {
-   
     if(this.storage.retrieve('localLanguageIndex') == null){
       let index = this.supportLanguages.indexOf(this.storage.retrieve('localLanguage')); 
       this.selectedIndex = this.storage.store('localLanguageIndex',index);
@@ -59,12 +59,25 @@ export class LanguagePageComponent implements OnInit {
     this.lang=this.supportLanguages[this.selectedIndex]; 
   }
 
-  selectedLanguageCountry(lang: string,index: number){ 
-    this.selectedIndex = index;
-    this.translateService.use(lang);
-    this.changeLanguage();
-    this.storage.store('localLanguage', lang); 
-    this.storage.store('localLanguageIndex', this.selectedIndex);    
-  }
+  // selectedLanguageCountry(lang: string,index: number){ 
+  //   this.selectedIndex = index;
+  //   this.translateService.use(lang);
+  //   this.changeLanguage();
+  //   this.storage.store('localLanguage', lang); 
+  //   this.storage.store('localLanguageIndex', this.selectedIndex);    
+  // }
+
+  toggleDropdown() {
+   this.isDropdownOpen = !this.isDropdownOpen;
+}
+
+selectedLanguageCountry(lang: string, index: number) { 
+  this.selectedIndex = index;
+  this.lang = lang;  // ✅ ဒီလိုနဲ့ သက်ဆိုင်ရာ flag ပြောင်းမယ်
+  this.translateService.use(lang);
+  this.storage.store('localLanguage', lang); 
+  this.storage.store('localLanguageIndex', index);    
+   this.isDropdownOpen = false;
+}
 
 }

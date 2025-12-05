@@ -600,9 +600,9 @@
   "meDetailTap": "အကောင့် အသေးစိတ်",
   "play_free": "အပျော်ဆော့",
   "play": "ကစားမည်",
-  "gametransactionAlert": "သင့် game ပိုက်ဆံအိတ် လက်ကျန်ငွေသည် ၁၀၀၀ ကျပ်အောက်လျော့နည်းနေ ပါသဖြင့် ပင်မပိုက်ဆံအိတ်မှ ငွေလွှဲပေးပါ။",
+  "gametransactionAlert": "ဂိမ်းလက်ကျန်ငွေ 1,000 ကျပ် အောက်လျော့နည်းနေပါသည်",
   "mainWallet": "ပင်မ (ကျပ်)",
-  "gameWallet": "game (ကျပ်)",
+  "gameWallet": "ဂိမ်းပိုက်ဆံအိတ် :",
   "transactionBtn": "ငွေလွှဲမည်။",
   "curretPassisRequired": "လျှို့ဝှက်နံပါတ် အဟောင်းလိုအပ်ပါသည်။",
   "newPassisRequired": "လျှို့ဝှက်နံပါတ် အသစ်လိုအပ်ပါသည်။",
@@ -623,7 +623,7 @@
   "topup_edit": "ပြင်မည်",
   "confirm_withdrawaldelete_msg": "ဖျက်ရန် သေချာပါသလား",
   "unbetlist_text_second": "ထီထိုးခြင်းမအောင်မြင်၍ ပြန်လည်စစ်ဆေးပါ",
-  "QRdownload": "သိမ်းမည်",
+  "QRdownload": "ဒေါင်းလုဒ်",
   "topup_bankaccount": "Account",
   "topup_bankQR": "QR",
   "game_maintenance": "ဂိမ်းဆာဗာမြှင့်တင်ခြင်း",
@@ -736,7 +736,7 @@
   "transfer_point": "အမှတ် လွှဲပြောင်းမည်",
   "point_transfer_cancel": "မလုပ်ပါ",
   "point_transfer_submit": "တင်ပြမည်",
-  "enter_trans_pt": "  အမှတ် ထည့်ပါ (အနည်းဆုံး - 1,000)",
+  "enter_trans_pt": "  အမှတ် ထည့်ပါ",
   "pt_point": "အမှတ်",
   "pt_date": "အချိန်",
   "pt_status": "အခြေအနေ",
@@ -786,5 +786,7 @@
    "login_or":"သို့မဟုတ်",
    "resendotp":"ပြန်ပို့ရန်",
   "otp-request-time-onemin": "ကျေးဇူးပြု၍ 1 မိနစ်စောင့်ပါ",
-   "invalid_bet_amt":"ထိုးငွေပမာဏမှားယွင်းနေပါသည်"
+  "invalid_bet_amt":"ထိုးငွေပမာဏမှားယွင်းနေပါသည်",
+  "bank_accname_required":"နာမည်ထည့်ပါ။",
+  "no_profilimage":"ပုံမရှိပါ။"
 }

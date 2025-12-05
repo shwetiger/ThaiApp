@@ -117,7 +117,7 @@
                     </div>                    
                         <div style="display: flex;justify-content: center;">
                             <button type="button" [hidden] = isLastT (click)="getTopupMainTransactionHistoryMore(pageNumber,'TOPUP')" style="background-color: #2253A2; color: #fff;border:none;border-radius: 5px;width: 80%;Height:40px" *ngIf="loadingMore">
-                                More
+                               {{'morebtn' | translate}}
                             </button>                       
                     </div>
                 </div>
@@ -183,17 +183,20 @@
                 <div style="display: flex;justify-content: center; padding: 0px; margin: 0px;" >
                      
                     <button type="button" class="mt-2" [hidden]=isLastW  (click)="getWithdrawalMainTransactionHistoryMore(pageNumber,'WITHDRAWAL')" style="background-color: #2253A2; color: #fff;border:none;border-radius: 5px;width: 80%;Height:40px" *ngIf="loadingMore">
-                        More
+                     {{'morebtn' | translate}}
                     </button>                  
                 </div>
             </div>
         </div>     
     </div>
 </div>
-    <div style="position: relative; justify-content: center;" class="mt-2" *ngIf="loading">
+    <!-- <div style="position: relative; justify-content: center;" class="mt-2" *ngIf="loading">
         <ngx-spinner [name] = "transactionSpinner" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
-    </div>    
-    <ngx-spinner [name] = "spinnerName" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
+    </div>    -->
+     <div *ngIf="loading" [name] = "transactionSpinner"  style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
+        <ngx-spinner size="small" color="rgb(6,56,107)" type="ball-spin-clockwise" [fullScreen]="false"></ngx-spinner>
+    </div> 
+    <!-- <ngx-spinner [name] = "spinnerName" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner> -->
 
     
 

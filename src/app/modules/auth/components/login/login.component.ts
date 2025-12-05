@@ -278,7 +278,12 @@ export class LoginComponent implements OnInit {
               this.storage.clear('localLoginModel');
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
-              this._location.back();
+                 this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+                history.replaceState(null, '', location.href); // replaceState is safer
+                window.addEventListener('popstate', () => {
+                  history.replaceState(null, '', location.href);  // prevent navigation
+                });
+              });
             }
           }
           else {
@@ -317,20 +322,40 @@ export class LoginComponent implements OnInit {
       });
   }
 
+  // selectLang(lang: string) {
+  //   if (lang == null || lang == '' || lang == undefined) {
+  //     this.translateService.use("en");
+  //     this.storage.store('localLanguage', "en");
+  //     this.active = 'active';
+  //     return;
+  //   }
+  //   this.translateService.use(lang);
+  //   this.storage.store('localLanguage', lang);
+  //   this.active = 'active';
+  //   if (this.oncelogin == 1) {
+  //     this.login();
+  //   }
+  // }
+
   selectLang(lang: string) {
-    if (lang == null || lang == '' || lang == undefined) {
-      this.translateService.use("en");
-      this.storage.store('localLanguage', "en");
-      this.active = 'active';
-      return;
+    if (!lang) {
+      lang = 'en'; // default language
+      this.storage.store('localLanguageIndex',lang);
+      this.storage.store('localLanguageIndex',lang);
     }
+
+    this.activeLang = lang; 
+
     this.translateService.use(lang);
     this.storage.store('localLanguage', lang);
-    this.active = 'active';
-    if (this.oncelogin == 1) {
+    this.storage.store('localLanguageIndex',lang);
+
+    if (this.oncelogin === 1) {
       this.login();
     }
   }
+
+
 
 
 

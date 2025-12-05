@@ -388,7 +388,7 @@ export class InitialForgotPasswordComponent implements OnInit {
     let headers = new HttpHeaders();
     this.OtpSms = [];
     this.OtpSms = this.storage.retrieve('localOtpSms');
-    this.http.get(this.funct.ipaddress + 'user/getForgotPassowrdOTP?phoneNo=' + phoneNumber, { headers: headers })
+    this.http.get(this.funct.apaddressv1 + 'user/getForgotPassowrdOTP?phoneNo=' + phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleError.bind(this))
       )
@@ -568,7 +568,13 @@ export class InitialForgotPasswordComponent implements OnInit {
           this.smstype = this.dto.Response.smstype;
         });
   }
+
+  goBack(){
+  this.location.back();
 }
+}
+
+
 
 function JSONEncoder() {
   throw new Error('Function not implemented.');

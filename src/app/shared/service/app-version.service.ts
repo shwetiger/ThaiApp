@@ -35,7 +35,7 @@ startVersionCheck() {
         this.currentVersion$.next(data.version);
         this.handleVersion(data.version);
       } else {
-        // Optionally: handle case where version is null
+        
       }
     });
 }

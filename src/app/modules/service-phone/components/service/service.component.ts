@@ -1,4 +1,4 @@
-import { Component, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { Component, OnInit, Pipe, PipeTransform ,PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, retry } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -11,7 +11,6 @@ import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-m
 import { CommonService } from 'src/app/shared/service/common.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
-
 
 @Component({
   selector: 'app-service',
@@ -28,6 +27,7 @@ export class ServiceComponent implements OnInit {
   openUrl: any;
   isWebview: any;
   showBackButton: any;
+  isWebviewforPh:boolean;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -39,7 +39,11 @@ export class ServiceComponent implements OnInit {
     private http: HttpClient,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
-    private storage: LocalStorageService,) {
+    private storage: LocalStorageService,
+   ) {
+    this.isWebviewforPh = /(wv|Android.*Version\/[0-9].*Chrome\/[0-9].*Mobile Safari\/[0-9].*)/.test(navigator.userAgent)
+            || !!window['cordova']
+            || window.matchMedia('(display-mode: standalone)').matches;
     this.showBackButton = 1;
     this.deviceId = this.storage.retrieve('localDeviceId');
     this.isWebview = isUAWebview(navigator.userAgent)
@@ -128,5 +132,10 @@ export class ServiceComponent implements OnInit {
       this.spinner.hide("refreshLoading");
     }, 1000);
   }
+  
+openViberFallback(viber:any) {
+  // Viber official fallback link
+  window.location.href = "https://invite.viber.com/?g2=" + viber;
+}
 
 }

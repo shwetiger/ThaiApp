@@ -597,9 +597,9 @@
   "meDetailTap": "Me Detail",
   "play_free": "Play Free",
   "play": "Play Now",
-  "gametransactionAlert": "Your game wallet is lower than 1000 Ks. Please transfer balance from main wallet to game wallet",
+  "gametransactionAlert": "Game balance is less than 1,000 Ks.",
   "mainWallet": "Main (Ks)",
-  "gameWallet": "Game (Ks)",
+  "gameWallet": "Game Wallet :",
   "curretPassisRequired": "Current password is required",
   "newPassisRequired": "New password is required",
   "reqPassLength": "Password must be at least 6 characters or digits",
@@ -731,7 +731,7 @@
   "transfer_point": "Transfer Points",
   "point_transfer_cancel": "Cancel",
   "point_transfer_submit": "Submit",
-  "enter_trans_pt": "  Enter points (min : 1,000)",
+  "enter_trans_pt": "  Enter points",
   "pt_point": "Point",
   "pt_date": "Date/Time",
   "pt_status": "Status",
@@ -782,5 +782,7 @@
   "login_or":"Or",
   "resendotp":"Resend",
   "otp-request-time-onemin": "please wait 1minutes",
-  "invalid_bet_amt":"Invalid Bet Amount"
+  "invalid_bet_amt":"Invalid Bet Amount",
+  "bank_accname_required":"Name is required.",
+  "no_profilimage":"There is no image to remove"
 }

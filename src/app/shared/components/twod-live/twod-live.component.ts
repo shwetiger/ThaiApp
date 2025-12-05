@@ -347,7 +347,7 @@ async getLiveData() {
               <div class='col-4'><p style='color: silver;'>Value</p></div>
               <div class='col-4'><p style='color: silver;'>2D</p></div>                               
             </div>
-            <div class='row ${isShake ? 'annimate' : 'no-annimate'}'>
+            <div class='row mb-1 ${isShake ? 'annimate' : 'no-annimate'}'>
               <div class='col-4'>${set}</div>
               <div class='col-4'>${value}</div>
               <div class='col-4'><span style='color: #ffff00;'>${result}</span></div>

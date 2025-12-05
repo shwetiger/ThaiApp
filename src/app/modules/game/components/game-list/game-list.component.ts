@@ -149,6 +149,7 @@ export class GameListComponent implements OnInit, OnDestroy {
     else {
       this.openUrl = "";
     }
+   
   }
 
   ngOnInit(): void {
@@ -887,7 +888,7 @@ export class GameListComponent implements OnInit, OnDestroy {
           this.spinner.hide("gameLoading");
           this.transferAlert = this.modalService.show(transferAlert,
             {
-              class: "game-play-now-modal modal-sm"
+              class: "game-play-now-modal"
             });
           return;
         }
@@ -1149,9 +1150,9 @@ export class GameListComponent implements OnInit, OnDestroy {
     headers = headers.set('Authorization', this.token);
     params = params.set('providerId', this.providerId);
     this.getUserProfile();
-   // this.gameUserBalance = this.storage.retrieve('localGameBalanceBefore')
-    const gameBalanceData = JSON.parse(this.storage.retrieve('LocalgameUserBalance') || '[]');
-    this.gameUserBalance = gameBalanceData[0].balance;
+    this.gameUserBalance = this.storage.retrieve('localGameBalanceBefore')
+   // const gameBalanceData = JSON.parse(this.storage.retrieve('LocalgameUserBalance') || '[]');
+   // this.gameUserBalance = gameBalanceData[0].balance;
     if (this.gameUserBalance == null || this.gameUserBalance == undefined) {
       this.bsModalRef.hide();
       this.toastr.error("", this.translateService.instant("transaction_wait_5sec"), {

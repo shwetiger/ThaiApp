@@ -60,6 +60,16 @@ export class WithdrawChangeAccountComponent implements OnInit {
   }
 
   saveEdit(): void {
+    if(!this.editName || this.editName == null || this.editName=='null')
+    {
+         this.toastr.error("", this.translateService.instant("bank_accname_required"), {
+              timeOut: 2000,
+              positionClass: 'toast-top-center',
+            });
+          return;
+    }
+    else{
+     this.withdrawaledit.hide(); 
     this.token = this.storage.retrieve('token');    
     let headers = new HttpHeaders().set('Authorization', this.token);
     const formData = new FormData();
@@ -76,7 +86,7 @@ export class WithdrawChangeAccountComponent implements OnInit {
           if(this.dto.Response.status=='Success')
           {
             this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-                           timeOut: 3000,
+                           timeOut: 2000,
                            positionClass: 'toast-top-center',
                            });
              
@@ -92,6 +102,7 @@ export class WithdrawChangeAccountComponent implements OnInit {
           }
         }
       );
+    }
 }
   handleError(error: HttpErrorResponse){
     

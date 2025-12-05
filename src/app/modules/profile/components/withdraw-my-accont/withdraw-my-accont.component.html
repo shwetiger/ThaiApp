@@ -17,7 +17,8 @@
           <div class="col-4
                      justify-content-start">
             <ng-container>
-              <p class="bank__number">{{ bankAccObj.account_name }}</p>
+              <p class="bank__number" *ngIf="bankAccObj.account_name!='null'">{{ bankAccObj.account_name }}</p>
+              <p class="bank__number" *ngIf="bankAccObj.account_name=='null'">{{''}} </p>
             </ng-container>
           </div>
           <div class="col-1 d-flex justify-content-end">

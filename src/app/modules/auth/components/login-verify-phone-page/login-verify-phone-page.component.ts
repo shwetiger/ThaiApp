@@ -190,7 +190,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
         phoneNumber = this.prefix + this.phoneValue;
       }
       let headers = new HttpHeaders();
-      this.http.get(this.funct.ipaddress + 'user/getNewDeviceOTP?phoneNo=' + phoneNumber, { headers: headers })
+      this.http.get(this.funct.apaddressv1 + 'user/getNewDeviceOTP?phoneNo=' + phoneNumber, { headers: headers })
         .pipe(
           catchError(this.handleErrorMessage.handleError.bind(this, ''))
         )

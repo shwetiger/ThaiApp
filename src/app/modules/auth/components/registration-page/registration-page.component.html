@@ -11,7 +11,7 @@
                 </div>
                 <div class="col"> 
                     <div class="passwrod-eye">
-                        <input [type]="passwordType" (keyup.enter)="enter($event)" class="form-control"  placeholder="{{ 'regpasswordHint' | translate}}"  [(ngModel)]="password" [ngModelOptions]="{standalone: true}" (keyup) ="checkPassword()">
+                        <input [type]="passwordType" maxlength="21" (keyup.enter)="enter($event)" class="form-control"  placeholder="{{ 'regpasswordHint' | translate}}"  [(ngModel)]="password" [ngModelOptions]="{standalone: true}" (keyup) ="checkPassword()">
                         <span class="text-eye">
                             <a  (click)="showPassword(!showPass)">
                                 <img src="assets/img/icon/register-eye-on.png" alt=""  width="20" *ngIf="showPass">  
@@ -23,7 +23,7 @@
                 </div>
                 <div class="col"> 
                     <div class="passwrod-eye">
-                        <input [type]="confirmpasswordType" (keyup.enter)="enter($event)" class="form-control"  placeholder="{{ 'regconfirmpasswordHint' | translate}}" [(ngModel)]="confirmPassword" [ngModelOptions]="{standalone: true}" (keyup)=" checkConfirmPassword()">
+                        <input [type]="confirmpasswordType" maxlength="21" (keyup.enter)="enter($event)" class="form-control"  placeholder="{{ 'regconfirmpasswordHint' | translate}}" [(ngModel)]="confirmPassword" [ngModelOptions]="{standalone: true}" (keyup)=" checkConfirmPassword()">
                         <span class="text-eye">
                             <a  (click)="showComfrimPassword(!showcomfirmPass)">
                                 <img src="assets/img/icon/register-eye-on.png" alt=""  width="20" *ngIf="showcomfirmPass">  

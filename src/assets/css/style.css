@@ -3,7 +3,7 @@
 @import url("inc/owl-carousel/owl.carousel.min.css");
 @import url("inc/owl-carousel/owl.theme.default.css");
 body {
-  font-family: "Inter", sans-serif;
+  font-family: "Inter", 'Noto Sans', 'Arial', sans-serif;
   font-size: 15px;
   line-height: 1.55rem;
   letter-spacing: -0.015rem;

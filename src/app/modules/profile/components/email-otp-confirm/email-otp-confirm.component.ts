@@ -131,7 +131,7 @@ export class EmailOtpConfirmComponent implements OnInit {
     this.emailModel.email_address=this.emailaddress;
     let params = new HttpParams();
     params = params.set("email", this.emailModel.email_address.trim());
-    this.http.get(this.funct.ipaddress + 'user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
+    this.http.get(this.funct.apaddressv1 + 'user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, 'emailRequired'))
       )

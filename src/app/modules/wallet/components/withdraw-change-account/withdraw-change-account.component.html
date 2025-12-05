@@ -1,63 +1,62 @@
-
 <div class="appHeader text-light">
-    <div class="left">
-      <a (click)="goBack()" class="headerButton">        
-        <i class="material-icons" style="font-size: 26px;">arrow_back</i>  
-     </a> 
-    </div>
-    <div class="pageTitle"> <ng-content></ng-content> </div>
+  <div class="left">
+    <a (click)="goBack()" class="headerButton">
+      <i class="material-icons" style="font-size: 26px;">arrow_back</i>
+    </a>
   </div>
-    <!-- * App Header -->
-<div id="appCapsule">    
-      <!-- * App Header -->
-      <h3 class="pt-2 text-center" style="color: #2253A2;font-weight: bold;">{{'withdraw_account_select' | translate}}</h3>
-     <div class="container">
-        <div class="modal-body" style="padding: 0px !important;">
-            <div class="container"> 
-                <div class="row">
-                  <div class="col-12 ">
-                    <div class="card mt-4" *ngFor="let bankAccObj of mywithdrawalBankAccList" >
-                      <div class="row justify-content-center" style="margin-top: -25px;"(click)="changeBankAccount(bankAccObj.bank_account_id)">
-                        <img [src]="bankAccObj.imageUrl" alt="product" class="imaged">
-                      </div>
-                      
-                      <div class="row ml-1 mt-1"  >
-                        <div class="col-5 justify-content-start" style="white-space: nowrap;" (click)="changeBankAccount(bankAccObj.bank_account_id)">
-                          <p class="bank__number">{{ 'bank_account_name' | translate }}</p>
-                        </div>
-                        <div class="col-1 ml-1" style="font-weight: bold;" (click)="changeBankAccount(bankAccObj.bank_account_id)">:</div>
-                        <div class="col-4 justify-content-start" (click)="changeBankAccount(bankAccObj.bank_account_id)">
-                          <ng-container>
-                            <p class="bank__number">{{ bankAccObj.account_name }}</p>
-                          </ng-container>
-                         
-                        </div>
-                        <div class="col-1 d-flex justify-content-end">
-                          <img 
-                            src="assets/img/icons/edit.png" 
-                            alt="edit" 
-                            class="edit-icon"
-                            (click)="showeditmodal(withdrawaledit,bankAccObj)" 
-                            style="cursor: pointer; width: 20px; height: 20px;"
-                          />
-                        </div>
-                      </div>
-                      
-                      <div class="row ml-1 mb-1" (click)="changeBankAccount(bankAccObj.bank_account_id)" >
-                        <div class="col-5 justify-content-center" style="white-space: nowrap;">
-                          <p class="bank__number">{{ 'bank_account' | translate }}</p>
-                        </div>
-                        <div class="col-1 ml-1" style="font-weight: bold;">:</div>
-                        <div class="col-4">
-                          <p class="bank__number">{{ bankAccObj.account_number }}</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                  </div>
+  <div class="pageTitle"> <ng-content></ng-content> </div>
+</div>
+<!-- * App Header -->
+<div id="appCapsule">
+  <!-- * App Header -->
+  <h3 class="pt-2 text-center" style="color: #2253A2;font-weight: bold;">{{'withdraw_account_select' | translate}}</h3>
+  <div class="container">
+    <div class="modal-body" style="padding: 0px !important;">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 ">
+            <div class="card mt-4" *ngFor="let bankAccObj of mywithdrawalBankAccList">
+              <div class="row justify-content-center" style="margin-top: -25px;"
+                (click)="changeBankAccount(bankAccObj.bank_account_id)">
+                <img [src]="bankAccObj.imageUrl" alt="product" class="imaged">
+              </div>
+
+              <div class="row ml-1 mt-1">
+                <div class="col-5 justify-content-start" style="white-space: nowrap;"
+                  (click)="changeBankAccount(bankAccObj.bank_account_id)">
+                  <p class="bank__number">{{ 'bank_account_name' | translate }}</p>
                 </div>
-                <div class="row d-flex justify-content-center" >
-                  <!-- <div class="text-center pt-2">
+                <div class="col-1 ml-1" style="font-weight: bold;"
+                  (click)="changeBankAccount(bankAccObj.bank_account_id)">:</div>
+                <div class="col-4 justify-content-start" (click)="changeBankAccount(bankAccObj.bank_account_id)">
+                  <ng-container>
+                    <p class="bank__number" *ngIf="bankAccObj.account_name!='null'">{{ bankAccObj.account_name }}</p>
+                    <p class="bank__number" *ngIf="bankAccObj.account_name=='null'">{{''}} </p>
+                  </ng-container>
+
+                </div>
+                <div class="col-1 d-flex justify-content-end">
+                  <img src="assets/img/icons/edit.png" alt="edit" class="edit-icon"
+                    (click)="showeditmodal(withdrawaledit,bankAccObj)"
+                    style="cursor: pointer; width: 20px; height: 20px;" />
+                </div>
+              </div>
+
+              <div class="row ml-1 mb-1" (click)="changeBankAccount(bankAccObj.bank_account_id)">
+                <div class="col-5 justify-content-center" style="white-space: nowrap;">
+                  <p class="bank__number">{{ 'bank_account' | translate }}</p>
+                </div>
+                <div class="col-1 ml-1" style="font-weight: bold;">:</div>
+                <div class="col-4">
+                  <p class="bank__number">{{ bankAccObj.account_number }}</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+          <!-- <div class="text-center pt-2">
                       <a (click)="withdrawAdd()" > 
                         <img src="assets/img/icon/withdraw-insert.png" alt=""  width="30" style="margin-top: 0px !important;">   
                        
@@ -65,43 +64,41 @@
                       <span style="margin-top: -20px !important;margin-left:5px">Add Bank Account</span> 
                   </div> -->
 
-                  <div class="text-center pt-2">
-                    <a (click)="withdrawAdd()" class="flex-container"> 
-                      <img src="assets/img/icon/withdrawinsert.png" alt="" width="30" style="margin-top: 0px !important;">   
-                      <span style="margin-left: 5px;color:#2253A2">{{'add_bank_account' | translate}}</span>
-                    </a>
-                  </div>
-                  
-                </div>             
-            </div>
+          <div class="text-center pt-2">
+            <a (click)="withdrawAdd()" class="flex-container">
+              <img src="assets/img/icon/withdrawinsert.png" alt="" width="30" style="margin-top: 0px !important;">
+              <span style="margin-left: 5px;color:#2253A2">{{'add_bank_account' | translate}}</span>
+            </a>
+          </div>
+
         </div>
-     </div>
-    
-    
+      </div>
+    </div>
+  </div>
+
+
 </div>
 
 <app-navigation-bar></app-navigation-bar>
 
-<ng-template #withdrawaledit style="margin-top: 50px;">                  
+<ng-template #withdrawaledit style="margin-top: 50px;">
   <div class="modal-body" style="padding: 0px !important;">
-     <h3  class="ml-2 mt-2" style="color:#2253A2">{{'enter_bank_acc_name' | translate }}</h3>
-      <div ngClass="mx-3">
-     <input type="text" style="color:#2253A2" maxlength="50" class="editname-text" [(ngModel)]="editName" [ngModelOptions]="{standalone: true}">
+    <h3 class="ml-2 mt-2" style="color:#2253A2">{{'enter_bank_acc_name' | translate }}</h3>
+    <div ngClass="mx-3">
+      <input type="text" style="color:#2253A2" maxlength="50" class="editname-text" [(ngModel)]="editName"
+        [ngModelOptions]="{standalone: true}">
     </div>
   </div>
   <div class="modal-footer justify-content-center mb-1">
-    <button type="button" class="btn" style="height: 35px;width: 90px; color: red;border: 2px solid #ddd;border-radius: 5px;" (click)="HidelogoutModel()">
-        {{ 'bank_acc_name_cancel' | translate }}
+    <button type="button" class="btn"
+      style="height: 35px;width: 90px; color: red;border: 2px solid #ddd;border-radius: 5px;"
+      (click)="HidelogoutModel()">
+      {{ 'bank_acc_name_cancel' | translate }}
     </button>
-    <button type="button" class="btn" style="color: #fff; border:none;background-color:#2253A2; height:35px;width: 90px;" (click)="saveEdit()">
-        {{ 'bank_acc_name_save' | translate }}
+    <button type="button" class="btn"
+      style="color: #fff; border:none;background-color:#2253A2; height:35px;width: 90px;" (click)="saveEdit()">
+      {{ 'bank_acc_name_save' | translate }}
     </button>
-</div>
+  </div>
 
 </ng-template>
-
-
-
-
-   
-

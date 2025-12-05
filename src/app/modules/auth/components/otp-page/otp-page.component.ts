@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'; // 引入 OnDestroy 以便组件销毁时清理倒计时
 import { CodeInputComponent } from 'angular-code-input';
 import { LocalStorageService } from 'ngx-webstorage';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
@@ -25,7 +25,7 @@ declare var require: any;
   templateUrl: './otp-page.component.html',
   styleUrls: ['./otp-page.component.scss']
 })
-export class OtpPageComponent implements OnInit {
+export class OtpPageComponent implements OnInit, OnDestroy {
   @ViewChild('codeInput') codeInput !: CodeInputComponent;
   OtpSms: any;
   otpcode: any;
@@ -70,9 +70,12 @@ export class OtpPageComponent implements OnInit {
   smsUI: boolean;
   submitLoading: boolean = false;
   showResend = false;
-  targetTime: any;
-  intervalId: any;
-  remainingSeconds: any;
+
+  // 倒计时相关
+  targetTime: Date | null = null; // 记录后端短信的绝对到期时间
+  intervalId: any = null; // 当前激活的倒计时 interval 引用
+  remainingSeconds: number = 0; // 用强类型 number 控制倒计时
+  private readonly expiresAtKey: string = 'OtpExpiresAt'; // 缓存绝对到期时间，离开页面后可精准恢复剩余秒数
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -111,38 +114,51 @@ export class OtpPageComponent implements OnInit {
   ngOnInit(): void {
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
-    this.remainingSeconds = this.storage.retrieve('Timer');
+    // 读取缓存前做数值校验，避免 NaN/负数污染倒计时
+    const cachedExpiresAt = this.toNumber(this.storage.retrieve(this.expiresAtKey));
+    if (cachedExpiresAt && cachedExpiresAt > Date.now()) {
+      this.targetTime = new Date(cachedExpiresAt);
+      this.remainingSeconds = Math.max(0, Math.trunc((cachedExpiresAt - Date.now()) / 1000));
+      this.persistExpiresAt(this.targetTime);
+    } else {
+      if (cachedExpiresAt) {
+        this.clearPersistedExpires();
+      }
+      const cachedTimer = this.toNumber(this.storage.retrieve('Timer')); // 读取并过滤缓存的剩余秒数
+      this.remainingSeconds = cachedTimer ?? 0; // 缓存无效时默认 0 防止 NaN
+      if (cachedTimer == null) { // 没有可靠缓存时重新计算 targetTime
+        if (this.commonFormtype == 'NEWDIVICE') {
+          const startAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').start_at);     // Backend start time
+          const expiredAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at);
+          const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+          this.targetTime = new Date(Date.now() + totalDurationMs);
+        }
+        else if (this.commonFormtype == 'withdrawaladd') {
+          const startAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').start_at);     // Backend start time
+          const expiredAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at);
+          const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+          this.targetTime = new Date(Date.now() + totalDurationMs);
+          // this.targetTime = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at)
+        }
+        else {
+          const startAt = new Date(this.storage.retrieve('localOtpSms').start_at);     // Backend start time
+          const expiredAt = new Date(this.storage.retrieve('localOtpSms').expired_at);
+          const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+          this.targetTime = new Date(Date.now() + totalDurationMs);
+          //this.targetTime = new Date(this.storage.retrieve('localOtpSms').expired_at)
+        }
+        this.persistExpiresAt(this.targetTime);
+      }
+      else { // 有缓存时直接沿用剩余秒数启动倒计时
+        this.targetTime = new Date(Date.now() + this.remainingSeconds * 1000); // 当前时刻 + 缓存秒数
+        this.persistExpiresAt(this.targetTime);
+      }
+    }
     this.changeoptprocess = this.storage.retrieve('changeotpprocess');
     this.registerottype = this.storage.retrieve('registeropttype');
     this.emailaddress = this.storage.retrieve('localEmail')
     this.commonFormtype = this.storage.retrieve('formPageType')
-    if (this.remainingSeconds == null) {
-      if (this.commonFormtype == 'NEWDIVICE') {
-        const startAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').start_at);     // Backend start time
-        const expiredAt = new Date(this.storage.retrieve('localNewDeviceOtpSms').expired_at);
-        const totalDurationMs = expiredAt.getTime() - startAt.getTime();
-        this.targetTime = new Date(Date.now() + totalDurationMs);
-      }
-      else if (this.commonFormtype == 'withdrawaladd') {
-        const startAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').start_at);     // Backend start time
-        const expiredAt = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at);
-        const totalDurationMs = expiredAt.getTime() - startAt.getTime();
-        this.targetTime = new Date(Date.now() + totalDurationMs);
-        // this.targetTime = new Date(this.storage.retrieve('localInsertAccountOtpSms').expired_at)
-      }
-      else {
-        const startAt = new Date(this.storage.retrieve('localOtpSms').start_at);     // Backend start time
-        const expiredAt = new Date(this.storage.retrieve('localOtpSms').expired_at);
-        const totalDurationMs = expiredAt.getTime() - startAt.getTime();
-        this.targetTime = new Date(Date.now() + totalDurationMs);
-        //this.targetTime = new Date(this.storage.retrieve('localOtpSms').expired_at)
-      }
-    }
-    else {
-      this.targetTime = new Date(Date.now() + this.remainingSeconds * 1000);
-    }
-
-    this.checkResendTime();
+    this.checkResendTime(); // 启动新的倒计时循环
     this.updateDeviceId = {
       deviceId: '',
       phone_no: '',
@@ -214,36 +230,46 @@ export class OtpPageComponent implements OnInit {
   //   }
   // }
 
-  checkResendTime() {
-    if (this.targetTime != null) {
-      this.intervalId = setInterval(() => {
-        const now = Date.now();
-        const target = this.targetTime.getTime();
-        const distance = target - now;
-
-        this.remainingSeconds = Math.floor(distance / 1000);
-        this.storage.store("Timer", this.remainingSeconds);
-
-        if (distance <= 0) {
-          this.showResend = true;
-          this.remainingSeconds = 0;
-          clearInterval(this.intervalId);
-        }
-      }, 1000);
+  checkResendTime() { // 统一维护 resend 倒计时
+    if (!this.targetTime) { // 没有目标时间时不启动 interval
+      this.stopInterval(); // 防止遗留旧 interval
+      return; // 直接返回等待新 OTP
     }
+    this.stopInterval(); // 启动前先停掉旧 interval
+    // 倒计时的唯一入口，确保只存在一个 interval，避免多实例写入负数
+    this.intervalId = setInterval(() => { // 启动新的倒计时循环
+      if (!this.targetTime) { // 运行期间若 targetTime 被清理则立即停止
+        this.stopInterval(); // 停止写入
+        return; // 退出当前 tick
+      }
+      const distance = this.targetTime.getTime() - Date.now(); // 计算剩余毫秒数
+      if (distance <= 0) {
+        // 时间到立即收敛到 0，避免继续递减成 -1/-2
+        this.remainingSeconds = 0; // UI 与缓存都固定在 0
+        this.showResend = true; // 打开重发按钮
+        this.persistTimer(this.remainingSeconds); // 将结果写回缓存
+        this.stopInterval(); // 清除 interval 防止继续递减
+        return; // 不再执行后续逻辑
+      }
+      this.remainingSeconds = Math.max(0, Math.trunc(distance / 1000)); // 始终写入非负整数秒
+      this.persistTimer(this.remainingSeconds); // 同步本地缓存供刷新使用
+    }, 1000);
   }
 
 
-  startCountdown(seconds) {
-    let counter = seconds;
-    const interval = setInterval(() => {
-      this.coundDown = counter;
-      counter--;
-      if (counter < -1) {
-        clearInterval(interval);
-        this.coundDown = counter;
+  startCountdown(seconds: number) {
+    this.persistExpiresAt(null); // Firebase OTP 独立于短信倒计时，清掉主倒计时的绝对时间
+    let counter = Math.max(0, Math.trunc(seconds)); // Firebase 渠道也强制使用非负整数
+    const interval = setInterval(() => { // 独立的 interval 控制 coundDown
+      this.coundDown = counter; // 更新 UI 上显示的剩余秒数
+      this.persistTimer(this.coundDown); // 与主倒计时共享同一缓存
+      counter--; // 每次 tick 递减 1 秒
+      if (counter < 0) {
+        // Firebase 分支也保持 0 下限，防止共用的 Timer 被写成负数
+        clearInterval(interval); // 关闭该 interval，防止继续递减
+        this.coundDown = 0; // 超过边界后固定到 0
+        this.persistTimer(this.coundDown); // 缓存中也写入 0
       }
-      this.storage.store("Timer", this.coundDown)
     }, 1000);
   }
 
@@ -459,10 +485,7 @@ export class OtpPageComponent implements OnInit {
   }
 
   getOtp() {
-    clearInterval(this.intervalId);
-    this.intervalId = null;
-    this.showResend = false;
-    this.remainingSeconds = 180;
+    this.resetCountdownState(180); // 重发前统一重置倒计时为 180 秒
     this.commonFormtype = this.storage.retrieve('formPageType')
     if (this.commonFormtype == "forgetPassword") {
       this.ResendOtp("user/getForgotPassowrdOTP?phoneNo=");
@@ -496,6 +519,7 @@ export class OtpPageComponent implements OnInit {
           const expiredAt = new Date(this.localInsertAccountOtpSms.expired_at);
           const totalDurationMs = expiredAt.getTime() - startAt.getTime();
           this.targetTime = new Date(Date.now() + totalDurationMs);
+        this.persistExpiresAt(this.targetTime);
           this.checkResendTime();
         }
       );
@@ -503,10 +527,7 @@ export class OtpPageComponent implements OnInit {
   }
 
   getNewOtp() {
-    clearInterval(this.intervalId);
-    this.intervalId = null;
-    this.showResend = false;
-    this.remainingSeconds = 180;
+    this.resetCountdownState(180); // 新设备流程也复位倒计时，避免复用旧值
     this.codeInput.reset();
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
@@ -519,20 +540,15 @@ export class OtpPageComponent implements OnInit {
       )
       .subscribe(result => {
         this.dto.Response = result;
-        console.log("ResendResponse>>>>>"+JSON.stringify(this.dto.Response));
         if (this.dto.Response?.expired_at) {
           const startAt = new Date(this.dto.Response.start_at);     // Backend start time
           const expiredAt = new Date(this.dto.Response.expired_at);
           const totalDurationMs = expiredAt.getTime() - startAt.getTime();
           this.targetTime = new Date(Date.now() + totalDurationMs);
+          this.persistExpiresAt(this.targetTime);
           this.checkResendTime();
         } else {
-              if(this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')){
-                 this.remainingSeconds = this.storage.retrieve('Timer');
-                 this.targetTime = new Date(Date.now() + this.remainingSeconds * 1000);
-                 this.checkResendTime();
-              }
-               
+          // console.warn('No expires_date in response!');
           return;
         }
         // this.checkResendTime();
@@ -603,9 +619,9 @@ export class OtpPageComponent implements OnInit {
               this.storage.clear('localForgetLoginDevice');
             }
             else {
-              this.storage.clear('localNewDeviceOtpSms');
-              this.autoLogin();
-              return;
+      this.storage.clear('localNewDeviceOtpSms');
+      this.autoLogin();
+      return;
             }
           }
           else {
@@ -770,6 +786,7 @@ export class OtpPageComponent implements OnInit {
           const totalDurationMs = expiredAt.getTime() - startAt.getTime();
           this.targetTime = new Date(Date.now() + totalDurationMs);
           //  this.targetTime = new Date(this.storage.retrieve('localOtpSms').expired_at)
+          this.persistExpiresAt(this.targetTime);
           this.checkResendTime();
           if (this.dto.Response.statusCode == 200) {
             if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
@@ -945,6 +962,56 @@ export class OtpPageComponent implements OnInit {
           });
         console.error('Phone authentication error', error.message);
       });
+  }
+
+   // 组件销毁时及时清理 interval
+  ngOnDestroy(): void {
+    this.stopInterval();
+  }
+
+  // 停止倒计时
+  private stopInterval(): void { 
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private resetCountdownState(seconds: number = 0): void { // 重置倒计时及缓存
+    this.stopInterval(); // 首先停掉正在运行的 interval
+    this.showResend = false; // 收起“重发”按钮
+    const safeSeconds = Math.max(0, Math.trunc(seconds)); // 过滤输入，确保是合法整数
+    this.remainingSeconds = safeSeconds; // 更新 UI 显示
+    this.targetTime = safeSeconds > 0 ? new Date(Date.now() + safeSeconds * 1000) : null; // 重建目标时间
+    this.persistExpiresAt(this.targetTime); // 记录绝对到期时间，离开页面能精准恢复
+    this.persistTimer(this.remainingSeconds); // 同步写入缓存
+  }
+
+  private persistTimer(value: number): void { // 安全地写入本地存储
+    const safeValue = Number.isFinite(value) && value >= 0 ? Math.trunc(value) : 0; // 如果非法就回落到 0
+    this.storage.store('Timer', safeValue); // 保存当前剩余秒数
+  }
+
+  private toNumber(value: any): number | null { // 解析缓存时统一做合法性校验
+    // 所有入口统一做数值过滤，防止字符串/NaN 混入
+    const num = Number(value); // 尝试将任意类型转换为数值
+    if (!Number.isFinite(num) || num < 0) { // 非有限或负数一律视为无效
+      return null; // 通过 null 指示需要重新计算
+    }
+    return Math.trunc(num); // 只返回整数部分
+  }
+
+   // 缓存绝对到期时间方便恢复
+  private persistExpiresAt(target: Date | null): void {
+    if (target) {
+      this.storage.store(this.expiresAtKey, target.getTime());
+    } else {
+      this.clearPersistedExpires();
+    }
+  }
+
+  private clearPersistedExpires(): void { // 移除失效的到期时间缓存
+    this.storage.clear(this.expiresAtKey);
   }
 
   GetSMSProvider() {

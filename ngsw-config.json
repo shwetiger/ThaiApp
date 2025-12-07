@@ -26,5 +26,37 @@
         ]
       }
     }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-requests",
+      "urls": [
+        "https://apitest.thai2d3dgame.com/api/**",
+        "https://api.thai2d3dgame.com/api/**",
+        "https://thai2d3d.b4a.io/**",
+        "https://happy7788.b4a.io/**"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 100,
+        "maxAge": "1h",
+        "timeout": "120s"
+      }
+    },
+    {
+      "name": "api-no-cache",
+      "urls": [
+        "**/api/user/userSmsType**",
+        "**/api/**/sendOtp**",
+        "**/api/**/verifyOtp**",
+        "**/api/**/resendOtp**"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 0,
+        "maxAge": "0s",
+        "timeout": "120s"
+      }
+    }
   ]
 }

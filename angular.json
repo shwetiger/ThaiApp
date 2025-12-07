@@ -29,7 +29,18 @@
             "aot": false,
             "assets": [
               "src/favicon.ico",
-              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "/assets",
+                "ignore": [
+                  "**/*.zip",
+                  "**/*.rar",
+                  "**/*.download",
+                  "**/*.map",
+                  "**/*.css" 
+                ]
+              },
               "src/manifest.webmanifest"
             ],
             "styles": [
@@ -81,7 +92,6 @@
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": true,
-              "extractLicenses": true,
               "vendorChunk": true,
               "buildOptimizer": true,
               "budgets": [

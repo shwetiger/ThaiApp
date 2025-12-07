@@ -74,7 +74,8 @@
               ],
               "aot": true,
               "optimization": {
-                "scripts": true
+                "scripts": true,
+                "styles": true
               },
               "outputHashing": "all",
               "sourceMap": false,

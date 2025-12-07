@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, timer, of } from 'rxjs';
-import { switchMap,catchError } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 
 @Injectable({
@@ -9,49 +9,31 @@ import { switchMap,catchError } from 'rxjs/operators';
 })
 export class AppVersionService {
   private versionUrl = 'assets/version.json';
-  private checkInterval = 60 * 1000; // 1 minute
 
-  // app version observable
+  // app version observable - 用于UI显示版本号
   public currentVersion$ = new BehaviorSubject<string | null>(null);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // 启动时读取一次版本文件，用于UI显示
+    this.loadVersion();
+  }
 
-startVersionCheck() {
-  timer(0, this.checkInterval)
-    .pipe(
-      switchMap(() =>
-        this.http.get<{ version: string }>(
-          this.versionUrl + '?t=' + new Date().getTime()
-        ).pipe(
-          catchError(err => {
-            console.error('Version check failed inside pipe', err);
-            return of({ version: null }); // fallback to keep the stream alive
-          })
-        )
-      )
-    )
-    .subscribe((data) => {
+  /**
+   * 加载版本信息（仅用于显示，不触发自动刷新）
+   * 版本更新检测由 Service Worker 负责
+   */
+  private loadVersion(): void {
+    this.http.get<{ version: string }>(
+      this.versionUrl
+    ).pipe(
+      catchError(err => {
+        console.error('Failed to load version:', err);
+        return of({ version: null });
+      })
+    ).subscribe((data) => {
       if (data.version) {
         this.currentVersion$.next(data.version);
-        this.handleVersion(data.version);
-      } else {
-        
       }
     });
-}
-
-  private handleVersion(remoteVersion: string) {
-    const localVersion = localStorage.getItem('app_version');
-
-    if (!localVersion) {
-      localStorage.setItem('app_version', remoteVersion);
-      return;
-    }
-
-    if (localVersion !== remoteVersion) {
-      console.warn('New version detected! Refreshing app...');
-      localStorage.setItem('app_version', remoteVersion);
-      window.location.reload();
-    }
   }
 }

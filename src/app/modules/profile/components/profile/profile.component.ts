@@ -110,7 +110,7 @@ export class ProfileComponent implements OnInit {
   }
 
   getPhoneNumber() {
-    if (this.userProfileModel.phone_no != null) {
+    if (this.userProfileModel?.phone_no != null) {
       this.userProfileModel.phone_no = this.userProfileModel.phone_no.substring(1, 3).toString() +
         this.userProfileModel.phone_no.substring(3, 6).toString() + "*****" + this.userProfileModel.phone_no.substring(this.userProfileModel.phone_no.length - 2, this.userProfileModel.phone_no.length).toString();
     }

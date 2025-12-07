@@ -303,7 +303,7 @@ export class GameAccountLoginComponent implements OnInit {
     this.router.navigate(['/noti'], { replaceUrl: false });
   }
   changeName() {
-    var name = this.userProfileModel.name;
+    var name = this.userProfileModel?.name;
     if (name != null && name.length > 30) {
       name = name.substring(0, 20) + " ...";
       return name;

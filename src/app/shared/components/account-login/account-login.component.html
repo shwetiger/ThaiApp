@@ -63,16 +63,16 @@
       <div class="col-8 text-left">
         <div class="row">
           <a (click)="goToProfileDetail()">
-              <div *ngIf="userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''">             
+              <div *ngIf="!userProfileModel || userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''">             
                 <img src="assets/img/icons/login-image.png" alt="" class="account-login-active py-2" width="60px;"> 
               </div>
-              <div *ngIf="userProfileModel.imageUrl != null && userProfileModel.imageUrl != ''">               
+              <div *ngIf="userProfileModel && userProfileModel.imageUrl != null && userProfileModel.imageUrl != ''">               
                  <img [src] = "userProfileModel.imageUrl" class="aaccount-login-active py-2" width="60px"  height="73px" style="border-radius: 50%;">  
               </div>
           </a>
           <div class="col mt-2"> 
             <h4 class="account-title-name open-wallet">{{ changeName() }}</h4>
-            <h5 class="text-white">{{getPhoneNumber(userProfileModel.phone_no)}}</h5>           
+            <h5 class="text-white">{{getPhoneNumber(userProfileModel?.phone_no)}}</h5>           
           </div>
         </div>
       </div>

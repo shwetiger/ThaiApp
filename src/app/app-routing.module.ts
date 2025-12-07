@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, ExtraOptions } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { PageNotfoundComponent } from './modules/pages/page-notfound/page-notfound.component';
 import { NotiDetailWithoutIdComponent }from './modules/pages/noti-detail-without-id/noti-detail-without-id.component';
 import { HomeComponent } from './modules/home/components/home/home.component';
@@ -22,12 +21,6 @@ const routes: Routes = [
     {
       path: 'home/:deviceId/:fcmToken',component: HomeComponent
     },
-    // {
-    //   path: 'home/:deviceId', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
-    // },
-    // {
-    //   path: 'home/:deviceId/:fcmToken', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
-    // },
     {
       path: 'service-phone', loadChildren: () => import('./modules/service-phone/service-phone.module').then(m => m.ServicePhoneModule)
     },

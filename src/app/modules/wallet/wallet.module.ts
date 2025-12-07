@@ -21,30 +21,7 @@ import { GameWalletComponent } from './components/game-wallet/game-wallet.compon
 import { TransactionHistoryComponent } from './components/transaction-history/transaction-history.component';
 import { GameTransactionHistoryComponent } from './components/game-transaction-history/game-transaction-history.component';
 import { TransactionHistoryDetailComponent } from './components/transaction-history-detail/transaction-history-detail.component';
-import { CarouselModule } from 'ngx-owl-carousel-o';
-export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
-  return () => new Promise<any>((resolve: any) => {
-    const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
-    locationInitialized.then(() => {
-      let lang=localStorage.getItem('ngx-webstorage|locallanguage');
-      let langToSet;
-      if(lang == null){
-        langToSet = 'my';
-      }
-      else{
-        langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
-      translate.setDefaultLang(langToSet);
-      translate.use(langToSet).subscribe(() => {
-        //console.info(`Successfully initialized '${langToSet}' language.'`);
-      }, err => {
-       // console.error(`Problem with '${langToSet}' language initialization.'`);
-      }, () => {
-        resolve(null);
-      });
-    });
-  });
-}
+
 @NgModule({
   declarations: [
     WalletPageComponent,
@@ -61,30 +38,13 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     TransactionHistoryDetailComponent,
   ],
   imports: [
-    ModalModule.forRoot(),
-    SharedModule,
     CommonModule,
     WalletRoutingModule,
-    TranslateModule.forChild({
-      loader: {
-          provide: TranslateLoader,
-          useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
-      }
-    }),
-    NgxSpinnerModule,       
-    FormsModule,
-    CarouselModule,
+    SharedModule
   ],
   providers: [
     BsModalService,
-    CommonService,   
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector],
-      multi: true
-    }
+    CommonService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

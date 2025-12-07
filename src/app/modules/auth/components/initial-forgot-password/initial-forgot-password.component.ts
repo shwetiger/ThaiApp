@@ -12,9 +12,9 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { UtilService } from 'src/app/shared/service/util.service';
 import { CommonService } from 'src/app/shared/service/common.service';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { Router, ActivatedRoute } from '@angular/router';
-import firebase from 'firebase';
+import { OtpScenario } from '../otp-page/models/otp-type.enum';
+import { OtpStorageKeys } from '../otp-page/models/otp-storage-keys';
 
 @Component({
   selector: 'app-initial-forgot-password',
@@ -30,15 +30,6 @@ export class InitialForgotPasswordComponent implements OnInit {
   regularExpressionPhone = "^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
   localRegisterCountryCode: any;
   forgetPasswordModalRef: BsModalRef;
-  recaptcha: boolean = false;
-  SMSprovider: any;
-  SMSoperatorList: any;
-  Usefirebase: boolean = false;
-  Operatorcodelist: any;
-  MPTarraylist: any = ['4', '2', '8', '5'];
-  OoredooList: any = ['9'];
-  MYTELList: any = ['6']
-  TelenorList: any = ['7']
   formPage: any;
   istxtdisable: boolean = false;
   smstype: any;
@@ -54,7 +45,6 @@ export class InitialForgotPasswordComponent implements OnInit {
     private storage: LocalStorageService,
     private funct: FunctService,
     private location: Location,
-    private afAuth: AngularFireAuth,
     public common: CommonService,
     private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
@@ -68,8 +58,6 @@ export class InitialForgotPasswordComponent implements OnInit {
     this.prefix = this.storage.retrieve('localPhonePrefix');
     this.phoneValue = this.storage.retrieve('localPhoneValue');
     this.storage.clear("formPageType")
-    this.GetSMSProvider();
-    this.getSMSOperators();
     this.getsmstype();
     this.storage.clear('actionType');
     if (this.formPage == 'changepwdpage') {
@@ -298,35 +286,18 @@ export class InitialForgotPasswordComponent implements OnInit {
           }
           switch (this.dto.Response.requestFlag) {
             case true:
-              if (this.Usefirebase == true && this.smstype == 'sms_poh') {
-                this.signInWithPhoneNumber();
-              }
-              else {
-                this.getForgotPassowrdOTP();
-              }
+              this.getForgotPassowrdOTP();
               break;
             case false:
               switch (this.dto.Response.requestStatus) {
                 case 0: //pending transaction slip 
-
                   this.router.navigate(['/login/waiting'], { replaceUrl: false });
                   break;
                 case 1: //approved transaction slip
-                  if (this.SMSprovider == 'firebase' && this.Usefirebase == true && this.smstype == 'sms_poh') {
-                    this.signInWithPhoneNumber();
-                  }
-                  else {
-                    this.getForgotPassowrdOTP();// go to password reset page 
-                  }
-
+                  this.getForgotPassowrdOTP();// go to password reset page 
                   break;
                 case 2: //approved transaction slip
-                  if (this.SMSprovider == 'firebase' && this.Usefirebase == true && this.smstype == 'sms_poh') {
-                    this.signInWithPhoneNumber();
-                  }
-                  else {
-                    this.getForgotPassowrdOTP();// go to password reset page 
-                  }
+                  this.getForgotPassowrdOTP();// go to password reset page 
                   break;
                 case -1:
                   if (this.dto.Response.status == "INACTIVE" && this.dto.Response.failCount < 3) {
@@ -353,12 +324,7 @@ export class InitialForgotPasswordComponent implements OnInit {
                   this.router.navigate(['/login/forgot-password-validation'], { replaceUrl: false });//show question page --closed
                   break;
                 default:
-                  if (this.SMSprovider == 'firebase' && this.Usefirebase == true && this.smstype == 'sms_poh') {
-                    this.signInWithPhoneNumber();
-                  }
-                  else {
-                    this.getForgotPassowrdOTP();// go to password reset page 
-                  }
+                  this.getForgotPassowrdOTP();// go to password reset page 
                   break;
               }
               break;
@@ -402,7 +368,8 @@ export class InitialForgotPasswordComponent implements OnInit {
             this.storage.store("otptype", 'smsotp')
             this.storage.store("formPage", 'forgetPassword')
             this.storage.clear("Timer");
-            this.storage.store("formPageType", 'forgetPassword');
+            // 使用新的统一场景标识
+            this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.FORGET_PASSWORD);
             this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'smsotp' }, replaceUrl: true });
             if (this.dto.Response.statusCode == 200) {
               if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
@@ -423,7 +390,8 @@ export class InitialForgotPasswordComponent implements OnInit {
             }
           }
           else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-            this.storage.store("formPageType", 'forgetPassword');
+            // 使用新的统一场景标识
+            this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.FORGET_PASSWORD);
             this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'smsotp' }, replaceUrl: true });
           }
 
@@ -437,109 +405,6 @@ export class InitialForgotPasswordComponent implements OnInit {
           }
         }
       );
-  }
-
-  signInWithPhoneNumber() {
-    this.recaptcha = true;
-    let phCheck = this.checkPhoneNumber();
-    if (phCheck == false) {
-      return;
-    }
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-
-    let phoneNumber;
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
-    }
-    if (!this.phoneValue.startsWith("0")) //XXXX 
-    {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-
-    // const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container'); // Make sure you have an element with id 'recaptcha-container'
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    })
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId)
-        this.storage.store("otptype", 'firebaseotp')
-        this.storage.store("formPageType", 'forgetPassword')
-        this.storage.clear("Timer");
-        this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'firebaseotp' }, replaceUrl: true });
-
-      })
-      .catch(error => {
-        this.recaptcha = false;
-        this.toastr.error("", error.message,
-          {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-center',
-          });
-        console.error('Phone authentication error', error.message);
-      });
-  }
-
-  GetSMSProvider() {
-    this.http.get(this.funct.ipaddress + 'user/getSMSProvider')
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSprovider = this.dto.Response.message;
-          this.storage.store('SMSprovider', this.SMSprovider);
-        });
-  }
-
-  getSMSOperators() {
-    var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-            }
-          }
-          else {
-            return;
-          }
-        });
   }
 
   getsmstype() {

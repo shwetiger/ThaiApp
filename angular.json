@@ -61,11 +61,8 @@
               "src/assets/js/parse.min.js"
             ],
             "buildOptimizer": false,
-            "sourceMap": true,
-            "optimization": {
-              "scripts": true,
-              "styles": true
-            }
+            "sourceMap": false,
+            "optimization": false
           },
           "configurations": {
             "production": {

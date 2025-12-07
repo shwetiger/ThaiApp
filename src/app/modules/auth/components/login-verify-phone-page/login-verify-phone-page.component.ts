@@ -13,10 +13,8 @@ import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-m
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { UtilService } from 'src/app/shared/service/util.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
-import { AngularFireAuth } from '@angular/fire/auth';
-
-import firebase from 'firebase';
-import { getJSON } from 'jquery';
+import { OtpScenario } from '../otp-page/models/otp-type.enum';
+import { OtpStorageKeys } from '../otp-page/models/otp-storage-keys';
 
 @Component({
   selector: 'app-login-verify-phone-page',
@@ -48,15 +46,6 @@ export class LoginVerifyPhonePageComponent implements OnInit {
   modalId: any;
   newDeviceOtpSms: any;
   updateDeviceId: any;
-  recaptcha: boolean = false;
-  SMSprovider: any;
-  SMSoperatorList: any;
-  Usefirebase: boolean = false;
-  Operatorcodelist: any;
-  MPTarraylist: any = ['4', '2', '8', '5'];
-  OoredooList: any = ['9'];
-  MYTELList: any = ['6']
-  TelenorList: any = ['7']
 
   phoneValue = history.state.phoneNumber;
   regularExpressionPhone = "^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
@@ -74,8 +63,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location,
-    private afAuth: AngularFireAuth,) {
+    private _location: Location) {
 
     this.actionType = history.state.actionType;
     this.phoneNumber = history.state.phoneNumber;
@@ -118,8 +106,6 @@ export class LoginVerifyPhonePageComponent implements OnInit {
     }
     this.prefix = this.storage.retrieve('localPhonePrefix');
     this.getIpAddress();
-    this.GetSMSProvider();
-    this.getSMSOperators();
     this.getsmstype();
   }
 
@@ -169,11 +155,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
   }
 
   getOtp() {
-    if (this.Usefirebase == true && this.smstype == 'sms_poh') {
-      this.signInWithPhoneNumber();
-    }
-    else {
-      this.common.submitLoading = true;
+    this.common.submitLoading = true;
       this.spinner.show("submitLoading");
       let phCheck = this.checkPhoneNumber();
       if (phCheck == false) {
@@ -203,9 +185,9 @@ export class LoginVerifyPhonePageComponent implements OnInit {
               this.storage.store('localNewDeviceOtpSms', this.dto.Response);
               this.newDeviceOtpSms = this.storage.retrieve('localNewDeviceOtpSms');
               this.storage.store("otptype", 'smsotp');
-              this.storage.store("actionType", 'NEWDIVICE')
+              // 使用新的统一场景标识
+              this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.NEW_DEVICE);
               this.storage.clear("Timer");
-              this.storage.store("formPageType", 'NEWDIVICE');
               this.router.navigate(['/login/otp'], { state: { actionType: 'NEWDIVICE', otptype: 'smsotp' }, replaceUrl: true });
               if (this.dto.Response.statusCode == 200) {
                 if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
@@ -239,7 +221,6 @@ export class LoginVerifyPhonePageComponent implements OnInit {
 
           }
         );
-    }
   }
 
   selectLang(lang: string) {
@@ -253,7 +234,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
     this.updateDeviceId.phone_no = this.storage.retrieve('localLoginModel').phone_no;
     this.updateDeviceId.ipAddress = this.storage.retrieve('localLoginModel').ipAddress;
     this.updateDeviceId.deviceId = this.storage.retrieve('localLoginModel').deviceId;
-    this.http.post(this.funct.ipaddress + 'user/updateDeviceIdforFirebaseMessing', this.updateDeviceId, { headers: headers })
+    this.http.post(this.funct.ipaddress + 'user/updateDeviceId', this.updateDeviceId, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, 'otp'))
       )
@@ -369,109 +350,6 @@ export class LoginVerifyPhonePageComponent implements OnInit {
           }
         }
       );
-  }
-
-  signInWithPhoneNumber() {
-    this.recaptcha = true;
-    let phCheck = this.checkPhoneNumber();
-    if (phCheck == false) {
-      return;
-    }
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-
-    let phoneNumber;
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
-    }
-    if (!this.phoneValue.startsWith("0")) //XXXX 
-    {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-    // const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container'); // Make sure you have an element with id 'recaptcha-container'
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    });
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId)
-        this.storage.store("otptype", 'firebaseotp');
-        this.storage.store("actionType", 'NEWDIVICE')
-        this.storage.clear("Timer");
-        this.storage.store("formPageType", 'NEWDIVICE');
-        this.router.navigate(['/login/otp'], { state: { actionType: 'NEWDIVICE', otptype: 'firebaseotp' }, replaceUrl: true });
-      })
-      .catch(error => {
-        this.recaptcha = false;
-        this.toastr.error("", error.message,
-          {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-center',
-          });
-        console.error('Error verifying phone number:', error);
-      });
-  }
-
-  GetSMSProvider() {
-    this.http.get(this.funct.ipaddress + 'user/getSMSProvider')
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSprovider = this.dto.Response.message;
-          this.storage.store('SMSprovider', this.SMSprovider);
-        });
-  }
-
-  getSMSOperators() {
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-            }
-          }
-          else {
-            return;
-          }
-        });
   }
 
   getsmstype() {

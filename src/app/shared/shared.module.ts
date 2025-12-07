@@ -57,36 +57,12 @@ import { GameWebMobileViewComponent } from './dialog/game-web-mobile-view/game-w
 import { QrViewDialogComponent } from './dialog/qr-view-dialog/qr-view-dialog.component';
 import { AppSplashScreenAdsComponent } from './components/app-splash-screen-ads/app-splash-screen-ads.component';
 import { BetSectionColsedComponent } from './dialog/bet-section-colsed/bet-section-colsed.component';
+import { ZawgyiDetectorModule } from '@myanmartools/ng-zawgyi-detector';
 //import { MaintenanceTimeComponent } from './maintenance-time/maintenance-time.component';
-
-
-export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
-  return () => new Promise<any>((resolve: any) => {
-    const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
-    locationInitialized.then(() => {
-      let lang=localStorage.getItem('ngx-webstorage|locallanguage');
-      let langToSet;
-      if(lang == null){
-        langToSet = 'my';
-      }
-      else{
-        langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
-      translate.setDefaultLang(langToSet);
-      translate.use(langToSet).subscribe(() => {
-        //console.info(`Successfully initialized '${langToSet}' language.'`);
-      }, err => {
-       // console.error(`Problem with '${langToSet}' language initialization.'`);
-      }, () => {
-        resolve(null);
-      });
-    });
-  });
-}
-
 
 @NgModule({
   exports: [
+    // 导出组件
     AppNavigationBarComponent,   
     AccountLoginComponent,   
     LoginDeviceDialogComponent,
@@ -116,17 +92,27 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     GameListTransferComponent,
     GameWinLoseComponent,  
     SportDialogComponent, 
-  
     MaintenanceTimeComponent,
     AppSplashScreenAdsComponent,
-
-    //pipe
+    
+    // 导出管道
     TimeAgoExtendsPipePipe,
     FormatTimePipe,
     ThreedFormatTimePipe,
     SafeUrlPipe,
-    ListPipe
+    ListPipe,
     
+    // 导出模块（让子模块可以使用）
+    CommonModule,
+    FormsModule,
+    TranslateModule,
+    NgxSpinnerModule,
+    CarouselModule,
+    BsDropdownModule,
+    CodeInputModule,
+    ModalModule,
+    ModalDialogModule,
+    ZawgyiDetectorModule
   ],
   declarations: [
     AppNavigationBarComponent,    
@@ -172,42 +158,26 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     BetSectionColsedComponent,
   ],
   imports: [
-    ModalModule.forRoot(),
-    ModalDialogModule,
-    FormsModule, 
     CommonModule,
-    TranslateModule.forChild({
-      loader: {
-          provide: TranslateLoader,
-          useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
-      }
-    }),
-    CarouselModule,
-    NgxSpinnerModule,     
-    ToastrModule.forRoot(),    
+    FormsModule,
     HttpClientModule,
-    NgxWebstorageModule.forRoot(),
+    TranslateModule,
+    CarouselModule,
+    NgxSpinnerModule,
     BsDropdownModule,
     CodeInputModule,
     ModalModule,
-    CommonModule,
-    
+    ModalDialogModule,
+    ZawgyiDetectorModule
   ],  
   providers: [
     NavigationService,
     DtoService,
     UtilService,
-    FunctService,    
-    CommonService,  
-    BsDropdownConfig,  
-    BsModalService,
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector],
-      multi: true
-    }
+    FunctService,
+    CommonService,
+    BsDropdownConfig,
+    BsModalService
   ],
 
 })

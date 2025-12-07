@@ -178,7 +178,7 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
     this.updateDeviceIdforforget.phone_no = this.oldLoginModel.phone_no;
     this.updateDeviceIdforforget.ipAddress = this.oldLoginModel.ipAddress;
     this.updateDeviceIdforforget.deviceId = new DeviceUUID().get();
-    this.http.post(this.funct.ipaddress + 'user/updateDeviceIdforFirebaseMessing', this.updateDeviceIdforforget, { headers: headers })
+    this.http.post(this.funct.ipaddress + 'user/updateDeviceId', this.updateDeviceIdforforget, { headers: headers })
       .pipe(
         catchError(this.handleError.bind(this))
       )

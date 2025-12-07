@@ -13,8 +13,7 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 import { UtilService } from 'src/app/shared/service/util.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
-import { AngularFireAuth } from '@angular/fire/auth';
-import firebase from 'firebase';
+import { OtpStorageKeys, OtpScenario } from '../otp-page/models';
 
 @Component({
   selector: 'app-register-page',
@@ -30,15 +29,6 @@ export class RegisterPageComponent implements OnInit {
   localOtpSms: any;
   localPhoneNumber: any;
   supportLanguages = ['en', 'my', 'th', 'zh'];
-  recaptcha: boolean = false;
-  SMSprovider: any;
-  SMSoperatorList: any;
-  Usefirebase: boolean = false;
-  Operatorcodelist: any;
-  MPTarraylist: any = ['4', '2', '8', '5'];
-  OoredooList: any = ['9'];
-  MYTELList: any = ['6'];
-  TelenorList: any = ['7'];
   noregisterphone: boolean = false;
   registerModel: any;
   registerottype: any;
@@ -58,8 +48,7 @@ export class RegisterPageComponent implements OnInit {
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location,
-    private afAuth: AngularFireAuth,) {
+    private _location: Location) {
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
 
@@ -81,9 +70,6 @@ export class RegisterPageComponent implements OnInit {
         email_address: ''
       }
     }
-
-    this.GetSMSProvider();
-    this.getSMSOperators();
   }
 
   checkPhoneNumber() {
@@ -223,12 +209,7 @@ export class RegisterPageComponent implements OnInit {
   }
 
   getOtp() {
-    this.registerottype = this.storage.retrieve('registeropttype');
-    if (this.Usefirebase == true && this.registerottype == 'sms_poh') {
-      this.getregisterotpfirebase();
-    }
-    else {
-      this.common.submitLoading = true;
+    this.common.submitLoading = true;
       this.spinner.show("submitLoading");
       let checkPhone = this.checkPhoneNumber();
       if (!checkPhone) {
@@ -277,7 +258,8 @@ export class RegisterPageComponent implements OnInit {
                         this.storage.store("previousPh", this.phoneValue);
                          this.storage.store("previousemail", this.registerModel.email);
                         this.OtpSms = this.storage.retrieve('localOtpSms');
-                        this.storage.store("formPageType", "register")
+                        // 使用新的统一场景标识
+                        this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.REGISTER);
                         this.storage.store("otptype", 'smsotp');
                         this.storage.clear("Timer");
                         this.router.navigate(['/login/otp'], { state: { otptype: 'smsotp' }, replaceUrl: true });
@@ -320,7 +302,8 @@ export class RegisterPageComponent implements OnInit {
                         }
                         this.storage.store('registeremail', this.registerModel.email)
                         this.OtpSms = this.storage.retrieve('localOtpSms');
-                        this.storage.store("formPageType", "register")
+                        // 使用新的统一场景标识
+                        this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.REGISTER);
                         this.storage.store("otptype", 'smsotp');
                         this.common.submitLoading = false;
                         this.spinner.hide("submitLoading");
@@ -350,147 +333,5 @@ export class RegisterPageComponent implements OnInit {
               }
             });
       }
-    }
-  }
-
-  getregisterotpfirebase() {
-    let checkPhone = this.checkPhoneNumber();
-    if (!checkPhone) {
-      return;
-    }
-    let phoneNumber;
-    this.prefix = this.storage.retrieve('localPhonePrefix');
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
-    }
-    else {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-    let headers = new HttpHeaders();
-    this.OtpSms = [];
-    this.OtpSms = this.storage.retrieve('localOtpSms');
-    this.http.get(this.funct.ipaddress + 'user/CheckRegisterPhone?phoneNo=' + phoneNumber, { headers: headers })
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          if (this.dto.Response.Status == 'Succes') {
-            this.storage.store("formPageType", "register")
-            this.storage.store("localEmail", this.registerModel.email_address)
-            this.signInWithPhoneNumber();
-            return;
-          }
-          else {
-            return;
-          }
-        });
-  }
-
-  signInWithPhoneNumber() {
-    let phCheck = this.checkPhoneNumber();
-    if (phCheck == false) {
-      return;
-    }
-
-    this.recaptcha = true;
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    let phoneNumber;
-
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(1);
-    } else {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-
-    // 👉 Invisible reCAPTCHA integration
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    });
-
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId);
-        this.storage.store("otptype", 'firebaseotp');
-        this.storage.clear("Timer");
-        this.router.navigate(['/login/otp'], { state: { otptype: 'firebaseotp' }, replaceUrl: true });
-      })
-      .catch(error => {
-        this.recaptcha = false;
-        this.toastr.error("", error.message, {
-          timeOut: 2000,
-          positionClass: 'toast-bottom-center',
-        });
-        console.error('Phone authentication error', error.message);
-      });
-  }
-
-
-  GetSMSProvider() {
-    this.http.get(this.funct.ipaddress + 'user/getSMSProvider')
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSprovider = this.dto.Response.message;
-        });
-  }
-
-  getSMSOperators() {
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-            }
-          }
-          else {
-            return;
-          }
-        });
   }
 }

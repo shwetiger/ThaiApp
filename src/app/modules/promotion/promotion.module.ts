@@ -10,53 +10,18 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { NgxSpinnerModule } from 'ngx-spinner';
 
-export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
-  return () => new Promise<any>((resolve: any) => {
-    const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
-    locationInitialized.then(() => {
-      let lang=localStorage.getItem('ngx-webstorage|locallanguage');
-      let langToSet;
-      if(lang == null){
-        langToSet = 'my';
-      }
-      else{
-        langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
-      translate.setDefaultLang(langToSet);
-      translate.use(langToSet).subscribe(() => {
-      }, err => {
-      }, () => {
-        resolve(null);
-      });
-    });
-  });
-}
 @NgModule({
   declarations: [
     PromotionListComponent,
     PromotionDetailComponent,
   ],
   imports: [
-    SharedModule,
     CommonModule,
     PromotionRoutingModule,
-    TranslateModule.forChild({
-      loader: {
-          provide: TranslateLoader,
-          useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
-      }
-    }),
-    NgxSpinnerModule,
+    SharedModule
   ],
   providers: [
-    CommonService,   
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector],
-      multi: true
-    }
+    CommonService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

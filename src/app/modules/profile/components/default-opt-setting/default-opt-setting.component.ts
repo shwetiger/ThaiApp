@@ -11,8 +11,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Router, ActivatedRoute } from '@angular/router';
 import { catchError, retry } from 'rxjs/operators';
-import { AngularFireAuth } from '@angular/fire/auth';
-import firebase from 'firebase';
+import { OtpScenario, OtpDisplayType } from 'src/app/modules/auth/components/otp-page/models/otp-type.enum';
+import { OtpService } from 'src/app/modules/auth/components/otp-page/services/otp-service';
+import { OtpStorageKeys } from 'src/app/modules/auth/components/otp-page/models/otp-storage-keys';
 
 
 @Component({
@@ -40,13 +41,6 @@ export class DefaultOptSettingComponent implements OnInit {
   emailshow: any;
   phonenodescription: any;
   phonesender: any;
-  Usefirebase: any;
-  SMSoperatorList: any;
-  MPTarraylist: any = ['4', '2', '8', '5'];
-  OoredooList: any = ['9'];
-  MYTELList: any = ['6'];
-  TelenorList: any = ['7'];
-  recaptcha: any;
   prefix = '+95';//"+95";
   funcionName: any;
 
@@ -62,7 +56,7 @@ export class DefaultOptSettingComponent implements OnInit {
     private route: ActivatedRoute,
     private _location: Location,
     private router: Router,
-    private afAuth: AngularFireAuth,) {
+    private otpService: OtpService) {
   }
 
   ngOnInit(): void {
@@ -82,29 +76,25 @@ export class DefaultOptSettingComponent implements OnInit {
     });
     this.getotptype();
     this.getsmstype();
-    this.getSMSOperators();
     this.funcionName = 'Register OTP'
   }
 
   onSubmit() {
     this.common.submitLoading = true;
     this.spinner.show("submitLoading");
-    if (this.formPage == 'forgetPassword' || this.formPage == 'NEWDIVICE' || this.formPage == 'withdrawaladd') {
-      if (this.Usefirebase == true && this.selectedType == 'sms_poh') {
-        this.saveotptypeandgetfirebaseotp();
+    // 兼容新旧场景标识
+    if (this.formPage == OtpScenario.FORGET_PASSWORD || this.formPage == OtpScenario.NEW_DEVICE || 
+        this.formPage == OtpScenario.WITHDRAW_INSERT || this.formPage == OtpScenario.WITHDRAWAL_ADD) {
+      if (this.formPage == OtpScenario.FORGET_PASSWORD) {
+        this.funcionName = 'Forgot Password OTP'
       }
-      else {
-        if (this.formPage == 'forgetPassword') {
-          this.funcionName = 'Forgot Password OTP'
-        }
-        if (this.formPage == 'NEWDIVICE') {
-          this.funcionName = 'New Device OTP'
-        }
-        if (this.formPage == 'withdrawaladd') {
-          this.funcionName = 'Withdrawal OTP'
-        }
-        this.SaveOtptypeandgetotp();
+      if (this.formPage == OtpScenario.NEW_DEVICE) {
+        this.funcionName = 'New Device OTP'
       }
+      if (this.formPage == OtpScenario.WITHDRAW_INSERT || this.formPage == OtpScenario.WITHDRAWAL_ADD) {
+        this.funcionName = 'Withdrawal OTP'
+      }
+      this.SaveOtptypeandgetotp();
     }
     else if (this.formPage == 'register') {
       this.getregisterOtp();
@@ -203,10 +193,17 @@ export class DefaultOptSettingComponent implements OnInit {
           this.dto.Response = result;
           console.log("OtpResponse1>>>>>"+JSON.stringify(this.dto.Response));
           if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-            this.storage.store('localOtpSms', this.dto.Response);
-            this.storage.store('localNewDeviceOtpSms', this.dto.Response);
-            this.storage.store('localInsertAccountOtpSms', this.dto.Response);
-            this.storage.clear("Timer");
+            // 合并 request_ids，避免覆盖已有的 request_id
+            const displayType = this.otpService.convertToDisplayType(this.selectedType);
+            const enhancedResponse = this.otpService.enhanceResponseWithRequestIds(
+              OtpStorageKeys.OTP_RESPONSE,
+              this.dto.Response,
+              displayType
+            );
+            this.storage.store('localOtpSms', enhancedResponse);
+            this.storage.store('localNewDeviceOtpSms', enhancedResponse);
+            this.storage.store('localInsertAccountOtpSms', enhancedResponse);
+            this.storage.clear("Timer");          
             this.changeotpprocess = true;
             this.storage.store('changeotpprocess', this.changeotpprocess);
             this.common.submitLoading = false;
@@ -337,8 +334,15 @@ export class DefaultOptSettingComponent implements OnInit {
                 this.spinner.hide("submitLoading");
                 this.storage.clear("Timer");
                 this.spinner.hide("submitLoading");
-                this.storage.store("registeropttype", this.selectedType)
-                this.storage.store('localOtpSms', this.gmailResponse);
+                this.storage.store("registeropttype", this.selectedType);
+                // 合并 request_ids，避免覆盖已有的 request_id
+                const displayType = this.otpService.convertToDisplayType(this.selectedType);
+                const enhancedResponse = this.otpService.enhanceResponseWithRequestIds(
+                  OtpStorageKeys.OTP_RESPONSE,
+                  this.gmailResponse,
+                  displayType
+                );
+                this.storage.store('localOtpSms', enhancedResponse);
                 this._location.back();
                 this.toastr.success("", this.translateService.instant("bank_accname_success"), {
                   timeOut: 3000,
@@ -375,8 +379,15 @@ export class DefaultOptSettingComponent implements OnInit {
             if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
-              this.storage.store('localOtpSms', this.dto.Response);
-              this.storage.store("registeropttype", this.selectedType)
+              // 合并 request_ids，避免覆盖已有的 request_id
+              const displayType = this.otpService.convertToDisplayType(this.selectedType);
+              const enhancedResponse = this.otpService.enhanceResponseWithRequestIds(
+                OtpStorageKeys.OTP_RESPONSE,
+                this.dto.Response,
+                displayType
+              );
+              this.storage.store('localOtpSms', enhancedResponse);
+              this.storage.store("registeropttype", this.selectedType);
               this.storage.clear("Timer");
               this.toastr.success("", this.translateService.instant("bank_accname_success"), {
                 timeOut: 3000,
@@ -457,117 +468,6 @@ export class DefaultOptSettingComponent implements OnInit {
             this.emailshow = true;
           }
         });
-  }
-
-  getSMSOperators() {
-    const PhoneNumber = this.storage.retrieve('localPhoneValue');
-    var phoneno = PhoneNumber.substring(2,PhoneNumber.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-            }
-          }
-          else {
-            return;
-          }
-        });
-  }
-
-  signInWithPhoneNumber() {
-    this.recaptcha = true;
-    this.phoneNumber = this.storage.retrieve('localPhoneValue');
-    let phoneNumber;
-    if (this.phoneNumber.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneNumber.substring(
-        1, this.phoneNumber.length);
-    }
-    if (!this.phoneNumber.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneNumber;
-    }
-    //  const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container'); // Make sure you have an element with id 'recaptcha-container'
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    });
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId)
-        this.storage.store("otptype", 'firebaseotp');
-        this.storage.clear("Timer");
-        this.router.navigate(['/login/otp'], { state: { otptype: 'firebaseotp' }, replaceUrl: true });
-      })
-      .catch(error => {
-        this.recaptcha = false;
-        this.common.submitLoading = false;
-        this.spinner.hide("submitLoading");
-        this.toastr.error("", error.message,
-          {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-center',
-          });
-        console.error('Phone authentication error', error.message);
-      });
-  }
-
-  saveotptypeandgetfirebaseotp() {
-    this.token = this.storage.retrieve('token');
-    const headers = new HttpHeaders();
-    this.http.post(this.funct.ipaddress + 'user/setUserSmsType?type=' + this.selectedType + '&phone_no=' + this.phoneNumber, { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = result;
-          this.changeotpprocess = true;
-          this.storage.store('changeotpprocess', this.changeotpprocess);
-          this.common.submitLoading = false;
-          this.spinner.hide("submitLoading");
-
-          if (this.dto.Response == true) {
-            this.signInWithPhoneNumber();
-
-          }
-
-        }
-      );
   }
 
 }

@@ -148,9 +148,7 @@
   <div class="row justify-content-center pt-2 pb-2">
     <div class="col-1">
     </div>
-    <div class="col-10" *ngIf="(Usefirebase == true && smstype != 'sms_poh') || 
-         (Usefirebase == false && (smstype == 'vmg_viber' || smstype == 'sms_poh' || smstype == 'email'))">
-
+    <div class="col-10">
       <!-- submit loading -->
       <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
         [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
@@ -161,15 +159,6 @@
         translate}}</button>
     </div>
 
-    <div class="col-10" *ngIf="Usefirebase == true && smstype =='sms_poh'">
-      <div id="recaptcha-container"></div>
-      <!-- submit loading -->
-      <button type="button" *ngIf="!recaptcha" class="button"
-        (click)="ForgotPasswordValidation(forgetPassword,forgetPassword1)"
-        style="border-radius : 5px; background-color: #2253A2; color: #fff; width: 100% !important;">{{ 'topup_submit' |
-        translate}}</button>
-
-    </div>
     <div class="col-1 ">
     </div>
   </div>

@@ -1,0 +1,819 @@
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'; // 引入 OnDestroy 以便组件销毁时清理倒计时
+import { CodeInputComponent } from 'angular-code-input';
+import { LocalStorageService } from 'ngx-webstorage';
+// HttpClient 已迁移到 OtpService，不再需要在此导入
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from "ngx-spinner";
+import { TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { Location } from '@angular/common';
+import isUAWebview from "is-ua-webview";
+import { FunctService } from 'src/app/shared/service/funct.service';
+import { UtilService } from 'src/app/shared/service/util.service';
+import { DtoService } from 'src/app/shared/service/dto.service';
+import { CommonService } from 'src/app/shared/service/common.service';
+import { OtpService, OtpSendScenario } from './otp-service';
+import { OtpType, OtpDisplayType } from './otp-type.enum';
+import { FormType, OtpResponse, UpdateDeviceIdRequest, ServicePhone } from './otp-models';
+
+@Component({
+  selector: 'app-otp-page',
+  templateUrl: './otp-page.component.html',
+  styleUrls: ['./otp-page.component.scss']
+})
+export class OtpPageComponent implements OnInit, OnDestroy {
+  @ViewChild('codeInput') codeInput !: CodeInputComponent;
+  OtpSms: OtpResponse | null = null;
+  otpcode: string | null = null;
+  phoneNumber: string | null = null;
+  updateDeviceId: UpdateDeviceIdRequest = {
+    deviceId: '',
+    phone_no: '',
+    ipAddress: '',
+    guid: '',
+    request_id: '',
+    code: ''
+  };
+  deviceId: string | null = null;
+  token: string | null = null;
+  bankAccountList: any[] = []; // TODO: 定义 BankAccount 接口
+  localInsertAccountOtpSms: OtpResponse | null = null;
+  viberorsmsotptype: OtpDisplayType | null = null;
+  otpheader: string | null = null;
+  otpdesciption: string | null = null;
+  smstype: string | null = null;
+  /**
+   * 表示 OTP 验证的业务场景
+   * - 'register': 注册
+   * - 'forgetPassword': 忘记密码
+   * - 'NEWDIVICE': 新设备验证 (legacy typo: should be NEW_DEVICE)
+   * - 'withdrawaladd': 添加提现账户
+   */
+  commonFormtype: FormType | string | null = null;
+  smssender: string | null = null;
+  openUrl: string | null = null;
+  registerottype: OtpType | string | null = null;
+  emailaddress: string | null = null;
+  servicePhoneList: ServicePhone[] | null = null;
+  otptitleshow: boolean = false;
+  showResend = false;
+  
+  /** 错误提示信息 */
+  errorMessage: string = '';
+
+  // 倒计时相关
+  targetTime: Date | null = null; // 记录后端短信的绝对到期时间
+  intervalId: ReturnType<typeof setInterval> | null = null; // 当前激活的倒计时 interval 引用
+  remainingSeconds: number = 0; // 用强类型 number 控制倒计时
+  private readonly expiresAtKey: string = 'OtpExpiresAt'; // 缓存绝对到期时间，离开页面后可精准恢复剩余秒数
+  
+  // 订阅管理
+  private destroy$ = new Subject<void>(); // 用于统一管理所有订阅的生命周期
+  
+  // 事件监听器引用（用于清理）
+  private popstateListeners: (() => void)[] = [];
+
+  constructor(
+    public common: CommonService,
+    private translateService: TranslateService,
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+    private dto: DtoService,
+    private util: UtilService,
+    private router: Router,
+    private storage: LocalStorageService,
+    private funct: FunctService,
+    private _location: Location,
+    private otpService: OtpService,
+    ) {
+    // Constructor 仅用于依赖注入，初始化逻辑已移至 ngOnInit
+  }
+
+  ngOnInit(): void {
+    this.hideSubmitLoading();
+    
+    // 初始化设备相关信息
+    this.deviceId = this.storage.retrieve('localDeviceId');
+    this.openUrl = (this.deviceId !== null || isUAWebview(navigator.userAgent)) ? "?openinnewtap=1" : "";
+    
+    // 先初始化基础数据，因为后续逻辑依赖这些值
+    this.registerottype = this.storage.retrieve('registeropttype');
+    this.emailaddress = this.storage.retrieve('localEmail');
+    this.commonFormtype = this.storage.retrieve('formPageType');
+    /**
+     * 操作类型标识（用于特殊处理）
+     * - 'insertAccount': 提现账户场景的特殊验证逻辑和错误处理
+     * - 'NEWDIVICE': 新设备场景的特殊按钮逻辑 (legacy typo)
+     * 注：与 handle-error-message.service 共享使用
+     */
+    this.common.actionType = this.storage.retrieve('actionType');
+    
+    // 读取缓存前做数值校验，避免 NaN/负数污染倒计时
+    const cachedExpiresAt = this.toNumber(this.storage.retrieve(this.expiresAtKey));
+    if (cachedExpiresAt && cachedExpiresAt > Date.now()) {
+      this.targetTime = new Date(cachedExpiresAt);
+      this.remainingSeconds = Math.max(0, Math.trunc((cachedExpiresAt - Date.now()) / 1000));
+      this.persistExpiresAt(this.targetTime);
+    } else {
+      if (cachedExpiresAt) {
+        this.clearPersistedExpires();
+      }
+      const cachedTimer = this.toNumber(this.storage.retrieve('Timer')); // 读取并过滤缓存的剩余秒数
+      this.remainingSeconds = cachedTimer ?? 0; // 缓存无效时默认 0 防止 NaN
+      if (cachedTimer === null) { // 没有可靠缓存时重新计算 targetTime
+        if (this.commonFormtype === FormType.NEW_DEVICE) {
+          const localNewDeviceOtpSms = this.storage.retrieve('localNewDeviceOtpSms');
+          this.calculateTargetTime(localNewDeviceOtpSms);
+        }
+        else if (this.commonFormtype === 'withdrawaladd') {
+          const localInsertAccountOtpSms = this.storage.retrieve('localInsertAccountOtpSms');
+          this.calculateTargetTime(localInsertAccountOtpSms);
+        }
+        else {
+          const localOtpSms = this.storage.retrieve('localOtpSms');
+          this.calculateTargetTime(localOtpSms);
+        }
+      }
+      else { // 有缓存时直接沿用剩余秒数启动倒计时
+        this.targetTime = new Date(Date.now() + this.remainingSeconds * 1000); // 当前时刻 + 缓存秒数
+        this.persistExpiresAt(this.targetTime);
+      }
+    }
+    this.checkResendTime(); // 启动新的倒计时循环
+    this.updateDeviceId = {
+      deviceId: '',
+      phone_no: '',
+      ipAddress: '',
+      guid: '',
+      request_id: '', // 修复：类型应该是 string，不是 number
+      code: '',
+    }
+
+    this.localInsertAccountOtpSms = this.storage.retrieve('localInsertAccountOtpSms');
+    this.bankAccountList = this.storage.retrieve('localInsertBankAccountList') || [];
+    // 初始化 phoneNumber：按优先级顺序，后面的会覆盖前面的
+    // 优先级：localPhoneValue > localInsertAccountOtpSms > localNewDeviceOtpSms
+    const localNewDeviceOtpSms = this.storage.retrieve('localNewDeviceOtpSms');
+    if (localNewDeviceOtpSms?.number) {
+      this.phoneNumber = "+" + localNewDeviceOtpSms.number;
+    }
+
+    const localInsertAccountOtpSms = this.storage.retrieve('localInsertAccountOtpSms');
+    if (localInsertAccountOtpSms?.number) {
+      this.phoneNumber = "+" + localInsertAccountOtpSms.number;
+    }
+
+    // 最高优先级：localPhoneValue
+    const localPhoneValue = this.storage.retrieve('localPhoneValue');
+    if (localPhoneValue) {
+      const prefix = this.storage.retrieve('localPhonePrefix');
+      if (prefix && localPhoneValue) {
+        if (localPhoneValue.startsWith('0')) {
+          this.phoneNumber = prefix + localPhoneValue.substring(1, localPhoneValue.length);
+        }
+        else {
+          this.phoneNumber = prefix + localPhoneValue;
+        }
+      }
+    }
+
+    this.getotptype();
+    this.listServicePhone();
+  }
+
+  checkResendTime() { // 统一维护 resend 倒计时
+    if (!this.targetTime) { // 没有目标时间时不启动 interval
+      this.stopInterval(); // 防止遗留旧 interval
+      return; // 直接返回等待新 OTP
+    }
+    this.stopInterval(); // 启动前先停掉旧 interval
+    // 倒计时的唯一入口，确保只存在一个 interval，避免多实例写入负数
+    this.intervalId = setInterval(() => { // 启动新的倒计时循环
+      if (!this.targetTime) { // 运行期间若 targetTime 被清理则立即停止
+        this.stopInterval(); // 停止写入
+        return; // 退出当前 tick
+      }
+      const distance = this.targetTime.getTime() - Date.now(); // 计算剩余毫秒数
+      if (distance <= 0) {
+        // 时间到立即收敛到 0，避免继续递减成 -1/-2
+        this.remainingSeconds = 0; // UI 与缓存都固定在 0
+        this.showResend = true; // 打开重发按钮
+        this.persistTimer(this.remainingSeconds); // 将结果写回缓存
+        this.stopInterval(); // 清除 interval 防止继续递减
+        return; // 不再执行后续逻辑
+      }
+      this.remainingSeconds = Math.max(0, Math.trunc(distance / 1000)); // 始终写入非负整数秒
+      this.persistTimer(this.remainingSeconds); // 同步本地缓存供刷新使用
+    }, 1000);
+  }
+
+  onCodeCompleted(code: string) {
+    this.otpcode = code;
+    this.validateOtp();
+  }
+
+  validateOtp() {
+    this.hideSubmitLoading();
+    if (!this.otpcode || this.otpcode.length < 6) {
+      this.errorMessage = this.translateService.instant("otp_required");
+      return false;
+    }
+    else {
+      this.errorMessage = '';
+      return true;
+    }
+  }
+
+  /**
+   * 验证 OTP 验证码
+   * 根据 actionType 选择不同的验证逻辑
+   */
+  checkOtp() {
+    this.showSubmitLoading();
+
+    let checkOPTINput = this.validateOtp();
+    if (!checkOPTINput) {
+      return;
+    }
+      if (this.common.actionType === "insertAccount") {
+        if (this.localInsertAccountOtpSms?.request_id !== null) {
+          this.token = this.storage.retrieve('token');
+          if (!this.token || !this.localInsertAccountOtpSms?.request_id || !this.otpcode) {
+            this.hideSubmitLoading();
+            return;
+          }
+          this.OtpSms = null;
+          
+          // 使用服务验证提现 OTP
+          this.otpService.checkWithdrawOtp(
+            this.otpcode,
+            this.localInsertAccountOtpSms.request_id,
+            this.token
+          )
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+              result => {
+                this.OtpSms = result;
+                if (String(result.status) === '401') {
+                  if (result.code === 0) {
+                    this.hideSubmitLoading();
+                    this.showErrorToast(this.translateService.instant('invalid-otp-code'), 'Tip', 'toast-bottom-center', 3000);
+                    return;
+                  }
+                  if (result.code === 11) {
+                    this.hideSubmitLoading();
+                    this.showErrorToast(this.translateService.instant('otp-token-expired'), '', 'toast-bottom-center', 3000);
+                    return;
+                  }
+                }
+                if (this.OtpSms !== null) {
+                  if (this.OtpSms.status === true) {
+                    // 使用服务插入银行账户
+                    if (!this.token) {
+                      this.hideSubmitLoading();
+                      return;
+                    }
+                    this.otpService.insertUserBankAccount(this.bankAccountList, this.token)
+                      .pipe(takeUntil(this.destroy$))
+                      .subscribe(
+                        insertResult => {
+                          this.hideSubmitLoading();
+                          this.showErrorToast(this.translateService.instant('bankacc_addsuccess'), '', 'toast-top-center', 3000);
+                          this.storage.store('otpSms', "insert");
+                          this.storage.store('successmsg', 'withdrawalsuccess');
+                          const insertAccount = this.storage.retrieve("localInsertAccount");
+                          this.storage.clear("localInsertAccount");
+                          this.storage.clear('localInsertAccountOtpSms');
+                          this.storage.clear('bankAccountList');
+                          if (insertAccount === 'insertAccount') {
+                            this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: true }).then(() => {
+                              // Prevent browser back
+                              history.pushState(null, '', location.href);
+                              const listener = () => {
+                                history.pushState(null, '', location.href);
+                              };
+                              this.addPopstateListener(listener);
+                            });
+                          }
+                          else {
+                            history.go(-2);
+                          }
+                        }
+                      );
+                    return true;
+                  }
+                  else if (this.OtpSms && (String(this.OtpSms.status) === '401')) {
+                    this.hideSubmitLoading();
+                    this.showErrorToast('The OTP Token has expired', '', 'toast-top-center', 3000);
+                    return false;
+                  }
+                  else if (this.OtpSms.status === 'Error' && this.OtpSms.message === 'too many request') {
+                    this.hideSubmitLoading();
+                    this.showErrorToast(this.translateService.instant('transaction_wait_5sec'), '', 'toast-top-center', 3000);
+                    return false;
+                  }
+                  else {
+                    this.hideSubmitLoading();
+                    this.showErrorToast('OTP is not correct', '', 'toast-top-center', 3000);
+                    return false;
+                  }
+                }
+                // 如果 OtpSms 为 null，也需要隐藏加载状态
+                this.hideSubmitLoading();
+              }
+            );
+        }
+        else {
+          this.hideSubmitLoading();
+        }
+        return;
+      }
+      if (this.otpcode !== null && this.otpcode.length === 6) {
+        const localOtpSms = this.storage.retrieve('localOtpSms');
+        if (localOtpSms?.request_id !== null) {
+          this.OtpSms = null;
+          const phone_no = localOtpSms.to;
+          const request_id = localOtpSms.request_id;
+          const code = this.otpcode;
+          if (!phone_no || !request_id || !code) {
+            return;
+          }
+          
+          const isForgetPassword = this.commonFormtype === "forgetPassword";
+          if (isForgetPassword) {
+            this.token = this.storage.retrieve('token');
+            if (!this.token) {
+              this.hideSubmitLoading();
+              return;
+            }
+          }
+          
+          // 使用服务验证 OTP
+          // 注意：如果 registerottype 是 null，原代码会传递字符串 "null"，但服务中会处理为空字符串
+          this.otpService.checkOtp(
+            phone_no,
+            code,
+            request_id,
+            this.registerottype != null ? this.registerottype : undefined,
+            this.token || undefined,
+            isForgetPassword
+          )
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(
+              result => {
+                this.OtpSms = result;
+                this.storage.clear("registeremail");
+                if (String(result.status) === '401') {
+                  if (result.code === 0) {
+                    this.hideSubmitLoading();
+                    this.showErrorToast(this.translateService.instant('invalid-otp-code'), '', 'toast-bottom-center', 3000);
+                    return;
+                  }
+                  if (result.code === 11) {
+                    this.hideSubmitLoading();
+                    this.showErrorToast(this.translateService.instant('otp-token-expired'), '', 'toast-bottom-center', 3000);
+                    return;
+                  }
+                }
+                if (this.OtpSms !== null) {
+                  if (this.OtpSms.status === true) {
+                    this.hideSubmitLoading();
+                    this.commonFormtype = this.storage.retrieve('formPageType');
+                    if (this.commonFormtype === "forgetPassword") {
+                      this.storage.clear('localOtpSms');
+                      const registerKey = this.funct.encrypt();
+                      this.router.navigate(['/login/resetPassword'], { state: { registerKey: registerKey }, replaceUrl: true });
+                    } else {
+                      const registerKey = this.funct.encrypt();
+                      this.router.navigate(['/login/registration'], { state: { registerKey: registerKey }, replaceUrl: true });
+                    }
+                    return true;
+                  }
+                  else {
+                    this.hideSubmitLoading();
+                    this.showErrorToast('OTP is not correct', 'Tip', 'toast-top-center', 3000);
+                    return false;
+                  }
+                }
+                // 如果 OtpSms 为 null，也需要隐藏加载状态
+                this.hideSubmitLoading();
+              }
+            );
+        }
+        else {
+          this.hideSubmitLoading();
+          this.showErrorToast(this.translateService.instant('invalid-otp-code'), '', 'toast-bottom-center', 3000);
+          return false;
+        }
+    }
+    // 如果所有条件都不满足，也需要隐藏加载状态
+    this.hideSubmitLoading();
+  }
+
+  getOtp() {
+    this.resetCountdownState(180); // 重发前统一重置倒计时为 180 秒
+    this.commonFormtype = this.storage.retrieve('formPageType')
+    if (this.commonFormtype === "forgetPassword") {
+      if (!this.phoneNumber) {
+        return;
+      }
+      this.otpService.resendOtp(OtpSendScenario.FORGET_PASSWORD, this.phoneNumber)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(result => {
+          this.dto.Response = result;
+          // 存储已在服务中完成（通过 sendConfig.storageKey）
+          this.calculateTargetTime(result, true);
+        });
+    }
+    else if (this.common.actionType === "insertAccount") {
+      this.ResendWithdrawOtp();
+    }
+    else {
+      if (!this.phoneNumber) {
+        return;
+      }
+      this.otpService.resendOtp(OtpSendScenario.REGISTER, this.phoneNumber)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(result => {
+          this.dto.Response = result;
+          // 存储已在服务中完成（通过 sendConfig.storageKey）
+          this.calculateTargetTime(result, true);
+        });
+    }
+  }
+
+  ResendWithdrawOtp() {
+    this.token = this.storage.retrieve('token');
+    if (!this.token) {
+      return;
+    }
+    this.otpService.resendOtp(
+      OtpSendScenario.WITHDRAW,
+      undefined, // 提现场景不需要 phoneNumber
+      this.token,
+      this.bankAccountList // 额外数据：bankAccountList
+    )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        this.dto.Response = result;
+        this.localInsertAccountOtpSms = result;
+        this.calculateTargetTime(result, true);
+      });
+  }
+
+  getNewOtp() {
+    this.resetCountdownState(180); // 新设备流程也复位倒计时，避免复用旧值
+    this.codeInput.reset();
+    this.hideSubmitLoading();
+
+    if (!this.phoneNumber) {
+      return;
+    }
+    this.otpService.resendOtp(OtpSendScenario.NEW_DEVICE, this.phoneNumber)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        this.dto.Response = result;
+        if (this.dto.Response?.expired_at) {
+          this.calculateTargetTime(this.dto.Response, true);
+        } else {
+          return;
+        }
+
+        // 存储已在服务中完成，这里只需要处理业务逻辑
+        if (this.dto.Response.statusCode === 200) {
+          const bodyMsg = this.dto.Response.body?.toString()?.trim();
+          if (bodyMsg === "Not valid OTP code") {
+            this.showErrorToast('OTP is not correct', 'Bad request.', 'toast-top-center', 3000);
+            return;
+          }
+          if (bodyMsg === "Try Again") {
+            this.showErrorToast(bodyMsg, 'Bad request.', 'toast-top-center', 3000);
+            return;
+          }
+        }
+      });
+  }
+
+  getNewDeviceOtp() {
+    this.showSubmitLoading();
+    const localLoginModel = this.storage.retrieve('localLoginModel');
+    const localNewDeviceOtpSmsForUpdate = this.storage.retrieve('localNewDeviceOtpSms');
+    
+    if (!this.otpcode || !localLoginModel || !localNewDeviceOtpSmsForUpdate) {
+      this.hideSubmitLoading();
+      return;
+    }
+
+    // 准备更新设备ID的请求数据
+    const updateRequest: UpdateDeviceIdRequest = {
+      phone_no: localLoginModel.phone_no || '',
+      ipAddress: localLoginModel.ipAddress || '',
+      guid: localNewDeviceOtpSmsForUpdate.guid || '',
+      request_id: String(localNewDeviceOtpSmsForUpdate.request_id || ''),
+      code: this.otpcode,
+      deviceId: localLoginModel.deviceId || ''
+    };
+
+    // 使用服务更新设备ID
+    this.otpService.updateDeviceId(updateRequest)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        result => {
+          this.dto.Response = result;
+          if (String(result.status) === '401') {
+            if (result.code === 0) {
+              this.hideSubmitLoading();
+              this.showErrorToast(this.translateService.instant('invalid-otp-code'), 'Tip', 'toast-bottom-center', 2000);
+              return;
+            }
+            if (result.code === 10) {
+              this.hideSubmitLoading();
+              this.showErrorToast(this.translateService.instant('otp-token-expired'), 'Tip', 'toast-bottom-center', 2000);
+              return;
+            }
+          }
+          const loginDevice = this.storage.retrieve('localForgetLoginDevice');
+          if (result.status === "Success") {
+            this.hideSubmitLoading(); // 成功时也需要隐藏加载状态
+            if (loginDevice === 'loginDevice') {
+              this.goToAutoLogin();
+              this.storage.clear('localForgetLoginDevice');
+              this.storage.clear('localNewDeviceOtpSms');
+              return;
+            }
+            else {
+              this.storage.clear('localNewDeviceOtpSms');
+              this.goToAutoLogin();
+              return;
+            }
+          }
+          else {
+            this.hideSubmitLoading(); // 失败时也需要隐藏加载状态
+            this.showErrorToast(result.message?.toString() || '', 'Tip', 'toast-top-center', 3000);
+          }
+        }
+      );
+  }
+
+  private showErrorToast(message: string, title: string = 'Tip', positionClass: string = 'toast-top-center', timeOut: number = 3000) {
+    this.toastr.error(title, message, { timeOut: timeOut, positionClass: positionClass });
+  }
+
+  private showSubmitLoading() {
+    this.common.submitLoading = true;
+    this.spinner.show("submitLoading");
+  }
+
+  private hideSubmitLoading() {
+    this.common.submitLoading = false;
+    this.spinner.hide("submitLoading");
+  }
+
+  /**
+   * 根据 OTP 响应计算目标到期时间并更新倒计时
+   * @param response OTP 响应对象，包含 start_at 和 expired_at 字段
+   * @param shouldCheckResend 是否在计算后检查重发时间（默认 false）
+   */
+  private calculateTargetTime(response: { start_at?: string; expired_at?: string }, shouldCheckResend: boolean = false): void {
+    if (!response?.start_at || !response?.expired_at) {
+      return;
+    }
+    
+    const startAt = new Date(response.start_at);
+    const expiredAt = new Date(response.expired_at);
+    const totalDurationMs = expiredAt.getTime() - startAt.getTime();
+    this.targetTime = new Date(Date.now() + totalDurationMs);
+    this.persistExpiresAt(this.targetTime);
+    
+    if (shouldCheckResend) {
+      this.checkResendTime();
+    }
+  }
+
+  /**
+   * 自动登录
+   * 在 OTP 验证成功后自动执行登录流程
+   */
+  goToAutoLogin() {
+    const loginModel = this.storage.retrieve('localLoginModel');
+    if (!loginModel) {
+      return;
+    }
+    
+    // 使用服务进行自动登录
+    this.otpService.autoLogin(loginModel)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        result => {
+          this.dto.Response = result;
+          if (result.status !== 'Error') {
+            const token = result["token"];
+            if (token !== null) {
+              this.util.isLogged = true;
+              this.dto.token = "Bearer " + token + "";
+              this.storage.store('token', this.dto.token);
+              this.storage.store('isUserLoggedIn', this.util.isLogged);
+              this.storage.clear('localLoginModel');
+
+              this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+                history.replaceState(null, '', location.href); // replaceState is safer
+                const listener = () => {
+                  history.replaceState(null, '', location.href);  // prevent navigation
+                };
+                this.addPopstateListener(listener);
+              });
+            }
+          }
+          else {
+            this.showErrorToast(result.message || '', 'Invalid!', 'toast-top-center', 3000);
+          }
+        }
+      );
+  }
+
+  /**
+   * 添加 popstate 事件监听器并自动加入清理列表
+   * @param listener 监听器函数
+   */
+  private addPopstateListener(listener: () => void): void {
+    this.popstateListeners.push(listener);
+    window.addEventListener('popstate', listener);
+  }
+
+  /**
+   * 重发 OTP（已迁移到 OtpService，保留此方法以保持向后兼容）
+   * @deprecated 请使用 otpService.resendOtp() 替代
+   * @param url API 端点路径
+   */
+  ResendOtp(url: string) {
+    // 根据 URL 判断场景
+    let scenario: OtpSendScenario;
+    if (url.includes('getForgotPassowrdOTP')) {
+      scenario = OtpSendScenario.FORGET_PASSWORD;
+    } else if (url.includes('getRegisterOTP')) {
+      scenario = OtpSendScenario.REGISTER;
+    } else {
+      // 默认使用注册场景
+      scenario = OtpSendScenario.REGISTER;
+    }
+
+    if (!this.phoneNumber) {
+      return;
+    }
+    this.otpService.resendOtp(scenario, this.phoneNumber)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        this.dto.Response = result;
+        // 存储已在服务中完成（通过 sendConfig.storageKey）
+        this.calculateTargetTime(result, true);
+      });
+  }
+
+   // 组件销毁时及时清理 interval、所有订阅和事件监听器
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.stopInterval();
+    // 移除所有 popstate 事件监听器
+    this.popstateListeners.forEach(listener => {
+      window.removeEventListener('popstate', listener);
+    });
+    this.popstateListeners = [];
+  }
+
+  // 停止倒计时
+  private stopInterval(): void { 
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private resetCountdownState(seconds: number = 0): void { // 重置倒计时及缓存
+    this.stopInterval(); // 首先停掉正在运行的 interval
+    this.showResend = false; // 收起“重发”按钮
+    const safeSeconds = Math.max(0, Math.trunc(seconds)); // 过滤输入，确保是合法整数
+    this.remainingSeconds = safeSeconds; // 更新 UI 显示
+    this.targetTime = safeSeconds > 0 ? new Date(Date.now() + safeSeconds * 1000) : null; // 重建目标时间
+    this.persistExpiresAt(this.targetTime); // 记录绝对到期时间，离开页面能精准恢复
+    this.persistTimer(this.remainingSeconds); // 同步写入缓存
+  }
+
+  private persistTimer(value: number): void { // 安全地写入本地存储
+    const safeValue = Number.isFinite(value) && value >= 0 ? Math.trunc(value) : 0; // 如果非法就回落到 0
+    this.storage.store('Timer', safeValue); // 保存当前剩余秒数
+  }
+
+  private toNumber(value: unknown): number | null { // 解析缓存时统一做合法性校验
+    // 所有入口统一做数值过滤，防止字符串/NaN 混入
+    const num = Number(value); // 尝试将任意类型转换为数值
+    if (!Number.isFinite(num) || num < 0) { // 非有限或负数一律视为无效
+      return null; // 通过 null 指示需要重新计算
+    }
+    return Math.trunc(num); // 只返回整数部分
+  }
+
+   // 缓存绝对到期时间方便恢复
+  private persistExpiresAt(target: Date | null): void {
+    if (target) {
+      this.storage.store(this.expiresAtKey, target.getTime());
+    } else {
+      this.clearPersistedExpires();
+    }
+  }
+
+  private clearPersistedExpires(): void { // 移除失效的到期时间缓存
+    this.storage.clear(this.expiresAtKey);
+  }
+
+  getotptype() {
+    if (this.commonFormtype === 'register') {
+      // 注册场景：同步执行（保持与原始代码一致）
+      if (this.registerottype === OtpType.VMG_VIBER) {
+        this.setOtpTypeAndSender(OtpType.VMG_VIBER, OtpDisplayType.VIBER, this.phoneNumber || '');
+      }
+      else if (this.registerottype === OtpType.EMAIL) {
+        this.setOtpTypeAndSender(OtpType.EMAIL, OtpDisplayType.EMAIL, this.emailaddress || '');
+      }
+      else {
+        this.setOtpTypeAndSender(OtpType.SMS, OtpDisplayType.SMS, this.phoneNumber || '');
+      }
+      this.updateOtpHeaderAndDescription();
+    }
+    else {
+      // 非注册场景：异步执行，使用服务
+      // 保持与原始代码一致：先更新组件属性 this.token
+      this.token = this.storage.retrieve('token');
+      
+      if (!this.phoneNumber) {
+        return;
+      }
+      this.otpService.getOtpType(
+        this.commonFormtype || '',
+        this.registerottype || undefined,
+        this.phoneNumber,
+        this.emailaddress || undefined,
+        this.token || undefined
+      )
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        (result) => {
+          // 更新组件属性，保持原有逻辑完全一致
+          this.viberorsmsotptype = result.displayType;
+          this.smssender = result.sender;
+          this.smstype = result.smstype || null;
+          // dto.Response 已在服务中更新
+          
+          // 更新 UI（标题和描述）
+          this.updateOtpHeaderAndDescription();
+          return;
+        }
+      );
+    }
+  }
+
+  /**
+   * 设置 OTP 类型和发送者信息
+   * 注册场景使用此方法（同步执行）
+   * @param type OTP 类型
+   * @param displayType 显示类型
+   * @param sender 发送者（电话号码或邮箱地址）
+   */
+  private setOtpTypeAndSender(type: OtpType, displayType: OtpDisplayType, sender: string | null | undefined): void {
+    this.storage.store("localotptype", displayType);
+    this.viberorsmsotptype = displayType;
+    this.smssender = sender || '';
+  }
+
+  /**
+   * 更新 OTP 标题和描述信息
+   */
+  private updateOtpHeaderAndDescription(): void {
+    const otpType = this.viberorsmsotptype || OtpDisplayType.SMS;
+    this.otpheader = this.translateService.instant("otpheader").replace("@type", otpType);
+    this.otpdesciption = this.translateService.instant("otpdescription").replace("@type", otpType);
+  }
+
+  listServicePhone() {
+    this.servicePhoneList = this.storage.retrieve('localservicePhoneList');
+    
+    // 使用服务获取服务电话列表
+    this.otpService.listServicePhones()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(
+        result => {
+          this.servicePhoneList = result;
+          this.otptitleshow = result?.some(servicePhoneObj =>
+            servicePhoneObj.title === 'customer_service' && servicePhoneObj.otp_page_show === true
+          ) || false;
+          this.spinner.hide();
+        }
+      );
+  }
+
+  goBack() {
+    this._location.back();
+  }
+}

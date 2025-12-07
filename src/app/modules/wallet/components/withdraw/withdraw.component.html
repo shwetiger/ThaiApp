@@ -106,7 +106,6 @@
             <div class="mt-2" style="position: relative; justify-content: center; background-color: red;" *ngIf="loadingInsertBankAcc" >                  
                 <ngx-spinner size = "medium" color = "rgb(6,56,107)" name="loadingInsertBankAcc" type = "ball-elastic-dots" [fullScreen] = "false"></ngx-spinner>
             </div>
-            <div  id="recaptcha-container"></div>
             <div class="pt-2 d-flex justify-content-center" *ngIf="!loadingInsertBankAcc">
                 <button type="button" class="button withdraw__button" (click)="InsertBankAccount()" >
                 {{ 'withdrawal_confrim' | translate}}

@@ -25,12 +25,12 @@
                             style="font-size: 0.8rem;color:black">{{'reg_email_des'|translate}}</span></div>
                 </div>
             </div>
-            <div class="row mt-4 justify-content-center" id="recaptcha-container"></div>
+            <div class="row mt-4"></div>
             <div class="row mt-2 justify-content-center">
                 <button type="button"
                     style="border:none;border-radius:5px;height:40px;width:90%; background-color: #2253A2; color: #fff;"
                     (click)="getOtp()"
-                    *ngIf="!common.submitLoading && !recaptcha">{{ 'next' | translate}}</button>
+                    *ngIf="!common.submitLoading">{{ 'next' | translate}}</button>
             </div>
             <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2"
                 *ngIf="common.submitLoading">

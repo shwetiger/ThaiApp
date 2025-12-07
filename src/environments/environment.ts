@@ -11,17 +11,8 @@ export const environment = {
   keyParseServerUrl : 'https://thai2d3d.b4a.io',
   keyLiveQueryUrl : 'https://happy7788.b4a.io',
   facebookAppId: 'YOUR_FACEBOOK_APP_ID',
-  version: '1.0.3'
-  // firebaseConfig: {
-  //   apiKey: "AIzaSyAvrrVr5SUbISFv5gbE9HKcx9pHo3Gu3Jc",
-  //   authDomain: "thairetrievesms.firebaseapp.com",
-  //   projectId: "thairetrievesms",
-  //   storageBucket: "thairetrievesms.appspot.com",
-  //   messagingSenderId: "191880840210",
-  //   appId: "1:191880840210:web:3b82d926c4efc3d6b944cb",
-  //   measurementId: "G-2SCHEG8G7Q"
-  // }
-
+  version: '1.0.3',
+  apiUrl: 'https://apitest.thai2d3dgame.com/api/'
 };
 
 /*

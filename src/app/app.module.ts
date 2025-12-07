@@ -1,39 +1,30 @@
 
 import { BrowserModule } from '@angular/platform-browser';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule, Injector, APP_INITIALIZER } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { CommonModule, DatePipe } from '@angular/common';
-import { ToastrModule } from 'ngx-toastr';
-import { NgxSpinnerModule } from "ngx-spinner";
-import { LocalStorageService, NgxWebstorageModule } from 'ngx-webstorage';
-import { FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
-import { SharedModule } from './shared/shared.module';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { CodeInputModule } from 'angular-code-input';
-import { AlertModule, AlertConfig } from 'ngx-bootstrap/alert';
-import { ModalDialogModule } from 'ngx-modal-dialog';
-import { CarouselModule } from 'ngx-owl-carousel-o';
-import { BsDropdownModule,BsDropdownConfig } from 'ngx-bootstrap/dropdown';
-import { Injector, APP_INITIALIZER } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { LOCATION_INITIALIZED } from '@angular/common';
-import { BsDatepickerModule, BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
-import { TimepickerModule } from 'ngx-bootstrap/timepicker';
-import { CommonService } from './shared/service/common.service';
+import { DatePipe, LOCATION_INITIALIZED } from '@angular/common';
+
+// 路由
+import { AppRoutingModule } from './app-routing.module';
+
+// 组件
+import { AppComponent } from './app.component';
 import { PageNotfoundComponent } from './modules/pages/page-notfound/page-notfound.component';
-import { NotiDetailWithoutIdComponent }from './modules/pages/noti-detail-without-id/noti-detail-without-id.component';
-import { ZawgyiDetectorModule } from '@myanmartools/ng-zawgyi-detector';
-import { AngularFireModule } from "@angular/fire";
-import { firebase } from '../environments/firebase';
-import { FacebookModule } from 'ngx-facebook';
-import { AppSplashScreenAdsComponent } from './shared/components/app-splash-screen-ads/app-splash-screen-ads.component';
+import { NotiDetailWithoutIdComponent } from './modules/pages/noti-detail-without-id/noti-detail-without-id.component';
+
+// 第三方模块
+import { IonicModule } from '@ionic/angular';
+import { ToastrModule } from 'ngx-toastr';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { NgxWebstorageModule } from 'ngx-webstorage';
+import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
+import { BsDropdownConfig } from 'ngx-bootstrap/dropdown';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ServiceWorkerModule } from '@angular/service-worker';
+
+// 环境配置
 import { environment } from '../environments/environment';
 
 export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
@@ -64,14 +55,16 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     NotiDetailWithoutIdComponent,
     PageNotfoundComponent
   ],
-  imports: [     
-    CommonModule,   
-    TimepickerModule.forRoot(),
-    BsDropdownModule,
-    ModalModule.forRoot(),
-    AlertModule,
-    ModalDialogModule,
-    CodeInputModule,
+  imports: [
+    // Angular 核心模块（根模块必须）
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    
+    // 路由
+    AppRoutingModule,
+    
+    // 全局配置模块（forRoot 只在根模块调用，创建单例服务）
     TranslateModule.forRoot({
       loader: {
           provide: TranslateLoader,
@@ -79,37 +72,28 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
           deps: [HttpClient]         
       }
     }),
-    CarouselModule,
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    BrowserAnimationsModule,
     ToastrModule.forRoot(),
-    NgxSpinnerModule,
-    HttpClientModule,
     NgxWebstorageModule.forRoot(),
+    ModalModule.forRoot(),
+    
+    // UI 组件库
     IonicModule,
-    NgxSpinnerModule,
-    BsDatepickerModule.forRoot(),
-    SharedModule,
-    ZawgyiDetectorModule,
-    AngularFireModule.initializeApp(firebase.firebaseConfig),
-    FacebookModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    NgxSpinnerModule,  // NotiDetailWithoutIdComponent 需要
+    
+    // PWA
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        
   ],
   providers: [
     DatePipe,
-    AlertConfig,
     BsModalService,
     BsDropdownConfig,
-    CommonService,
-    BsDatepickerConfig,
-   {
-    provide: APP_INITIALIZER,
-    useFactory: appInitializerFactory,
-    deps: [TranslateService, Injector],
-    multi: true
-  }
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appInitializerFactory,
+      deps: [TranslateService, Injector],
+      multi: true
+    }
   ],
   bootstrap: [AppComponent],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]

@@ -13,9 +13,8 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { TopupAlertMaintenanceComponent } from 'src/app/shared/dialog/topup-alert-maintenance/topup-alert-maintenance.component';
-import { AngularFireAuth } from '@angular/fire/auth';
-
-import firebase from 'firebase';
+import { OtpScenario } from 'src/app/modules/auth/components/otp-page/models/otp-type.enum';
+import { OtpStorageKeys } from 'src/app/modules/auth/components/otp-page/models/otp-storage-keys';
 
 @Component({
   selector: 'app-withdraw',
@@ -70,15 +69,6 @@ export class WithdrawComponent implements OnInit {
   granParent: any;
   withdrawLength: any = 0;
   withdrawpaymentImg: any;
-  recaptcha: boolean = false;
-  SMSprovider: any;
-  SMSoperatorList: any;
-  Usefirebase: boolean = false;
-  Operatorcodelist: any;
-  MPTarraylist: any = ['4', '2', '8', '5'];
-  OoredooList: any = ['9'];
-  MYTELList: any = ['6']
-  TelenorList: any = ['7']
   phoneValue: any;
   prefix = '+95';
   bankaccoutlistwithpaymentid: any;
@@ -102,8 +92,7 @@ export class WithdrawComponent implements OnInit {
     private http: HttpClient,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location,
-    private afAuth: AngularFireAuth,) {
+    private _location: Location) {
 
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
@@ -162,8 +151,6 @@ export class WithdrawComponent implements OnInit {
       this.mywithdrawalBankAccList = null;
       this.getWithdrawBankAccounts(); //system accounts
     }
-    this.GetSMSProvider();
-    this.getSMSOperators();
     this.getsmstype();
   }
 
@@ -625,12 +612,7 @@ export class WithdrawComponent implements OnInit {
                     return;
                   }
                   else {
-                    // if (this.SMSprovider == 'firebase' && this.Usefirebase == true)
-                    if (this.Usefirebase == true && this.smstype == 'sms_poh') {
-                      this.signInWithPhoneNumber();
-                    }
-                    else {
-                      this.http.get(this.funct.apaddressv1 + 'transaction/getWithdrawOTP', { headers: headers })
+                    this.http.get(this.funct.apaddressv1 + 'transaction/getWithdrawOTP', { headers: headers })
                         .pipe(
                           catchError(this.handleError.bind(this))
                         )
@@ -647,9 +629,9 @@ export class WithdrawComponent implements OnInit {
                               }
                               this.storage.clear('Timer');
                               this.storage.store("otptype", 'smsotp');
-                              this.storage.store("actionType", 'insertAccount');
+                              // 使用新的统一场景标识
+                              this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.WITHDRAW_INSERT);
                               this.storage.clear("formage");
-                              this.storage.store("formPageType",'withdrawaladd');
                               this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'smsotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
                               this.spinner.hide("loadingInsertBankAcc");
                             }
@@ -664,7 +646,8 @@ export class WithdrawComponent implements OnInit {
                               }
                               else{
                               this.loadingInsertBankAcc = false;
-                              this.storage.store("formPageType",'withdrawaladd');
+                              // 使用新的统一场景标识
+                              this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.WITHDRAW_INSERT);
                               this.spinner.hide("loadingInsertBankAcc");
                               this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'smsotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
                               }
@@ -680,7 +663,6 @@ export class WithdrawComponent implements OnInit {
                             }
                           }
                         );
-                    }
                   }
                 });/*XXX*/
           }
@@ -698,116 +680,6 @@ export class WithdrawComponent implements OnInit {
     }, 1000);
   }
 
-  signInWithPhoneNumber() {
-    this.recaptcha = true;
-    this.spinner.hide("loadingInsertBankAcc");
-    this.prefix = this.storage.retrieve('localPhonePrefix')
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    let phoneNumber;
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
-    }
-    if (!this.phoneValue.startsWith("0")) //XXXX 
-    {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-    //  const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container'); // Make sure you have an element with id 'recaptcha-container'
-
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    });
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId)
-        this.storage.store("otptype", 'firebaseotp');
-        this.storage.clear('Timer');
-        this.storage.clear("formPageType")
-        this.storage.store("actionType", 'insertAccount')
-        this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'firebaseotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
-      })
-      .catch(error => {
-        this.recaptcha = false;
-        this.toastr.error("", error.message,
-          {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-center',
-          });
-        console.error('Phone authentication error', error.message);
-      });
-  }
-
-  GetSMSProvider() {
-    this.http.get(this.funct.ipaddress + 'user/getSMSProvider')
-      .pipe(
-        //catchError(this.HandleErrorMessageService)
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSprovider = this.dto.Response.message;
-          this.storage.store('SMSprovider', this.SMSprovider);
-        });
-
-  }
-
-  getSMSOperators() {
-
-    var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        //catchError(this.HandleErrorMessageService)
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
-
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
-
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
-
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
-
-              }
-            }
-          }
-          else {
-            return;
-          }
-
-        });
-
-  }
   checkbankAccount() {
     $("#bankAccountErr").html("");
     let pattern = RegExp(/^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/);

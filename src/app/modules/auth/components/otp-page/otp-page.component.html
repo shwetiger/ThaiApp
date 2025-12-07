@@ -1,170 +1,202 @@
-<!-- <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar> -->
-<div class="appHeader text-light">
+<ng-container *ngIf="pageState$ | async as state">
+  
+  <!-- 页面头部 -->
+  <div class="appHeader text-light">
     <div class="left">
-        <a (click)="goBack()" class="headerButton">
-            <img src="assets/img/icon/arrow_back.png" alt="">
-            <!-- <i class="material-icons" style="font-size: 26px;">arrow_back</i>   -->
-        </a>
+      <a (click)="onGoBack()" class="headerButton">
+        <img src="assets/img/icon/arrow_back.png" alt="">
+      </a>
     </div>
-    <div class="pageTitle"> <ng-content></ng-content>{{ 'helloword' | translate }} </div>
-</div>
-<!-- {{firebaseUI}} -->
-<!-- <div id="appCapsule" class="extra-header-active" *ngIf="firebaseUI == true">
-    <div class="section full mx-1">
-        <div class="section-title register-title mt-2"
-            style="white-space:nowrap; justify-content: center;color:#2253A2">{{ otpheader}}</div>
-        <div class="section-title register-title" style="white-space:nowrap; justify-content: center;color:#2253A2">
-            {{smssender}}</div>
-        <div class="section-title register-title mb-2 mt-3"
-            style="justify-content: center; margin-top:0 !important;color:#2253A2"> {{otpdesciption}}</div>
-        <form *ngIf="!recaptcha">
-            <code-input #codeInput [isCodeHidden]="false" [codeLength]="6" (codeChanged)="onCodeCompleted($event)"
-                (Keyup)="validateOtp()"></code-input>
-            <p id="passErr" class="error-color" style="text-align: center; width: 100%;"></p>
-            <div class="counterTimer" *ngIf="coundDown >= 0">{{ coundDown }}</div>
-            <a class="btn btn-text-primary float-right" (click)="signInWithPhoneNumber()" *ngIf="coundDown < 0" style="border: 1px solid red;
-                color: #000 !important;
-                font-weight: 600; color: #000 !important; font-weight: 600;">{{'resendotp' | translate}}</a>
-            <div class="row justify-content-center" style="margin-top: 70px;">
-                <button type="button"
-                    (click)="common.actionType == 'NEWDIVICE'? UpdateDeviceIdwithfirebase(): handleClick()"
-                    style="background-color: #2253A2; color: #fff; width: 88% !important;height:40px;border:none;border-radius: 5px;"
-                    *ngIf="!common.submitLoading">{{ 'next' | translate}}</button>
-            </div>
-
-            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
-                    [routerLink]="['/me-page/default-otp']"
-                    [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'otppage'}"
-                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
-                    <h4 class="underline" style="color:#2253A2"
-                        *ngIf="commonFormtype!='register'&& common.actionType!='insertAccount'">{{'change_otp_method' |
-                        translate}}</h4>
-                </a></div>
-            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
-                    [routerLink]="['/me-page/default-otp']"
-                    [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'withdrawaladd'}"
-                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
-                    <h4 class="underline" style="color:#2253A2"
-                        *ngIf="commonFormtype!='register' && common.actionType=='insertAccount'">{{'change_otp_method' |
-                        translate}}</h4>
-                </a></div>
-            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
-                    [routerLink]="['/me-page/default-otp']"
-                    [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:'register'}"
-                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
-                    <h4 class="underline" style="color:#2253A2" *ngIf="commonFormtype=='register'">{{'change_otp_method'
-                        | translate}}</h4>
-                </a></div>
-            <div class="row justify-content-center mt-5">
-                <a href="tel:09988432606{{openUrl}}"></a>
-            </div>
-        </form>
-        <div id="recaptcha-container"></div>
+    <div class="pageTitle">
+      <ng-content></ng-content>{{ 'helloword' | translate }}
     </div>
-    <div class="section ful mx-3">
-    </div>
-</div> -->
-
-<div id="appCapsule" class="extra-header-active">
+  </div>
+  
+  <!-- 页面主体 -->
+  <div id="appCapsule" class="extra-header-active">
     <div class="section full mx-2">
-        <div class="section-title register-title mt-2"
-            style="white-space:nowrap; justify-content: center;color:#2253A2">{{ otpheader}}</div>
-        <div class="section-title register-title" style="white-space:nowrap; justify-content: center;color:#2253A2">
-            {{smssender}}</div>
-        <div class="section-title register-title mb-2 mt-3"
-            style="justify-content: center; margin-top:0 !important;color:#2253A2"> {{otpdesciption}}</div>
-        <form>
-            <code-input #codeInput [isCodeHidden]="false" [codeLength]="6" (codeChanged)="onCodeCompleted($event)"
-                (Keyup)="validateOtp()"></code-input>
-            <p id="passErr" class="error-color" style="text-align: center; width: 95%;"></p>
-            <div class="counterTimer mr-2" *ngIf="!showResend">{{ remainingSeconds }}</div>
-            <a class="btn btn-text-primary float-right mr-2"
-                (click)="common.actionType == 'NEWDIVICE'?getNewOtp():getOtp()" *ngIf="showResend" style="border: 1px solid red;
-                color: #000 !important;
-                font-weight: 600; color: #000 !important; font-weight: 600;">{{'resendotp' | translate}}</a>
-            <div class="row justify-content-center" style="margin-top: 70px;">
-                <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2"
-                    *ngIf="common.submitLoading">
-                    <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-                        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-                        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
+      
+      <!-- OTP 标题 -->
+      <div class="section-title register-title mt-2"
+           style="white-space:nowrap; justify-content: center;color:#2253A2">
+        {{ state.form.otpHeader }}
+      </div>
+      
+      <!-- 发送者信息 -->
+      <div class="section-title register-title" 
+           style="white-space:nowrap; justify-content: center;color:#2253A2">
+        {{ state.form.sender }}
+      </div>
+      
+      <!-- OTP 描述 -->
+      <div class="section-title register-title mb-2 mt-3"
+           style="justify-content: center; margin-top:0 !important;color:#2253A2">
+        {{ state.form.otpDescription }}
+      </div>
+      
+      <form>
+        <!-- OTP 输入框 -->
+        <code-input 
+          #codeInput 
+          [isCodeHidden]="false" 
+          [codeLength]="6"
+          [inputType]="'tel'"
+          (codeChanged)="onCodeCompleted($event)"
+          (Keyup)="onKeyup()">
+        </code-input>
+        
+        <!-- 错误提示 -->
+        <p class="error-color" style="text-align: center; width: 95%;">
+          {{ state.ui.errorMessage }}
+        </p>
+        
+        <!-- 倒计时显示 -->
+        <div class="counterTimer mr-2" *ngIf="!state.countdown.canResend">
+          {{ state.countdown.remainingSeconds }}
+        </div>
+        
+        <!-- 重发 OTP 按钮 -->
+        <a class="btn btn-text-primary float-right mr-2"
+           (click)="onResend()" 
+           *ngIf="state.countdown.canResend && !state.ui.isLoading" 
+           style="border: 1px solid red; color: #000 !important; font-weight: 600;">
+          {{ 'resendotp' | translate }}
+        </a>
+        
+        <!-- 重发中的 loading 提示 -->
+        <div class="float-right mr-2" 
+             *ngIf="state.countdown.canResend && state.ui.isLoading"
+             style="color: #666; font-size: 14px; padding: 5px 10px;">
+          {{ 'sending' | translate }}...
+        </div>
+        
+        <!-- 提交按钮区域 -->
+        <div class="row justify-content-center" style="margin-top: 70px;">
+          
+          <!-- Loading 状态 -->
+          <div class="mt-2" 
+               style="position: relative; justify-content: center;" 
+               class="mt-2"
+               *ngIf="state.ui.isLoading">
+            <ngx-spinner 
+              [name]="common.loading.submitLoading.name" 
+              [size]="common.loading.submitLoading.size"
+              [color]="common.loading.submitLoading.color" 
+              [type]="common.loading.submitLoading.type"
+              [fullScreen]="common.loading.submitLoading.fullScreen">
+            </ngx-spinner>
+          </div>
+          
+          <!-- 提交按钮 -->
+          <button type="button" 
+                  (click)="onSubmit()"
+                  style="background-color: #2253A2; color: #fff; width: 88% !important;height:40px;border:none;border-radius: 5px;"
+                  *ngIf="!state.ui.isLoading">
+            {{ 'next' | translate}}
+          </button>
+        </div>
+        
+        <!-- 修改 OTP 发送方式链接 -->
+        <div class="row justify-content-center mt-3" 
+             style="font-size:12px; text-decoration: underline #2253A2;">
+          <a [routerLink]="['/me-page/default-otp']"
+             [queryParams]="{
+               phoneNumber: state.form.phoneNumber,
+               email: state.form.email,
+               formPage: state.scenario.scenario
+             }"
+             [replaceUrl]="false" 
+             class="mr-2" 
+             style="margin-top:4px">
+            <h4 class="underline" style="color:#2253A2">
+              {{ 'change_otp_method' | translate }}
+            </h4>
+          </a>
+        </div>
+        
+        <!-- 占位电话 -->
+        <div class="row justify-content-center mt-5">
+          <a href="tel:09988432606{{ state.device.openUrl }}"></a>
+        </div>
+        
+        <!-- 客服标题 -->
+        <div class="row justify-content-center mt-5 mb-1" 
+             *ngIf="state.servicePhones.showOnOtpPage">
+          <span style="font-weight: bold; color:#2253A2">
+            {{ 'otpservice' | translate }}
+          </span>
+        </div>
+        
+        <!-- 客服电话列表 -->
+        <div class="row" *ngFor="let servicePhoneObj of state.servicePhones.phones">
+          <div class="container-fluid mt-1"
+               *ngIf="servicePhoneObj.title == 'customer_service' && servicePhoneObj.otp_page_show==true">
+            <div class="row otp-service-card mx-3 align-items-center">
+              
+              <!-- 客服信息 -->
+              <div class="title-color col-5 d-flex flex-column justify-content-center"
+                   style="margin-top: 5px;" 
+                   *ngIf="servicePhoneObj.phone_no !=''">
+                <h5 class="text-center" style="font-weight: bold; white-space: nowrap;">
+                  {{ 'customer_service' | translate }}
+                  <br>
+                  {{ servicePhoneObj.phone_no }}
+                </h5>
+              </div>
+              
+              <div class="title-color col-5" 
+                   style="margin-top: 15px;" 
+                   *ngIf="servicePhoneObj.phone_no ==''">
+                <h5 class="text-center" style="font-weight: bold; white-space: nowrap;">
+                  {{ 'customer_service' | translate }}
+                </h5>
+              </div>
+              
+              <!-- 联系方式图标 -->
+              <div class="col-6 d-flex justify-content-end">
+                <div class="row" style="padding-top: 3px;">
+                  
+                  <!-- 空占位 -->
+                  <div class="col-4" *ngIf="servicePhoneObj.phone_no ==''">
+                  
+                  </div>
+                  
+                  <!-- Telegram -->
+                  <div class="col-4" *ngIf="servicePhoneObj.telegram_id !=''">
+                    <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+state.device.openUrl | safeUrl">
+                      <img class="service-image ml-2" src="assets/img/telegram.png" alt="phone">
+                    </a>
+                  </div>
+                  <div class="col-2" *ngIf="servicePhoneObj.telegram_id ==''">
+                  
+                  </div>
+                  
+                  <!-- Viber -->
+                  <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
+                    <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+state.device.openUrl | safeUrl">
+                      <img class="service-image ml-2" src="assets/img/viber.png" alt="phone">
+                    </a>
+                  </div>
+                  <div class="col-4" *ngIf="servicePhoneObj.viber ==''">
+                  
+                  </div>
+                  
+                  <!-- 电话 -->
+                  <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
+                    <a href="tel:{{servicePhoneObj.phone_no}}{{state.device.openUrl}}">
+                      <img class="service-image ml-2" src="assets/img/phone.png" alt="phone">
+                    </a>
+                  </div>
+                  
                 </div>
-                <button type="button" (click)="common.actionType == 'NEWDIVICE'? getNewDeviceOtp(): checkOtp()"
-                    style="background-color: #2253A2; color: #fff; width: 88% !important;height:40px;border:none;border-radius: 5px;"
-                    *ngIf="!common.submitLoading">{{ 'next' | translate}}</button>
+              </div>
             </div>
-            <span style="visibility: hidden;"> {{commonFormtype}}</span>
-            <div class="row justify-content-center mt-3" style="font-size:12px;text-decoration: underline #2253A2 ;"><a
-                    [routerLink]="['/me-page/default-otp']"
-                    [queryParams]="{phoneNumber: phoneNumber,email:emailaddress,formPage:commonFormtype}"
-                    [replaceUrl]="false" class="mr-2" style="margin-top:4px">
-                    <h4 class="underline" style="color:#2253A2">{{'change_otp_method' |
-                        translate}}</h4>
-                </a></div>
-            <div class="row justify-content-center mt-5">
-                <a href="tel:09988432606{{openUrl}}"></a>
-            </div>
-            <div class="row justify-content-center mt-5 mb-1" *ngIf="otptitleshow==true">
-                <span style="font-weight: bold; color:#2253A2">
-                    {{'otpservice' | translate}}
-                </span>
-            </div>
-            <div class="row" *ngFor="let servicePhoneObj of servicePhoneList">
-                <div class="container-fluid mt-1"
-                    *ngIf="servicePhoneObj.title == 'customer_service' && servicePhoneObj.otp_page_show==true">
-                    <div class="row otp-service-card  mx-3 align-items-center">
-                        <div class="title-color col-5 d-flex flex-column justify-content-center"
-                            style="margin-top: 5px;" *ngIf="servicePhoneObj.phone_no !=''">
-                            <h5 class="text-center" style="font-weight: bold; white-space: nowrap;"> {{
-                                'customer_service' | translate }}
-                                <br>
-                                {{servicePhoneObj.phone_no}}
-                            </h5>
-                        </div>
-                        <div class="title-color col-5" style="margin-top: 15px;" *ngIf="servicePhoneObj.phone_no ==''">
-                            <h5 class="text-center" style="font-weight: bold; white-space: nowrap;"> {{
-                                'customer_service' | translate }}
-                            </h5>
-                        </div>
-                        <div class="col-6 d-flex justify-content-end">
-                            <div class="row" style="padding-top: 3px;">
-                                <div class="col-4" *ngIf="servicePhoneObj.phone_no ==''">
-
-                                </div>
-                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id !=''">
-                                    <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+openUrl | safeUrl">
-                                        <img class="service-image ml-2" src="assets/img/telegram.png" alt="phone">
-                                    </a>
-                                </div>
-                                <div class="col-2" *ngIf="servicePhoneObj.telegram_id ==''">
-
-                                </div>
-
-                                <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
-                                    <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
-                                        <img class="service-image ml-2" src="assets/img/viber.png" alt="phone">
-                                    </a>
-                                </div>
-                                <div class="col-4" *ngIf="servicePhoneObj.viber ==''">
-
-                                </div>
-
-                                <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
-                                    <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
-                                        <img class="service-image ml-2" src="assets/img/phone.png" alt="phone">
-                                    </a>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+          </div>
+        </div>
+        
+      </form>
     </div>
-</div>
-<!-- <div class="mt-2" style="position: relative; justify-content: center;" class="mt-2" *ngIf="!common.submitLoading">
-    <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
-        [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
-        [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
-</div> -->
+  </div>
+  
+</ng-container>
+

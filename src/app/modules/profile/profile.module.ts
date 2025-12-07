@@ -23,28 +23,6 @@ import { EmailAddressComponent } from './components/email-address/email-address.
 import { EmailOtpConfirmComponent } from './components/email-otp-confirm/email-otp-confirm.component';
 import { PointsHistoryComponent } from './components/points-history/points-history.component';
 
-
-export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
-  return () => new Promise<any>((resolve: any) => {
-    const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
-    locationInitialized.then(() => {
-      let lang=localStorage.getItem('ngx-webstorage|locallanguage');
-      let langToSet;
-      if(lang == null){
-        langToSet = 'my';
-      }
-      else{
-        langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
-      translate.setDefaultLang(langToSet);
-      translate.use(langToSet).subscribe(() => {
-      }, err => {
-      }, () => {
-        resolve(null);
-      });
-    });
-  });
-}
 @NgModule({
   declarations: [ 
     ProfileComponent, 
@@ -61,31 +39,13 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     PointsHistoryComponent,
   ],
   imports: [
-    FormsModule, 
     CommonModule,
     ProfileRoutingModule,
     SharedModule,
-    TranslateModule.forChild({
-      loader: {
-          provide: TranslateLoader,
-          useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
-      }
-    }),
-    ModalModule.forRoot(),
-    NgxSpinnerModule,
-    ReactiveFormsModule,
-    CodeInputModule,
+    ReactiveFormsModule
   ],
   providers: [
-    CommonService,   
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector],
-      multi: true
-    }
-    
+    CommonService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

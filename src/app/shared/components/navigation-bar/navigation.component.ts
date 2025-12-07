@@ -49,10 +49,19 @@ export class AppNavigationBarComponent implements OnInit {
       this.version = v;
     });
     // this.getAllPromotions();
-    this.openPage(this.routeUrl)
+    // 只有当 routeUrl 有值时才导航（避免 undefined segment 错误）
+    if (this.routeUrl) {
+      this.openPage(this.routeUrl);
+    }
   }
 
-  openPage(routeUrl:string) {  
+  openPage(routeUrl:string) {
+    // 防御性检查：确保 routeUrl 有效
+    if (!routeUrl) {
+      console.warn('Navigation: routeUrl is empty or undefined');
+      return;
+    }
+    
     if(routeUrl =='/home')
     {
       this.deviceId=this.storage.retrieve('localDeviceId'); 

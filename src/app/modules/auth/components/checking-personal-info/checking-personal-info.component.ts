@@ -17,8 +17,8 @@ import { UtilService } from 'src/app/shared/service/util.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-message.service';
 import { CommonService } from 'src/app/shared/service/common.service';
-import { AngularFireAuth } from '@angular/fire/auth';
-import firebase from 'firebase';
+import { OtpScenario } from '../otp-page/models/otp-type.enum';
+import { OtpStorageKeys } from '../otp-page/models/otp-storage-keys';
 declare var $: any;
 
 @Component({
@@ -49,15 +49,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
   //loadingSubmiting : any;
   forgetpassword_unselect: any;
   calendarYear: any = [];
-  recaptcha: boolean = false;
-  SMSprovider: any;
-  SMSoperatorList: any;
-  Usefirebase: boolean = false;
-  Operatorcodelist: any;
-  MPTarraylist: any = ['4', '2', '8', '5'];
-  OoredooList: any = ['9'];
-  MYTELList: any = ['6'];
-  TelenorList: any = ['7'];
   smstype: any;
 
 
@@ -76,8 +67,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private location: Location,
-    private afAuth: AngularFireAuth,) {
+    private location: Location) {
 
     this.BankInfoListByType();
   }
@@ -110,8 +100,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
     sessionStorage.setItem('month', "");
     sessionStorage.setItem('year', "");
     sessionStorage.setItem("imageUrl", "");
-    this.getSMSOperators();
-    this.GetSMSProvider();
     this.getsmstype();
   }
 
@@ -858,14 +846,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
               }
               break;
             default:
-              //if(this.SMSprovider == 'firebase' && this.Usefirebase == true)
-              if (this.Usefirebase == true && this.smstype == 'sms_poh') {
-                this.signInWithPhoneNumber();
-              }
-              else {
-                this.submit();
-              }
-
+              this.submit();
               break;
           }
         });
@@ -935,7 +916,8 @@ export class CheckingPersonalInfoComponent implements OnInit {
             this.storage.clear('Timer');
             this.OtpSms = this.storage.retrieve('localOtpSms'); /*Old =/forget-password */
             sessionStorage.setItem('rootUrl', "/home");
-            this.storage.store("formPageType", 'forgetPassword');
+            // 使用新的统一场景标识
+            this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.FORGET_PASSWORD);
             this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'smsotp' }, replaceUrl: true });
             this.storage.store('localForgetPasswordSuccess', 'success');
             if (this.dto.Response.statusCode == 200) {
@@ -957,7 +939,8 @@ export class CheckingPersonalInfoComponent implements OnInit {
             }
           }
           else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-            this.storage.store("formPageType", 'forgetPassword');
+            // 使用新的统一场景标识
+            this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.FORGET_PASSWORD);
             this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'smsotp' }, replaceUrl: true });
           }
           else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
@@ -1035,117 +1018,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
 
   enter(event) {
     event.target.blur();
-  }
-
-  signInWithPhoneNumber() {
-    this.storage.clear('Timer');
-    this.recaptcha = true;
-    let phCheck = this.checkPhoneNumber();
-    if (phCheck == false) {
-      return;
-    }
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-
-    let phoneNumber;
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
-    }
-    if (!this.phoneValue.startsWith("0")) //XXXX 
-    {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-
-    // const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container'); // Make sure you have an element with id 'recaptcha-container'
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    })
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId);
-        this.storage.store("otptype", 'firebaseotp');
-        this.storage.store("formPage", 'forgetPassword');
-        this.storage.clear('Timer');
-        this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'firebaseotp' }, replaceUrl: true });
-        this.storage.store('localForgetPasswordSuccess', 'success');
-      })
-      .catch(error => {
-
-        this.recaptcha = false;
-        this.toastr.error("", error.message,
-          {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-center',
-          });
-        console.error('Phone authentication error', error.message);
-      });
-  }
-  GetSMSProvider() {
-    this.http.get(this.funct.ipaddress + 'user/getSMSProvider')
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ""))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSprovider = this.dto.Response.message;
-
-        });
-
-  }
-
-  getSMSOperators() {
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ""))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
-
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
-
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
-
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-            }
-          }
-          else {
-            return;
-          }
-        });
   }
 
   getsmstype() {

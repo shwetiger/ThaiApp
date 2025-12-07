@@ -10,7 +10,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 
 import { Router } from '@angular/router';
 import { LoginDeviceDialogComponent } from '../dialog/login-device-dialog/login-device-dialog.component';
-import { throwError } from 'rxjs';
+import { throwError, EMPTY } from 'rxjs';
 import {Location} from '@angular/common';
 @Injectable({
   providedIn: 'root'
@@ -57,14 +57,14 @@ export class HandleErrorMessageService {
         timeOut: 3000,
         positionClass: 'toast-top-center',
       });
-        return;
+        return throwError(error);
      }
      if(error.status == 0){
       //  this.toastr.error("", this.translateService.instant("checkInternetConnection"), {
       //    timeOut: 3000,
       //    positionClass: 'toast-top-center',
       //  });
-         return;
+         return throwError(error);
      }
   
      if(error.status == 423 || error.status == 417)
@@ -76,7 +76,7 @@ export class HandleErrorMessageService {
          this.storage.clear('token');
          this.storage.clear('isUserLoggedIn');
          this.router.navigate(['/login'], { replaceUrl: true });
-         return;
+         return throwError(error);
      }
      
      if (error.status == 404 ) {
@@ -95,7 +95,7 @@ export class HandleErrorMessageService {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-        return;
+        return throwError(error);
       }
       }
     
@@ -103,7 +103,7 @@ export class HandleErrorMessageService {
      
        //phoneOrPwdIncorrect
         if(error.message == "No game alert found"){
-          return;
+          return throwError(error);
         }
         if(error.error.status == "Error" 
         && error.error.message == "PhoneNo or password is not correct" && error.error.data == null){
@@ -111,7 +111,7 @@ export class HandleErrorMessageService {
            timeOut: 3000,
            positionClass: 'toast-top-center',
          });
-         return;
+         return throwError(error);
         }  
         if(error.error.data){
           if (error.error.data.dbFailCount < (error.error.data.settingFailCount -2 )) {
@@ -119,7 +119,7 @@ export class HandleErrorMessageService {
               timeOut: 3000,
               positionClass: 'toast-top-center',
             });
-            return;
+            return throwError(error);
           }
           if(error.error.data.dbFailCount == (error.error.data.settingFailCount -2 )) {
             this.toastr.error("",this.translateService.instant("login-block-message"), {
@@ -132,7 +132,7 @@ export class HandleErrorMessageService {
               timeOut: 3000,
               positionClass: 'toast-top-center',
             });
-            return;
+            return throwError(error);
           }      
           if (error.error.data.dbFailCount >= error.error.data.settingFailCount) {   
             var activeMinute= this.translateService.instant("login-active-minutes");
@@ -141,7 +141,7 @@ export class HandleErrorMessageService {
               timeOut: 3000,
               positionClass: 'toast-top-center',
             });
-            return;
+            return throwError(error);
           }  
         }     
         
@@ -149,7 +149,8 @@ export class HandleErrorMessageService {
      if(error.status == 304)
      {      
        this.openNewDialog();
-       return;
+       // 304 是业务流程（新设备验证），不是错误，返回空 Observable
+       return EMPTY;
      }
      if (error.status == 403) {
       if(error.error.message == 'so_close'){
@@ -157,14 +158,14 @@ export class HandleErrorMessageService {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-        return;
+        return throwError(error);
       }
       if(error.error.message == 'over_limited.'){
         this.toastr.error("", this.translateService.instant("otp-request-time-ten"), {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-        return;
+        return throwError(error);
       }
       if(error.error.message=='This email address is already used by another user.')
         {
@@ -172,7 +173,7 @@ export class HandleErrorMessageService {
             timeOut: 3000,
             positionClass: 'toast-top-center',
             });
-            return;
+            return throwError(error);
         }
        // temporary_blocked
         if(error.error.message=='temporary_blocked')
@@ -181,14 +182,14 @@ export class HandleErrorMessageService {
             timeOut: 3000,
             positionClass: 'toast-top-center',
             });
-            return;
+            return throwError(error);
         }
       else{
         this.toastr.error("", error.error.message, {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-        return;
+        return throwError(error);
       }     
      }   
     
@@ -200,7 +201,7 @@ export class HandleErrorMessageService {
            positionClass: 'toast-top-center',
            });
            this._location.back();
-           return;
+           return throwError(error);
        }
        else{
          this.toastr.error("", this.translateService.instant('withdraw_already_exist'), {
@@ -209,7 +210,7 @@ export class HandleErrorMessageService {
            });
            this._location.back();
            this.router.navigate(['/wallet/withdraw', 'add'],{replaceUrl:true});
-          return;
+          return throwError(error);
        }       
      } 
      if (error.status == 400 && this.common.actionType == "insertAccount") 
@@ -240,7 +241,7 @@ export class HandleErrorMessageService {
           timeOut: 3000,
           positionClass: 'toast-bottom-center',
         });
-        return;
+        return throwError(error);
       }
         // if(err == "withdraw delete fail"){   
         //   this.toastr.error("", this.translateService.instant("withdraw_delete_fail"), {
@@ -254,7 +255,7 @@ export class HandleErrorMessageService {
             timeOut: 3000,
             positionClass: 'toast-top-center',
             });
-            return;
+            return throwError(error);
         }
         if(error.error.failCount <= error.error.maxFailCount){ 
           var vv= this.translateService.instant('otp-fail');
@@ -272,7 +273,7 @@ export class HandleErrorMessageService {
             timeOut: 3000,
             positionClass: 'toast-top-center',
           });
-          return;
+          return throwError(error);
         }
         if(error.error.message  == "low_balance"){
     
@@ -280,7 +281,7 @@ export class HandleErrorMessageService {
             timeOut: 1000,
             positionClass: 'toast-bottom-center',
             });
-            return;
+            return throwError(error);
         }
         if(error.error.message=='Bank Account Delete fail , withdrawal pending state')
           {
@@ -288,7 +289,7 @@ export class HandleErrorMessageService {
               timeOut: 3000,
               positionClass: 'toast-top-center',
               });
-              return;
+              return throwError(error);
               
           }
        else{
@@ -318,21 +319,21 @@ export class HandleErrorMessageService {
           timeOut: 3000,
           positionClass: 'toast-top-center',
           });
-          return;
+          return throwError(error);
       }
       if(error.error.message =="Expire Otp" && error.error.failCount == 1){
         this.toastr.error("",this.translateService.instant('invalid-otp'), {
           timeOut: 3000,
           positionClass: 'toast-top-center',
           });
-        return;
+        return throwError(error);
       }
       else{
         this.toastr.error("", this.translateService.instant('invalid-otp'), {
           timeOut: 3000,
           positionClass: 'toast-top-center',
           });
-          return;
+          return throwError(error);
       }
      
      }
@@ -365,15 +366,15 @@ export class HandleErrorMessageService {
             
      }
      if(error.status == 429){
-      return;
+      return throwError(error);
      }
 
-    
-     else{     
-         return;
+
+     else{
+         return throwError(error);
      }
-     
-   }
+    
+  }
   
   
    //304

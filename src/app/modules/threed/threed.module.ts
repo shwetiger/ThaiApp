@@ -20,28 +20,6 @@ import { BetHistoryPageComponent } from '../pages/bet-history-page/bet-history-p
 import { BetHistoryDetailPageComponent } from '../pages/bet-history-detail-page/bet-history-detail-page.component';
 import { TwoDThreeDWinnerComponent } from '../pages/two-dthree-dwinner/two-dthree-dwinner.component';
 
-export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
-  return () => new Promise<any>((resolve: any) => {
-    const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
-    locationInitialized.then(() => {
-      let lang=localStorage.getItem('ngx-webstorage|locallanguage');
-      let langToSet;
-      if(lang == null){
-        langToSet = 'my';
-      }
-      else{
-        langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
-      translate.setDefaultLang(langToSet);
-      translate.use(langToSet).subscribe(() => {
-      }, err => {
-      }, () => {
-        resolve(null);
-      });
-    });
-  });
-}
-
 @NgModule({
   declarations: [
     ThreedInitialPageComponent,
@@ -55,27 +33,11 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
   imports: [
     CommonModule,
     ThreedRoutingModule,
-    SharedModule,
-    TranslateModule.forChild({
-      loader: {
-          provide: TranslateLoader,
-          useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
-      }
-    }),
-    NgxSpinnerModule,   
-    ModalModule,
-    FormsModule,
+    SharedModule
   ],
   providers: [
     BsModalService,
-    CommonService,   
-    {
-      provide: APP_INITIALIZER,
-      useFactory: appInitializerFactory,
-      deps: [TranslateService, Injector],
-      multi: true
-    }
+    CommonService
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

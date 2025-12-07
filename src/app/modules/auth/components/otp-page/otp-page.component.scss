@@ -4,7 +4,7 @@
 #appCapsule {
   background: $background-color !important;
   padding-top: 0px !important; 
-  min-height: 100vh;
+  min-height: auto;
   .phone-box {
     @include box-shadow;  
     border-radius: 5px;
@@ -83,7 +83,7 @@
 
 #appCapsule {
   padding-top: 0px !important;
-  padding-bottom: 100% !important;
+  padding-bottom: 0 !important;
   
 }
 code-input {

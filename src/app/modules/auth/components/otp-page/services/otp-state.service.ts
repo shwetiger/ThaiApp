@@ -26,7 +26,8 @@ export interface FormState {
  * UI 状态
  */
 export interface UiState {
-  isLoading: boolean;
+  isLoading: boolean;      // 用于提交验证 OTP
+  isResending: boolean;    // 用于重发 OTP
   errorMessage: string;
 }
 
@@ -74,6 +75,7 @@ export class OtpStateService {
   
   private uiState$ = new BehaviorSubject<UiState>({
     isLoading: false,
+    isResending: false,
     errorMessage: ''
   });
   
@@ -249,6 +251,13 @@ export class OtpStateService {
     this.uiState$.next({
       ...this.uiState$.value,
       isLoading: loading
+    });
+  }
+  
+  setResending(resending: boolean): void {
+    this.uiState$.next({
+      ...this.uiState$.value,
+      isResending: resending
     });
   }
   
@@ -433,6 +442,7 @@ export class OtpStateService {
     // 重置 UI 状态
     this.uiState$.next({
       isLoading: false,
+      isResending: false,
       errorMessage: ''
     });
     

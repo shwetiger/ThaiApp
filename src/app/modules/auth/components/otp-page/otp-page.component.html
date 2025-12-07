@@ -58,14 +58,14 @@
         <!-- 重发 OTP 按钮 -->
         <a class="btn btn-text-primary float-right mr-2"
            (click)="onResend()" 
-           *ngIf="state.countdown.canResend && !state.ui.isLoading" 
+           *ngIf="state.countdown.canResend && !state.ui.isResending" 
            style="border: 1px solid red; color: #000 !important; font-weight: 600;">
           {{ 'resendotp' | translate }}
         </a>
         
         <!-- 重发中的 loading 提示 -->
         <div class="float-right mr-2" 
-             *ngIf="state.countdown.canResend && state.ui.isLoading"
+             *ngIf="state.countdown.canResend && state.ui.isResending"
              style="color: #666; font-size: 14px; padding: 5px 10px;">
           {{ 'sending' | translate }}...
         </div>
@@ -120,9 +120,8 @@
         </div>
         
         <!-- 客服标题 -->
-        <div class="row justify-content-center mt-5 mb-1" 
-             *ngIf="state.servicePhones.showOnOtpPage">
-          <span style="font-weight: bold; color:#2253A2">
+        <div class="mt-5 mb-2" style="justify-content: center; text-align: center;">
+          <span style="font-weight: bold; color:#2253A2;">
             {{ 'otpservice' | translate }}
           </span>
         </div>

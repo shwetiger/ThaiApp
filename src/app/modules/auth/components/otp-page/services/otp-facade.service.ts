@@ -194,13 +194,13 @@ export class OtpFacadeService {
   verifyOtp(code: string): Observable<boolean> {
     const scenarioState = this.state.getCurrentScenarioState();
     
-    this.state.setLoading(true);
+    this.setLoading(true);
     this.state.clearError();
     
     return this.verification.verify(code, scenarioState.scenario)
       .pipe(
         switchMap(result => {
-          this.state.setLoading(false);
+          this.setLoading(false);
           
           if (!result.success) {
             // 显示错误
@@ -255,7 +255,7 @@ export class OtpFacadeService {
           return of(true);
         }),
         catchError(error => {
-          this.state.setLoading(false);
+          this.setLoading(false);
           this.showError(error.message || OTP_ERROR_MESSAGES.VERIFICATION_FAILED);
           return of(false);
         })
@@ -269,14 +269,14 @@ export class OtpFacadeService {
     const scenarioState = this.state.getCurrentScenarioState();
     const form = this.state.getCurrentFormState();
     
-    // 防止重复点击：如果正在加载中，直接返回
-    if (this.state.getCurrentUiState().isLoading) {
+    // 防止重复点击：如果正在重发中，直接返回
+    if (this.state.getCurrentUiState().isResending) {
       console.warn('Resend OTP is already in progress, ignoring duplicate request');
       return of(void 0);
     }
     
-    // 设置 loading 状态
-    this.state.setLoading(true);
+    // 设置重发 loading 状态
+    this.state.setResending(true);
     
     // 先停止当前倒计时（修复竞态条件问题）
     this.countdown.stop();
@@ -288,14 +288,14 @@ export class OtpFacadeService {
       tap(result => {
         // 从新的响应启动倒计时
         this.countdown.startFromResponse(result);
-        // 重置 loading 状态
-        this.state.setLoading(false);
+        // 重置重发 loading 状态
+        this.state.setResending(false);
       }),
       catchError(error => {
         // 重发失败时保持倒计时停止状态
         this.countdown.reset(0);
-        // 重置 loading 状态
-        this.state.setLoading(false);
+        // 重置重发 loading 状态
+        this.state.setResending(false);
         this.showError(error.message || OTP_ERROR_MESSAGES.RESEND_FAILED);
         return of(void 0);
       }),
@@ -316,10 +316,11 @@ export class OtpFacadeService {
     const translatedMessage = this.translate.instant(messageKey);
     
     this.state.setError(translatedMessage);
-    this.toastr.error('', translatedMessage, {
-      timeOut: duration,
-      positionClass: TOASTR_CONFIG.DEFAULT_POSITION
-    });
+    // TODO 统一提示框，不需要再提示了
+    // this.toastr.error('', translatedMessage, {
+    //   timeOut: duration,
+    //   positionClass: TOASTR_CONFIG.DEFAULT_POSITION
+    // });
   }
   
   clearError(): void {

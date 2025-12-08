@@ -129,7 +129,15 @@ export class OtpVerificationService {
       return throwError(() => new Error('Missing required data for withdraw verification'));
     }
     
-    return this.otpService.checkWithdrawOtp(code, otpSms.request_id, token)
+    // 获取当前 OTP 类型对应的 request_id（支持切换 OTP 类型）
+    const currentDisplayType = this.storage.retrieve(OtpStorageKeys.OTP_TYPE) as OtpDisplayType;
+    const requestId = otpSms.request_ids?.[currentDisplayType] || otpSms.request_id;  // 优先从 request_ids 读取，降级使用 request_id
+    
+    if (!requestId) {
+      return throwError(() => new Error('Missing request_id'));
+    }
+    
+    return this.otpService.checkWithdrawOtp(code, requestId, token)
       .pipe(
         map(result => this.handleWithdrawOtpResult(result)),
         catchError(error => throwError(() => error))
@@ -148,11 +156,19 @@ export class OtpVerificationService {
       return throwError(() => new Error('Missing required data for new device verification'));
     }
     
+    // 获取当前 OTP 类型对应的 request_id（支持切换 OTP 类型）
+    const currentDisplayType = this.storage.retrieve(OtpStorageKeys.OTP_TYPE) as OtpDisplayType;
+    const requestId = otpSms.request_ids?.[currentDisplayType] || otpSms.request_id;  // 优先从 request_ids 读取，降级使用 request_id
+    
+    if (!requestId) {
+      return throwError(() => new Error('Missing request_id'));
+    }
+    
     const updateRequest = {
       phone_no: loginModel.phone_no || '',
       ipAddress: loginModel.ipAddress || '',
       guid: otpSms.guid || '',
-      request_id: String(otpSms.request_id || ''),
+      request_id: String(requestId),
       code: code,
       deviceId: loginModel.deviceId || ''
     };
@@ -184,12 +200,10 @@ export class OtpVerificationService {
     }
     
     const isForgetPassword = scenario === OtpScenario.FORGET_PASSWORD;
-    const token = isForgetPassword ? this.storage.retrieve('token') : undefined;
+    // 注册和忘记密码都是未登录状态，不需要token
+    // token 仅作为可选参数，如果存在则传递（某些特殊场景可能需要）
+    const token = this.storage.retrieve('token') || undefined;
     const registerOtpType = this.storage.retrieve(OtpStorageKeys.REGISTER_OTP_TYPE);
-    
-    if (isForgetPassword && !token) {
-      return throwError(() => new Error('Token required for forget password'));
-    }
     
     return this.otpService.checkOtp(
       otpSms.to,
@@ -281,6 +295,7 @@ export class OtpVerificationService {
     // 验证成功
     if (result.status === 'Success') {
       this.storage.clear(OtpStorageKeys.NEW_DEVICE_OTP_RESPONSE);
+      this.storage.clear(OtpStorageKeys.SCENARIO);
       
       return {
         success: true,
@@ -312,6 +327,7 @@ export class OtpVerificationService {
     // 验证成功
     if (result.status === true) {
       this.storage.clear(OtpStorageKeys.OTP_RESPONSE);
+      this.storage.clear(OtpStorageKeys.SCENARIO);
       
       const registerKey = this.funct.encrypt();
       const navigationPath = scenario === OtpScenario.FORGET_PASSWORD
@@ -359,6 +375,7 @@ export class OtpVerificationService {
           // 清理数据
           this.storage.clear(OtpStorageKeys.INSERT_ACCOUNT);
           this.storage.clear(OtpStorageKeys.WITHDRAW_ACCOUNT_OTP_RESPONSE);
+          this.storage.clear(OtpStorageKeys.SCENARIO);
           this.storage.clear('bankAccountList');  // 注：未在 OtpStorageKeys 中定义
         }),
         map(() => true),

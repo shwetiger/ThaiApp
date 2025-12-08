@@ -70,8 +70,10 @@ export class OtpService {
 
   /**
    * 场景到存储键的映射（统一管理）
+   * @param scenario 业务场景标识
+   * @returns 对应的 localStorage 键名
    */
-  private getStorageKeyByScenario(scenario: string): string {
+  public getStorageKeyByScenario(scenario: string): string {
     if (scenario === OtpScenario.NEW_DEVICE) {
       return OtpStorageKeys.NEW_DEVICE_OTP_RESPONSE;
     }
@@ -382,7 +384,7 @@ export class OtpService {
 
     // 构建完整 URL
     const baseUrl = config.baseUrl === 'apaddressv1' ? this.funct.apaddressv1 : this.funct.ipaddress;
-    let fullUrl = this.funct.ipaddress + config.url;
+    let fullUrl = baseUrl + config.url;
     
     // 如果 URL 包含 phoneNo 参数占位符，替换它
     if (phoneNumber && fullUrl.includes('phoneNo=')) {

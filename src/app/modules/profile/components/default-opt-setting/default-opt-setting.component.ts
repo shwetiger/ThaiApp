@@ -195,16 +195,24 @@ export class DefaultOptSettingComponent implements OnInit {
           if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
             // 合并 request_ids，避免覆盖已有的 request_id
             const displayType = this.otpService.convertToDisplayType(this.selectedType);
+            // 根据场景选择正确的 storageKey
+            const storageKey = this.otpService.getStorageKeyByScenario(this.formPage);
             const enhancedResponse = this.otpService.enhanceResponseWithRequestIds(
-              OtpStorageKeys.OTP_RESPONSE,
+              storageKey,
               this.dto.Response,
               displayType
             );
-            this.storage.store('localOtpSms', enhancedResponse);
-            this.storage.store('localNewDeviceOtpSms', enhancedResponse);
-            this.storage.store('localInsertAccountOtpSms', enhancedResponse);
-            this.storage.clear("Timer");          
+    
+            // 清除所有倒计时相关的缓存，避免切换OTP类型后恢复旧倒计时
+            this.storage.clear("Timer");
+            this.storage.clear("OtpExpiresAt");
+            this.storage.clear("OtpSentAt");
+            this.storage.clear("OtpDuration");
             this.changeotpprocess = true;
+            // 只存储到对应的 storageKey，避免数据污染
+            this.storage.store(storageKey, enhancedResponse);
+            // 更新 OTP 类型，确保返回 OTP 页面时状态同步
+            this.storage.store(OtpStorageKeys.OTP_TYPE, displayType);
             this.storage.store('changeotpprocess', this.changeotpprocess);
             this.common.submitLoading = false;
             this.spinner.hide("submitLoading");

@@ -35,6 +35,9 @@ export class OtpCountdownService implements OnDestroy {
   private readonly SENT_AT_KEY = 'OtpSentAt';  // 新键，暂时保持字符串
   private readonly DURATION_KEY = 'OtpDuration';  // 新键，暂时保持字符串
   
+  // OTP 最大有效期为 180 秒（3分钟），防止客户端时间偏差导致显示异常
+  private readonly MAX_OTP_DURATION_SECONDS = 180;
+  
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private targetTime: Date | null = null;
   private sentAt: Date | null = null;
@@ -75,6 +78,14 @@ export class OtpCountdownService implements OnDestroy {
    * - 格式3: created_at / expire_at（提现接口使用）
    */
   startFromResponse(response: any): void {
+    // 先停止并清除旧的倒计时缓存（防止切换 OTP 类型后恢复旧倒计时）
+    // 无论新响应是否有效，都应该清除旧缓存，避免数据污染
+    this.stop();
+    this.storage.clear(this.EXPIRES_AT_KEY);
+    this.storage.clear(this.TIMER_KEY);
+    this.storage.clear(this.SENT_AT_KEY);
+    this.storage.clear(this.DURATION_KEY);
+    
     if (!response) {
       console.warn('OTP countdown: response is null or undefined');
       return;
@@ -95,13 +106,6 @@ export class OtpCountdownService implements OnDestroy {
       });
       return;
     }
-    
-    // 先停止并清除旧的倒计时缓存（防止切换 OTP 类型后恢复旧倒计时）
-    this.stop();
-    this.storage.clear(this.EXPIRES_AT_KEY);
-    this.storage.clear(this.TIMER_KEY);
-    this.storage.clear(this.SENT_AT_KEY);
-    this.storage.clear(this.DURATION_KEY);
     
     // 解析过期时间并验证有效性
     // 后端返回格式："2025-12-07 01:10:02"（服务器本地时间，UTC+6:30 缅甸时间）
@@ -133,14 +137,13 @@ export class OtpCountdownService implements OnDestroy {
       return;
     }
     
-    const remainingSeconds = Math.floor(remainingMs / 1000);
+    let remainingSeconds = Math.floor(remainingMs / 1000);
     
-    // 限制最大倒计时为10分钟（600秒），防止异常数据
-    const MAX_DURATION_SECONDS = 600;
-    if (remainingSeconds > MAX_DURATION_SECONDS) {
-      this.reset(0);
-      return;
-    }
+    // 限制最大倒计时为 180 秒（3分钟），防止客户端时间偏差导致显示异常
+    remainingSeconds = Math.min(this.MAX_OTP_DURATION_SECONDS, remainingSeconds);
+    
+    // 使用服务器返回的绝对过期时间（保持原有逻辑）
+    this.targetTime = expiredAt;
     
     // 记录发送时间（如果有后端时间就用后端时间，否则使用当前时间）
     if (startAt) {
@@ -150,13 +153,12 @@ export class OtpCountdownService implements OnDestroy {
     }
     this.storage.store(this.SENT_AT_KEY, this.sentAt.getTime());
     
-    // 使用绝对过期时间启动倒计时
+    // 使用调整后的倒计时启动
     this.stop();
-    this.targetTime = expiredAt;
     this.totalDuration = remainingSeconds;
     
-    // 持久化绝对过期时间和总时长
-    this.storage.store(this.EXPIRES_AT_KEY, expiredAt.getTime());
+    // 持久化过期时间和总时长
+    this.storage.store(this.EXPIRES_AT_KEY, this.targetTime.getTime());
     this.storage.store(this.DURATION_KEY, this.totalDuration);
     
     // 立即更新状态
@@ -173,7 +175,8 @@ export class OtpCountdownService implements OnDestroy {
   start(seconds: number): void {
     this.stop();
     
-    const safeSeconds = Math.max(0, Math.floor(seconds));
+    // 限制最大倒计时为 180 秒
+    const safeSeconds = Math.min(this.MAX_OTP_DURATION_SECONDS, Math.max(0, Math.floor(seconds)));
     this.totalDuration = safeSeconds;
     this.targetTime = new Date(Date.now() + safeSeconds * 1000);
     
@@ -216,7 +219,12 @@ export class OtpCountdownService implements OnDestroy {
       // 重新计算总时长（基于当前剩余时间）
       const now = Date.now();
       const remainingMs = expiredAt.getTime() - now;
-      this.totalDuration = Math.max(0, Math.floor(remainingMs / 1000));
+      let totalDuration = Math.max(0, Math.floor(remainingMs / 1000));
+      
+      // 限制最大倒计时为 180 秒，防止客户端时间偏差导致显示异常
+      totalDuration = Math.min(this.MAX_OTP_DURATION_SECONDS, totalDuration);
+      
+      this.totalDuration = totalDuration;
       this.storage.store(this.DURATION_KEY, this.totalDuration);
       
       this.updateState();
@@ -334,7 +342,10 @@ export class OtpCountdownService implements OnDestroy {
       return;
     }
     
-    const remainingSeconds = Math.max(0, Math.floor(distance / 1000));
+    let remainingSeconds = Math.max(0, Math.floor(distance / 1000));
+    
+    // 最终限制：确保显示的剩余秒数不超过 180 秒（防止客户端时间偏差）
+    remainingSeconds = Math.min(this.MAX_OTP_DURATION_SECONDS, remainingSeconds);
     
     // 持久化剩余秒数（用于降级场景）
     this.storage.store(this.TIMER_KEY, remainingSeconds);

@@ -91,6 +91,8 @@ export class OtpPageComponent implements OnInit, AfterViewInit, OnDestroy {
   onResend(): void {
     this.codeInput?.reset();
     this.otpCode = '';
+
+    this.facade.clearError();
     
     this.facade.resendOtp()
       .pipe(takeUntil(this.destroy$))

@@ -2,27 +2,27 @@ import { Component, OnDestroy, OnInit, AfterViewInit, ViewChild } from '@angular
 import { CodeInputComponent } from 'angular-code-input';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { OTP_PAGE_SERVICES } from './services';
-import { OtpFacadeService, OtpPageState } from './services/otp-facade.service';
+import { OtpPageFacadeService } from './otp-page.facade.service';
+import { IOtpState } from 'src/app/shared/otp/services';
 import { CommonService } from 'src/app/shared/service/common.service';
 
 @Component({
   selector: 'app-otp-page',
   templateUrl: './otp-page.component.html',
   styleUrls: ['./otp-page.component.scss'],
-  providers: OTP_PAGE_SERVICES
+  providers: [OtpPageFacadeService]
 })
 export class OtpPageComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('codeInput') codeInput!: CodeInputComponent;
   
-  pageState$!: Observable<OtpPageState>;
+  pageState$!: Observable<IOtpState>;
   
   private destroy$ = new Subject<void>();
   
   private otpCode: string = '';
   
   constructor(
-    private facade: OtpFacadeService,
+    private facade: OtpPageFacadeService,
     public common: CommonService
   ) {
     this.pageState$ = this.facade.pageState$;

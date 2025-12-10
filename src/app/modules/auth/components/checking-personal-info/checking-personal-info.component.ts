@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
@@ -7,18 +7,15 @@ import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
 import { DatePipe } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, retry } from 'rxjs/operators';
-import { Location } from '@angular/common';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
-import { DeviceUUID, Agent } from 'device-uuid';
+import { catchError } from 'rxjs/operators';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { DeviceUUID } from 'device-uuid';
 import { NavigationService } from 'src/app/shared/service/navigation.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
-import { UtilService } from 'src/app/shared/service/util.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-message.service';
 import { CommonService } from 'src/app/shared/service/common.service';
-import { OtpScenario } from '../otp-page/models/otp-type.enum';
-import { OtpStorageKeys } from '../otp-page/models/otp-storage-keys';
+import { OtpService } from 'src/app/shared/otp/services';
 declare var $: any;
 
 @Component({
@@ -63,11 +60,10 @@ export class CheckingPersonalInfoComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private dto: DtoService,
     private http: HttpClient,
-    private util: UtilService,
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private location: Location) {
+    private otpService: OtpService) {
 
     this.BankInfoListByType();
   }
@@ -884,7 +880,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
   }
 
   submit() {
-    this.storage.store("otptype", 'smsotp')
     let checkPhone = this.checkPhoneNumber();
     if (!checkPhone) {
       return;
@@ -898,61 +893,29 @@ export class CheckingPersonalInfoComponent implements OnInit {
     else {
       phoneNumber = this.prefix + this.phoneValue;
     }
-    let headers = new HttpHeaders();
-    this.OtpSms = [];
-    this.OtpSms = this.storage.retrieve('localOtpSms');
-    this.http.get(this.funct.apaddressv1 + 'user/getForgotPassowrdOTP?phoneNo=' + phoneNumber, { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ""))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          if (this.dto.Response.status === true) {
-            this.storage.store('localOtpSms', this.dto.Response);
-            this.storage.clear('registeropttype');
-            this.storage.clear('actionType');
-            this.storage.clear('Timer');
-            this.OtpSms = this.storage.retrieve('localOtpSms'); /*Old =/forget-password */
-            sessionStorage.setItem('rootUrl', "/home");
-            // 使用新的统一场景标识
-            this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.FORGET_PASSWORD);
-            this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'smsotp' }, replaceUrl: true });
-            this.storage.store('localForgetPasswordSuccess', 'success');
-            if (this.dto.Response.statusCode == 200) {
-              if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-                this.toastr.error("Bad request.", 'OTP is not correct', {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-                return null;
-              }
-              if (this.dto.Response.body.split('').trim() == "Try Again") {
-                this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-                return null;
-              }
-              return this.OtpSms;
-            }
-          }
-          else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-            // 使用新的统一场景标识
-            this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.FORGET_PASSWORD);
-            this.router.navigate(['/login/otp'], { state: { formPage: "forgetPassword", otptype: 'smsotp' }, replaceUrl: true });
-          }
-          else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-            this.toastr.error("", this.translateService.instant("otp-request-time-onemin"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-            this.storage.clear('Timer');
-            return null;
-          }
-        }
-      );
+    // 使用 OtpService 发送忘记密码 OTP
+    this.otpService.sendForgetPasswordOtp({ phoneNumber: phoneNumber })
+    .subscribe({
+      next: () => {
+        
+        // 存储业务特定的数据（storeOtpResponse 已处理其他存储）
+        sessionStorage.setItem('rootUrl', "/home");
+        this.storage.store('localForgetPasswordSuccess', 'success');
+        
+        // 导航到 OTP 页面
+        this.router.navigate(['/login/otp'], { replaceUrl: true });
+      },
+      error: (error: Error & { is180SecondsError?: boolean }) => {
+        if (error.is180SecondsError) { 
+          this.router.navigate(['/login/otp'], { replaceUrl: true });
+        } else {
+          this.toastr.error("", error.message, {
+            timeOut: 3000,
+            positionClass: 'toast-top-center',
+          });
+        }        
+      }
+    });
   }
   ForgotPasswordBankSlipCreate() {
     let checkPhone = this.checkPhoneNumber();

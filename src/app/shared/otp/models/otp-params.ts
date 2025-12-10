@@ -12,7 +12,7 @@ import { IBankAccount } from './otp-models';
 export interface IRegisterOtpParams {
   phoneNumber: string;
   email: string;
-  type: OtpType | string;
+  type: OtpType;
 }
 
 /**
@@ -68,4 +68,15 @@ export interface IWithdrawOtpVerificationParams {
   code: string;
   requestId: string | number;
   token: string;
+}
+
+/**
+ * 设置用户短信类型并发送 OTP 参数
+ */
+export interface ISetUserSmsTypeAndSendOtpParams {
+  type: OtpType;              // OTP 类型（'sms_poh' | 'email' | 'vmg_viber'）
+  phoneNumber: string;         // 电话号码
+  scenario: OtpScenario;       // 场景标识
+  funcionName: string;         // 功能名称（必须）
+  token?: string;              // 认证 token（可选）
 }

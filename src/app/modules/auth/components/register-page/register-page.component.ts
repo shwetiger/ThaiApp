@@ -6,14 +6,13 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { Location } from '@angular/common';
 import { FunctService } from 'src/app/shared/service/funct.service';
-import { UtilService } from 'src/app/shared/service/util.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
-import { OtpStorageKeys, OtpScenario } from '../otp-page/models';
+import { OtpService } from 'src/app/shared/otp/services';
+import { OtpStorageKeys, OtpType } from 'src/app/shared/otp/models';
 
 @Component({
   selector: 'app-register-page',
@@ -44,11 +43,10 @@ export class RegisterPageComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private dto: DtoService,
     private http: HttpClient,
-    private util: UtilService,
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location) {
+    private otpService: OtpService) {
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
 
@@ -59,7 +57,7 @@ export class RegisterPageComponent implements OnInit {
     this.storage.clear('formPage');
     this.storage.clear('formPageType');
     this.prefix = this.storage.retrieve('localPhonePrefix');
-    this.registeremail = this.storage.retrieve("registeremail")
+    this.registeremail = this.storage.retrieve(OtpStorageKeys.REGISTER_EMAIL); // 恢复email
     if (this.registeremail != '') {
       this.registerModel = {
         email_address: this.registeremail
@@ -231,9 +229,7 @@ export class RegisterPageComponent implements OnInit {
       if (this.isValidEmail == true) {
         let headers = new HttpHeaders();
         this.http.get(this.funct.ipaddress + 'user/isExistEmail?email=' + this.registerModel.email_address, { headers: headers })
-          .pipe(
-            catchError(this.handleError.bind(this))
-          )
+          .pipe( catchError(this.handleError.bind(this)) )
           .subscribe(
             result => {
               this.dto.Response = result;
@@ -241,95 +237,37 @@ export class RegisterPageComponent implements OnInit {
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
               if (this.isEmailExist == false) {
-                this.storage.store("localEmail", this.registerModel.email_address)
-                this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTP?phoneNo=' + phoneNumber + '&type=' + this.registerottype + '&email=' + this.registerModel.email_address, { headers: headers })
-                  .pipe(
-                    catchError(this.handleError.bind(this))
-                  )
-                  .subscribe(
-                    result => {
-                      this.dto.Response = {};
-                      this.dto.Response = result;
-                      if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-                        this.common.submitLoading = false;
-                        this.spinner.hide("submitLoading");
-                        this.storage.store('localOtpSms', this.dto.Response);
-                        this.storage.store('registeremail', this.registerModel.email)
-                        this.storage.store("previousPh", this.phoneValue);
-                         this.storage.store("previousemail", this.registerModel.email);
-                        this.OtpSms = this.storage.retrieve('localOtpSms');
-                        // 使用新的统一场景标识
-                        this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.REGISTER);
-                        this.storage.store("otptype", 'smsotp');
-                        this.storage.clear("Timer");
-                        this.router.navigate(['/login/otp'], { state: { otptype: 'smsotp' }, replaceUrl: true });
-                        if (this.dto.Response.statusCode == 200) {
-                          if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-                            this.toastr.error("Bad request.", 'OTP is not correct', {
-                              timeOut: 3000,
-                              positionClass: 'toast-top-center',
-                            });
-                            return null;
-                          }
-                          if (this.dto.Response.body.split('').trim() == "Try Again") {
-                            this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                              timeOut: 3000,
-                              positionClass: 'toast-top-center',
-                            });
-                            return null;
-                          }
-                          return this.OtpSms;
-                        }
-                      }
-                      else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-                        const previosPh = this.storage.retrieve('previousPh');
-                        const previousemail=this.storage.retrieve('previousemail');
-                        if (previosPh != this.phoneValue && this.registerottype!='email') {
-                          this.storage.retrieve('localOtpSms').request_id = null;
-                          this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                            timeOut: 3000,
-                            positionClass: 'toast-top-center',
-                          });
-                          return null;
-                        }
-                        if (previousemail != this.registerModel.email_address && this.registerottype=='email') {
-                          this.storage.retrieve('localOtpSms').request_id = null;
-                          this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                            timeOut: 3000,
-                            positionClass: 'toast-top-center',
-                          });
-                          return null;
-                        }
-                        this.storage.store('registeremail', this.registerModel.email)
-                        this.OtpSms = this.storage.retrieve('localOtpSms');
-                        // 使用新的统一场景标识
-                        this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.REGISTER);
-                        this.storage.store("otptype", 'smsotp');
-                        this.common.submitLoading = false;
-                        this.spinner.hide("submitLoading");
-                        this.router.navigate(['/login/otp'], { state: { otptype: 'smsotp' }, replaceUrl: true });
-                      }
-
-                      else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-                        this.toastr.error("", this.translateService.instant("otp-request-time-onemin"), {
-                          timeOut: 3000,
-                          positionClass: 'toast-top-center',
-                        });
-                        this.storage.clear('Timer');
-                        return null;
-                      }
-                    }
-                  );
-              }
-
-              else {
+                this.storage.store("localEmail", this.registerModel.email_address);
+                
+                // 使用 OtpService 发送 OTP
+                this.otpService.sendRegisterOtp({
+                  phoneNumber: phoneNumber,
+                  email: this.registerModel.email_address || '',
+                  type: OtpType.SMS
+                })
+                .subscribe({
+                  next: () => {
+                      this.storage.store(OtpStorageKeys.REGISTER_EMAIL, this.registerModel.email_address);            
+                      this.router.navigate(['/login/otp'], { replaceUrl: true });
+                  },
+                  error: (error: Error & { is180SecondsError?: boolean }) => {
+                    if (error.is180SecondsError) {
+                      this.router.navigate(['/login/otp'], { replaceUrl: true });
+                    } else {
+                      this.toastr.error("", error.message, {
+                        timeOut: 3000,
+                        positionClass: 'toast-top-center',
+                      });
+                    }    
+                  }
+                });
+              } else {
                 this.common.submitLoading = false;
                 this.spinner.hide("submitLoading");
                 this.toastr.error("", this.translateService.instant("email_already_used"), {
                   timeOut: 5000,
                   positionClass: 'toast-top-center',
                 });
-                return;
               }
             });
       }

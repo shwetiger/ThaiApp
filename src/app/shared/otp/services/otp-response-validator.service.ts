@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { environment } from 'src/environments/environment';
 
 /**
  * OTP 响应验证服务
@@ -32,6 +33,9 @@ export class OtpResponseValidatorService {
    * @returns 验证后的响应
    */
   validateSendResponse(response: any): any {
+
+    !environment.production &&  console.log('validateSendResponse response:', response);
+
     // 格式4: 布尔值 false（设置失败）
     if (response === false) {
       throw new Error(this.translate.instant('Server Error') || 'Server Error');
@@ -43,8 +47,11 @@ export class OtpResponseValidatorService {
       const message = response.message || '';
       
       // 处理 "180 seconds" 错误
+      // 通过错误对象传递标志，避免共享状态问题
       if (message.includes('180 seconds')) {
-        throw new Error(this.translate.instant('otp-request-time-threemin') || message);
+        const error = new Error(this.translate.instant('otp-request-time') || message);
+        (error as any).is180SecondsError = true;
+        throw error;
       }
       
       // 处理 "60 seconds" 错误
@@ -71,6 +78,13 @@ export class OtpResponseValidatorService {
       return response;
     }
 
+    // errorCode === '000' 成功
+    if (response?.errorCode === '000') {
+      const error = new Error('');
+        (error as any).is180SecondsError = true;
+        throw error;
+    }
+
     // 未知响应格式，需要检查是否有必要的字段，必填字段缺失，抛出异常，响应格式不符合预期
     if (!this.hasRequiredFields(response)) {
       const errorMessage = this.translate.instant('Invalid OTP response format') || 'Invalid OTP response format';
@@ -91,7 +105,9 @@ export class OtpResponseValidatorService {
 
     // 如果错误消息包含时间限制，进行翻译
     if (errorMessage?.includes('180 seconds')) {
-      throw new Error(this.translate.instant('otp-request-time-threemin') || errorMessage);
+      const error = new Error(this.translate.instant('otp-request-time') || errorMessage);
+      (error as any).is180SecondsError = true;
+      throw error;
     }
     
     if (errorMessage?.includes('60 seconds')) {

@@ -1,21 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-message.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { UtilService } from 'src/app/shared/service/util.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
-import { OtpScenario } from '../otp-page/models/otp-type.enum';
-import { OtpStorageKeys } from '../otp-page/models/otp-storage-keys';
-
+import { OtpService } from 'src/app/shared/otp/services';
 @Component({
   selector: 'app-login-verify-phone-page',
   templateUrl: './login-verify-phone-page.component.html',
@@ -63,8 +61,9 @@ export class LoginVerifyPhonePageComponent implements OnInit {
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location) {
-
+    private _location: Location,
+    private otpService: OtpService) {
+    
     this.actionType = history.state.actionType;
     this.phoneNumber = history.state.phoneNumber;
     this.translateService.addLangs(this.supportLanguages);
@@ -156,71 +155,48 @@ export class LoginVerifyPhonePageComponent implements OnInit {
 
   getOtp() {
     this.common.submitLoading = true;
-      this.spinner.show("submitLoading");
-      let phCheck = this.checkPhoneNumber();
-      if (phCheck == false) {
-        return;
-      }
-      this.phoneValue = this.storage.retrieve('localPhoneValue');
-      let phoneNumber;
-      if (this.phoneValue.startsWith("0")) {
-        phoneNumber = this.prefix + this.phoneValue.substring(
-          1, this.phoneValue.length);
-      }
-      if (!this.phoneValue.startsWith("0")) //XXXX 
-      {
-        phoneNumber = this.prefix + this.phoneValue;
-      }
-      let headers = new HttpHeaders();
-      this.http.get(this.funct.apaddressv1 + 'user/getNewDeviceOTP?phoneNo=' + phoneNumber, { headers: headers })
-        .pipe(
-          catchError(this.handleErrorMessage.handleError.bind(this, ''))
-        )
-        .subscribe(
-          result => {
-            this.common.submitLoading = false;
-            this.spinner.hide("submitLoading");
-            this.dto.Response = result;
-            if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-              this.storage.store('localNewDeviceOtpSms', this.dto.Response);
-              this.newDeviceOtpSms = this.storage.retrieve('localNewDeviceOtpSms');
-              this.storage.store("otptype", 'smsotp');
-              // 使用新的统一场景标识
-              this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.NEW_DEVICE);
-              this.storage.clear("Timer");
-              this.router.navigate(['/login/otp'], { state: { actionType: 'NEWDIVICE', otptype: 'smsotp' }, replaceUrl: true });
-              if (this.dto.Response.statusCode == 200) {
-                if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-                  this.toastr.error("Bad request.", 'OTP is not correct', {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-                if (this.dto.Response.body.split('').trim() == "Try Again") {
-                  this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-                return this.newDeviceOtpSms;
-              }
-            }
-            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-              this.router.navigate(['/login/otp'], { state: { actionType: 'NEWDIVICE', otptype: 'smsotp' }, replaceUrl: true });
-            }
-            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-              this.toastr.error("", this.translateService.instant("otp-request-time-onemin"), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-              this.storage.clear('Timer');
-              return null;
-            }
+    this.spinner.show("submitLoading");
 
-          }
-        );
+    let phCheck = this.checkPhoneNumber();
+    if (phCheck == false) {
+      this.common.submitLoading = false;
+      this.spinner.hide("submitLoading");
+      return;
+    }
+
+    this.phoneValue = this.storage.retrieve('localPhoneValue');
+    let phoneNumber: string;
+    if (this.phoneValue.startsWith("0")) {
+      phoneNumber = this.prefix + this.phoneValue.substring(1, this.phoneValue.length);
+    } else {
+      phoneNumber = this.prefix + this.phoneValue;
+    }
+     
+    // 使用 OtpService 发送新设备 OTP（不需要 token）
+    this.otpService.sendNewDeviceOtp({
+      phoneNumber: phoneNumber
+    })
+    .subscribe({
+      next: () => {
+        this.common.submitLoading = false;
+        this.spinner.hide("submitLoading");
+        this.router.navigate(['/login/otp'], { replaceUrl: true });
+      },
+      error: (error: Error & { is180SecondsError?: boolean }) => {
+        this.common.submitLoading = false;
+        this.spinner.hide("submitLoading");
+
+        if (error.is180SecondsError) { 
+          this.router.navigate(['/login/otp'], { replaceUrl: true });
+        } else {
+          this.toastr.error("", error.message, {
+            timeOut: 3000,
+            positionClass: 'toast-top-center',
+          });
+        }
+        
+      }
+    });
   }
 
   selectLang(lang: string) {

@@ -23,22 +23,29 @@ export class OtpStorageKeys {
   static readonly OTP_EXPIRES_AT = 'otpExpiresAt';
 
   /** 保存每次发送 otp 后服务器返回的 request_id 和 otp过期时间 */
-  // 保存的数据格式 { vmg_viber: { request_id: string | number, expires_at: string }, email: { ... }, sms: { ... } }
+  // 保存的数据格式 { vmg_viber: { request_id: string | number, expires_at: string }, email: { ... }, sms_poh: { ... } }
   static readonly OTP_REQUEST_INFO = 'otpRequestInfo';
   
   // ========== 业务特定数据 ==========
   
   /** 银行账户列表（仅提现场景需要） */
-  static readonly BANK_ACCOUNT_LIST = 'otpBankAccountList';
+  static readonly BANK_ACCOUNT_LIST = 'bankAccountList';
+
+  /** 插入账户标识（仅提现场景需要） */
+  static readonly INSERT_ACCOUNT = 'localInsertAccount';
   
   /** 登录模型（仅新设备场景需要） */
-  static readonly LOGIN_MODEL = 'otpLoginModel';
-  
-  /** 插入账户标识（仅提现场景需要） */
-  static readonly INSERT_ACCOUNT = 'otpInsertAccount';
+  static readonly LOGIN_MODEL = 'localLoginModel';
   
   // ========== 服务电话（可选缓存）==========
   
   /** 服务电话列表（可选的缓存，提升性能） */
   static readonly SERVICE_PHONE_LIST = 'otpServicePhoneList';
+
+  // ========== 注册场景专用 ==========
+  static readonly REGISTER_EMAIL = 'registeremail';
+
+  /** 电话号码 */
+  static readonly PHONE_NUMBER = 'localPhoneValue';
+  static readonly PHONE_PREFIX = 'localPhonePrefix';
 }

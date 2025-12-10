@@ -8,8 +8,8 @@
  */
 export enum OtpType {
   VMG_VIBER = 'vmg_viber',
+  SMS = 'sms_poh',
   EMAIL = 'email',
-  SMS = 'sms'
 }
 
 /**

@@ -3,6 +3,8 @@
  * 提供类型安全的数据结构
  */
 
+import { OtpType, OtpDisplayType } from './otp-type.enum';
+
 /**
  * OTP 响应接口
  * 
@@ -44,6 +46,27 @@ export interface IOtpResponse {
 }
 
 /**
+ * OTP 类型查询结果接口
+ * 用于 getOtpType() 方法的返回值
+ */
+export interface IOtpTypeResult {
+  /** OTP 业务类型（SMS/Email/Viber） */
+  otpType: OtpType;
+  
+  /** OTP 显示类型（用于 UI 显示） */
+  displayType: OtpDisplayType;
+  
+  /** 发送者信息（电话号码或邮箱地址） */
+  sender: string;
+
+  /** 邮箱地址（当 otpType 为 Email 时存在） */
+  email?: string;
+
+  /** 原始返回的 smstype 字段（可选） */
+  smstype?: string;
+}
+
+/**
  * 用户短信类型查询响应接口
  * 用于 user/userSmsType API
  */
@@ -58,11 +81,11 @@ export interface IUserSmsTypeResponse {
  */
 export interface IUpdateDeviceIdRequest {
   deviceId: string;
-  phoneNo: string;
   ipAddress: string;
   guid: string;
-  requestId: string;
+  request_id: string;
   code: string;
+  phone_no: string;
 }
 
 /**
@@ -105,6 +128,7 @@ export interface IBankAccount {
 export interface IOtpRequestInfo {
   request_id: string | number;
   expires_at: string;  // 服务器返回的过期时间字符串
+  sent_at: string;  // 服务器返回的发送时间字符串
 }
 
 /**

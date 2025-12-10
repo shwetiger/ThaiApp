@@ -58,6 +58,7 @@ import { QrViewDialogComponent } from './dialog/qr-view-dialog/qr-view-dialog.co
 import { AppSplashScreenAdsComponent } from './components/app-splash-screen-ads/app-splash-screen-ads.component';
 import { BetSectionColsedComponent } from './dialog/bet-section-colsed/bet-section-colsed.component';
 import { ZawgyiDetectorModule } from '@myanmartools/ng-zawgyi-detector';
+import { ResizeService } from 'ngx-owl-carousel-o/lib/services/resize.service';
 //import { MaintenanceTimeComponent } from './maintenance-time/maintenance-time.component';
 
 @NgModule({

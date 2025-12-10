@@ -118,6 +118,7 @@ export class PasswordResetComponent implements OnInit {
       result => {
         this.dto.Response = result;
         if (this.dto.Response == true) {
+          this.storage.store('forgetPasswordModel', this.registerModel);
           this.router.navigate(['/login/forget-password-success'], { state: { 'forgetPasswordModel': this.registerModel }, replaceUrl: true });
           return true;
         }

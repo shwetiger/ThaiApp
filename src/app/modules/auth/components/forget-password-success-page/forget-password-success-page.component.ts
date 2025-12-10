@@ -17,6 +17,7 @@ import { UtilService } from 'src/app/shared/service/util.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { ForgetLoginDeviceDialogComponent } from 'src/app/shared/dialog/forget-login-device-dialog/forget-login-device-dialog.component';
+import { OtpService } from 'src/app/shared/otp/services';
 
 @Component({
   selector: 'app-forget-password-success-page',
@@ -113,10 +114,11 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
 
   async goToAutoLogin() {
     let headers = new HttpHeaders();
-    this.loginModel.phone_no = this.oldLoginModel.phone_no;
-    this.loginModel.app_version = require('../../../../../../package.json').version;
+    const registerModel = this.storage.retrieve('forgetPasswordModel');
+    this.loginModel.phone_no = registerModel.phone_no;
+    this.loginModel.app_version = registerModel.appVersion;
     this.loginModel.deviceId = new DeviceUUID().get();
-    this.loginModel.password = this.oldLoginModel.password;
+    this.loginModel.password = registerModel.password;
     if (this.storage.retrieve('localFcmtoken') != null && this.storage.retrieve('localFcmtoken') != undefined) {
       this.loginModel.fcmtoken = this.storage.retrieve('localFcmtoken');
     }
@@ -136,23 +138,15 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
               this.storage.store('token', this.dto.token);
               this.storage.store('isUserLoggedIn', this.util.isLogged);
               this.storage.clear('localLoginModel');
-              var successBack = this.storage.retrieve('localForgetPasswordSuccess');
-              if (successBack != null && successBack != undefined) {
-                this.storage.clear('localForgetPasswordSuccess');
-                this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
-                  // Prevent browser back
+              this.storage.clear('localForgetPasswordSuccess');
+              this.storage.clear('forgetPasswordModel');
+              this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+                // Prevent browser back
+                history.pushState(null, '', location.href);
+                window.addEventListener('popstate', () => {
                   history.pushState(null, '', location.href);
-                  window.addEventListener('popstate', () => {
-                    history.pushState(null, '', location.href);
-                  });
                 });
-              }
-              else {
-                this.storage.clear('localForgetPasswordSuccess');
-                history.pushState(null, '', '/');    // history stack ကို reset တူတူလုပ်
-                this.router.navigate(['/home'], { replaceUrl: true });
-                history.go(-3);
-              }
+              });
             }
           }
           else {
@@ -172,47 +166,6 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
   }
 
   UpdateNewDeviceId() {
-    this.common.submitLoading = true;
-    this.spinner.show("submitLoading");
-    let headers = new HttpHeaders();
-    this.updateDeviceIdforforget.phone_no = this.oldLoginModel.phone_no;
-    this.updateDeviceIdforforget.ipAddress = this.oldLoginModel.ipAddress;
-    this.updateDeviceIdforforget.deviceId = new DeviceUUID().get();
-    this.http.post(this.funct.ipaddress + 'user/updateDeviceId', this.updateDeviceIdforforget, { headers: headers })
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.common.submitLoading = false;
-          this.spinner.hide("submitLoading");
-          this.dto.Response = result;
-          var loginDevice = this.storage.retrieve('localForgetLoginDevice');
-          if (this.dto.Response.status == 401) {
-            if (this.dto.Response.code == 0) {
-              this.toastr.error("", this.translateService.instant('invalid-otp-code'),
-                {
-                  timeOut: 2000,
-                  positionClass: 'toast-bottom-center',
-                });
-              return;
-            }
-          }
-          if (this.dto.Response.status == "Success") {
-            this.goToAutoLogin();
-            this.storage.clear('localForgetLoginDevice');
-          }
-          else {
-            this.toastr.error("Tip", this.dto.Response.message.toString(), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-
-            return false;
-          }
-
-        }
-      );
-
+    this.goToAutoLogin();
   }
 }

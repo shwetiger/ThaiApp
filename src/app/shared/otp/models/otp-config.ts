@@ -56,9 +56,9 @@ export const OTP_SEND_CONFIG: Record<OtpScenario, IOtpSendConfig> = {
     baseUrl: 'apaddressv1'
   },
   [OtpScenario.NEW_DEVICE]: {
-    url: 'user/getRegisterDeviceOTP?phoneNo=',
+    url: 'user/getNewDeviceOTP?phoneNo=',
     requiresAuth: false,
-    baseUrl: 'ipaddress'
+    baseUrl: 'apaddressv1'
   },
   [OtpScenario.WITHDRAW_INSERT]: {
     url: 'transaction/getWithdrawOTP',

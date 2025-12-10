@@ -42,7 +42,7 @@ export class OtpErrorHandlerService {
 
     // 网络错误
     if (error.status === 0) {
-      return throwError(() => new Error(this.translate.instant('check your internet connection') || 'Network error'));
+      return throwError(new Error(this.translate.instant('check your internet connection') || 'Network error'));
     }
 
     // 403 错误：频率限制相关
@@ -72,64 +72,64 @@ export class OtpErrorHandlerService {
 
     // 其他错误：使用服务器返回的消息或默认消息
     const errorMessage = error.error?.Message || error.error?.message || error.error || error.message;
-    return throwError(() => new Error(errorMessage || this.translate.instant('Unknown error') || 'Unknown OTP error'));
+    return throwError(new Error(errorMessage || 'Unknown OTP error'));
   }
 
   /**
    * 处理 403 禁止访问错误
    */
   private handle403Forbidden(error: HttpErrorResponse): Observable<never> {
-    const errorMessage = error.error?.Message || error.error?.message || error.error;
+    const errorMessage = error.error?.Message || error.error?.message;
 
     // so_close: 请求太频繁
     if (errorMessage === 'so_close') {
-      return throwError(() => new Error(this.translate.instant('otp-request-time')));
+      return throwError(new Error(this.translate.instant('otp-request-time')));
     }
 
     // over_limited.: 超过限制
     if (errorMessage === 'over_limited.') {
-      return throwError(() => new Error(this.translate.instant('otp-request-time-ten')));
+      return throwError(new Error(this.translate.instant('otp-request-time-ten')));
     }
 
     // temporary_blocked: 临时封禁
     if (errorMessage === 'temporary_blocked') {
-      return throwError(() => new Error(this.translate.instant('tem_block')));
+      return throwError(new Error(this.translate.instant('tem_block')));
     }
 
     // 其他 403 错误
-    return throwError(() => new Error(errorMessage || this.translate.instant('Forbidden') || 'Forbidden'));
+    return throwError(new Error(errorMessage || this.translate.instant('Forbidden') || 'Forbidden'));
   }
 
   /**
    * 处理 404 未找到错误
    */
   private handle404NotFound(error: HttpErrorResponse): Observable<never> {
-    const errorMessage = error.error?.Message || error.error?.message || error.error;
+    const errorMessage = error.error?.Message || error.error?.message;
 
     // 需要先添加邮箱
     if (errorMessage === 'Please add user email first!') {
       this.router.navigate(['/me-page/email-address']);
       console.warn('navigate to email address page');
-      return throwError(() => new Error(this.translate.instant('emailRequired') || errorMessage));
+      return throwError(new Error(this.translate.instant('emailRequired') || errorMessage));
     }
 
     // 其他 404 错误
-    return throwError(() => new Error(errorMessage || this.translate.instant('Not found') || 'Not found'));
+    return throwError(new Error(errorMessage || this.translate.instant('Not found') || 'Not found'));
   }
 
   /**
    * 处理 406 不可接受错误
    */
   private handle406NotAcceptable(error: HttpErrorResponse): Observable<never> {
-    const errorMessage = error.error?.Message || error.error?.message || error.error;
+    const errorMessage = error.error?.Message || error.error?.message;
 
     // 手机号已被使用
     if (errorMessage === "User's phone already exists!" || errorMessage === 'phone_already_used') {
-      return throwError(() => new Error(this.translate.instant('phoneNumberTaken')));
+      return throwError(new Error(this.translate.instant('phoneNumberTaken')));
     }
 
     // 其他 406 错误
-    return throwError(() => new Error(errorMessage || this.translate.instant('Not acceptable') || 'Not acceptable'));
+    return throwError(new Error(errorMessage || this.translate.instant('Not acceptable') || 'Not acceptable'));
   }
 
   /**
@@ -142,21 +142,21 @@ export class OtpErrorHandlerService {
     this.router.navigate(['/login'], { replaceUrl: true });
 
     // 返回已翻译的错误消息
-    return throwError(() => new Error(this.translate.instant('youNeedLogin')));
+    return throwError(new Error(this.translate.instant('youNeedLogin')));
   }
 
   /**
    * 处理 400 错误请求
    */
   private handle400BadRequest(error: HttpErrorResponse): Observable<never> {
-    const errorMessage = error.error?.Message || error.error?.message || error.error;
+    const errorMessage = error.error?.Message || error.error?.message;
 
     // 如果错误消息是 "Invalid Otp"，翻译为无效 OTP 码
     if (errorMessage === 'Invalid Otp') {
-      return throwError(() => new Error(this.translate.instant('invalid-otp-code')));
+      return throwError(new Error(this.translate.instant('invalid-otp-code')));
     }
 
     // 其他 400 错误
-    return throwError(() => new Error(errorMessage || this.translate.instant('Bad request') || 'Bad request'));
+    return throwError(new Error(errorMessage || this.translate.instant('Bad request') || 'Bad request'));
   }
 }

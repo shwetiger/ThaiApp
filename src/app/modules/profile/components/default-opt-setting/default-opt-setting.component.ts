@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
 import { FunctService } from 'src/app/shared/service/funct.service';
@@ -10,10 +10,10 @@ import { Location } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Router, ActivatedRoute } from '@angular/router';
-import { catchError, retry } from 'rxjs/operators';
-import { OtpScenario, OtpDisplayType } from 'src/app/modules/auth/components/otp-page/models/otp-type.enum';
-import { OtpService } from 'src/app/modules/auth/components/otp-page/services/otp-service';
-import { OtpStorageKeys } from 'src/app/modules/auth/components/otp-page/models/otp-storage-keys';
+import { catchError } from 'rxjs/operators';
+import { OtpScenario, OtpType } from 'src/app/shared/otp/models/otp-type.enum';
+import { OtpService } from 'src/app/shared/otp/services/otp.service';
+import { OtpStorageKeys } from 'src/app/shared/otp/models/otp-storage-keys';
 
 
 @Component({
@@ -60,7 +60,10 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.registerotptype = this.storage.retrieve('registeropttype')
+    // 优先从统一存储键读取，如果不存在则使用默认值
+    this.registerotptype = this.storage.retrieve(OtpStorageKeys.OTP_TYPE) || 
+                           this.storage.retrieve('registeropttype') || 
+                           OtpType.SMS;
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
     this.common.submitLoading=false;
@@ -84,14 +87,14 @@ export class DefaultOptSettingComponent implements OnInit {
     this.spinner.show("submitLoading");
     // 兼容新旧场景标识
     if (this.formPage == OtpScenario.FORGET_PASSWORD || this.formPage == OtpScenario.NEW_DEVICE || 
-        this.formPage == OtpScenario.WITHDRAW_INSERT || this.formPage == OtpScenario.WITHDRAWAL_ADD) {
+        this.formPage == OtpScenario.WITHDRAW_INSERT) {
       if (this.formPage == OtpScenario.FORGET_PASSWORD) {
         this.funcionName = 'Forgot Password OTP'
       }
       if (this.formPage == OtpScenario.NEW_DEVICE) {
         this.funcionName = 'New Device OTP'
       }
-      if (this.formPage == OtpScenario.WITHDRAW_INSERT || this.formPage == OtpScenario.WITHDRAWAL_ADD) {
+      if (this.formPage == OtpScenario.WITHDRAW_INSERT) {
         this.funcionName = 'Withdrawal OTP'
       }
       this.SaveOtptypeandgetotp();
@@ -183,72 +186,58 @@ export class DefaultOptSettingComponent implements OnInit {
 
   SaveOtptypeandgetotp() {
     this.token = this.storage.retrieve('token');
-    const headers = new HttpHeaders();
-    this.http.post(this.funct.apaddressv1 + 'user/setusersmstypeAndGetOTP?type=' + this.selectedType + '&phone_no=' + this.phoneNumber + '&funcionName=' + this.funcionName, { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = result;
-          console.log("OtpResponse1>>>>>"+JSON.stringify(this.dto.Response));
-          if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-            // 合并 request_ids，避免覆盖已有的 request_id
-            const displayType = this.otpService.convertToDisplayType(this.selectedType);
-            // 根据场景选择正确的 storageKey
-            const storageKey = this.otpService.getStorageKeyByScenario(this.formPage);
-            const enhancedResponse = this.otpService.enhanceResponseWithRequestIds(
-              storageKey,
-              this.dto.Response,
-              displayType
-            );
     
-            // 清除所有倒计时相关的缓存，避免切换OTP类型后恢复旧倒计时
-            this.storage.clear("Timer");
-            this.storage.clear("OtpExpiresAt");
-            this.storage.clear("OtpSentAt");
-            this.storage.clear("OtpDuration");
-            this.changeotpprocess = true;
-            // 只存储到对应的 storageKey，避免数据污染
-            this.storage.store(storageKey, enhancedResponse);
-            // 更新 OTP 类型，确保返回 OTP 页面时状态同步
-            this.storage.store(OtpStorageKeys.OTP_TYPE, displayType);
-            this.storage.store('changeotpprocess', this.changeotpprocess);
-            this.common.submitLoading = false;
-            this.spinner.hide("submitLoading");
-            this._location.back();
-            this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-          }
+    // 验证 selectedType 是否为有效的 OtpType 枚举值，并转换为 OtpType
+    const validOtpTypes = Object.values(OtpType);
+    const otpType = (this.selectedType && validOtpTypes.includes(this.selectedType as OtpType))
+      ? this.selectedType as OtpType
+      : OtpType.SMS; // 如果无效，使用默认值 SMS
+    
+    // 将 formPage 转换为 OtpScenario
+    const scenario = this.formPage as OtpScenario;
+    
+    this.otpService.sendOtpBySettingType({
+      type: otpType,
+      phoneNumber: this.phoneNumber,
+      scenario: scenario,
+      funcionName: this.funcionName,
+      token: this.token
+    })
+    .subscribe({
+      next: (result) => {
+        // 成功处理（包括 180 seconds 的情况）
+        this.changeotpprocess = true;
+        this.storage.store('changeotpprocess', this.changeotpprocess);
+        
+        this.common.submitLoading = false;
+        this.spinner.hide("submitLoading");
+        this._location.back();
+        this.toastr.success("", this.translateService.instant("bank_accname_success"), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+      },
+      error: (error: Error & { is180SecondsError?: boolean }) => {
+        // 错误处理（统一由新服务处理，包括 60 seconds 错误）
+        this.common.submitLoading = false;
+        this.spinner.hide("submitLoading");
 
-          else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-            this.common.submitLoading = false;
-            this.spinner.hide("submitLoading");
-            this._location.back();
-            this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-          }
-
-          else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-            this.toastr.error("", this.translateService.instant("otp-request-time"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-            this.storage.clear('Timer');
-            return null;
-          }
-
+        if (error.is180SecondsError) {
+          this._location.back();
+        } else {
+          this.toastr.error("", error.message, {
+            timeOut: 3000,
+            positionClass: 'toast-top-center',
+          });
         }
-      );
+      }
+    });
   }
 
   getotptype() {
     if (this.formPage == 'register' || this.formPage == 'registerpage') {
-      this.selectedType = this.registerotptype;
+      // 确保 selectedType 有值，如果 registerotptype 为空则使用默认值
+      this.selectedType = this.registerotptype || OtpType.SMS;
       if (this.phoneNumber == "" || this.phoneNumber == undefined || this.phoneNumber == null) {
         this.phonesender = '***254';
         this.phonenodescription = this.translateService.instant("sub_otpdesciption1");
@@ -315,7 +304,8 @@ export class DefaultOptSettingComponent implements OnInit {
   getregisterOtp() {
     this.common.submitLoading = true;
     this.spinner.show("submitLoading");
-    let headers = new HttpHeaders();
+    
+    // 邮箱类型验证
     if (this.selectedType == 'email') {
       if ((this.email == undefined || this.email == '') && this.selectedType == 'email') {
         this.toastr.warning("", this.translateService.instant("emailRequired"), {
@@ -325,134 +315,51 @@ export class DefaultOptSettingComponent implements OnInit {
         this.router.navigate(['/login/register']);
         this.common.submitLoading = false;
         this.spinner.hide("submitLoading");
-      }
-      else {
-        this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTP?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType + '&email=' + this.email, { headers: headers })
-          .pipe(
-            catchError(this.handleErrorMessage.handleError.bind(this, ''))
-          )
-          .subscribe(
-            result => {
-              this.dto.Response = result;
-              console.log("OtpResponse2>>>>>"+JSON.stringify(this.dto.Response));
-              this.gmailResponse = this.dto.Response;
-              if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-                this.gmailResponse.to = this.email;
-                this.common.submitLoading = false;
-                this.spinner.hide("submitLoading");
-                this.storage.clear("Timer");
-                this.spinner.hide("submitLoading");
-                this.storage.store("registeropttype", this.selectedType);
-                // 合并 request_ids，避免覆盖已有的 request_id
-                const displayType = this.otpService.convertToDisplayType(this.selectedType);
-                const enhancedResponse = this.otpService.enhanceResponseWithRequestIds(
-                  OtpStorageKeys.OTP_RESPONSE,
-                  this.gmailResponse,
-                  displayType
-                );
-                this.storage.store('localOtpSms', enhancedResponse);
-                this._location.back();
-                this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-              }
-              else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-                this.storage.store("registeropttype", this.selectedType)
-                this._location.back();
-              }
-
-              else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-                this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-                this.storage.clear('Timer');
-                return null;
-              }
-            }
-          );
+        return;
       }
     }
-    else {
-      this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTPNew?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType, { headers: headers })
-        .pipe(
-          catchError(this.handleErrorMessage.handleError.bind(this, ''))
-        )
-        .subscribe(
-          result => {
-            this.dto.Response = {};
-            this.dto.Response = result;
-            console.log("OtpResponse3>>>>>"+JSON.stringify(this.dto.Response));
-            if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-              this.common.submitLoading = false;
-              this.spinner.hide("submitLoading");
-              // 合并 request_ids，避免覆盖已有的 request_id
-              const displayType = this.otpService.convertToDisplayType(this.selectedType);
-              const enhancedResponse = this.otpService.enhanceResponseWithRequestIds(
-                OtpStorageKeys.OTP_RESPONSE,
-                this.dto.Response,
-                displayType
-              );
-              this.storage.store('localOtpSms', enhancedResponse);
-              this.storage.store("registeropttype", this.selectedType);
-              this.storage.clear("Timer");
-              this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-              this._location.back();
-              if (this.dto.Response.statusCode == 200) {
-                if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-                  this.toastr.error("Bad request.", 'OTP is not correct', {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-                if (this.dto.Response.body.split('').trim() == "Try Again") {
-                  this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-              }
-            }
+    
+    // 验证 selectedType 是否为有效的 OtpType 枚举值，并转换为 OtpType
+    const validOtpTypes = Object.values(OtpType);
+    const otpType = (this.selectedType && validOtpTypes.includes(this.selectedType as OtpType))
+      ? this.selectedType as OtpType
+      : OtpType.SMS; // 如果无效，使用默认值 SMS
 
-            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-              this.storage.store("registeropttype", this.selectedType)
-              this._location.back();
-              if (this.dto.Response.statusCode == 200) {
-                if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-                  this.toastr.error("Bad request.", 'OTP is not correct', {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-                if (this.dto.Response.body.split('').trim() == "Try Again") {
-                  this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-              }
-            }
-
-            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-              this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-              this.storage.clear('Timer');
-              return null;
-            }
-
-          }
-        );
-    }
+    // 统一使用 sendRegisterOtp 方法（统一使用 getRegisterOTP API）
+    this.otpService.sendRegisterOtp({
+      phoneNumber: this.phoneNumber,
+      email: this.email || '',
+      type: otpType
+    })
+    .subscribe({
+      next: (result) => {
+               
+        // 成功处理（包括 180 seconds 的情况，由新服务统一处理）
+        this.common.submitLoading = false;
+        this.spinner.hide("submitLoading");
+        this.toastr.success("", this.translateService.instant("bank_accname_success"), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+        this._location.back();
+      },
+      error: (error: Error & { is180SecondsError?: boolean }) => {
+        // 错误处理（统一由新服务处理，包括 60 seconds 错误）
+        this.common.submitLoading = false;
+        this.spinner.hide("submitLoading");
+        
+        if (error.is180SecondsError) {
+          // 注册场景下 即使出现180限流警告，也要存储 OTP 类型，otp 页面需要根据otpType 来显示对应的倒计时
+          this.storage.store(OtpStorageKeys.OTP_TYPE, otpType);
+          this._location.back();
+        } else {
+          this.toastr.error("", error.message, {
+            timeOut: 3000,
+            positionClass: 'toast-top-center',
+          });
+        }
+      }
+    });
   }
 
   getsmstype() {

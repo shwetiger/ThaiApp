@@ -1,4 +1,4 @@
-import { Component, Injectable, OnInit, TemplateRef, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Component, Injectable, OnInit, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -6,15 +6,15 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, retry } from 'rxjs/operators';
-import { Location, LocationStrategy } from '@angular/common';
-import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { catchError } from 'rxjs/operators';
+import { Location } from '@angular/common';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { TopupAlertMaintenanceComponent } from 'src/app/shared/dialog/topup-alert-maintenance/topup-alert-maintenance.component';
-import { OtpScenario } from 'src/app/modules/auth/components/otp-page/models/otp-type.enum';
-import { OtpStorageKeys } from 'src/app/modules/auth/components/otp-page/models/otp-storage-keys';
+import { OtpService } from 'src/app/shared/otp/services';
+import { OtpStorageKeys, OtpType } from 'src/app/shared/otp/models';
 
 @Component({
   selector: 'app-withdraw',
@@ -81,7 +81,6 @@ export class WithdrawComponent implements OnInit {
   refreshLoading: any;
   constructor(
     public common: CommonService,
-    private Location: LocationStrategy,
     private modalService: BsModalService,
     private router: Router,
     private translateService: TranslateService,
@@ -92,7 +91,7 @@ export class WithdrawComponent implements OnInit {
     private http: HttpClient,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location) {
+    private otpService: OtpService) {
 
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
@@ -574,7 +573,6 @@ export class WithdrawComponent implements OnInit {
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
-    this.storage.store('localInsertBankAccountList', this.bankAccountList); //store for next otp page
     this.loadingInsertBankAcc = true;
     this.spinner.show("loadingInsertBankAcc");
     this.http.post(this.funct.ipaddress + 'userbankaccount/check_insertuserBankAccount', this.bankAccountList, { headers: headers })
@@ -612,59 +610,45 @@ export class WithdrawComponent implements OnInit {
                     return;
                   }
                   else {
-                    this.http.get(this.funct.apaddressv1 + 'transaction/getWithdrawOTP', { headers: headers })
-                        .pipe(
-                          catchError(this.handleError.bind(this))
-                        )
-                        .subscribe(
-                          result => {
-                            this.dto.Response = result;
-                            if (this.dto.Response.status === true) {
-                              this.loadingInsertBankAcc = false;
-                              this.storage.clear('successmsg');
-                              this.storage.store('localInsertAccountOtpSms', this.dto.Response);
-                              this.storage.store('bankAccountList', this.bankAccountList)
-                              if (myaccount.length == 0) {
-                                this.storage.store("localInsertAccount", 'insertAccount');
-                              }
-                              this.storage.clear('Timer');
-                              this.storage.store("otptype", 'smsotp');
-                              // 使用新的统一场景标识
-                              this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.WITHDRAW_INSERT);
-                              this.storage.clear("formage");
-                              this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'smsotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
-                              this.spinner.hide("loadingInsertBankAcc");
-                            }
-                            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-                              const successmsg=this.storage.retrieve('successmsg');
-                              if (successmsg=='withdrawalsuccess')
-                              {
-                              this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                                timeOut: 3000,
-                                positionClass: 'toast-top-center',
-                              });
-                              }
-                              else{
-                              this.loadingInsertBankAcc = false;
-                              // 使用新的统一场景标识
-                              this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.WITHDRAW_INSERT);
-                              this.spinner.hide("loadingInsertBankAcc");
-                              this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'smsotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
-                              }
-                            }
 
-                            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-                              this.toastr.error("", this.translateService.instant("otp-request-time-onemin"), {
-                                timeOut: 3000,
-                                positionClass: 'toast-top-center',
-                              });
-                              this.storage.clear('Timer');
-                              return null;
-                            }
-                          }
-                        );
+                    // 发送前清清除掉 OTP相关缓存
+                    this.otpService.clearOtpData();
+                    // 存储当前选择的 OTP 类型，否则默认使用 SMS
+                    this.storage.store(OtpStorageKeys.OTP_TYPE,  this.smstype || OtpType.SMS);
+                    // 使用 OtpService 发送提现 OTP
+                    this.otpService.sendWithdrawOtp({
+                      token: this.token,
+                      bankAccountList: this.bankAccountList
+                    })
+                    .subscribe({
+                      next: () => {
+                        this.loadingInsertBankAcc = false;
+                        this.storage.clear('successmsg');
+                 
+                        if (myaccount.length == 0) {
+                          this.storage.store(OtpStorageKeys.INSERT_ACCOUNT, 'insertAccount');
+                        }
+                        
+                        this.storage.clear("formage");
+                        this.router.navigate(['/login/otp'], { replaceUrl: false });
+                        this.spinner.hide("loadingInsertBankAcc");
+                      },
+                      error: (error: Error & { is180SecondsError?: boolean }) => {
+                        this.loadingInsertBankAcc = false;
+                        this.spinner.hide("loadingInsertBankAcc");
+
+                        if (error.is180SecondsError) { 
+                          this.router.navigate(['/login/otp'], { replaceUrl: true });
+                        } else {
+                          this.toastr.error("", error.message, {
+                            timeOut: 3000,
+                            positionClass: 'toast-top-center',
+                          });
+                        }
+                      }
+                    });
                   }
-                });/*XXX*/
+                });
           }
         });
 

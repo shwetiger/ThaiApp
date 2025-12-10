@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { LocalStorageService } from 'ngx-webstorage';
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { OtpType, OtpDisplayType, OtpScenario } from '../models/otp-type.enum';
-import { IOtpResponse, IUpdateDeviceIdRequest, IServicePhone, IUserSmsTypeResponse, IOtpRequestInfo, IOtpRequestInfoMap, IBankAccount } from '../models/otp-models';
+import { IOtpResponse, IUpdateDeviceIdRequest, IServicePhone, IUserSmsTypeResponse, IOtpRequestInfo, IOtpRequestInfoMap, IBankAccount, IOtpTypeResult } from '../models/otp-models';
 import { OtpStorageKeys } from '../models/otp-storage-keys';
-import { IRegisterOtpParams, IForgetPasswordOtpParams, INewDeviceOtpParams, IWithdrawOtpParams, ISwitchOtpTypeParams, IOtpVerificationParams, IWithdrawOtpVerificationParams } from '../models/otp-params';
+import { IRegisterOtpParams, IForgetPasswordOtpParams, INewDeviceOtpParams, IWithdrawOtpParams, ISwitchOtpTypeParams, IOtpVerificationParams, IWithdrawOtpVerificationParams, ISetUserSmsTypeAndSendOtpParams } from '../models/otp-params';
 import { OTP_TYPE_CONFIG, OTP_SEND_CONFIG } from '../models/otp-config';
 import { OtpErrorHandlerService } from './otp-error-handler.service';
 import { OtpResponseValidatorService } from './otp-response-validator.service';
@@ -36,7 +36,7 @@ export class OtpService {
     const baseUrl = config.baseUrl === 'apaddressv1' ? this.funct.apaddressv1 : this.funct.ipaddress;
     
     // 构建完整的 URL，包含 phoneNo、type 和 email 参数
-    const otpType = (params.type as OtpType) || OtpType.SMS;
+    const otpType = params.type;
     const email = params.email || '';
     const fullUrl = `${baseUrl}${config.url}${phoneNumber}&type=${otpType}&email=${email}`;
 
@@ -69,7 +69,7 @@ export class OtpService {
         const validatedResult = this.responseValidator.validateSendResponse(result);
                 
         // 存储响应（OTP_TYPE 已在 getUserSmsType 中设置，封装方法确保执行顺序）
-        this.storeOtpResponse(OtpScenario.FORGET_PASSWORD, validatedResult);
+        this.storeOtpResponse(OtpScenario.FORGET_PASSWORD, validatedResult, OtpType.SMS);
 
         return validatedResult as IOtpResponse;
       })
@@ -79,29 +79,38 @@ export class OtpService {
   /**
    * 发送新设备 OTP
    */
-  sendNewDeviceOtp(params: INewDeviceOtpParams): Observable<IOtpResponse> {
+ sendNewDeviceOtp(params: INewDeviceOtpParams): Observable<IOtpResponse> {
     const phoneNumber = params.phoneNumber;
     const config = OTP_SEND_CONFIG[OtpScenario.NEW_DEVICE];
     const baseUrl = config.baseUrl === 'apaddressv1' ? this.funct.apaddressv1 : this.funct.ipaddress;
     const fullUrl = baseUrl + config.url + phoneNumber;
 
     let headers = new HttpHeaders();
-    if (params.token) {
-      headers = headers.set('Authorization', params.token);
+    
+    const loginModel = this.storage.retrieve(OtpStorageKeys.LOGIN_MODEL);
+    
+    if (!loginModel) {
+      return throwError(() => new Error('Missing required data for new device verification'));
     }
 
-    return this.http.get(fullUrl, { headers }).pipe(
-      catchError(error => this.errorHandler.handleError(OtpScenario.NEW_DEVICE, error)),
-      map((result: any) => {
-        const validatedResult = this.responseValidator.validateSendResponse(result);
-                
-        // 存储响应（OTP_TYPE 已在 getUserSmsType 中设置，封装方法确保执行顺序）
-        this.storeOtpResponse(OtpScenario.NEW_DEVICE, validatedResult);
-
-        return validatedResult as IOtpResponse;
+    // 先获取用户默认 OTP 类型
+    return this.getUserSmsType(phoneNumber).pipe(
+      switchMap(otpTypeResult => {
+        // 然后发送 OTP
+        return this.http.get(fullUrl, { headers }).pipe(
+          catchError(error => this.errorHandler.handleError(OtpScenario.NEW_DEVICE, error)),
+          map((result: any) => {
+            const validatedResult = this.responseValidator.validateSendResponse(result);
+            
+            // 存储响应（OTP_TYPE 已在 getUserSmsType 中设置）
+            this.storeOtpResponse(OtpScenario.NEW_DEVICE, validatedResult);
+            
+            return validatedResult as IOtpResponse;
+          })
+        );
       })
     );
-  }
+  } 
 
   /**
    * 发送提现 OTP
@@ -135,6 +144,45 @@ export class OtpService {
   }
 
   /**
+   * DefaultOptSettingComponent 组件调用
+   * 设置用户短信类型并发送 OTP
+   * 
+   * 对应 API: POST user/setusersmstypeAndGetOTP
+   * 
+   * 特殊处理：
+   * - status === 'Error' && message?.includes('180 seconds')：视为成功（用户级别限制，但包含 request_id）
+   * - 其他错误：统一由 validateSendResponse 和 errorHandler 处理
+   * 
+   * @param params 设置类型并发送参数
+   * @returns Observable<IOtpResponse>
+   */
+  sendOtpBySettingType(params: ISetUserSmsTypeAndSendOtpParams): Observable<IOtpResponse> {
+    const { type, phoneNumber, scenario, funcionName, token } = params;
+    const baseUrl = this.funct.apaddressv1;
+    
+    // 构建 URL 参数
+    const url = `${baseUrl}user/setusersmstypeAndGetOTP?type=${type}&phone_no=${phoneNumber}&funcionName=${funcionName}`;
+    
+    // 设置请求头
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', token);
+    }
+    
+    return this.http.post(url, {}, { headers }).pipe(
+      catchError(error => this.errorHandler.handleError(scenario, error)),
+      map((result: any) => {
+        
+        const validatedResult = this.responseValidator.validateSendResponse(result);
+
+        this.storeOtpResponse(scenario, validatedResult, type);
+        
+        return validatedResult as IOtpResponse;
+      })
+    );
+  }
+
+  /**
    * 切换 OTP 类型并发送
    * 
    * 功能：
@@ -154,127 +202,44 @@ export class OtpService {
       return this.sendOtpByScenario(params, params.otpType);
     }
     
-    // 如果没有提供 otpType，从服务端获取（保持向后兼容）
+    // 如果没有提供 otpType，从服务端获取 OTP 类型
     return this.getOtpType(
       params.scenario,
-      undefined,
       params.phoneNumber,
       params.email,
-      params.token
     ).pipe(
       map(otpTypeResult => {
-        // 存储 OTP 类型（getOtpType 内部已存储，但确保一致性）
-        this.storage.store(OtpStorageKeys.OTP_TYPE, otpTypeResult.otpType);
         return this.sendOtpByScenario(params, otpTypeResult.otpType);
       }),
-      // 展开嵌套的 Observable
       switchMap(obs => obs)
     );
   }
 
-  /**
-   * 根据场景发送 OTP（私有方法，提取公共逻辑）
-   * 
-   * @param params 切换参数
-   * @param otpType OTP 类型（仅用于注册场景）
-   * @returns Observable<IOtpResponse>
-   */
-  private sendOtpByScenario(params: ISwitchOtpTypeParams, otpType: OtpType): Observable<IOtpResponse> {
-    if (params.scenario === OtpScenario.REGISTER) {
-      return this.sendRegisterOtp({
-        phoneNumber: params.phoneNumber,
-        email: params.email || '',
-        type: otpType
-      });
-    } else if (params.scenario === OtpScenario.FORGET_PASSWORD) {
-      return this.sendForgetPasswordOtp({ 
-        phoneNumber: params.phoneNumber
-       });
-    } else if (params.scenario === OtpScenario.NEW_DEVICE) {
-      return this.sendNewDeviceOtp({ 
-        phoneNumber: params.phoneNumber, 
-        token: params.token 
-      });
-    } else if (params.scenario === OtpScenario.WITHDRAW_INSERT) {
-      // 提现场景：需要从 localStorage 读取 bankAccountList
-      const bankAccountList = this.storage.retrieve(OtpStorageKeys.BANK_ACCOUNT_LIST) as IBankAccount[] || [];
-      
-      if (!params.token) {
-        throw new Error('Token is required for withdraw scenario');
-      }
-      
-      return this.sendWithdrawOtp({
-        token: params.token,
-        bankAccountList: bankAccountList
-      });
-    } else {
-      throw new Error(`Unsupported scenario for switch: ${params.scenario}`);
+  resendOtp() {
+    const otpType = this.storage.retrieve(OtpStorageKeys.OTP_TYPE) as OtpType;
+    const params: ISwitchOtpTypeParams = {  
+      scenario: this.storage.retrieve(OtpStorageKeys.SCENARIO) as OtpScenario,
+      phoneNumber: this.getCurrentOtpResponse()?.to || '',
+      email: this.storage.retrieve(OtpStorageKeys.REGISTER_EMAIL) || ''
     }
-  }
-
-  /**
-   * 验证 OTP
-   */
-  verifyOtp(params: IOtpVerificationParams): Observable<IOtpResponse> {
-    let headers = new HttpHeaders();
-    if (params.token) {
-      headers = headers.set('Authorization', params.token);
-    }
-
-    let link: string;
-    if (params.isForgetPassword) {
-      link = `user/checkOTPXXx?phone_no=${params.phoneNumber}&code=${params.code}&request_id=${params.requestId}`;
-    } else {
-      const smsTypeParam = params.smsType != null ? params.smsType : '';
-      link = `user/checkOTP?phone_no=${params.phoneNumber}&code=${params.code}&request_id=${params.requestId}&smstype=${smsTypeParam}`;
-    }
-
-    const url = this.funct.ipaddress + link;
-
-    return this.http.get(url, { headers }).pipe(
-      catchError(error => this.errorHandler.handleError('checkOtp', error)),
-      map((result: any) => {
-        this.dto.Response = result;
-        return result as IOtpResponse;
-      })
-    );
-  }
-
-  /**
-   * 验证提现 OTP
-   */
-  verifyWithdrawOtp(params: IWithdrawOtpVerificationParams): Observable<IOtpResponse> {
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', params.token);
-    
-    const url = this.funct.ipaddress + `transaction/withdrawcheckOTP?code=${params.code}&request_id=${params.requestId}`;
-    
-    return this.http.get(url, { headers }).pipe(
-      catchError(error => this.errorHandler.handleError('checkWithdrawOtp', error)),
-      map((result: any) => {
-        this.dto.Response = result;
-        return result as IOtpResponse;
-      })
-    );
+    return this.sendOtpByScenario(params, otpType);
   }
 
   /**
    * 获取 OTP 类型和发送者信息
    */
   getOtpType(
-    formType: string,
-    registerOtpType?: string,
+    scenario: string,
     phoneNumber?: string,
-    emailAddress?: string,
-    token?: string
-  ): Observable<any> {
+    emailAddress?: string
+  ): Observable<IOtpTypeResult> {
     // 注册场景：直接返回结果
-    if (formType === OtpScenario.REGISTER) {
-      return of(this.getRegisterOtpType(registerOtpType, phoneNumber, emailAddress));
+    if (scenario === OtpScenario.REGISTER) {
+      return of(this.getRegisterOtpType(phoneNumber, emailAddress));
     }
     
     // 非注册场景：需要调用 API
-    return this.getUserSmsType(phoneNumber, token);
+    return this.getUserSmsType(phoneNumber);
   }
 
   /**
@@ -298,54 +263,23 @@ export class OtpService {
    * 获取注册场景的 OTP 类型
    */
   private getRegisterOtpType(
-    registerOtpType?: string,
     phoneNumber?: string,
     emailAddress?: string
-  ): any {
-    const otpType = (registerOtpType as OtpType) || OtpType.SMS;
+  ): IOtpTypeResult {
+
+    let otpType = this.storage.retrieve(OtpStorageKeys.OTP_TYPE) as OtpType;
+    if (!otpType) {
+      otpType = OtpType.SMS;
+      this.storage.store(OtpStorageKeys.OTP_TYPE, otpType);
+    }
+
     const config = this.getOtpTypeConfig(otpType, phoneNumber, emailAddress);
-
-    this.storage.store(OtpStorageKeys.OTP_TYPE, otpType);
-
     return {
       otpType: config.otpType,
       displayType: config.displayType,
-      sender: config.sender
+      sender: config.sender,
+      email: emailAddress || ''
     };
-  }
-
-  /**
-   * 获取用户短信类型（非注册场景）
-   */
-  private getUserSmsType(phoneNumber?: string, token?: string): Observable<any> {
-    let headers = new HttpHeaders();
-    if (token) {
-      headers = headers.set('Authorization', token);
-    }
-
-    return this.http.get<IUserSmsTypeResponse>(this.funct.ipaddress + 'user/userSmsType?phone_no=' + phoneNumber, { headers })
-      .pipe(
-        catchError(error => this.errorHandler.handleError('getUserSmsType', error)),
-        map((result: IUserSmsTypeResponse) => {
-
-          const smstype = result?.smstype;
-
-          const otpType = (smstype as OtpType) || OtpType.SMS;
-          const emailAddress = otpType === OtpType.EMAIL ? result?.email : undefined;
-          const config = this.getOtpTypeConfig(otpType, phoneNumber, emailAddress);
-
-          this.storage.store(OtpStorageKeys.OTP_TYPE, otpType);
-
-          return {
-            otpType: config.otpType,
-            displayType: config.displayType,
-            sender: config.sender,
-            smstype: smstype,
-            email: result?.email,
-            fullResponse: result
-          };
-        })
-      );
   }
 
   /**
@@ -383,15 +317,29 @@ export class OtpService {
     this.storage.store(OtpStorageKeys.OTP_RESPONSE, response);
     
     // 4. 存储当前类型的请求信息到 OTP_REQUEST_INFO
-    if (response.request_id && (response.expired_at || response.expire_at)) {
+    // 关键：request_id 和 expires_at 必须同时存在才存储，因为验证时需要 request_id，两者是同时出现的
+    const requestId = response.request_id;
+    const expiresAt = response.expired_at || response.expire_at;
+    const sentAt = response.start_at || response.created_at;
+    
+    if (requestId && expiresAt) {
       const requestInfoMap: IOtpRequestInfoMap = this.storage.retrieve(OtpStorageKeys.OTP_REQUEST_INFO) || {};
       
+      // 每次只显示用户默认选择的 OTP 类型
       requestInfoMap[otpType] = {
-        request_id: response.request_id,
-        expires_at: response.expired_at || response.expire_at!
+        request_id: requestId,
+        expires_at: expiresAt,
+        sent_at: sentAt
       };
       
       this.storage.store(OtpStorageKeys.OTP_REQUEST_INFO, requestInfoMap);
+    } else {
+      console.warn('Server response Exception!!!', {
+        scenario,
+        otpType,
+        hasRequestId: !!requestId,
+        hasExpiresAt: !!expiresAt
+      });
     }
   }
 
@@ -408,21 +356,6 @@ export class OtpService {
       catchError(error => this.errorHandler.handleError('insertUserBankAccount', error)),
       map((result: any) => {
         return result;
-      })
-    );
-  }
-
-  /**
-   * 更新设备ID（新设备验证）
-   */
-  updateDeviceId(updateDeviceIdRequest: IUpdateDeviceIdRequest): Observable<IOtpResponse> {
-    const headers = new HttpHeaders();
-    const url = this.funct.ipaddress + 'user/updateDeviceId';
-
-    return this.http.post(url, updateDeviceIdRequest, { headers }).pipe(
-      catchError(error => this.errorHandler.handleError('updateDeviceId', error)),
-      map((result: any) => {
-        return result as IOtpResponse;
       })
     );
   }
@@ -457,14 +390,58 @@ export class OtpService {
     );
   }
 
+  /**
+   * 获取用户短信类型（非注册场景）
+   */
+  private getUserSmsType(phoneNumber: string): Observable<IOtpTypeResult> {
+
+    return this.http.get<IUserSmsTypeResponse>(this.funct.ipaddress + 'user/userSmsType?phone_no=' + phoneNumber )
+      .pipe(
+        catchError(error => this.errorHandler.handleError('getUserSmsType', error)),
+        map((result: IUserSmsTypeResponse) => {
+
+          console.log('getUserSmsType result:', result);
+
+          const otpType = ( (result?.smstype) as OtpType) || OtpType.SMS;
+          const emailAddress = otpType === OtpType.EMAIL ? result?.email : undefined;
+          const config = this.getOtpTypeConfig(otpType, phoneNumber, emailAddress);
+          this.storage.store(OtpStorageKeys.OTP_TYPE, otpType);
+
+          return {
+            otpType: config.otpType,
+            displayType: config.displayType,
+            sender: config.sender,
+            email: result?.email || '',
+            smstype: otpType
+          };
+        })
+      );
+  }
+
   // ========== 外部接口方法：统一提供数据访问 ==========
 
   /**
    * 获取当前 OTP 类型的 request_id
+   * 优先级：
+   * 1. 从 OTP_REQUEST_INFO 读取当前类型的 request_id（支持切换类型）
+   * 2. 从 OTP_RESPONSE 读取 request_id（降级）
+   * 
    * @returns request_id，如果不存在返回 null
    */
   getCurrentRequestId(): string | number | null {
-    return this.getRequestInfo()?.request_id || null;
+    // 优先级1：从 OTP_REQUEST_INFO 读取（支持切换类型）
+    const requestInfo = this.getRequestInfo();
+    if (requestInfo?.request_id) {
+      return requestInfo.request_id;
+    }
+    
+    // 优先级2：从 OTP_RESPONSE 读取（降级）
+    const otpResponse = this.getCurrentOtpResponse();
+    if (otpResponse?.request_id) {
+      return otpResponse.request_id;
+    }
+    
+    return null;
   }
 
   /**
@@ -473,6 +450,10 @@ export class OtpService {
    */
   getCurrentExpiresAt(): string | null {
     return this.getRequestInfo()?.expires_at || null;
+  }
+
+  getCurrentSentAt(): string | null {
+    return this.getRequestInfo()?.sent_at || null;
   }
 
   /**
@@ -494,9 +475,198 @@ export class OtpService {
     return this.storage.retrieve(OtpStorageKeys.OTP_RESPONSE) as IOtpResponse || null;
   }
 
+  // ========== 统一验证和重发方法 ==========
+
+  /**
+  * 根据场景发送 OTP（私有方法，提取公共逻辑）
+  * 
+  * @param params 切换参数
+  * @param otpType OTP 类型（仅用于注册场景）
+  * @returns Observable<IOtpResponse>
+  */
+  private sendOtpByScenario(params: ISwitchOtpTypeParams, otpType: OtpType): Observable<IOtpResponse> {
+    if (params.scenario === OtpScenario.REGISTER) {
+      return this.sendRegisterOtp({
+        phoneNumber: params.phoneNumber,
+        email: params.email || '',
+        type: otpType
+      });
+    } else if (params.scenario === OtpScenario.FORGET_PASSWORD) {
+      return this.sendForgetPasswordOtp({ 
+        phoneNumber: params.phoneNumber
+       });
+    } else if (params.scenario === OtpScenario.NEW_DEVICE) {
+      return this.sendNewDeviceOtp({ 
+        phoneNumber: params.phoneNumber, 
+        token: params.token 
+      });
+    } else if (params.scenario === OtpScenario.WITHDRAW_INSERT) {
+      // 提现场景：需要从 localStorage 读取 bankAccountList
+      const bankAccountList = this.storage.retrieve(OtpStorageKeys.BANK_ACCOUNT_LIST) as IBankAccount[] || [];
+      const token = this.storage.retrieve('token');
+      if (!token) {
+        throw new Error('Token is required for withdraw scenario');
+      }
+      
+      return this.sendWithdrawOtp({
+        token: token,
+        bankAccountList: bankAccountList
+      });
+    } else {
+      throw new Error(`Unsupported scenario for switch: ${params.scenario}`);
+    }
+  }
+  
+  /**
+   * 验证 OTP（统一入口，内部根据场景调用不同方法）
+   * @param code OTP 验证码
+   * @returns Observable<IOtpResponse>
+   */
+  verifyOtpByScenario(code: string): Observable<IOtpResponse> {
+    const scenario = this.storage.retrieve(OtpStorageKeys.SCENARIO) as OtpScenario;
+    const requestId = this.getCurrentRequestId();
+    
+    console.log('verify info:', { scenario, requestId })
+    if (!requestId) {
+      return throwError(() => new Error('Missing request_id'));
+    }
+    
+    // 根据场景调用不同的验证方法
+    if (scenario === OtpScenario.NEW_DEVICE) {
+      return this.verifyNewDeviceByScenario(code, requestId);
+    } else if (scenario === OtpScenario.WITHDRAW_INSERT) {
+      return this.verifyWithdrawByScenario(code, requestId);
+    } else {
+      return this.verifyStandardByScenario(code, requestId, scenario);
+    }
+  }
+
+  /**
+   * 验证 OTP
+   */
+  private verifyOtp(params: IOtpVerificationParams): Observable<IOtpResponse> {
+    let headers = new HttpHeaders();
+    if (params.token) {
+      headers = headers.set('Authorization', params.token);
+    }
+
+    let link: string;
+    if (params.isForgetPassword) {
+      link = `user/checkOTPXXx?phone_no=${params.phoneNumber}&code=${params.code}&request_id=${params.requestId}`;
+    } else {
+      const smsTypeParam = params.smsType != null ? params.smsType : '';
+      link = `user/checkOTP?phone_no=${params.phoneNumber}&code=${params.code}&request_id=${params.requestId}&smstype=${smsTypeParam}`;
+    }
+
+    const url = this.funct.ipaddress + link;
+
+    return this.http.get(url, { headers }).pipe(
+      catchError(error => this.errorHandler.handleError('checkOtp', error)),
+      map((result: any) => {
+        return result as IOtpResponse;
+      })
+    );
+  }
+
+  /**
+   * 验证新设备 OTP
+   */
+  private verifyNewDeviceByScenario(code: string, requestId: string | number): Observable<IOtpResponse> {
+    const loginModel = this.storage.retrieve(OtpStorageKeys.LOGIN_MODEL);
+    const otpResponse = this.getCurrentOtpResponse();
+    
+    if (!loginModel || !otpResponse?.guid) {
+      return throwError(() => new Error('Missing required data for new device verification'));
+    }
+    
+    return this.updateDeviceId({
+      phone_no: loginModel.phone_no || '',
+      ipAddress: loginModel.ipAddress || '',
+      guid: otpResponse.guid || '',
+      request_id: String(requestId),
+      code: code,
+      deviceId: loginModel.deviceId || ''
+    });
+  }
+
+    /**
+   * 更新设备ID（新设备验证）
+   */
+  private updateDeviceId(updateDeviceIdRequest: IUpdateDeviceIdRequest): Observable<IOtpResponse> {
+    const url = this.funct.ipaddress + 'user/updateDeviceId';
+
+    return this.http.post(url, updateDeviceIdRequest).pipe(
+      catchError(error => this.errorHandler.handleError('updateDeviceId', error)),
+      map((result: any) => {
+        return result as IOtpResponse;
+      })
+    );
+  }
+
+  /**
+   * 验证提现 OTP
+   */
+  private verifyWithdrawByScenario(code: string, requestId: string | number): Observable<IOtpResponse> {
+    const token = this.storage.retrieve('token');
+    if (!token) {
+      return throwError(() => new Error('Token not found'));
+    }
+    return this.verifyWithdrawOtp({ code, requestId, token });
+  }
+
+  /**
+   * 验证标准 OTP（注册/忘记密码）
+   */
+  private verifyStandardByScenario(code: string, requestId: string | number, scenario: string): Observable<IOtpResponse> {
+    const otpResponse = this.getCurrentOtpResponse();
+    const registerOtpType = this.storage.retrieve(OtpStorageKeys.OTP_TYPE);
+    const token = this.storage.retrieve('token');
+    
+    return this.verifyOtp({
+      code,
+      requestId,
+      phoneNumber: otpResponse?.to,
+      smsType: registerOtpType,
+      token,
+      isForgetPassword: scenario === OtpScenario.FORGET_PASSWORD
+    });
+  }
+
+  /**
+   * 验证添加银行卡 OTP
+   */
+  private verifyWithdrawOtp(params: IWithdrawOtpVerificationParams): Observable<IOtpResponse> {
+    let headers = new HttpHeaders({'Authorization': params.token});
+    const url = this.funct.ipaddress + `transaction/withdrawcheckOTP?code=${params.code}&request_id=${params.requestId}`;
+    
+    return this.http.get(url, { headers }).pipe(
+      catchError(error => this.errorHandler.handleError('checkWithdrawOtp', error)),
+      map((result: any) => {
+        this.dto.Response = result;
+        return result as IOtpResponse;
+      })
+    );
+  }
+
+  
+  /**
+   * 获取电话号码
+   * @returns 电话号码
+   */
+  getPhoneNumber(): string {
+    let phoneNumber = this.storage.retrieve(OtpStorageKeys.PHONE_NUMBER) as string;
+    const phonePrefix = this.storage.retrieve(OtpStorageKeys.PHONE_PREFIX) as string;
+    if (phoneNumber.startsWith("0")) {
+      phoneNumber = phonePrefix + phoneNumber.substring(1, phoneNumber.length);
+    } else {
+      phoneNumber = phonePrefix + phoneNumber;
+    }
+    return phoneNumber;
+  }
+
   /**
    * 清理所有 OTP 相关数据
-   */
+  */
   clearOtpData(): void {
     this.storage.clear(OtpStorageKeys.OTP_RESPONSE);
     this.storage.clear(OtpStorageKeys.OTP_REQUEST_INFO);
@@ -506,5 +676,8 @@ export class OtpService {
     this.storage.clear(OtpStorageKeys.BANK_ACCOUNT_LIST);
     this.storage.clear(OtpStorageKeys.LOGIN_MODEL);
     this.storage.clear(OtpStorageKeys.INSERT_ACCOUNT);
+    this.storage.clear(OtpStorageKeys.REGISTER_EMAIL);
+    this.storage.clear(OtpStorageKeys.SERVICE_PHONE_LIST);
   }
+
 }

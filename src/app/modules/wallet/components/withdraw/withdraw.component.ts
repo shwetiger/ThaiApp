@@ -635,13 +635,18 @@ export class WithdrawComponent implements OnInit {
                       },
                       error: (error: Error & { is180SecondsError?: boolean }) => {
                         this.loadingInsertBankAcc = false;
-                        this.storage.clear('successmsg');
                         this.spinner.hide("loadingInsertBankAcc");
                         if (myaccount.length == 0) {
                           this.storage.store(OtpStorageKeys.INSERT_ACCOUNT, 'insertAccount');
                         }
 
-                        if (error.is180SecondsError) {
+                        const successmsg=this.storage.retrieve('successmsg');
+                        if (successmsg == 'withdrawalsuccess') {
+                          this.toastr.error("", this.translateService.instant("otp-request-time"), {
+                            timeOut: 3000,
+                            positionClass: 'toast-top-center',
+                          });
+                        } else if (error.is180SecondsError) {
                           this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.WITHDRAW_INSERT)
                           this.router.navigate(['/login/otp'], { replaceUrl: false });
                         } else {

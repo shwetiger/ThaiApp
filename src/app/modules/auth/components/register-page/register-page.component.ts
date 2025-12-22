@@ -234,8 +234,7 @@ export class RegisterPageComponent implements OnInit {
             result => {
               this.dto.Response = result;
               this.isEmailExist = this.dto.Response;
-              this.common.submitLoading = false;
-              this.spinner.hide("submitLoading");
+              
               if (this.isEmailExist == false) {
                 this.storage.store("localEmail", this.registerModel.email_address);
                 
@@ -243,15 +242,20 @@ export class RegisterPageComponent implements OnInit {
                 this.otpService.sendRegisterOtp({
                   phoneNumber: phoneNumber,
                   email: this.registerModel.email_address || '',
-                  type: OtpType.SMS
+                  type: this.storage.retrieve('registeropttype') || OtpType.SMS
                 })
                 .subscribe({
                   next: () => {
+                      this.common.submitLoading = false;
+                      this.spinner.hide("submitLoading");
                       this.storage.store(OtpStorageKeys.REGISTER_EMAIL, this.registerModel.email_address);            
                       this.router.navigate(['/login/otp'], { replaceUrl: true });
                   },
                   error: (error: Error & { is180SecondsError?: boolean }) => {
+                    this.common.submitLoading = false;
+                    this.spinner.hide("submitLoading");
                     if (error.is180SecondsError) {
+                      this.storage.store(OtpStorageKeys.REGISTER_EMAIL, this.registerModel.email_address);
                       this.router.navigate(['/login/otp'], { replaceUrl: true });
                     } else {
                       this.toastr.error("", error.message, {

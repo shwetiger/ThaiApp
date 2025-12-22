@@ -294,9 +294,7 @@ export class OtpPageFacadeService {
     
     // 第五层：根据场景执行后续操作
     if (scenario === OtpScenario.NEW_DEVICE) {
-      // 新设备验证成功：清理数据并执行自动登录
-      this.storage.clear(OtpStorageKeys.OTP_RESPONSE);
-      this.storage.clear(OtpStorageKeys.SCENARIO);
+      // 验证成功，执行自动登录
       return this.performAutoLogin();
     }
     
@@ -361,8 +359,10 @@ export class OtpPageFacadeService {
           this.dto.token = 'Bearer ' + result.token;
           this.storage.store('token', this.dto.token);
           this.storage.store('isUserLoggedIn', this.util.isLogged);
-          this.storage.clear(OtpStorageKeys.LOGIN_MODEL);
           
+          // 清理otp相关的缓存
+          this.cleanup();
+          this.otpService.clearOtpData();
           // 导航到首页并防止后退
           this.navigateToHomeWithBackPrevention();
         }
@@ -403,10 +403,13 @@ export class OtpPageFacadeService {
         this.storage.store('successmsg', OTP_IDENTIFIERS.WITHDRAW_SUCCESS_MSG);
         
         // 清理数据
-        this.storage.clear(OtpStorageKeys.INSERT_ACCOUNT);
-        this.storage.clear(OtpStorageKeys.BANK_ACCOUNT_LIST);
-        this.storage.clear(OtpStorageKeys.OTP_RESPONSE);
-        this.storage.clear(OtpStorageKeys.SCENARIO);
+        // this.storage.clear(OtpStorageKeys.INSERT_ACCOUNT);
+        // this.storage.clear(OtpStorageKeys.BANK_ACCOUNT_LIST);
+        // this.storage.clear(OtpStorageKeys.OTP_RESPONSE);
+        // this.storage.clear(OtpStorageKeys.SCENARIO);
+        // this.countdown.clearAllCache();
+        this.cleanup();
+        this.otpService.clearOtpData();
       }),
       map(() => true),
       catchError(error => {

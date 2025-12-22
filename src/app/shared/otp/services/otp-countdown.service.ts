@@ -1,6 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { LocalStorageService } from 'ngx-webstorage';
 import { OtpService } from './otp.service';
+import { OtpStorageKeys } from '../models/otp-storage-keys';
 
 /**
  * 倒计时状态接口
@@ -19,15 +21,33 @@ export interface ICountdownState {
 }
 
 /**
+ * 倒计时缓存数据接口
+ */
+interface ICountdownCacheData {
+  /** 客户端第一次访问时间（客户端时间戳） */
+  clientFirstAccess: number;
+  /** 当前 OTP 的 request_id（用于检测变化） */
+  requestId: string | number;
+}
+
+/**
+ * 倒计时缓存 Map 类型
+ */
+type CountdownCacheMap = {
+  [otpType: string]: ICountdownCacheData;
+};
+
+/**
  * OTP 倒计时服务
  * 职责：
  * - 管理倒计时逻辑
  * - 持久化倒计时状态（刷新页面可恢复）
  * - 提供倒计时状态的 Observable
+ * - 以服务器时间为准，不受客户端时间偏差影响
  */
 @Injectable()
 export class OtpCountdownService implements OnDestroy {
-  // OTP 最大有效期为 180 秒（3分钟），防止客户端时间偏差导致显示异常
+  // OTP 最大有效期为 180 秒（3分钟）
   private readonly MAX_OTP_DURATION_SECONDS = 180;
   
   private intervalId: ReturnType<typeof setInterval> | null = null;
@@ -44,54 +64,117 @@ export class OtpCountdownService implements OnDestroy {
   });
   
   constructor(
-    private otpService: OtpService
+    private otpService: OtpService,
+    private storage: LocalStorageService
   ) {}
   
 
   /**
    * 从缓存恢复倒计时（统一启动入口）
+   * 
+   * 核心逻辑：
+   * 1. 获取服务器时间数据（expires_at, sent_at, request_id）
+   * 2. 计算总时长（服务器时间差，准确）
+   * 3. 检测 OTP 变化（通过 request_id）
+   * 4. 计算客户端认为的到期时间（固定基准 + 总时长）
+   * 5. 计算剩余时间（客户端相对时间，准确）
    */
   restoreFromCache(): void {
     this.stop();
     
-    const expiresAt = this.otpService.getCurrentExpiresAt();
+    // ========== 步骤1: 获取服务器数据 ==========
+    const currentOtpType = this.getCurrentOtpType();
+    const requestInfo = this.otpService.getRequestInfo();
     
-    if (!expiresAt) {
-      console.warn('OTP countdown: missing expires_at in OTP_REQUEST_INFO, resetting countdown');
+    if (!requestInfo || !currentOtpType) {
+      console.warn('OTP countdown: missing request info or OTP type');
       this.reset(0);
       return;
     }
     
-    // 解析过期时间
-    const expiredAt = this.parseServerTime(expiresAt);
+    const { request_id, expires_at, sent_at } = requestInfo;
     
-    // 验证过期时间是否有效
-    if (!this.isValidDate(expiredAt)) {
-      console.error('OTP countdown: invalid expires_at time in OTP_REQUEST_INFO', expiresAt);
+    if (!request_id || !expires_at || !sent_at) {
+      console.warn('OTP countdown: incomplete request info', { request_id, expires_at, sent_at });
       this.reset(0);
       return;
     }
     
-    // 检查是否已过期
-    const now = Date.now();
-    const remainingMs = expiredAt.getTime() - now;
+    // ========== 步骤2: 解析服务器时间 ==========
+    const expiredAt = this.parseServerTime(expires_at);
+    const serverStartAt = this.parseServerTime(sent_at);
     
-    // 已过期，重置
+    if (!this.isValidDate(expiredAt) || !this.isValidDate(serverStartAt)) {
+      console.error('OTP countdown: invalid time format', { expires_at, sent_at });
+      this.reset(0);
+      return;
+    }
+    
+    // ========== 步骤3: 计算总时长（服务器时间差，准确）✅ ==========
+    const totalDurationMs = expiredAt.getTime() - serverStartAt.getTime();
+    const totalDurationSeconds = Math.min(
+      this.MAX_OTP_DURATION_SECONDS,
+      Math.floor(totalDurationMs / 1000)
+    );
+    
+    if (totalDurationSeconds <= 0) {
+      console.warn('OTP countdown: invalid duration', { totalDurationSeconds });
+      this.reset(0);
+      return;
+    }
+    
+    // ========== 步骤4: 获取或创建客户端缓存 ==========
+    const cacheMap = this.getCountdownCacheMap();
+    let cacheData = cacheMap[currentOtpType];
+    
+    // 检测 OTP 变化（重发或切换类型后首次访问）
+    const isOtpChanged = !cacheData || cacheData.requestId !== request_id;
+    
+    if (isOtpChanged) {
+      // OTP 变化了，创建新的缓存
+      const clientNow = Date.now();
+      cacheData = {
+        clientFirstAccess: clientNow,
+        requestId: request_id
+      };
+      cacheMap[currentOtpType] = cacheData;
+      this.saveCountdownCacheMap(cacheMap);
+      
+      console.log('OTP countdown: cache updated', {
+        otpType: currentOtpType,
+        requestId: request_id,
+        clientFirstAccess: new Date(clientNow).toISOString()
+      });
+    }
+    
+    // ========== 步骤5: 计算客户端认为的到期时间（固定值）✅ ==========
+    const clientExpiresAt = cacheData.clientFirstAccess + (totalDurationSeconds * 1000);
+    
+    // ========== 步骤6: 计算剩余时间（客户端相对时间，准确）✅ ==========
+    const clientNow = Date.now();
+    const remainingMs = clientExpiresAt - clientNow;
+    
+    // ========== 步骤7: 检查是否过期 ==========
     if (remainingMs <= 0) {
+      console.log('OTP countdown: expired');
+      this.clearCacheForType(currentOtpType);
       this.reset(0);
       return;
     }
     
+    // ========== 步骤8: 设置目标时间并启动倒计时 ==========
     let remainingSeconds = Math.floor(remainingMs / 1000);
-    
-    // 限制最大倒计时为 180 秒（3分钟），防止客户端时间偏差导致显示异常
     remainingSeconds = Math.min(this.MAX_OTP_DURATION_SECONDS, remainingSeconds);
     
-    // 设置目标时间和发送时间
-    this.targetTime = expiredAt;
-    this.sentAt = this.parseServerTime(this.otpService.getCurrentSentAt());
+    this.targetTime = new Date(clientExpiresAt);
+    this.sentAt = serverStartAt;
     
-    // 立即更新状态并启动倒计时循环
+    console.log('OTP countdown: started', {
+      otpType: currentOtpType,
+      remainingSeconds,
+      expiresAt: this.targetTime.toISOString()
+    });
+    
     this.updateState();
     this.intervalId = setInterval(() => this.tick(), 1000);
   }
@@ -178,10 +261,16 @@ export class OtpCountdownService implements OnDestroy {
       return;
     }
     
-    const distance = this.targetTime.getTime() - Date.now();
+    // ✅ 使用客户端认为的到期时间计算
+    const clientNow = Date.now();
+    const remainingMs = this.targetTime.getTime() - clientNow;
     
-    if (distance <= 0) {
+    if (remainingMs <= 0) {
       // 倒计时结束
+      const currentOtpType = this.getCurrentOtpType();
+      if (currentOtpType) {
+        this.clearCacheForType(currentOtpType);
+      }
       this.stop();
       this.countdownState$.next({
         remainingSeconds: 0,
@@ -193,9 +282,7 @@ export class OtpCountdownService implements OnDestroy {
       return;
     }
     
-    let remainingSeconds = Math.max(0, Math.floor(distance / 1000));
-    
-    // 最终限制：确保显示的剩余秒数不超过 180 秒（防止客户端时间偏差）
+    let remainingSeconds = Math.floor(remainingMs / 1000);
     remainingSeconds = Math.min(this.MAX_OTP_DURATION_SECONDS, remainingSeconds);
     
     this.countdownState$.next({
@@ -246,6 +333,47 @@ export class OtpCountdownService implements OnDestroy {
     }
     
     return true;
+  }
+  
+  // ========== 缓存管理方法 ==========
+  
+  /**
+   * 获取倒计时缓存 Map
+   */
+  private getCountdownCacheMap(): CountdownCacheMap {
+    return this.storage.retrieve(OtpStorageKeys.COUNTDOWN_CACHE_MAP) || {};
+  }
+  
+  /**
+   * 保存倒计时缓存 Map
+   */
+  private saveCountdownCacheMap(cacheMap: CountdownCacheMap): void {
+    this.storage.store(OtpStorageKeys.COUNTDOWN_CACHE_MAP, cacheMap);
+  }
+  
+  /**
+   * 清除指定类型的缓存
+   */
+  private clearCacheForType(otpType: string): void {
+    const cacheMap = this.getCountdownCacheMap();
+    delete cacheMap[otpType];
+    this.saveCountdownCacheMap(cacheMap);
+    console.log('OTP countdown: cache cleared for type', otpType);
+  }
+  
+  /**
+   * 获取当前 OTP 类型
+   */
+  private getCurrentOtpType(): string | null {
+    return this.storage.retrieve(OtpStorageKeys.OTP_TYPE) as string | null;
+  }
+  
+  /**
+   * 清理所有缓存（退出 OTP 流程时调用）
+   */
+  clearAllCache(): void {
+    this.storage.clear(OtpStorageKeys.COUNTDOWN_CACHE_MAP);
+    console.log('OTP countdown: all cache cleared');
   }
   
   ngOnDestroy(): void {

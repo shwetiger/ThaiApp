@@ -48,4 +48,28 @@ export class OtpStorageKeys {
   /** 电话号码 */
   static readonly PHONE_NUMBER = 'localPhoneValue';
   static readonly PHONE_PREFIX = 'localPhonePrefix';
+  
+  // ========== 倒计时缓存（新增）==========
+  
+  /**
+   * 倒计时缓存 Map
+   * 
+   * 数据格式：
+   * {
+   *   "sms_poh": {
+   *     clientFirstAccess: 1704096000000,  // 客户端第一次访问时间戳
+   *     requestId: "SMS_12345"              // 关联的 request_id
+   *   },
+   *   "email": {
+   *     clientFirstAccess: 1704096030000,
+   *     requestId: "EMAIL_67890"
+   *   }
+   * }
+   * 
+   * 用途：
+   * 1. 记录每个 OTP 类型的客户端基准时间
+   * 2. 通过 request_id 检测 OTP 变化（重发/切换类型）
+   * 3. 使用客户端相对时间计算，不受时钟偏差影响
+   */
+  static readonly COUNTDOWN_CACHE_MAP = 'otpCountdownCacheMap';
 }

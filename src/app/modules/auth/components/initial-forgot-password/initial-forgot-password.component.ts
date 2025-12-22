@@ -356,14 +356,18 @@ export class InitialForgotPasswordComponent implements OnInit {
       this.router.navigate(['/login/otp'], { replaceUrl: true });
     },
     error: (error: Error & { is180SecondsError?: boolean }) => {
-      if (error.is180SecondsError) { 
-        this.router.navigate(['/login/otp'], { replaceUrl: true });
-      } else {
-        this.toastr.error("", error.message, {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });
-      }
+      this.toastr.error("", error.message, {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      });
+      // if (error.is180SecondsError) { 
+      //   this.router.navigate(['/login/otp'], { replaceUrl: true });
+      // } else {
+      //   this.toastr.error("", error.message, {
+      //     timeOut: 3000,
+      //     positionClass: 'toast-top-center',
+      //   });
+      // }
     }
   });
   }

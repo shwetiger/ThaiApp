@@ -17,7 +17,7 @@ import { DtoService } from 'src/app/shared/service/dto.service';
 import { UtilService } from 'src/app/shared/service/util.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { LoginDeviceDialogComponent } from 'src/app/shared/dialog/login-device-dialog/login-device-dialog.component';
-import { DOCUMENT, PlatformLocation } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import { AppVersionService } from 'src/app/shared/service/app-version.service';
 declare var require: any;
 
@@ -75,15 +75,13 @@ export class LoginComponent implements OnInit {
     private modalService: BsModalService,
     public common: CommonService,
     public navigation: NavigationService,
-    private viewRef: ViewContainerRef, private translateService: TranslateService,
+    private translateService: TranslateService,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private dto: DtoService,
     private http: HttpClient, private util: UtilService,
     private router: Router, private storage: LocalStorageService,
-    private funct: FunctService, private _location: Location,
-    private renderer: Renderer2, private el: ElementRef,
-    private platformLocation: PlatformLocation,
+    private funct: FunctService,
     private versionService: AppVersionService,
     @Inject(DOCUMENT) private document: any) {
     this.parentLink = history.state.parentLink;

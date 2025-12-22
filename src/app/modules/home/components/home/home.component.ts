@@ -13,6 +13,7 @@ import { DtoService } from 'src/app/shared/service/dto.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { AccountLoginComponent } from 'src/app/shared/components/account-login/account-login.component';
 import { AppVersionService } from 'src/app/shared/service/app-version.service';
+import { OtpService } from 'src/app/shared/otp/services';
 
 @Component({
   selector: 'app-home',
@@ -50,7 +51,8 @@ export class HomeComponent implements OnInit {
     private storage: LocalStorageService,
     private funct: FunctService,
     private cdr: ChangeDetectorRef,
-    private versionService: AppVersionService,) {
+    private versionService: AppVersionService,
+    private otpService: OtpService) {
     this.deviceId = this.route.snapshot.paramMap.get("deviceId");
     this.fcmToken = this.route.snapshot.paramMap.get("fcmToken");
     var isWebviewUser = require('is-ua-webview');
@@ -67,6 +69,7 @@ export class HomeComponent implements OnInit {
     });
     this.storage.clear('fishingmaintenance');
     this.storage.clear('localCloseGameBalance');
+    this.otpService.clearOtpData();
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
     var lan = this.storage.retrieve('localLanguage');

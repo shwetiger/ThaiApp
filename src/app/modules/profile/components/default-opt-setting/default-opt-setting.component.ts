@@ -119,6 +119,8 @@ export class DefaultOptSettingComponent implements OnInit {
       this._location.back();
     }
     else {
+      this.storage.store(OtpStorageKeys.OTP_TYPE, this.selectedType);
+      // 注册界面可以选择发送otp 类型，保存到localStorage
       this.storage.store("registeropttype", this.selectedType)
       this.storage.store("formPageType", "register")
       this.storage.store("registeremail", this.email)

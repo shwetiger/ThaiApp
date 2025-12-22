@@ -159,11 +159,11 @@ import { ResizeService } from 'ngx-owl-carousel-o/lib/services/resize.service';
     BetSectionColsedComponent,
   ],
   imports: [
+    CarouselModule,
     CommonModule,
     FormsModule,
     HttpClientModule,
     TranslateModule,
-    CarouselModule,
     NgxSpinnerModule,
     BsDropdownModule,
     CodeInputModule,

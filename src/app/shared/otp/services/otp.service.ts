@@ -63,17 +63,23 @@ export class OtpService {
     const baseUrl = config.baseUrl === 'apaddressv1' ? this.funct.apaddressv1 : this.funct.ipaddress;
     const fullUrl = baseUrl + config.url + phoneNumber;
 
-    return this.http.get(fullUrl).pipe(
-      catchError(error => this.errorHandler.handleError(OtpScenario.FORGET_PASSWORD, error)),
-      map((result: any) => {
-        const validatedResult = this.responseValidator.validateSendResponse(result);
-                
-        // 存储响应（OTP_TYPE 已在 getUserSmsType 中设置，封装方法确保执行顺序）
-        this.storeOtpResponse(OtpScenario.FORGET_PASSWORD, validatedResult, OtpType.SMS);
-
-        return validatedResult as IOtpResponse;
-      })
-    );
+        // 先获取用户默认 OTP 类型
+        return this.getUserSmsType(phoneNumber).pipe(
+          switchMap(otpTypeResult => {
+            // 然后发送 OTP
+            return this.http.get(fullUrl).pipe(
+              catchError(error => this.errorHandler.handleError(OtpScenario.FORGET_PASSWORD, error)),
+              map((result: any) => {
+                const validatedResult = this.responseValidator.validateSendResponse(result);
+                        
+                // 存储响应（OTP_TYPE 已在 getUserSmsType 中设置，封装方法确保执行顺序）
+                this.storeOtpResponse(OtpScenario.FORGET_PASSWORD, validatedResult);
+        
+                return validatedResult as IOtpResponse;
+              })
+            );
+          })
+        );
   }
 
   /**
@@ -493,7 +499,7 @@ export class OtpService {
       });
     } else if (params.scenario === OtpScenario.FORGET_PASSWORD) {
       return this.sendForgetPasswordOtp({ 
-        phoneNumber: params.phoneNumber
+        phoneNumber: this.getPhoneNumber()
        });
     } else if (params.scenario === OtpScenario.NEW_DEVICE) {
       return this.sendNewDeviceOtp({ 
@@ -676,8 +682,9 @@ export class OtpService {
     this.storage.clear(OtpStorageKeys.BANK_ACCOUNT_LIST);
     this.storage.clear(OtpStorageKeys.LOGIN_MODEL);
     this.storage.clear(OtpStorageKeys.INSERT_ACCOUNT);
-    this.storage.clear(OtpStorageKeys.REGISTER_EMAIL);
+    // this.storage.clear(OtpStorageKeys.REGISTER_EMAIL);
     this.storage.clear(OtpStorageKeys.SERVICE_PHONE_LIST);
+    this.storage.clear(OtpStorageKeys.COUNTDOWN_CACHE_MAP);
   }
 
 }

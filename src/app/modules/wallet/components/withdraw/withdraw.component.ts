@@ -14,7 +14,7 @@ import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { TopupAlertMaintenanceComponent } from 'src/app/shared/dialog/topup-alert-maintenance/topup-alert-maintenance.component';
 import { OtpService } from 'src/app/shared/otp/services';
-import { OtpStorageKeys, OtpType } from 'src/app/shared/otp/models';
+import { OtpScenario, OtpStorageKeys, OtpType } from 'src/app/shared/otp/models';
 
 @Component({
   selector: 'app-withdraw',
@@ -612,7 +612,7 @@ export class WithdrawComponent implements OnInit {
                   else {
 
                     // 发送前清清除掉 OTP相关缓存
-                    this.otpService.clearOtpData();
+                    // this.otpService.clearOtpData();
                     // 存储当前选择的 OTP 类型，否则默认使用 SMS
                     this.storage.store(OtpStorageKeys.OTP_TYPE,  this.smstype || OtpType.SMS);
                     // 使用 OtpService 发送提现 OTP
@@ -635,10 +635,15 @@ export class WithdrawComponent implements OnInit {
                       },
                       error: (error: Error & { is180SecondsError?: boolean }) => {
                         this.loadingInsertBankAcc = false;
+                        this.storage.clear('successmsg');
                         this.spinner.hide("loadingInsertBankAcc");
+                        if (myaccount.length == 0) {
+                          this.storage.store(OtpStorageKeys.INSERT_ACCOUNT, 'insertAccount');
+                        }
 
-                        if (error.is180SecondsError) { 
-                          this.router.navigate(['/login/otp'], { replaceUrl: true });
+                        if (error.is180SecondsError) {
+                          this.storage.store(OtpStorageKeys.SCENARIO, OtpScenario.WITHDRAW_INSERT)
+                          this.router.navigate(['/login/otp'], { replaceUrl: false });
                         } else {
                           this.toastr.error("", error.message, {
                             timeOut: 3000,

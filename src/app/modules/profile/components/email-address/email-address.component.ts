@@ -152,6 +152,12 @@ export class EmailAddressComponent implements OnInit {
               this.storage.clear('Timer');
               this.router.navigate(['/me-page/email-otp-comfirm'], { replaceUrl: true });
             }
+            if(this.dto.Response.message=" Only one text message can be sent within 180 seconds ")
+            {
+              this.common.submitLoading = false;
+              this.spinner.hide("submitLoading");
+              this.router.navigate(['/me-page/email-otp-comfirm'], { replaceUrl: true });
+            }
               if(this.dto.Response.message=='too many request'){
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
@@ -160,8 +166,8 @@ export class EmailAddressComponent implements OnInit {
                 positionClass: 'toast-bottom-center',
               });
             }
-            
-            
+
+
           }
         );
     }

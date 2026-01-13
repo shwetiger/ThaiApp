@@ -17,20 +17,21 @@ import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
   styleUrls: ['./game-wallet-in-out.component.scss']
 })
 export class GameWalletInOutComponent implements OnInit, OnDestroy {
-  title: string = "";
-  closeBtnName: string;
+  title: string = '';
+  closeBtnName: string='';
   term_conditions: any;
   @Input() data: any = [];
   description: any;
   gameType: any;
   depositModel: any;
-  showPass: boolean;
+  showPass: boolean=false
   passwordType = 'password';
   token: any;
   loadingSubmiting: boolean = false;
   amount_error_message: any = "";
   password_error_message: any;
   gameproviderlist: any;
+  isAmountInvalid = false;
   constructor(
     private dto: DtoService,
     private toastr: ToastrService,
@@ -113,41 +114,59 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
     }
     return true;
   }
+
   checkAmount() {
     this.amount_error_message = "";
+    const myanmarRegex = /[\u1000-\u109F]/;
+    if (myanmarRegex.test(this.depositModel.transferAmount)) {
+      this.isAmountInvalid = true;
+      this.depositModel.transferAmount= this.depositModel.transferAmount.slice(0, -1);
+    }
     if (this.depositModel.transferAmount == '' || this.depositModel.transferAmount == null || this.depositModel.transferAmount == undefined) {
       var amountRequired = this.translateService.instant("requiredFiled");
       amountRequired = amountRequired.toString().replace("@value", this.translateService.instant("amount"));
-
+      this.isAmountInvalid = true;
       this.amount_error_message = amountRequired;
       return false;
     }
     if (this.gameType == 'out') {
       if (this.depositModel.transferAmount >= 100) {
         this.amount_error_message = "";
+         this.isAmountInvalid = false;
         return true;
 
       }
       if (this.depositModel.transferAmount < 100) {
         this.amount_error_message = this.translateService.instant('amount_error_one');
         // $("#amountErr").html(this.translateService.instant('amount_error_one'));
+         this.isAmountInvalid = true;
         return false;
       }
     }
     if (this.gameType == 'in') {
       if (this.depositModel.transferAmount >= 1000) {
+         this.isAmountInvalid = false;
         this.amount_error_message = "";
         return true;
       }
       if (this.depositModel.transferAmount < 1000) {
         //$("#amountErr").html(this.translateService.instant('amount_error'));
         this.amount_error_message = this.translateService.instant('amount_error');
+         this.isAmountInvalid = true;
         return false;
       }
     }
-
-
   }
+
+blockMyanmar(event: KeyboardEvent) {
+  const char = event.key;
+  const code = char.charCodeAt(0);
+
+  // Myanmar Unicode Range: 1024–1279 (0x1000–0x127F)
+  if (code >= 0x1000 && code <= 0x127F) {
+    event.preventDefault();
+  }
+}
 
   handleError(error: HttpErrorResponse) {
     this.loadingSubmiting = false;
@@ -168,7 +187,7 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
     if (error.status == 429) {

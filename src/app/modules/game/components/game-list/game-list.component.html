@@ -83,7 +83,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="playFreeOrplay" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+<!-- <div class="modal fade" id="playFreeOrplay" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
   aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content playFreeOrPlay">
@@ -104,15 +104,9 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <ng-template #transferAlert>
-  <!-- <div class="modal-header">
-    <h4 class="modal-title pull-left"></h4>
-    <div class="close pull-right">
-      <i class="material-icons" (click)="HideAlert()" style="color: red;">cancel</i>
-    </div>
-  </div> -->
   <div class="modal-body mt-2" style="padding: 0px !important;">
     <div style="text-align: center;">
       <i class="material-icons" style="font-size: 50px;color:#0054a6">error</i>
@@ -137,7 +131,7 @@
         </div> -->
         <div class="col-12 mt-2 mb-2" style="padding: 10px 0px 0px 0px !important;">
           <span class="child-walletbalance">{{ 'gameWallet' | translate}}</span>
-          <span class="child-walletbalance">{{ gameUserBalance }} {{'ks'|translate}}</span>
+          <span class="child-walletbalance">{{ GameBalanceResponse }} {{'ks'|translate}}</span>
         </div>
       </div>
       <div class="row d-flex justify-content-center mt-2 pt-1 pb-3">

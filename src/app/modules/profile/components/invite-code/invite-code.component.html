@@ -9,13 +9,13 @@
             <div class="row">
                 <div class="col justify-content-center text-center">
                     <h4 class="service-color">{{ 'ref_code_desc' | translate}} </h4>
-                    <div class="col justify-content-center text-center" *ngIf="userProfileModel.referral_code!=null">
+                    <div class="col justify-content-center text-center" *ngIf="userProfileModel.referral_code!=null && userProfileModel.referral_code!='' ">
                         <input type="text" maxlength="12" formControlName="refCode"
                             [(ngModel)]="userProfileModel.referral_code" disabled class="form-control refCode"
                             placeholder="{{ 'enterRef' | translate}}">
                     </div>
 
-                    <div class="col justify-content-center text-center" *ngIf="userProfileModel.referral_code==null">
+                    <div class="col justify-content-center text-center" *ngIf="userProfileModel.referral_code==null || userProfileModel.referral_code==''">
                         <input type="text" maxlength="12" formControlName="refCode" [(ngModel)]="refModel.referral_code"
                             class="form-control refCode" placeholder="{{ 'enterRef' | translate}}">
                     </div>
@@ -26,6 +26,7 @@
                             [(ngModel)]="userProfileModel.referral_phone_no" disabled
                             class="form-control refPhoneNumber" placeholder="{{ 'enter_ref_phno' | translate}}">
                     </div>
+                     <p id="codeErr" class="error-color ml-2" style="text-align: left; width: 100%;"></p>
 
                     <div class="col justify-content-center text-center mt-3"
                         *ngIf="userProfileModel.referral_phone_no==null ||userProfileModel.referral_phone_no=='' ">

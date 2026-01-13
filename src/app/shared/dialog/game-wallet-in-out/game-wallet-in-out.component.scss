@@ -6,10 +6,10 @@
   margin-top: -30px;
   position: relative;
   z-index: 2;
-  color: blue;  
+  color: blue;
 }
 
-.text-eye ion-icon {    
+.text-eye ion-icon {
   font-size: 20px;
 }
 
@@ -19,7 +19,11 @@
   margin-top: -38px;
   position: relative;
   z-index: 2;
-  color: blue;  
+  color: blue;
+}
+
+.invalid-input {
+  border: 1px solid red !important;
 }
 
 ::ng-deep {
@@ -28,12 +32,12 @@
     flex-direction: column;
     justify-content: center;
     //overflow-y: auto;
-  
+
     min-height: calc(100vh - 60px);
     & > .modal-content {
       background-color: #e1dfe2 !important;
     }
-  } 
+  }
   input::placeholder {
     font-size: 13px;
   }

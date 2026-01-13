@@ -16,6 +16,7 @@ import { UtilService } from '../../service/util.service';
 import { FunctService } from '../../service/funct.service';
 import { GameWalletInOutComponent } from 'src/app/shared/dialog/game-wallet-in-out/game-wallet-in-out.component';
 import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import axios from 'axios';
 
 @Component({
   selector: 'game-account-login',
@@ -76,7 +77,7 @@ export class GameAccountLoginComponent implements OnInit {
     this.showAmount = this.storage.retrieve('showAmount');
 
     this.showAmount = this.showAmount == null ? false : this.showAmount;
-    // this.userProfileModel='';   
+    // this.userProfileModel='';
     this.token = this.storage.retrieve('token');
     if (this.token == null) {
       this.storage.store('token', "");
@@ -182,75 +183,78 @@ export class GameAccountLoginComponent implements OnInit {
     }
   }
 
-  async getGameUserBalance() {
-    this.gameUserBalance = [];
-    this.token = this.storage.retrieve('token');
-    for (let i = 0; i < this.gameProviderId.length; i++) {
-      let config = {
-        headers: { 'Authorization': this.token },
-        params: { 'providerId': this.gameProviderId[i] },
-      }
-      const axios = require('axios').default;
-      if (this.gameProviderId == 14) {
-        this.gameUserBalance = [];
-        await axios.get(this.funct.ipaddress + 'shkm/getBalanceV1', config)
-          .then((res) => {
-            this.isUserLoggedIn = true;
-            this.gameUserBalance.push({ providerId: this.gameProviderId[i], balance: parseInt(res.data.balance), dataUrl: res.data.dataUrl, name: res.data.display_name });
-            this.common.closeLoadingSubmit = false;
-            this.spinner.hide('closeLoadingSubmit');
-            return res.data.balance;
+ 
+async getGameUserBalance() {
+  this.gameUserBalance = [];
+  this.token = this.storage.retrieve('token');
 
-          })
-          .catch((error) => {
-            this.common.closeLoadingSubmit = false;
-            this.spinner.hide('closeLoadingSubmit');
-            if (error.response) {
+  const maxRetry = 3;
 
-              return
-            }
-          });
-      }
-      else {
+  for (let i = 0; i < this.gameProviderId.length; i++) {
+    const providerId = this.gameProviderId[i];
+    const config = {
+      headers: { 'Authorization': this.token },
+      params: { providerId },
+    };
+
+    try {
+      if (providerId === 14) {
+        this.common.closeLoadingSubmit = true;
+        this.spinner.show('closeLoadingSubmit');
+
+        const res = await axios.get(`${this.funct.ipaddress}shkm/getBalanceV1`, config);
+        this.isUserLoggedIn = true;
+
+        this.gameUserBalance.push({
+          providerId,
+          balance: parseInt(res.data.balance, 10),
+          dataUrl: res.data.dataUrl,
+          name: res.data.display_name
+        });
+      } else {
         let attempt = 0;
-        const maxRetry = 3;
-
         while (attempt < maxRetry) {
           try {
-            const res = await axios.get(this.funct.ipaddress + 'loginGS/getBalanceV129', config);
+            const res = await axios.get(`${this.funct.ipaddress}loginGS/getBalanceV129`, config);
 
-            if (res.data.isSuccess === false && res.data.message === 'The request is too fast, please wait 5 seconds before operating again') {
-              this.common.closeLoadingSubmit = true;
-
-              this.spinner.show('closeLoadingSubmit');
-              console.warn("Too fast, retrying in 1 second...");
-              await new Promise(resolve => setTimeout(resolve, 2500)); // wait 1 second
+            if (res.data.isSuccess === false &&
+                res.data.message?.includes('too fast')) {
+              console.warn(`Too fast, retrying in 2.5 seconds... (attempt ${attempt + 1})`);
+              await new Promise(resolve => setTimeout(resolve, 2500));
               attempt++;
-              continue; // retry
+              continue;
             }
 
             this.isUserLoggedIn = true;
             this.gameUserBalance.push({
-              providerId: this.gameProviderId[i],
-              balance: parseInt(res.data.data.balance),
+              providerId,
+              balance: parseInt(res.data.data.balance, 10),
               dataUrl: res.data.data.dataUrl,
               name: res.data.data.display_name
             });
+
             break; // exit retry loop if successful
-          } catch (error) {
-            console.error("API error:", error);
-            break; // don't retry on network or server error
-          } finally {
-            this.common.closeLoadingSubmit = false;
-            this.spinner.hide('closeLoadingSubmit');
-            this.storage.store('LocalgameUserBalance', JSON.stringify(this.gameUserBalance));
+          } catch (err) {
+            console.error(`Error fetching balance for provider ${providerId}:`, err);
+            break; // don't retry on network/server error
           }
         }
       }
 
-    }
+      // Save balance of current provider in storage (use first element for example)
+      const balance = this.gameUserBalance.find(b => b.providerId === providerId)?.balance ?? 0;
+      this.storage.store('LocalgameUserBalance', balance);
 
+    } catch (error) {
+      console.error(`Failed to fetch balance for provider ${providerId}:`, error);
+    } finally {
+      this.common.closeLoadingSubmit = false;
+      this.spinner.hide('closeLoadingSubmit');
+    }
   }
+}
+
+
 
   selectGameListId(providerId, name, tranfer) {
     this.storage.store('localGameProviderId', this.gameProviderId);

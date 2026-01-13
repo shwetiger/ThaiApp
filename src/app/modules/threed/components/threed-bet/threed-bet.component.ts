@@ -95,6 +95,19 @@ export class ThreedBetComponent implements OnInit {
     }
 
     try {
+
+      if (num1.includes('-')) {
+      this.toastr.error(
+        "",
+        this.translateService.instant("invalid_bet_number"),
+        {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        }
+      );
+      this.storeBetNumber(newNumber, false);
+      return;
+    }
       if (num1.includes('.')) {
         this.toastr.error("", this.translateService.instant("invalid_bet_number"), {
           timeOut: 3000,
@@ -449,8 +462,8 @@ export class ThreedBetComponent implements OnInit {
       onChange: any;
       constructor(options) {
         let defaults = {
-          el: '', // dom 
-          type: 'infinite', // infinite 无限滚动，normal 非无限 
+          el: '', // dom
+          type: 'infinite', // infinite 无限滚动，normal 非无限
           count: 20, // 圆环规格，圆环上选项个数，必须设置 4 的倍数
           sensitivity: 0.8, // 灵敏度
           source: [], // 选项 {value: xx, text: xx}
@@ -466,7 +479,7 @@ export class ThreedBetComponent implements OnInit {
         this.a = this.options.sensitivity * 10; // 滚动减速度
         this.minV = Math.sqrt(1 / this.a); // 最小初速度
         this.selected = this.source[0];
-        this.exceedA = 10; // 超出减速 
+        this.exceedA = 10; // 超出减速
         this.moveT = 0; // 滚动 tick
         this.moving = false;
         this.elems = {
@@ -484,7 +497,7 @@ export class ThreedBetComponent implements OnInit {
         };
         this.itemHeight = this.elems.el.offsetHeight * 3 / this.options.count; // 每项高度
         this.itemAngle = 360 / this.options.count; // 每项之间旋转度数
-        this.radius = this.itemHeight / Math.tan(this.itemAngle * Math.PI / 180); // 圆环半径 
+        this.radius = this.itemHeight / Math.tan(this.itemAngle * Math.PI / 180); // 圆环半径
         this.scroll = 0; // 单位为一个 item 的高度（度数）
         this._init();
       }
@@ -570,10 +583,10 @@ export class ThreedBetComponent implements OnInit {
         let template = `
           <div class="select-wrap">
             <ul class="select-options" style="transform: translate3d(0, 0, ${-this.radius}px) rotateX(0deg);">
-              {{circleListHTML}}            
+              {{circleListHTML}}
             </ul>
             <div class="highlight">
-              <ul class="highlight-list">             
+              <ul class="highlight-list">
                 {{highListHTML}}
               </ul>
             </div>
@@ -815,7 +828,7 @@ export class ThreedBetComponent implements OnInit {
     }
 
     function getDays() {
-      let dayCount = 10;//new Date(year,month,0).getDate(); 
+      let dayCount = 10;//new Date(year,month,0).getDate();
       let days = [];
       for (let i = 0; i < dayCount; i++) {
         days.push({

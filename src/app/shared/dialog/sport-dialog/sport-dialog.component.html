@@ -1,14 +1,14 @@
 <div class="modal-header">
     <h4 class="modal-title pull-left"></h4>
-    <div  class="close pull-right">     
-      <i class="material-icons" (click)="close()" style="color: red;">cancel</i> 
-    </div>    
-</div>    
-<div class="modal-body">   
+    <div  class="close pull-right">
+      <i class="material-icons" (click)="close()" style="color: red;">cancel</i>
+    </div>
+</div>
+<div class="modal-body">
     <div class="container">
       <div class="row">
         <button type="button" class="btn btn-block mx-3"  (click) = "goToPlay()" style="background: #000; color: #fff;margin: 10px 0px;">{{ play_free }}</button>
         <button type="button" class="btn btn-success btn-block  mx-3" (click) = "goToWallet()" *ngIf="show_transfer">{{ 'game_balance_transfer' | translate}}</button>
-      </div>     
+      </div>
     </div>
 </div>

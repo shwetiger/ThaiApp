@@ -201,37 +201,37 @@ export class ProfileEditPageComponent implements OnInit {
   }
 
   deleteprofilephoto() {
-    if( this.userModel.imageUrl=='' || this.userModel==undefined)
-    {
-            this.toastr.error("", this.translateService.instant("no_profilimage"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-            return;
+    if (this.userModel.imageUrl == '') {
+      this.toastr.error("", this.translateService.instant("no_profilimage"), {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      });
+      return;
     }
-    else{
-    this.userModel.imageUrl = '';
-    this.token = this.storage.retrieve('token');
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);
-    this.http.get(this.funct.ipaddress + 'user/deleteByUser', { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.common.submitLoading = false;
-          this.spinner.hide("submitLoading");
-          this.dto.Response = result;
-          if (this.dto.Response.status == 'Success') {
-            this.HidelogoutModel();
-            this.toastr.success("", this.translateService.instant("success_message"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
+    else {
+      this.userModel.imageUrl = '';
+      this.token = this.storage.retrieve('token');
+      let headers = new HttpHeaders();
+      headers = headers.set('Authorization', this.token);
+      this.http.get(this.funct.ipaddress + 'user/deleteByUser', { headers: headers })
+        .pipe(
+          catchError(this.handleErrorMessage.handleError.bind(this, ''))
+        )
+        .subscribe(
+          result => {
+            this.common.submitLoading = false;
+            this.spinner.hide("submitLoading");
+            this.dto.Response = result;
+            if (this.dto.Response.status == 'Success') {
+              this.toastr.success("", this.translateService.instant("success_message"), {
+                timeOut: 3000,
+                positionClass: 'toast-top-center',
+              });
+              this.HidelogoutModel();
+              return;
+            }
           }
-        }
-      );
+        );
+    }
   }
-}
 }

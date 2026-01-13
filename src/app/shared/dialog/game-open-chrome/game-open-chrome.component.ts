@@ -170,16 +170,7 @@ export class GameOpenChromeComponent implements OnInit {
     let headers = new HttpHeaders();
     this.token = this.storage.retrieve('token');
     headers = headers.set('Authorization', this.token);
-    this.gameUserBalance = this.storage.retrieve('localGameBalanceBefore');
-    if (this.gameUserBalance == null || this.gameUserBalance == undefined) {
-      //this.bsModalRef.hide(); 
-      this.toastr.error("", this.translateService.instant("transaction_wait_5sec"), {
-        timeOut: 1000,
-        positionClass: 'toast-top-center',
-
-      });
-      return;
-    }
+    this.gameUserBalance = this.storage.retrieve('LocalgameUserBalance');
     if (this.gameUserBalance < 1000) {
       var data = {
         "id": this.providerId,
@@ -201,7 +192,7 @@ export class GameOpenChromeComponent implements OnInit {
           .subscribe(
             async result => {
               this.dto.Response = {};
-              this.dto.Response = result;             
+              this.dto.Response = result;
               if (this.dto.Response.isSuccess == false) {
                 const rawData = this.dto.Response.data;
                 const timeLeftMatch = rawData.match(/timeLeft\s*=\s*(\d+)/);
@@ -322,16 +313,7 @@ export class GameOpenChromeComponent implements OnInit {
     let headers = new HttpHeaders();
     this.token = this.storage.retrieve('token');
     headers = headers.set('Authorization', this.token);
-    this.gameUserBalance = this.storage.retrieve('localGameBalanceBefore');
-    if (this.gameUserBalance == null || this.gameUserBalance == undefined) {
-      this.bsModalRef.hide();
-      this.toastr.error("", this.translateService.instant("transaction_wait_5sec"), {
-        timeOut: 1000,
-        positionClass: 'toast-top-center',
-
-      });
-      return;
-    }
+    this.gameUserBalance = this.storage.retrieve('LocalgameUserBalance');
     if (this.gameUserBalance < 1000) {
       var data = {
         "id": this.providerId,
@@ -359,7 +341,6 @@ export class GameOpenChromeComponent implements OnInit {
               this.storage.store('localPreviousRoute', 'gameList')
               sessionStorage.setItem('providerId', this.providerId);
               var launchTagName;
-
               var gamelist = this.storage.retrieve('localLaunchGameList');
               let language = this.storage.retrieve('localLanguage');
               if (language == "my") {

@@ -134,7 +134,12 @@ export class RegistrationPageComponent implements OnInit {
     }
   }
 
+
   checkPassword() {
+    const myanmarRegex = /[\u1000-\u109F]/;
+    if (myanmarRegex.test(this.password)) {
+      this.password = this.password.slice(0, -1);
+    }
     $("#passwordErr").html('');
     if (!this.password || this.password.length < 6) {
       $("#passwordErr").html(this.translateService.instant("reqPassSixLength"));
@@ -158,6 +163,10 @@ export class RegistrationPageComponent implements OnInit {
   }
 
   checkConfirmPassword() {
+    const myanmarRegex = /[\u1000-\u109F]/;
+    if (myanmarRegex.test(this.confirmPassword)) {
+      this.confirmPassword = this.confirmPassword.slice(0, -1);
+    }
     $("#confirmPasswordErr").html('');
     if (this.password && this.password.length == this.confirmPassword.length && this.password == this.confirmPassword) {
       return true;

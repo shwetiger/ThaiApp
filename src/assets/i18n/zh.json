@@ -610,7 +610,7 @@
   "confirmPassIncorrect": "两次密码不一致",
   "accountNotExist": "账号不存在",
   "wallet_transfer": "钱包转账",
-  "editByUserName": "Please enter name",
+  "editByUserName": "请输入姓名",
   "your_change_password": "更改密码",
   "current_password_wrong": "当前密码不正确。",
   "feedbackTap": "Feedback",
@@ -784,5 +784,9 @@
   "invalid_bet_amt":"投注金额无效",
   "bank_accname_required":"姓名为必填项",
   "no_profilimage":"没有要移除的图片",
-  "QRdownload":"下载"
+  "QRdownload":"下载",
+   "referral_code_save_success":"推荐码已成功保存",
+   "refreral_ph_save_success":"推荐人的电话号码已成功保存",
+   "invalid":"无效的推荐码和推荐人手机号",
+   "viber_error":"Viber OTP 不支持国际号码"
 }

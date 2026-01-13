@@ -344,7 +344,7 @@ export class LoginComponent implements OnInit {
       this.storage.store('localLanguageIndex',lang);
     }
 
-    this.activeLang = lang; 
+    this.activeLang = lang;
 
     this.translateService.use(lang);
     this.storage.store('localLanguage', lang);
@@ -354,10 +354,6 @@ export class LoginComponent implements OnInit {
       this.login();
     }
   }
-
-
-
-
 
   async getSMS() {
     let config = {

@@ -1,90 +1,90 @@
 <!-- App Capsule  -->
-  <div class="container-fluid header" *ngIf="!isUserLogin">   
+  <div class="container-fluid header" *ngIf="!isUserLogin">
       <div class="row">
         <div class="col-8 text-left">
           <div style="margin-top: 5px;">
             <a (click)="loginAccount()">
-              <div style="align-items:center"> 
+              <div style="align-items:center">
                 <img src="assets/img/icons/no-image.png" alt="" style="vertical-align:middle ;margin-right:10px; width: 60px;">
                 <span style="font-weight: bold;" class="account_login_text">{{ 'click_to_login' | translate}}</span>
               </div>
             </a>
           </div>
-        </div>    
+        </div>
         <div class="col-2 text-left" style="padding-top: 15px;">
           <app-language-page></app-language-page>
-        </div>       
-        <div class="col-1" style="padding-top: 20px;">         
+        </div>
+        <div class="col-1" style="padding-top: 20px;">
           <a (click)="goToNotiList()">
             <div>
-              <img src="assets/img/icon/noti_active.png" alt="">               
-            </div>           
+              <img src="assets/img/icon/noti_active.png" alt="">
+            </div>
           </a>
         </div>
       </div>
-  </div> 
- <div class="wallet-account" *ngIf="isUserLogin">  
+  </div>
+ <div class="wallet-account" *ngIf="isUserLogin">
    <div class="container-fluid">
      <div class="row">
-      <div class="show-account-wallet" >  
+      <div class="show-account-wallet" >
         <div class="container show-wallet">
           <span class="wallet-right-arrow"  (click)="openWalletPage()" >
-            <img src="assets/img/icon/arrow_forward_ios.png" alt="">           
+            <img src="assets/img/icon/arrow_forward_ios.png" alt="">
           </span>
           <div class="row" style="padding: 0px !important; margin: 0px !important;">
-            <h4 class="open-wallet-text"  (click)="openWalletPage()" style="padding: 0px !important; margin: 0px !important;">{{ 'balance' | translate}}&nbsp;</h4>           
+            <h4 class="open-wallet-text"  (click)="openWalletPage()" style="padding: 0px !important; margin: 0px !important;">{{ 'balance' | translate}}&nbsp;</h4>
             <h4 class="open-wallet-text" style="padding: 0px !important; margin: 0px !important;">({{ 'ks' | translate}})</h4>
             <span class="text-eye" style="margin-top: 3px;margin-left:5px">
               <a (click)="showPassword(!showAmount)">
                 <img src="assets/img/icon/eye-on.png" alt=""  width="20" *ngIf="showAmount">
-                <img src="assets/img/icon/eye-off.png" alt=""  width="20" *ngIf="!showAmount">              
+                <img src="assets/img/icon/eye-off.png" alt=""  width="20" *ngIf="!showAmount">
               </a>
             </span>
           </div>
           <div class="row" style="padding: 0px !important; margin: 0px !important;" (click)="openWalletPage()">
             <ng-container *ngIf="showAmount == true && !common.mainBananceLoadingSubmit">
               <h3 class="open-wallet" (click)="openWalletPage()" style="padding: 0px !important; margin: 0px !important;font-weight: 600;">{{ showBalance | number : '1.2-2'}}</h3>
-            </ng-container>  
-            <h3 *ngIf="showAmount == false && !common.mainBananceLoadingSubmit" class="open-wallet" (click)="openWalletPage()" 
+            </ng-container>
+            <h3 *ngIf="showAmount == false && !common.mainBananceLoadingSubmit" class="open-wallet" (click)="openWalletPage()"
             style="padding: 0px !important; margin: 0px !important;font-weight: 600;">*****</h3>
             <div style="background-color: transparent !important; position: relative; margin: 15px;" *ngIf="common.mainBananceLoadingSubmit">
               <ngx-spinner *ngIf="common.mainBananceLoadingSubmit" [name]="common.loading.mainBananceLoadingSubmit.name"
               [size]="common.loading.mainBananceLoadingSubmit.size" [color]="common.loading.mainBananceLoadingSubmit.color"
               [type]="common.loading.mainBananceLoadingSubmit.type" [fullScreen]="common.loading.mainBananceLoadingSubmit.fullScreen"
-              [bdColor]="common.loading.mainBananceLoadingSubmit.bdColor"></ngx-spinner>  
+              [bdColor]="common.loading.mainBananceLoadingSubmit.bdColor"></ngx-spinner>
             </div>
-          </div>   
-        </div>    
+          </div>
+        </div>
       </div>
      </div>
-   </div>  
+   </div>
   <div class="container-fluid account-bgcolor pb-3">
     <div class="row">
       <div class="col-8 text-left">
         <div class="row">
           <a (click)="goToProfileDetail()">
-              <div *ngIf="userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''">             
-                <img src="assets/img/icons/login-image.png" alt="" class="account-login-active py-2" width="60px;"> 
+              <div *ngIf="userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''">
+                <img src="assets/img/icons/login-image.png" alt="" class="account-login-active py-2" width="60px;">
               </div>
-              <div *ngIf="userProfileModel.imageUrl != null && userProfileModel.imageUrl != ''">               
-                 <img [src] = "userProfileModel.imageUrl" class="aaccount-login-active py-2" width="60px"  height="73px" style="border-radius: 50%;">  
+              <div *ngIf="userProfileModel.imageUrl != null && userProfileModel.imageUrl != ''">
+                 <img [src] = "userProfileModel.imageUrl" class="aaccount-login-active py-2" width="60px"  height="73px" style="border-radius: 50%;">
               </div>
           </a>
-          <div class="col mt-2"> 
+          <div class="col mt-2">
             <h4 class="account-title-name open-wallet">{{ changeName() }}</h4>
-            <h5 class="text-white">{{getPhoneNumber(userProfileModel.phone_no)}}</h5>           
+            <h5 class="text-white">{{getPhoneNumber(userProfileModel.phone_no)}}</h5>
           </div>
         </div>
       </div>
-  
+
       <div class="col-2 text-left" style="padding-top: 15px;">
         <app-language-page></app-language-page>
-      </div>  
+      </div>
       <div class="col-1 " style="padding-top: 20px;">
         <a (click)="goToNotiList()">
-          <div style="width: 50px;height: 50px;">                    
-            <img src="assets/img/icon/noti_noactive.png" alt=""> 
-          </div>         
+          <div style="width: 50px;height: 50px;">
+            <img src="assets/img/icon/noti_noactive.png" alt="">
+          </div>
           <span *ngIf="notiCount !=0"
             style="top: 15px;left:34px; position:absolute;background:red;width: 20px;height: 20px;border-radius: 50%">
             <h5 style="font-size:8px;color:white;">
@@ -93,13 +93,13 @@
           </span>
         </a>
       </div>
-    </div>        
-  </div>  
+    </div>
+  </div>
  </div>
- <div class="" style="margin-bottom: 60px;" *ngIf="isUserLogin">      
- </div> 
- <div class="container wallet-padding-login" *ngIf="!isUserLogin">      
-  <div class="row">           
+ <div class="" style="margin-bottom: 60px;" *ngIf="isUserLogin">
+ </div>
+ <div class="container wallet-padding-login" *ngIf="!isUserLogin">
+  <div class="row">
   </div>
 </div>
 

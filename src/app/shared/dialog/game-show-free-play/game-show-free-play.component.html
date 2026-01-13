@@ -1,10 +1,10 @@
 
   <div class="modal-header">
     <h4 class="modal-title pull-left"></h4>
-    <div  class="close pull-right">     
-      <i class="material-icons" (click)="close()" style="color: red;">cancel</i>  
-    </div>    
-   </div>    
+    <div  class="close pull-right">
+      <i class="material-icons" (click)="close()" style="color: red;">cancel</i>
+    </div>
+   </div>
 <div class="modal-body" style="padding: 0px !important;">
 <div class="container-fluid">
     <div class ="row pt-2 pb-4">
@@ -12,12 +12,12 @@
             <ngx-spinner name="gameLoadingone" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
         </div>
         <button type="button" class="btn btn-block mx-3" (click)="playFree()" style="background: #000; color: #fff;margin: 10px 0px;" *ngIf="!gameLoadingone || data.list.supportdemourl">{{ 'play_free' | translate}}</button>
-       
+
         <div style="background-color: transparent !important; position: relative;margin: 30px 15px 15px 15px; width: 100%;" *ngIf="gameLoadingtwo">
             <ngx-spinner name ="gameLoadingtwo" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner>
         </div>
-        <button type="button" class="btn btn-success btn-block mx-3" (click) = "play()" *ngIf="!gameLoadingtwo">{{ 'play' | translate}}</button>        
+        <button type="button" class="btn btn-success btn-block mx-3" (click) = "play()" *ngIf="!gameLoadingtwo">{{ 'play' | translate}}</button>
     </div>
-    
+
 </div>
 </div>

@@ -113,6 +113,92 @@ export class InviteCodeComponent implements OnInit {
     this.spinner.hide();
   }
 
+  // onSubmitting_1() {
+  //   this.refModel.referral_code = this.inviteCodeForm.value['refCode'];
+  //   this.refModel.referral_phone_no = this.inviteCodeForm.value['refPhoneNumber'];
+  //   if (!this.refModel.referral_code && !this.refModel.referral_phone_no) {
+  //     this.toastr.error("", this.translateService.instant('enter_ref_code_phno'), {
+  //       timeOut: 3000,
+  //       positionClass: 'toast-top-center',
+  //     });
+  //     return;
+  //   }
+  //   if (this.userProfileModel.referral_code != null && this.userProfileModel.referral_code != '' && !this.refModel.referral_phone_no) {
+  //     this.toastr.error("", this.translateService.instant('enter_ref_phno'), {
+  //       timeOut: 3000,
+  //       positionClass: 'toast-top-center',
+  //     });
+  //     return;
+  //   }
+
+  //   if ((this.userProfileModel.referral_phone_no != '' && this.userProfileModel.referral_phone_no != null) && !this.refModel.referral_code) {
+  //     this.toastr.error("", this.translateService.instant('enter_ref'), {
+  //       timeOut: 3000,
+  //       positionClass: 'toast-top-center',
+  //     });
+  //     return;
+  //   }
+
+  //   this.token = this.storage.retrieve('token');
+  //   let headers = new HttpHeaders();
+  //   headers = headers.set('Authorization', this.token);
+  //   let url = this.funct.ipaddress + 'user/updateReferralcode';
+  //   if (this.refModel.referral_code) {
+  //     url += `?referral_code=${this.refModel.referral_code}`;
+  //   }
+  //   if (this.refModel.referral_phone_no) {
+  //     url += `${this.refModel.referral_code ? '&' : '?'}referral_phone_no=${this.refModel.referral_phone_no}`;
+  //   }
+  //   this.http.post(url, null, { headers: headers })
+  //     .pipe(
+  //       catchError(this.handleErrorMessage.handleError.bind(this, 'referralInvaild'))
+  //     )
+  //     .subscribe(
+  //       result => {
+  //         this.dto.Response = result;
+  //         if (this.dto.Response.isSuccess === true) {
+  //           this._location.back();
+  //         }
+  //         else {
+  //           if (this.dto.Response.message == 'Agent not found') {
+  //             this.toastr.error("", this.translateService.instant('invalid_invitecode'), {
+  //               timeOut: 3000,
+  //               positionClass: 'toast-top-center',
+  //             });
+  //           }
+  //           if (this.dto.Response.message == 'Recommender not found') {
+  //             this.toastr.error("", this.translateService.instant('invalid_ref_phoneno'), {
+  //               timeOut: 3000,
+  //               positionClass: 'toast-top-center',
+  //             });
+  //           }
+
+  //           if (this.dto.Response.message == 'Recommender not found,The agent was saved successfully') {
+  //             this.toastr.error("", this.translateService.instant('invalid_ref_phoneno'), {
+  //               timeOut: 3000,
+  //               positionClass: 'toast-top-center',
+  //             });
+  //           }
+  //           if (this.dto.Response.message == 'Agent not found,Recommender saved successfully') {
+  //             this.toastr.success("", this.translateService.instant('invalid_invitecode'), {
+  //               timeOut: 3000,
+  //               positionClass: 'toast-top-center',
+  //             });
+  //             this.toastr.error("", this.translateService.instant('invalid_invitecode'), {
+  //               timeOut: 3000,
+  //               positionClass: 'toast-top-center',
+  //             });
+  //           }
+  //           if (this.dto.Response.message == 'Users cannot serve as their own recommenders.,The agent was saved successfully' || this.dto.Response.message == 'Users cannot serve as their own recommenders.') {
+  //             this.toastr.error("", this.translateService.instant('own_referal_phone'), {
+  //               timeOut: 3000,
+  //               positionClass: 'toast-top-center',
+  //             });
+  //           }
+  //         }
+  //       }
+  //     );
+  // }
   onSubmitting() {
     this.refModel.referral_code = this.inviteCodeForm.value['refCode'];
     this.refModel.referral_phone_no = this.inviteCodeForm.value['refPhoneNumber'];
@@ -138,62 +224,117 @@ export class InviteCodeComponent implements OnInit {
       });
       return;
     }
-
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
     let url = this.funct.ipaddress + 'user/updateReferralcode';
-    if (this.refModel.referral_code) {
+    //let urlph = this.funct.ipaddress + 'user/updateReferralPhoneNO';
+    if (!this.userProfileModel.referral_code && !this.userProfileModel.referral_phone_no && this.refModel.referral_code && this.refModel.referral_phone_no) {
       url += `?referral_code=${this.refModel.referral_code}`;
-    }
-    if (this.refModel.referral_phone_no) {
       url += `${this.refModel.referral_code ? '&' : '?'}referral_phone_no=${this.refModel.referral_phone_no}`;
+      this.http.post(url, null, { headers: headers })
+        .pipe(
+          catchError(this.handleErrorMessage.handleError.bind(this, 'referralInvaild'))
+        )
+        .subscribe(
+          result => {
+            this.dto.Response = result;
+            if (this.dto.Response.isSuccess === true) {
+              if (this.dto.Response.message === "The agent was saved successfully,Recommender saved successfully") {
+                this.toastr.success("", this.translateService.instant('bankacc_addsuccess'), {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center',
+                });
+                this._location.back();
+                return;
+              }
+            }
+            else {
+              if (this.dto.Response.message == 'Agent not found,Recommender saved successfully') {
+                $("#codeErr").html(this.translateService.instant("invalid_invitecode"));
+                this.toastr.success("", this.translateService.instant('refreral_ph_save_success'), {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center',
+                });
+                return;
+              }
+              if (this.dto.Response.message == 'Recommender not found,The agent was saved successfully') {
+                $("#phoneErr").html(this.translateService.instant("invalid_ref_phoneno"));
+                this.toastr.success("", this.translateService.instant('referral_code_save_success'), {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center',
+                });
+                return;
+              }
+              else {
+                this.toastr.error("", this.translateService.instant('invalid'), {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center',
+                });
+                return;
+              }
+            }
+          });
+      return;
     }
-    this.http.post(url, null, { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, 'referralInvaild'))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = result;
-          if (this.dto.Response.isSuccess === true) {
-            this._location.back();
-          }
-          else {
-            if (this.dto.Response.message == 'Agent not found') {
+    if (this.refModel.referral_code && !this.userProfileModel.referral_code) {
+      url += `?referral_code=${this.refModel.referral_code}`;
+      this.http.post(url, null, { headers: headers })
+        .pipe(
+          catchError(this.handleErrorMessage.handleError.bind(this, 'referralInvaild'))
+        )
+        .subscribe(
+          result => {
+            this.dto.Response = result;
+            if (this.dto.Response.isSuccess === true) {
+              if (this.dto.Response.message === "The agent was saved successfully") {
+                this.toastr.success("", this.translateService.instant('referral_code_save_success'), {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center',
+                });
+                this._location.back();
+                return;
+              }
+            }
+            else {
               this.toastr.error("", this.translateService.instant('invalid_invitecode'), {
                 timeOut: 3000,
                 positionClass: 'toast-top-center',
               });
             }
-            if (this.dto.Response.message == 'Recommender not found') {
-              this.toastr.error("", this.translateService.instant('invalid_ref_phoneno'), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-            }
+          });
+      return;
+    }
+    if (this.refModel.referral_phone_no && !this.userProfileModel.referral_phone_no) {
+      url = this.funct.ipaddress + 'user/updateReferralPhoneNO';
+      url += `?referral_phone_no=${this.refModel.referral_phone_no}`;
+      this.http.post(url, null, { headers: headers })
+        .pipe(
+          catchError(this.handleErrorMessage.handleError.bind(this, 'referralInvaild'))
+        )
+        .subscribe(
+          result => {
+            this.dto.Response = result;
+            if (this.dto.Response.isSuccess === true) {
+              if (this.dto.Response.message === "Recommender saved successfully") {
+                this.toastr.success("", this.translateService.instant('refreral_ph_save_success'), {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center',
+                });
+                this._location.back();
+                return;
+              }
 
-            if (this.dto.Response.message == 'Recommender not found,The agent was saved successfully') {
+            }
+            else {
               this.toastr.error("", this.translateService.instant('invalid_ref_phoneno'), {
                 timeOut: 3000,
                 positionClass: 'toast-top-center',
               });
             }
-            if (this.dto.Response.message == 'Agent not found,Recommender saved successfully') {
-              this.toastr.error("", this.translateService.instant('invalid_invitecode'), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-            }
-            if (this.dto.Response.message == 'Users cannot serve as their own recommenders.,The agent was saved successfully' || this.dto.Response.message == 'Users cannot serve as their own recommenders.') {
-              this.toastr.error("", this.translateService.instant('own_referal_phone'), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-            }
-          }
-        }
-      );
+          });
+      return;
+    }
   }
 
   checkPhoneNumber() {

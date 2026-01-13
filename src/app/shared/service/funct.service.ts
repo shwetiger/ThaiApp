@@ -26,7 +26,7 @@ export class FunctService {
 
     // this.ipaddress = "https://api.thai2d3dgame.com/api/";
     // this.apaddressv1 = "https://api.thai2d3dgame.com/api/v1/";
-    
+
     this.ipaddresslive = "https://api.thai2dlive.com/api/";
     this.ipaddressluke = "https://luke.2dboss.com/api/luke/twod-result-live";
     this.secretKey = "Yv9GlO0wX4peYxWCMGpUXM9ZKJBU78tc8cvSld5sN20";

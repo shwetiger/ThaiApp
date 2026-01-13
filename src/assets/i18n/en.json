@@ -784,5 +784,9 @@
   "otp-request-time-onemin": "please wait 1minutes",
   "invalid_bet_amt":"Invalid Bet Amount",
   "bank_accname_required":"Name is required.",
-  "no_profilimage":"There is no image to remove"
+  "no_profilimage":"There is no image to remove",
+  "referral_code_save_success":"Referral code saved successfully",
+  "refreral_ph_save_success":"Referral’s phone number saved successfully",
+  "invalid":"Invalid Referral Code and Referral’s Phone Number",
+  "viber_error":"Viber OTP is not available for international numbers"
 }

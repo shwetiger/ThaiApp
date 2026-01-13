@@ -108,10 +108,11 @@ export class LoginSuccessPageComponent implements OnInit {
               this.storage.store('token', token);
               this.storage.store('isUserLoggedIn', this.util.isLogged);
               this.storage.clear('localLoginModel');
+              this.storage.clear('localNewNotiCount');
               this.deviceId = this.storage.retrieve('localDeviceId');
               history.pushState(null, '', '/');    // history stack ကို reset တူတူလုပ်
               this.router.navigate(['/home', this.deviceId], { replaceUrl: true });
-              history.go(-3);
+             // history.go(-3);
             }
           }
           else {

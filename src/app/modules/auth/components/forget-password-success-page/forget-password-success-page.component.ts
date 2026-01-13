@@ -149,9 +149,14 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
               }
               else {
                 this.storage.clear('localForgetPasswordSuccess');
-                history.pushState(null, '', '/');    // history stack ကို reset တူတူလုပ်
-                this.router.navigate(['/home'], { replaceUrl: true });
-                history.go(-3);
+                  this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+                  // Prevent browser back
+                  history.pushState(null, '', location.href);
+                  window.addEventListener('popstate', () => {
+                    history.pushState(null, '', location.href);
+                  });
+                });
+               // history.go(-3);
               }
             }
           }

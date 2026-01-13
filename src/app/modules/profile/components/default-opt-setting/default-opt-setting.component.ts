@@ -11,9 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Router, ActivatedRoute } from '@angular/router';
 import { catchError, retry } from 'rxjs/operators';
-import { AngularFireAuth } from '@angular/fire/auth';
-import firebase from 'firebase';
-
+//import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-default-opt-setting',
@@ -29,7 +27,7 @@ export class DefaultOptSettingComponent implements OnInit {
   email: any;
   gmailResponse: any;
   registerotptype: any;
-  formPage;
+  formPage: any;
   emailsender: any;
   emaildescription: any;
   submitLoading: boolean = false;
@@ -48,7 +46,8 @@ export class DefaultOptSettingComponent implements OnInit {
   TelenorList: any = ['7'];
   recaptcha: any;
   prefix = '+95';//"+95";
-  funcionName: any;
+  functionName: any;
+  Timer: any;
 
   constructor(public common: CommonService,
     private handleErrorMessage: HandleErrorMessageService,
@@ -62,14 +61,14 @@ export class DefaultOptSettingComponent implements OnInit {
     private route: ActivatedRoute,
     private _location: Location,
     private router: Router,
-    private afAuth: AngularFireAuth,) {
+  ) {
   }
 
   ngOnInit(): void {
     this.registerotptype = this.storage.retrieve('registeropttype')
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
-    this.common.submitLoading=false;
+    this.common.submitLoading = false;
     this.spinner.hide('submitLoading')
     this.route.queryParams.subscribe(params => {
       this.phoneNumber = params['phoneNumber'];
@@ -82,40 +81,44 @@ export class DefaultOptSettingComponent implements OnInit {
     });
     this.getotptype();
     this.getsmstype();
-    this.getSMSOperators();
-    this.funcionName = 'Register OTP'
+    this.functionName = 'Register OTP'
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.common.submitLoading = true;
-    this.spinner.show("submitLoading");
-    if (this.formPage == 'forgetPassword' || this.formPage == 'NEWDIVICE' || this.formPage == 'withdrawaladd') {
-      if (this.Usefirebase == true && this.selectedType == 'sms_poh') {
-        this.saveotptypeandgetfirebaseotp();
-      }
-      else {
-        if (this.formPage == 'forgetPassword') {
-          this.funcionName = 'Forgot Password OTP'
-        }
-        if (this.formPage == 'NEWDIVICE') {
-          this.funcionName = 'New Device OTP'
-        }
-        if (this.formPage == 'withdrawaladd') {
-          this.funcionName = 'Withdrawal OTP'
-        }
-        this.SaveOtptypeandgetotp();
-      }
-    }
-    else if (this.formPage == 'register') {
-      this.getregisterOtp();
-    }
-    else if (this.formPage == 'registerpage') {
-      this.Saveregisteropttype();
-    }
-    else {
-      this.SaveOtptype();
+    this.spinner.show('submitLoading');
+    switch (this.formPage) {
+      case 'forgetPassword':
+      case 'NEWDIVICE':
+      case 'withdrawaladd':
+        this.handleOtpPages();
+        break;
+
+      case 'register':
+        this.getregisterOtp();
+        break;
+
+      case 'registerpage':
+        this.Saveregisteropttype();
+        break;
+
+      default:
+        this.SaveOtptype();
+        break;
     }
   }
+
+
+  private handleOtpPages() {
+    const functionNameMap: any = {
+      forgetPassword: 'Forgot Password OTP',
+      NEWDIVICE: 'New Device OTP',
+      withdrawaladd: 'Withdrawal OTP'
+    };
+    this.functionName = functionNameMap[this.formPage];
+    this.SaveOtptypeandgetotp();
+  }
+
 
   Saveregisteropttype() {
     if ((this.email == undefined || this.email == '') && this.selectedType == 'email') {
@@ -175,7 +178,6 @@ export class DefaultOptSettingComponent implements OnInit {
       .subscribe(
         result => {
           this.dto.Response = result;
-          console.log("OtpResponse4>>>>>"+JSON.stringify(this.dto.Response));
           this.changeotpprocess = true;
           this.storage.store('changeotpprocess', this.changeotpprocess);
           this._location.back();
@@ -191,54 +193,93 @@ export class DefaultOptSettingComponent implements OnInit {
       );
   }
 
-  SaveOtptypeandgetotp() {
+  SaveOtptypeandgetotp(): void {
     this.token = this.storage.retrieve('token');
-    const headers = new HttpHeaders();
-    this.http.post(this.funct.apaddressv1 + 'user/setusersmstypeAndGetOTP?type=' + this.selectedType + '&phone_no=' + this.phoneNumber + '&funcionName=' + this.funcionName, { headers: headers })
+    const url =
+      `${this.funct.apaddressv1}user/setusersmstypeAndGetOTP` +
+      `?type=${this.selectedType}` +
+      `&phone_no=${this.phoneNumber}` +
+      `&funcionName=${this.functionName}`;
+
+    this.common.submitLoading = true;
+    this.http.post<any>(url, {}, { headers: new HttpHeaders() })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
       )
-      .subscribe(
-        result => {
-          this.dto.Response = result;
-          console.log("OtpResponse1>>>>>"+JSON.stringify(this.dto.Response));
-          if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-            this.storage.store('localOtpSms', this.dto.Response);
-            this.storage.store('localNewDeviceOtpSms', this.dto.Response);
-            this.storage.store('localInsertAccountOtpSms', this.dto.Response);
-            this.storage.clear("Timer");
-            this.changeotpprocess = true;
-            this.storage.store('changeotpprocess', this.changeotpprocess);
-            this.common.submitLoading = false;
-            this.spinner.hide("submitLoading");
-            this._location.back();
-            this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-          }
-
-          else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-            this.common.submitLoading = false;
-            this.spinner.hide("submitLoading");
-            this._location.back();
-            this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-          }
-
-          else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-            this.toastr.error("", this.translateService.instant("otp-request-time"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-            this.storage.clear('Timer');
-            return null;
-          }
-
+      .subscribe(response => {
+        this.dto.Response = response;
+        console.log("DefaultResponse>>>>" + JSON.stringify(this.dto.Response))
+        if (this.isSuccessResponse(response)) {
+          this.handleSuccess(response);
+          return;
         }
-      );
+
+        if (this.isCooldownError(response, '180 seconds')) {
+          this.handleCooldownSuccess();
+          return;
+        }
+
+        if (this.isCooldownError(response, '60 seconds')) {
+          this.toastr.error(
+            '',
+            this.translateService.instant('otp-request-time'),
+            { timeOut: 3000, positionClass: 'toast-top-center' }
+          );
+        }
+
+        this.stopLoading();
+      });
+  }
+
+
+  private isSuccessResponse(res: any): boolean {
+    return res?.errorCode === '000' && res?.status === true;
+  }
+
+  private isCooldownError(res: any, time: string): boolean {
+    return res?.status === 'Error' && res?.message?.includes(time);
+  }
+
+  private async handleSuccess(res: any): Promise<void> {
+    this.storage.store('localOtpSms', res);
+    this.storage.store('localNewDeviceOtpSms', res);
+    this.storage.store('localInsertAccountOtpSms', res);
+
+    this.updateRequestId(res.request_id);
+
+    await this.getCountDown();
+
+    this.changeotpprocess = true;
+    this.storage.store('changeotpprocess', true);
+
+    this.stopLoading();
+    this._location.back();
+
+    this.toastr.success(
+      '',
+      this.translateService.instant('bank_accname_success'),
+      { timeOut: 3000, positionClass: 'toast-top-center' }
+    );
+  }
+
+  private async handleCooldownSuccess(): Promise<void> {
+    this.stopLoading();
+    await this.getCountDown();
+    this._location.back();
+
+    this.toastr.success(
+      '',
+      this.translateService.instant('bank_accname_success'),
+      { timeOut: 3000, positionClass: 'toast-top-center' }
+    );
+  }
+
+  private updateRequestId(requestId?: string): void {
+    if (!requestId) return;
+
+    const existing = this.storage.retrieve('requestId');
+    const updated = existing ? `${existing},${requestId}` : requestId;
+    this.storage.store('requestId', updated);
   }
 
   getotptype() {
@@ -308,132 +349,152 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   getregisterOtp() {
+    this.startLoading();
+
+    if (this.selectedType === 'email' && !this.email) {
+      this.showWarning('emailRequired');
+      this.stopLoading();
+      this.router.navigate(['/login/register']);
+      return;
+    }
+
+    let params = new HttpParams()
+      .set('phoneNo', this.phoneNumber)
+      .set('type', this.selectedType);
+
+    // email ကို email type ဖြစ်မှသာ ထည့်
+    if (this.selectedType === 'email') {
+      params = params.set('email', this.email);
+    }
+
+    const url = `${this.funct.apaddressv1}user/getRegisterOTP`;
+
+    this.http.get(url, { params })
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
+      )
+      .subscribe(res => {
+        this.handleRegisterOtpResponse(res);
+        this.stopLoading();
+      });
+  }
+
+
+  private startLoading() {
     this.common.submitLoading = true;
     this.spinner.show("submitLoading");
-    let headers = new HttpHeaders();
-    if (this.selectedType == 'email') {
-      if ((this.email == undefined || this.email == '') && this.selectedType == 'email') {
-        this.toastr.warning("", this.translateService.instant("emailRequired"), {
+  }
+
+  private stopLoading() {
+    this.common.submitLoading = false;
+    this.spinner.hide("submitLoading");
+  }
+
+  private async handleRegisterOtpResponse(response: any) {
+    this.dto.Response = response;
+    await this.getCountDown();
+    if (response.errorCode === '000' && response.status === true) {
+      this.stopLoading();
+      if (this.selectedType === 'email') {
+        response.to = this.email;
+      }
+      this.storage.store('localOtpSms', response);
+      this.storage.store("registeropttype", this.selectedType);
+      this.storeRequestId(response.request_id);
+      this.toastr.success(
+        "",
+        this.translateService.instant("bank_accname_success"),
+        { timeOut: 3000, positionClass: 'toast-top-center' }
+      );
+
+      this._location.back();
+      return;
+    }
+
+    // ⏱ 180 seconds case
+    if (response.status === 'Error' && response.message?.includes('180 seconds')) {
+      this.storage.store("registeropttype", this.selectedType);
+      this._location.back();
+      return;
+    }
+
+    // ⛔ 60 seconds case
+    if (response.status === 'Error' && response.message?.includes('60 seconds')) {
+      this.toastr.error(
+        "",
+        this.translateService.instant("otp-request-time"),
+        { timeOut: 3000, positionClass: 'toast-top-center' }
+      );
+      return;
+    }
+
+    this.handleOtpBodyError(response);
+  }
+
+  private handleOtpBodyError(response: any) {
+    if (response.statusCode === 200 && response.body) {
+      const msg = response.body.toString().trim();
+      if (msg === "Not valid OTP code") {
+        this.toastr.error("Bad request.", "OTP is not correct", {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-        this.router.navigate(['/login/register']);
-        this.common.submitLoading = false;
-        this.spinner.hide("submitLoading");
       }
-      else {
-        this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTP?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType + '&email=' + this.email, { headers: headers })
-          .pipe(
-            catchError(this.handleErrorMessage.handleError.bind(this, ''))
-          )
-          .subscribe(
-            result => {
-              this.dto.Response = result;
-              console.log("OtpResponse2>>>>>"+JSON.stringify(this.dto.Response));
-              this.gmailResponse = this.dto.Response;
-              if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-                this.gmailResponse.to = this.email;
-                this.common.submitLoading = false;
-                this.spinner.hide("submitLoading");
-                this.storage.clear("Timer");
-                this.spinner.hide("submitLoading");
-                this.storage.store("registeropttype", this.selectedType)
-                this.storage.store('localOtpSms', this.gmailResponse);
-                this._location.back();
-                this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-              }
-              else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-                this.storage.store("registeropttype", this.selectedType)
-                this._location.back();
-              }
-
-              else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-                this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-                this.storage.clear('Timer');
-                return null;
-              }
-            }
-          );
+      if (msg === "Try Again") {
+        this.toastr.error("Bad request.", msg, {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
       }
     }
-    else {
-      this.http.get(this.funct.apaddressv1 + 'user/getRegisterOTPNew?phoneNo=' + this.phoneNumber + '&type=' + this.selectedType, { headers: headers })
-        .pipe(
-          catchError(this.handleErrorMessage.handleError.bind(this, ''))
-        )
-        .subscribe(
-          result => {
-            this.dto.Response = {};
+  }
+
+  private storeRequestId(requestId?: string) {
+    if (!requestId) return;
+    let list = this.storage.retrieve('requestId');
+    list = list ? `${list},${requestId}` : requestId;
+    this.storage.store('requestId', list);
+  }
+
+  private showWarning(translateKey: string) {
+    this.toastr.warning(
+      "",
+      this.translateService.instant(translateKey),
+      {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      }
+    );
+  }
+
+  async getCountDown(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.storage.clear('Timer');
+      let headers = new HttpHeaders();
+      this.http.post(
+        this.funct.ipaddress +
+        'countdown/get?phoneno=' + this.phoneNumber +
+        '&type=' + this.selectedType +
+        '&functionName=' + this.functionName,
+        {},
+        { headers: headers }
+      )
+        .pipe(catchError(this.handleErrorMessage.handleError.bind(this, '')))
+        .subscribe({
+          next: (result: any) => {
             this.dto.Response = result;
-            console.log("OtpResponse3>>>>>"+JSON.stringify(this.dto.Response));
-            if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
-              this.common.submitLoading = false;
-              this.spinner.hide("submitLoading");
-              this.storage.store('localOtpSms', this.dto.Response);
-              this.storage.store("registeropttype", this.selectedType)
-              this.storage.clear("Timer");
-              this.toastr.success("", this.translateService.instant("bank_accname_success"), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-              this._location.back();
-              if (this.dto.Response.statusCode == 200) {
-                if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-                  this.toastr.error("Bad request.", 'OTP is not correct', {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-                if (this.dto.Response.body.split('').trim() == "Try Again") {
-                  this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-              }
+            if (this.dto.Response.status === 'Success') {
+              const data = this.dto.Response.data;
+              this.Timer = data.remainingSeconds;
+              this.storage.store('Timer', this.Timer);
             }
-
-            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-              this.storage.store("registeropttype", this.selectedType)
-              this._location.back();
-              if (this.dto.Response.statusCode == 200) {
-                if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-                  this.toastr.error("Bad request.", 'OTP is not correct', {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-                if (this.dto.Response.body.split('').trim() == "Try Again") {
-                  this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                    timeOut: 3000,
-                    positionClass: 'toast-top-center',
-                  });
-                  return null;
-                }
-              }
-            }
-
-            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-              this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-              this.storage.clear('Timer');
-              return null;
-            }
-
+            resolve();
+          },
+          error: (err) => {
+            reject(err);
           }
-        );
-    }
+        });
+    });
   }
 
   getsmstype() {
@@ -458,116 +519,4 @@ export class DefaultOptSettingComponent implements OnInit {
           }
         });
   }
-
-  getSMSOperators() {
-    const PhoneNumber = this.storage.retrieve('localPhoneValue');
-    var phoneno = PhoneNumber.substring(2,PhoneNumber.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
-              }
-            }
-          }
-          else {
-            return;
-          }
-        });
-  }
-
-  signInWithPhoneNumber() {
-    this.recaptcha = true;
-    this.phoneNumber = this.storage.retrieve('localPhoneValue');
-    let phoneNumber;
-    if (this.phoneNumber.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneNumber.substring(
-        1, this.phoneNumber.length);
-    }
-    if (!this.phoneNumber.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneNumber;
-    }
-    //  const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container'); // Make sure you have an element with id 'recaptcha-container'
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    });
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId)
-        this.storage.store("otptype", 'firebaseotp');
-        this.storage.clear("Timer");
-        this.router.navigate(['/login/otp'], { state: { otptype: 'firebaseotp' }, replaceUrl: true });
-      })
-      .catch(error => {
-        this.recaptcha = false;
-        this.common.submitLoading = false;
-        this.spinner.hide("submitLoading");
-        this.toastr.error("", error.message,
-          {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-center',
-          });
-        console.error('Phone authentication error', error.message);
-      });
-  }
-
-  saveotptypeandgetfirebaseotp() {
-    this.token = this.storage.retrieve('token');
-    const headers = new HttpHeaders();
-    this.http.post(this.funct.ipaddress + 'user/setUserSmsType?type=' + this.selectedType + '&phone_no=' + this.phoneNumber, { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = result;
-          this.changeotpprocess = true;
-          this.storage.store('changeotpprocess', this.changeotpprocess);
-          this.common.submitLoading = false;
-          this.spinner.hide("submitLoading");
-
-          if (this.dto.Response == true) {
-            this.signInWithPhoneNumber();
-
-          }
-
-        }
-      );
-  }
-
 }

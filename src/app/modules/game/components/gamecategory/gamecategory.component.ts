@@ -300,7 +300,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
                 this.showOpenChromeDialog(data, providerId);
               }
               else {
-                this.storage.store('localCloseGameBalance', this.dto.Response.balance);
+                this.storage.store('localCloseGameBalance', this.gameUserBalance);
                 this.http.post(this.funct.ipaddress + 'loginGS/launchGames', this.launchGameModel, { headers: headers })
                   .pipe
                   (
@@ -350,6 +350,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
                 this.showOpenChromeDialog(this.launchGameModel, providerId);
               }
               else {
+                this.storage.store('localCloseGameBalance', this.gameUserBalance);
                 this.http.post(this.funct.ipaddress + 'loginGS/launchGames', this.launchGameModel, { headers: headers })
                   .pipe
                   (
@@ -361,7 +362,6 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
                       this.spinner.hide("gameLoading");
                       this.dto.Response = result;
                       this.launchGameResModel = this.dto.Response;
-               
                       this.storage.store('localGamePlayProviderId', providerId);
                       this.storage.store('localPreviousRoute', 'gameList')
                       sessionStorage.setItem('providerId', providerId);
@@ -648,7 +648,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
       });
       this.router.navigate(['/login'], { replaceUrl: true });
       return;
-      
+
     }
     let params = new HttpParams();
     this.token = this.storage.retrieve('token');

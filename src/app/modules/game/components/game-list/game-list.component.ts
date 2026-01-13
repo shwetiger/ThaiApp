@@ -136,7 +136,7 @@ export class GameListComponent implements OnInit, OnDestroy {
     var isWebviewUser = require('is-ua-webview');
     this.isWebview1 = isWebviewUser(navigator.userAgent);
     this.isChrome = /Chrome/.test(navigator.userAgent)
-    this.isWebview = isUAWebview(navigator.userAgent); //navigator.userAgent     
+    this.isWebview = isUAWebview(navigator.userAgent); //navigator.userAgent
     this.blackList = history.state.blackList;
     this.deviceId = this.storage.retrieve('localDeviceId');
     this.providerId = this.route.snapshot.paramMap.get("providerId");
@@ -149,7 +149,7 @@ export class GameListComponent implements OnInit, OnDestroy {
     else {
       this.openUrl = "";
     }
-   
+
   }
 
   ngOnInit(): void {
@@ -172,7 +172,7 @@ export class GameListComponent implements OnInit, OnDestroy {
     }
     this.deviceId = this.storage.retrieve('localDeviceId');
     this.storage.store('localproviderId', this.providerId);
-    this.getGameUserBalance();
+    //  this.getGameUserBalance();
     this.getAdsList();
     this.getMarqueeText();
     this.getGameList();
@@ -232,152 +232,6 @@ export class GameListComponent implements OnInit, OnDestroy {
     this.storage.clear('localgameAlertText');
   }
 
-  AutoGameListLaunch() {
-    var data = this.storage.retrieve("localListGameLaunch");
-    var view = this.storage.retrieve("view");
-    if (view == 'mobileview') {
-      if (data != null && data != undefined) {
-        this.storage.clear("localListGameLaunch");
-        this.storage.clear('view');
-        this.playAutoGameListLaunchformobileview(data);
-      }
-    }
-    else {
-      if (data != null && data != undefined) {
-        this.storage.clear("localListGameLaunch");
-        this.storage.clear('view');
-        this.playAutoGameListLaunch(data);
-      }
-    }
-  }
-
-  playAutoGameListLaunch(launchGameModel) {
-    this.gameOption = this.storage.retrieve('localGameOption');
-    this.common.gameLoading = true;
-    this.spinner.show("gameLoading");
-    let params = new HttpParams();
-    this.token = this.storage.retrieve('token');
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);
-    params = params.set('providerId', this.providerId);
-    this.getUserProfile();
-    this.http.get(this.funct.ipaddress + 'loginGS/getBalance', { params: params, headers: headers })
-      .pipe
-      (
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          if (this.dto.Response.balance < 1000) {
-            return;
-          }
-          else {
-            let headers = new HttpHeaders();
-            this.token = this.storage.retrieve('token');
-            headers = headers.set('Authorization', this.token);
-            if (this.gameOption == true) {
-              this.storage.clear('localGameOption');
-              this.common.gameLoading = false;
-              this.spinner.hide("gameLoading");
-              if (this.deviceId1 == 'mobile') {
-                this.showOpenChromeDialog(launchGameModel, this.providerId);
-              }
-              else {
-                this.storage.store('localCloseGameBalance', this.dto.Response.balance);
-                this.http.post(this.funct.ipaddress + 'loginGS/launchGames', launchGameModel, { headers: headers })
-                  .pipe
-                  (
-                    catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                  )
-                  .subscribe(
-                    async result => {
-                      this.common.gameLoading = false;
-                      this.spinner.hide("gameLoading");
-                      this.dto.Response = result;
-                      this.launchGameResModel = this.dto.Response;
-                      this.gameUserBalance = this.storage.retrieve('localGameBalanceBefore');
-                      this.storage.store('localGamePlayProviderId', this.providerId);
-                      this.storage.store('localPreviousRoute', 'gameList')
-                      sessionStorage.setItem('providerId', this.providerId);
-                      var gamelist = this.storage.retrieve('localLaunchGameList');
-                      let language = this.storage.retrieve('localLanguage');
-                      if (language == "my") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                      } else if (language == "th") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                      } else if (language == "zh") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                      } else {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                      }
-                      this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                      this.storage.store('localLaunchTagName', this.launchTagName);
-                      this.router.navigate(['/game/play'], {
-                        state: {
-                          launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                          providerId: this.providerId
-                        }, replaceUrl: false
-                      });
-                    }
-                  );
-                this.checkAndReloadIfTelegramWebView();
-              }
-              return;
-            }
-            else {
-              this.storage.store('localCloseGameBalance', this.dto.Response.balance);
-              this.http.post(this.funct.ipaddress + 'loginGS/launchGames', launchGameModel, { headers: headers })
-                .pipe
-                (
-                  catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                )
-                .subscribe(
-                  async result => {
-                    this.common.gameLoading = false;
-                    this.spinner.hide("gameLoading");
-                    this.dto.Response = result;
-                    this.launchGameResModel = this.dto.Response;
-                    this.gameUserBalance = await this.getGameUserBalance();
-                    this.storage.store('localGamePlayProviderId', this.providerId);
-                    this.storage.store('localPreviousRoute', 'gameList')
-                    sessionStorage.setItem('providerId', this.providerId);
-                    var gamelist = this.storage.retrieve('localLaunchGameList');
-                    let language = this.storage.retrieve('localLanguage');
-                    if (language == "my") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                    } else if (language == "th") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                    } else if (language == "zh") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                    } else {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                    }
-                    this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                    this.storage.store('localLaunchTagName', this.launchTagName);
-                    this.router.navigate(['/game/play'], {
-                      state: {
-                        launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                        providerId: this.providerId
-                      }, replaceUrl: false
-                    });
-                  }
-                );
-            }
-          }
-        }
-      );
-  }
-
   checkAndReloadIfTelegramWebView() {
     const userAgent = navigator.userAgent;
     if (userAgent.includes("Telegram")) {
@@ -387,132 +241,6 @@ export class GameListComponent implements OnInit, OnDestroy {
         }
       }, 1000);
     }
-  }
-
-  playAutoGameListLaunchformobileview(launchGameModel) {
-    this.gameOption = this.storage.retrieve('localGameOption');
-    this.common.gameLoading = true;
-    this.spinner.show("gameLoading");
-    let params = new HttpParams();
-    this.token = this.storage.retrieve('token');
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);
-    params = params.set('providerId', this.providerId);
-    this.getUserProfile();
-    this.http.get(this.funct.ipaddress + 'loginGS/getBalance', { params: params, headers: headers })
-      .pipe
-      (
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          if (this.dto.Response.balance < 1000) {
-            return;
-          }
-          else {
-            let headers = new HttpHeaders();
-            this.token = this.storage.retrieve('token');
-            headers = headers.set('Authorization', this.token);
-            if (this.gameOption == true) {
-              this.storage.clear('localGameOption');
-              this.common.gameLoading = false;
-              this.spinner.hide("gameLoading");
-              if (this.deviceId1 == 'mobile') {
-                this.showOpenChromeDialog(launchGameModel, this.providerId);
-              }
-              else {
-                this.storage.store('localCloseGameBalance', this.dto.Response.balance);
-                this.http.post(this.funct.ipaddress + 'loginGS/launchGames', launchGameModel, { headers: headers })
-                  .pipe
-                  (
-                    catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                  )
-                  .subscribe(
-                    async result => {
-                      this.common.gameLoading = false;
-                      this.spinner.hide("gameLoading");
-                      this.dto.Response = result;
-                      this.launchGameResModel = this.dto.Response;
-                      this.gameUserBalance = await this.getGameUserBalance();
-                      this.storage.store('localGamePlayProviderId', this.providerId);
-                      this.storage.store('localPreviousRoute', 'gameList')
-                      sessionStorage.setItem('providerId', this.providerId);
-                      var gamelist = this.storage.retrieve('localLaunchGameList');
-                      let language = this.storage.retrieve('localLanguage');
-                      if (language == "my") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                      } else if (language == "th") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                      } else if (language == "zh") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                      } else {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                      }
-                      this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                      this.storage.store('localLaunchTagName', this.launchTagName);
-                      this.router.navigate(['/game/play'], {
-                        state: {
-                          launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                          providerId: this.providerId
-                        }, replaceUrl: false
-                      });
-                    }
-                  );
-              }
-              return;
-            }
-            else {
-              this.storage.store('localCloseGameBalance', this.dto.Response.balance);
-              this.http.post(this.funct.ipaddress + 'loginGS/launchGameswithMobileView', launchGameModel, { headers: headers })
-                .pipe
-                (
-                  catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                )
-                .subscribe(
-                  async result => {
-                    this.common.gameLoading = false;
-                    this.spinner.hide("gameLoading");
-                    this.dto.Response = result;
-                    this.launchGameResModel = this.dto.Response;
-                    this.gameUserBalance = await this.getGameUserBalance();
-                    this.storage.store('localGamePlayProviderId', this.providerId);
-                    this.storage.store('localPreviousRoute', 'gameList')
-                    sessionStorage.setItem('providerId', this.providerId);
-                    var gamelist = this.storage.retrieve('localLaunchGameList');
-                    let language = this.storage.retrieve('localLanguage');
-                    if (language == "my") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                    } else if (language == "th") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                    } else if (language == "zh") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                    } else {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                    }
-                    this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                    this.storage.store('localLaunchTagName', this.launchTagName);
-                    this.router.navigate(['/game/play'], {
-                      state: {
-                        launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                        providerId: this.providerId
-                      }, replaceUrl: false
-                    });
-                  }
-                );
-            }
-          }
-        }
-      );
   }
 
   getGameCalculate() {
@@ -550,14 +278,6 @@ export class GameListComponent implements OnInit, OnDestroy {
           );
       }
     }
-  }
-
-  loginAccount() {
-    if (this.deviceId != null) {
-      this.router.navigate(['/login', this.deviceId]);
-      return;
-    }
-    this.router.navigate(['/login'])
   }
 
   refreshPage(): void {
@@ -780,16 +500,154 @@ export class GameListComponent implements OnInit, OnDestroy {
       });
   }
 
-  async showplayFreeOrplay(playFreeOrPlay: TemplateRef<any>, transferAlert: TemplateRef<any>, isdemourl, gameCode, providerCode, gameObj) {
+  private prepareLaunchGameModel(gameObj: any, gameCode: any) {
+    this.gameType = gameObj.type;
+    this.gameOption = gameObj.option;
+    this.providerCode = gameObj.providercode;
+    this.gameCode = gameCode;
+
+    this.launchGameModel = {
+      gameId: `${this.providerCode}_${this.gameCode}`,
+      providerCode: this.providerName,
+      lang: this.gameLanguage(),
+      type: this.gameType
+    };
+  }
+
+  prepareLaunchDGameModel(gameObj: any, gameCode: any) {
+    // this.gameType = gameObj.type;
+    // this.gameOption = gameObj.option;
+    // this.providerCode = gameObj.providercode;
+    // this.gameCode = gameCode;
+
+    this.launchDameModel.gcode = gameCode;
+    this.launchDameModel.gpcode = gameObj.providercode;
+    this.skmGameModel.lang = "my_MM";
+    this.launchDameModel.lang = "my_MM";
+
+    // this.launchGameModel = {
+    //   gameId: `${this.providerCode}_${this.gameCode}`,
+    //   providerCode: this.providerName,
+    //   lang: this.gameLanguage(),
+    //   type: this.gameType
+    // };
+  }
+
+  private stopLoading() {
+    this.common.gameLoading = false;
+    this.spinner.hide("gameLoading");
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.storage.retrieve('token');
+    return new HttpHeaders().set('Authorization', token);
+  }
+
+  private getLaunchTagName(gamelist): string {
+    const language = this.storage.retrieve('localLanguage');
+    let name = gamelist.name;
+
+    if (language === 'my') name = gamelist.name_my;
+    else if (language === 'th') name = gamelist.name_th;
+    else if (language === 'zh') name = gamelist.name_zh;
+
+    return this.translateService
+      .instant("game-win-lose-chrome")
+      .toString()
+      .replace("@name", name);
+  }
+
+  private launchGame(url: string, providerId: any) {
+    const headers = this.getAuthHeaders();
+    this.http.post(url, this.launchGameModel, { headers })
+      .pipe(catchError(this.handleErrorMessage.handleError.bind(this, '')))
+      .subscribe(result => {
+        this.launchGameResModel = result;
+
+        if (result?.errCode === '603') {
+          this.toastr.error("", result.errMsg, {
+            timeOut: 1000,
+            positionClass: 'toast-top-center'
+          });
+          return;
+        }
+
+        const gamelist = this.storage.retrieve('localLaunchGameList');
+        const launchTagName = this.getLaunchTagName(gamelist);
+
+        this.storage.store('localGamePlayProviderId', providerId);
+        this.storage.store('localPreviousRoute', 'gameList');
+        this.storage.store('localLaunchTagName', launchTagName);
+        sessionStorage.setItem('providerId', providerId);
+
+        this.router.navigate(['/game/play'], {
+          state: {
+            launchUrl: this.launchGameResModel.gameUrl,
+            launchTag: "openinnewtap",
+            launchTagName,
+            providerId
+          }
+        });
+
+        this.stopLoading();
+      });
+  }
+
+  private launchSKMGame(url: string, providerId: any) {
+    const headers = this.getAuthHeaders();
+    this.http.post(url, this.launchGameModel, { headers })
+      .pipe(catchError(this.handleErrorMessage.handleError.bind(this, '')))
+      .subscribe(result => {
+        this.dto.Response=result;
+        if (result?.errCode === '603') {
+          this.toastr.error("", result.errMsg, {
+            timeOut: 1000,
+            positionClass: 'toast-top-center'
+          });
+          return;
+        }
+        if (this.dto.Response.isSuccess == true) {
+          this.launchGameResModel =  this.dto.Response.data;
+          const gamelist = this.storage.retrieve('localLaunchGameList');
+          const launchTagName = this.getLaunchTagName(gamelist);
+          this.storage.store('localGamePlayProviderId', providerId);
+          this.storage.store('localPreviousRoute', 'gameList');
+          this.storage.store('localLaunchTagName', launchTagName);
+          sessionStorage.setItem('providerId', providerId);
+          this.router.navigate(['/game/play'], {
+            state: {
+              launchUrl: this.launchGameResModel.gameUrl,
+              launchTag: "openinnewtap",
+              launchTagName,
+              providerId
+            }
+          });
+          this.stopLoading();
+        }
+         if (this.dto.Response.isSuccess == false) {
+                this.stopLoading();
+                const rawData = this.dto.Response.data;
+                const timeLeftMatch = rawData.match(/timeLeft\s*=\s*(\d+)/);
+                if (timeLeftMatch && timeLeftMatch[1]) {
+                  this.timeLeft = parseInt(timeLeftMatch[1], 10);
+                }
+                var waitmessage = this.translateService.instant('skm-lock-time');
+                waitmessage = waitmessage.toString().replace("@time", this.timeLeft);
+                this.toastr.error("", waitmessage, {
+                  timeOut: 1000,
+                  positionClass: 'toast-top-center',
+                });
+                return;
+              }
+      });
+  }
+
+  async showplayFreeOrplay(playFreeOrPlay, transferAlert, isdemourl, gameCode, providerCode, gameObj) {
     this.common.gameLoading = true;
     this.spinner.show("gameLoading");
-    await this.getGameUserBalance();
-    this.storage.store('localGameIcon', gameObj);
-    this.storage.store('localLaunchGameList', gameObj);
-    let login = this.storage.retrieve('isUserLoggedIn');
-    if (!login) {
-      this.common.gameLoading = false;
-      this.spinner.hide("gameLoading");
+    //  await this.getGameUserBalance();
+    if (!this.storage.retrieve('isUserLoggedIn')) {
+      this.stopLoading();
       this.toastr.error("", this.translateService.instant("youNeedLogin"), {
         timeOut: 1000,
         positionClass: 'toast-top-center',
@@ -797,346 +655,53 @@ export class GameListComponent implements OnInit, OnDestroy {
       this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
-    this.gameType = gameObj.type;
-    this.gameOption = gameObj.option;
-    this.storage.store('localGameOption', this.gameOption);
-    this.providerCode = gameObj.providercode;
-    this.gameCode = gameCode;
-    if (this.gameList.name == 'SB' || this.gameList.name == 'WB') {
-      this.common.gameLoading = false;
-      this.spinner.hide("gameLoading");
-      if (this.gameList.name == 'WB') {
-        this.launchGameModel.gameId = this.providerCode + "_" + this.gameCode;
-        this.launchGameModel.providerCode = this.providerName;
-        this.launchGameModel.lang = this.gameLanguage();
-        this.launchGameModel.type = this.gameType;
-        this.showMobileorWebViewDialog(this.launchGameModel, this.providerId);
-      }
-      else {
-        this.storage.store('localCloseGameBalance', this.gameUserBalance);
-        this.common.gameLoading = false;
-        this.spinner.hide("gameLoading");
-        this.launchGameModel.gameId = this.providerCode + "_" + this.gameCode;
-        this.launchGameModel.providerCode = this.providerName;
-        this.launchGameModel.lang = this.gameLanguage();
-        this.launchGameModel.type = this.gameType;
-        let headers = new HttpHeaders();
-        this.token = this.storage.retrieve('token');
-        headers = headers.set('Authorization', this.token);
-        var url = this.funct.ipaddress + 'loginGS/launchGames';
-        this.http.post(url, this.launchGameModel, { headers: headers })
-          .pipe
-          (
-            catchError(this.handleErrorMessage.handleError.bind(this, ''))
-          )
-          .subscribe(
-            async result => {
-              this.dto.Response = {};
-              this.dto.Response = result;
-              this.launchGameResModel = this.dto.Response;
-              this.common.gameLoading = false;
-              this.spinner.hide("gameLoading");
-              this.storage.store('localGamePlayProviderId', this.providerId);
-              this.storage.store('localPreviousRoute', 'gameList')
-              sessionStorage.setItem('providerId', this.providerId);
-              var gamelist = this.storage.retrieve('localLaunchGameList');
-              let language = this.storage.retrieve('localLanguage');
-              if (language == "my") {
-                this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-              } else if (language == "th") {
-                this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-              } else if (language == "zh") {
-                this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-              } else {
-                this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-              }
-              this.storage.store('localCloseGameBalance', this.gameUserBalance);
-              this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-              this.storage.store('localLaunchTagName', this.launchTagName);
-              this.router.navigate(['/game/play'], {
-                state: {
-                  launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                  providerId: this.providerId
-                }, replaceUrl: false
-              });
-            }
-          );
-      }
-    }
-    else {
-      if (isdemourl != null && isdemourl == true) {
-        this.playFreeOrPlay = this.modalService.show(playFreeOrPlay,
-          {
-            class: "game-play-modal modal-sm"
-          });
-        this.common.gameLoading = false;
-        this.spinner.hide("gameLoading");
-      }
-      else {
-        this.spinner.hide();
-        this.gameUserBalance = this.storage.retrieve('localGameBalanceBefore')
-        if (this.gameUserBalance < 1000) {
-          this.launchGameModel.gameId = this.providerCode + "_" + this.gameCode;
-          this.launchGameModel.providerCode = this.providerName;
-          this.launchGameModel.lang = this.gameLanguage();
-          this.launchGameModel.type = this.gameType;
-          this.common.gameLoading = false;
-          this.spinner.hide("gameLoading");
-          this.transferAlert = this.modalService.show(transferAlert,
-            {
-              class: "game-play-now-modal"
-            });
-          return;
-        }
-        else {
-          this.common.gameLoading = false;
-          this.spinner.hide("gameLoading");
-          this.launchGameModel.gameId = this.providerCode + "_" + this.gameCode;
-          this.launchGameModel.providerCode = this.providerName;
-          this.launchGameModel.lang = this.gameLanguage();
-          this.launchGameModel.type = this.gameType;
-          let headers = new HttpHeaders();
-          this.token = this.storage.retrieve('token');
-          headers = headers.set('Authorization', this.token);
-          if (gameObj.option == true) {
-            if (this.deviceId1 == 'mobile') {
-              this.showOpenChromeDialog(this.launchGameModel, this.providerId);
-            }
-            else {
+    this.storage.store('localGameIcon', gameObj);
+    this.storage.store('localLaunchGameList', gameObj);
+    this.prepareLaunchGameModel(gameObj, gameCode);
+    this.prepareLaunchDGameModel(gameObj, gameCode)
 
-              this.storage.store('localCloseGameBalance', this.gameUserBalance);
-              this.common.gameLoading = false;
-              this.spinner.hide("gameLoading");
-              this.launchGameModel.gameId = this.providerCode + "_" + this.gameCode;
-              this.launchGameModel.providerCode = this.providerName;
-              this.launchGameModel.lang = this.gameLanguage();
-              this.launchGameModel.type = this.gameType;
-              let headers = new HttpHeaders();
-              this.token = this.storage.retrieve('token');
-              headers = headers.set('Authorization', this.token);
-              var url = this.funct.ipaddress + 'loginGS/launchGames';
-              this.http.post(url, this.launchGameModel, { headers: headers })
-                .pipe
-                (
-                  catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                )
-                .subscribe(
-                  async result => {
-                    this.dto.Response = {};
-                    this.dto.Response = result;
-                    this.launchGameResModel = this.dto.Response;
-                    this.common.gameLoading = false;
-                    this.spinner.hide("gameLoading");
-                    this.storage.store('localGamePlayProviderId', this.providerId);
-                    this.storage.store('localPreviousRoute', 'gameList')
-                    sessionStorage.setItem('providerId', this.providerId);
-                    var gamelist = this.storage.retrieve('localLaunchGameList');
-                    let language = this.storage.retrieve('localLanguage');
-                    if (language == "my") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                    } else if (language == "th") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                    } else if (language == "zh") {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                    } else {
-                      this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                      this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                    }
-                    this.storage.store('localCloseGameBalance', this.gameUserBalance);
-                    this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                    this.storage.store('localLaunchTagName', this.launchTagName);
-                    this.router.navigate(['/game/play'], {
-                      state: {
-                        launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                        providerId: this.providerId
-                      }, replaceUrl: false
-                    });
-                  }
-                );
-              this.checkAndReloadIfTelegramWebView();
-            }
-            return;
-          }
-          else {
-            if (this.deviceId1 == 'mobile') {
-              this.showOpenChromeDialog(this.launchGameModel, this.providerId);
-            }
-            else {
-              this.storage.store('localCloseGameBalance', this.gameUserBalance);
-              if (this.gameList.name == 'SKM') {
-                this.http.post(this.funct.ipaddress + 'shkm/SKMLogin', this.launchGameModel, { headers: headers })
-                  .pipe
-                  (
-                    catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                  )
-                  .subscribe(
-                    async result => {
-                      this.dto.Response = {};
-                      this.dto.Response = result;
-                      if (this.dto.Response.isSuccess == false) {
-                        const rawData = this.dto.Response.data;
-                        const timeLeftMatch = rawData.match(/timeLeft\s*=\s*(\d+)/);
-                        if (timeLeftMatch && timeLeftMatch[1]) {
-                          this.timeLeft = parseInt(timeLeftMatch[1], 10);
-                        }
-                        var waitmessage = this.translateService.instant('skm-lock-time');
-                        waitmessage = waitmessage.toString().replace("@time", this.timeLeft);
-                        this.toastr.error("", waitmessage, {
-                          timeOut: 1000,
-                          positionClass: 'toast-top-center',
-                        });
-                        return;
-                      }
-                      this.launchGameResModel = this.dto.Response.data;
-                      this.common.gameLoading = false;
-                      this.spinner.hide("gameLoading");
-                      this.storage.store('localGamePlayProviderId', this.providerId);
-                      this.storage.store('localPreviousRoute', 'gameList')
-                      sessionStorage.setItem('providerId', this.providerId);
-                      var gamelist = this.storage.retrieve('localLaunchGameList');
-                      let language = this.storage.retrieve('localLanguage');
-                      if (this.dto.Response.errCode == '603') {
-                        this.toastr.error("", this.dto.Response.errMsg, {
-                          timeOut: 1000,
-                          positionClass: 'toast-top-center',
-                        });
-                        this.storage.clear('localCloseGameBalance');
-                        return;
-                      }
-                      if (language == "my") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                      } else if (language == "th") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                      } else if (language == "zh") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                      } else {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                      }
-
-                      this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                      this.storage.store('localLaunchTagName', this.launchTagName);
-                      this.router.navigate(['/game/play'], {
-                        state: {
-                          launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                          providerId: this.providerId
-                        }, replaceUrl: false
-                      });
-                    }
-                  );
-              }
-              else {
-                var url = this.providerName != 'S6' ? this.funct.ipaddress + 'loginGS/launchGames' : this.funct.ipaddress + 'loginGS/launchGamesInChrome';
-                this.http.post(url, this.launchGameModel, { headers: headers })
-                  .pipe
-                  (
-                    catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                  )
-                  .subscribe(
-                    async result => {
-                      this.dto.Response = {};
-                      this.dto.Response = result;
-                      this.launchGameResModel = this.dto.Response;
-                      this.common.gameLoading = false;
-                      this.spinner.hide("gameLoading");
-                      this.storage.store('localGamePlayProviderId', this.providerId);
-                      this.storage.store('localPreviousRoute', 'gameList')
-                      sessionStorage.setItem('providerId', this.providerId);
-                      if (this.dto.Response.errCode == '603') {
-                        this.toastr.error("", this.dto.Response.errMsg, {
-                          timeOut: 1000,
-                          positionClass: 'toast-top-center',
-                        });
-                        this.storage.clear('localCloseGameBalance');
-                        return;
-                      }
-                      var gamelist = this.storage.retrieve('localLaunchGameList');
-                      let language = this.storage.retrieve('localLanguage');
-                      if (language == "my") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                      } else if (language == "th") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                      } else if (language == "zh") {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                      } else {
-                        this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                        this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                      }
-                      this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                      this.storage.store('localLaunchTagName', this.launchTagName);
-                      this.router.navigate(['/game/play'], {
-                        state: {
-                          launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                          providerId: this.providerId
-                        }, replaceUrl: false
-                      });
-                    }
-                  );
-              }
-            }
-          }
-        }
-      }
+    // Demo Mode
+    if (isdemourl) {
+      this.playFreeOrPlay = this.modalService.show(playFreeOrPlay, { class: "game-play-modal modal-sm modal-dialog-centered" });
+      this.stopLoading();
+      return;
     }
-  }
 
-  HidePlayFreeOrPlayAlert() {
-    this.playFreeOrPlay.hide();
-  }
+    // Balance check
+    this.GameBalanceResponse = this.storage.retrieve('LocalgameUserBalance')
+    if (this.storage.retrieve('LocalgameUserBalance') < 1000) {
+      this.transferAlert = this.modalService.show(transferAlert, {
+        class: "game-play-now-modal modal-sm",
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      this.stopLoading();
+      return;
+    }
 
-  async getGameUserBalance() {
-    let params = new HttpParams();
-    this.token = this.storage.retrieve('token');
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);
-    params = params.set('providerId', this.providerId);
-    let config = {
-      headers: { 'Authorization': this.token },
-      params: { 'providerId': this.providerId },
+    // Mobile handling
+    if (this.deviceId1 === 'mobile') {
+      this.showOpenChromeDialog(this.launchGameModel, this.providerId);
+      this.stopLoading();
+      return;
     }
-    const axios = require('axios').default;
-    if (this.providerId == 14) {
-      await axios.get(this.funct.ipaddress + 'shkm/getBalance', config)
-        .then((res) => {
-          this.isUserLoggedIn = true;
-          this.gameUserBalance = res.data.data;
-          this.storage.store('localGameBalanceBefore', this.gameUserBalance);
-          return res.data.data;
-        })
-        .catch((error) => {
-          this.isUserLoggedIn = false;
-          if (error.response) {
-          }
-        });
+
+     if (this.gameList.name == 'SKM') {
+      const skmurl = this.funct.ipaddress + 'shkm/SKMLogin';
+      this.storage.store('localCloseGameBalance',  this.GameBalanceResponse);
+      this.launchSKMGame(skmurl, this.providerId)
+      return;
     }
-    else {
-      await axios.get(this.funct.ipaddress + 'loginGS/getBalance', config)
-        .then((res) => {
-          const parsedData = JSON.parse(res.data.data);
-          this.GameBalanceResponse = parsedData;
-          this.gameUserBalance = parsedData.balance;
-          this.gameName = res.data.name;
-          this.storage.store('localGameBalanceBefore', this.gameUserBalance);
-          return res.data.balance;
-        })
-        .catch((error) => {
-          this.isUserLoggedIn = false;
-          if (error.response) {
-          }
-        });
+    else{
+    // Launch game
+    const url =
+      this.providerName === 'S6'
+        ? this.funct.ipaddress + 'loginGS/launchGamesInChrome'
+        : this.funct.ipaddress + 'loginGS/launchGames';
+
+    this.storage.store('localCloseGameBalance',  this.GameBalanceResponse);
+    this.launchGame(url, this.providerId);
+
     }
   }
 
@@ -1144,154 +709,156 @@ export class GameListComponent implements OnInit, OnDestroy {
     this.playFreeOrPlay.hide();
     this.common.gameLoading = true;
     this.spinner.show("gameLoading");
-    let params = new HttpParams();
-    this.token = this.storage.retrieve('token');
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);
-    params = params.set('providerId', this.providerId);
+
     this.getUserProfile();
-    this.gameUserBalance = this.storage.retrieve('localGameBalanceBefore')
-   // const gameBalanceData = JSON.parse(this.storage.retrieve('LocalgameUserBalance') || '[]');
-   // this.gameUserBalance = gameBalanceData[0].balance;
-    if (this.gameUserBalance == null || this.gameUserBalance == undefined) {
+    this.gameUserBalance = this.storage.retrieve('LocalgameUserBalance');
+
+    if (this.gameUserBalance == null) {
       this.bsModalRef.hide();
       this.toastr.error("", this.translateService.instant("transaction_wait_5sec"), {
         timeOut: 1000,
         positionClass: 'toast-top-center',
       });
+      this.stopLoading();
       return;
     }
+    this.prepareLaunchModel();
     if (this.gameUserBalance < 1000) {
-      this.launchGameModel.gameId = this.providerCode + "_" + this.gameCode;
-      this.launchGameModel.providerCode = this.providerName;
-      this.launchGameModel.lang = this.gameLanguage();
-      this.launchGameModel.type = this.gameType;
-      this.common.gameLoading = false;
-      this.spinner.hide("gameLoading");
+      this.stopLoading();
       this.isAlert = true;
-      this.transferAlert = this.modalService.show(transferAlert,
-        {
-          class: "game-play-now-modal modal-sm",
-          ignoreBackdropClick: true,
-          keyboard: false
-        });
+      this.transferAlert = this.modalService.show(transferAlert, {
+        class: "game-play-now-modal modal-sm",
+        ignoreBackdropClick: true,
+        keyboard: false
+      });
+      return;
     }
-    else {
-      this.launchGameModel.gameId = this.providerCode + "_" + this.gameCode;
-      this.launchGameModel.providerCode = this.providerName;
-      this.launchGameModel.lang = this.gameLanguage();
-      this.launchGameModel.type = this.gameType;
-      let headers = new HttpHeaders();
-      this.token = this.storage.retrieve('token');
-      headers = headers.set('Authorization', this.token);
-      if (this.gameOption == true) {
-        this.common.gameLoading = false;
-        this.spinner.hide("gameLoading");
-        if (this.deviceId1 == 'mobile') {
-          this.showOpenChromeDialog(this.launchGameModel, this.providerId);
-        }
-        else {
-          this.storage.store('localCloseGameBalance', this.dto.Response.balance);
-          var url = this.funct.ipaddress + 'loginGS/launchGames';
-          this.http.post(url, this.launchGameModel, { headers: headers })
-            .pipe
-            (
-              catchError(this.handleErrorMessage.handleError.bind(this, ''))
-            )
-            .subscribe(
-              async result => {
-                this.common.gameLoading = false;
-                this.spinner.hide("gameLoading");
-                this.dto.Response = result;
-                this.launchGameResModel = this.dto.Response;
-                this.storage.store('localGamePlayProviderId', this.providerId);
-                this.storage.store('localPreviousRoute', 'gameList')
-                sessionStorage.setItem('providerId', this.providerId);
-                if (this.launchGameResModel.parameters == "openinnewtap" || this.launchGameResModel.parameters != "openinnewtap") {
-                  var gamelist = this.storage.retrieve('localLaunchGameList');
-                  let language = this.storage.retrieve('localLanguage');
-                  if (language == "my") {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                  } else if (language == "th") {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                  } else if (language == "zh") {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                  } else {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                  }
-                  this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                  this.storage.store('localLaunchTagName', this.launchTagName);
-                  this.router.navigate(['/game/play'], {
-                    state: {
-                      launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                      providerId: this.providerId
-                    }, replaceUrl: false
-                  });
-                }
-              }
-            );
-        }
-        return;
-      }
-      else {
-        if (this.deviceId1 == 'mobile') {
-          this.common.gameLoading = false;
-          this.spinner.hide("gameLoading");
-          this.showOpenChromeDialog(this.launchGameModel, this.providerId);
-        }
-        else {
-          this.storage.store('localCloseGameBalance', this.dto.Response.balance);
-          var url = this.funct.ipaddress + 'loginGS/launchGames';
-          this.http.post(url, this.launchGameModel, { headers: headers })
-            .pipe
-            (
-              catchError(this.handleErrorMessage.handleError.bind(this, ''))
-            )
-            .subscribe(
-              async result => {
-                this.common.gameLoading = false;
-                this.spinner.hide("gameLoading");
-                this.dto.Response = result;
-                this.launchGameResModel = this.dto.Response;
-                this.gameUserBalance = await this.getGameUserBalance();
-                this.storage.store('localGamePlayProviderId', this.providerId);
-                this.storage.store('localPreviousRoute', 'gameList')
-                sessionStorage.setItem('providerId', this.providerId);
-                if (this.launchGameResModel.parameters == "openinnewtap" || this.launchGameResModel.parameters != "openinnewtap") {
-                  var gamelist = this.storage.retrieve('localLaunchGameList');
-                  let language = this.storage.retrieve('localLanguage');
-                  if (language == "my") {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_my);
-                  } else if (language == "th") {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_th);
-                  } else if (language == "zh") {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name_zh);
-                  } else {
-                    this.launchTagName = this.translateService.instant("game-win-lose-chrome");
-                    this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
-                  }
-                  this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                  this.storage.store('localLaunchTagName', this.launchTagName);
-                  this.router.navigate(['/game/play'], {
-                    state: {
-                      launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                      providerId: this.providerId
-                    }, replaceUrl: false
-                  });
-                }
-              }
-            );
-        }
-      }
+
+    // Mobile
+    if (this.deviceId1 === 'mobile') {
+      this.stopLoading();
+      this.showOpenChromeDialog(this.launchGameModel, this.providerId);
+      return;
     }
+    // Option game (Chrome open)
+    if (this.gameOption === true) {
+      this.stopLoading();
+      this.storage.store('localCloseGameBalance',this.gameUserBalance );
+      this.launchGameRequest();
+      return;
+    }
+
+    this.storage.store('localCloseGameBalance',this.gameUserBalance );
+    this.launchGameRequest();
   }
+
+
+  private launchGameRequest() {
+    const url = this.funct.ipaddress + 'loginGS/launchGames';
+    this.http.post(url, this.launchGameModel, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleErrorMessage.handleError.bind(this, '')))
+      .subscribe(res => {
+        this.launchGameResModel = res;
+        this.stopLoading();
+        this.navigateToGame(this.launchGameResModel.gameUrl);
+      });
+  }
+
+  private navigateToGame(url: string) {
+    const launchTagName = this.buildLaunchTagName();
+    this.storage.store('localGamePlayProviderId', this.providerId);
+    this.storage.store('localPreviousRoute', 'gameList');
+    this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
+    this.storage.store('localLaunchTagName', launchTagName);
+    sessionStorage.setItem('providerId', this.providerId);
+
+    this.router.navigate(['/game/play'], {
+      state: {
+        launchUrl: url,
+        launchTag: 'openinnewtap',
+        launchTagName,
+        providerId: this.providerId
+      }
+    });
+  }
+
+  private buildLaunchTagName(): string {
+    const gamelist = this.storage.retrieve('localLaunchGameList');
+    const lang = this.storage.retrieve('localLanguage');
+
+    const name =
+      lang === 'my' ? gamelist.name_my :
+        lang === 'th' ? gamelist.name_th :
+          lang === 'zh' ? gamelist.name_zh :
+            gamelist.name;
+
+    return this.translateService
+      .instant("game-win-lose-chrome")
+      .replace("@name", name);
+  }
+
+  private getHeaders(): HttpHeaders {
+    return new HttpHeaders().set(
+      'Authorization',
+      this.storage.retrieve('token')
+    );
+  }
+
+  private prepareLaunchModel() {
+    this.launchGameModel = {
+      gameId: `${this.providerCode}_${this.gameCode}`,
+      providerCode: this.providerName,
+      lang: this.gameLanguage(),
+      type: this.gameType
+    };
+  }
+
+  HidePlayFreeOrPlayAlert() {
+    this.playFreeOrPlay.hide();
+  }
+
+  // async getGameUserBalance() {
+  //   let params = new HttpParams();
+  //   this.token = this.storage.retrieve('token');
+  //   let headers = new HttpHeaders();
+  //   headers = headers.set('Authorization', this.token);
+  //   params = params.set('providerId', this.providerId);
+  //   let config = {
+  //     headers: { 'Authorization': this.token },
+  //     params: { 'providerId': this.providerId },
+  //   }
+  //   const axios = require('axios').default;
+  //   if (this.providerId == 14) {
+  //     await axios.get(this.funct.ipaddress + 'shkm/getBalance', config)
+  //       .then((res) => {
+  //         this.isUserLoggedIn = true;
+  //         this.gameUserBalance = res.data.data;
+  //         this.storage.store('localGameBalanceBefore', this.gameUserBalance);
+  //         return res.data.data;
+  //       })
+  //       .catch((error) => {
+  //         this.isUserLoggedIn = false;
+  //         if (error.response) {
+  //         }
+  //       });
+  //   }
+  //   else {
+  //     await axios.get(this.funct.ipaddress + 'loginGS/getBalance', config)
+  //       .then((res) => {
+  //         const parsedData = JSON.parse(res.data.data);
+  //         this.GameBalanceResponse = parsedData;
+  //         this.gameUserBalance = parsedData.balance;
+  //         this.gameName = res.data.name;
+  //         this.storage.store('localGameBalanceBefore', this.gameUserBalance);
+  //         return res.data.balance;
+  //       })
+  //       .catch((error) => {
+  //         this.isUserLoggedIn = false;
+  //         if (error.response) {
+  //         }
+  //       });
+  //   }
+  // }
 
   showGameListMaintenanceDialog(data) {
     const initialState = {
@@ -1365,27 +932,28 @@ export class GameListComponent implements OnInit, OnDestroy {
   playFree() {
     this.playFreeOrPlay.hide();
     this.spinner.show();
-    this.launchDameModel.gcode = this.gameCode;
-    this.launchDameModel.gpcode = this.providerCode;
-    this.skmGameModel.lang = "my_MM";
-    this.launchDameModel.lang = "my_MM";
     let headers = new HttpHeaders();
-    this.http.post(this.funct.ipaddress + 'loginGS/launchDGames', this.launchDameModel, { headers: headers })
-      .pipe
-      (
-        catchError(this.handleErrorMessage.handleError.bind(this, 'error'))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.launchGameResModel = this.dto.Response;
-          this.spinner.hide();
-          if (this.launchGameResModel != null) {
-            window.open(this.launchGameResModel.gameUrl, '_blank'); /*launch demo game*/
+    if (this.gameList.name == 'SB' || this.gameList.name == 'WB') {
+      this.launchGameRequest();
+    }
+    else {
+      this.http.post(this.funct.ipaddress + 'loginGS/launchDGames', this.launchDameModel, { headers: headers })
+        .pipe
+        (
+          catchError(this.handleErrorMessage.handleError.bind(this, 'error'))
+        )
+        .subscribe(
+          result => {
+            this.dto.Response = {};
+            this.dto.Response = result;
+            this.launchGameResModel = this.dto.Response;
+            this.spinner.hide();
+            if (this.launchGameResModel != null) {
+              window.open(this.launchGameResModel.gameUrl, '_blank'); /*launch demo game*/
+            }
           }
-        }
-      );
+        );
+    }
   }
 
   getUserProfile() {

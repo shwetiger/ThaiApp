@@ -29,8 +29,6 @@ import { CommonService } from './shared/service/common.service';
 import { PageNotfoundComponent } from './modules/pages/page-notfound/page-notfound.component';
 import { NotiDetailWithoutIdComponent }from './modules/pages/noti-detail-without-id/noti-detail-without-id.component';
 import { ZawgyiDetectorModule } from '@myanmartools/ng-zawgyi-detector';
-import { AngularFireModule } from "@angular/fire";
-import { firebase } from '../environments/firebase';
 import { FacebookModule } from 'ngx-facebook';
 import { AppSplashScreenAdsComponent } from './shared/components/app-splash-screen-ads/app-splash-screen-ads.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -47,7 +45,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       }
       else{
         langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
+      }
       translate.setDefaultLang(langToSet);
       translate.use(langToSet).subscribe(() => {
       }, err => {
@@ -59,13 +57,13 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
 }
 
 @NgModule({
-  declarations: [    
+  declarations: [
     AppComponent,
     NotiDetailWithoutIdComponent,
     PageNotfoundComponent
   ],
-  imports: [     
-    CommonModule,   
+  imports: [
+    CommonModule,
     TimepickerModule.forRoot(),
     BsDropdownModule,
     ModalModule.forRoot(),
@@ -76,7 +74,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       loader: {
           provide: TranslateLoader,
           useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
+          deps: [HttpClient]
       }
     }),
     CarouselModule,
@@ -93,7 +91,6 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     BsDatepickerModule.forRoot(),
     SharedModule,
     ZawgyiDetectorModule,
-    AngularFireModule.initializeApp(firebase.firebaseConfig),
     FacebookModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

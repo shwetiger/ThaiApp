@@ -3212,57 +3212,47 @@ export class TwodBetComponent implements OnInit {
 
   validateInput() {
     const inputElement = document.getElementById("inputString") as HTMLInputElement;
-    let inputValue: string = inputElement.value.trim();
-    let words: string[] = inputValue.split('');
-    if (this.containsNoDigits(inputValue)) {
+    let value = inputElement.value;
+
+    if (this.containsNoDigits(value)) {
       this.akhwayconfrimbutton = true;
-      return
+      value = value.replace(/[^0-9]/g, '');
+      inputElement.value = value;
+      return;
     }
-    if (words.length < this.enteredStrings.length) {
-      inputElement.maxLength = 10;
-      this.maxlength = 10;
-      this.akhwayconfrimbutton = false;
+
+    if (value.length < 2) {
+      this.akhwayconfrimbutton = true;
       $("#samenumbererr").html('');
+      return;
     }
 
-    if (words.length > 0) {
-      if (words.length > 1) {
-        this.akhwayconfrimbutton = false;
-      }
-      const lastWord: string = words[words.length - 1];
+    const lastChar = value[value.length - 1];
+    const prevChar = value[value.length - 2];
+    const before = value.slice(0, -1); // lastChar မပါဘဲ အရင်စာလုံးတွေ
 
-      if (this.enteredStrings.includes(lastWord) && words.length > this.enteredStrings.length) {
-        var betAmountRequired = this.translateService.instant("same2number");
-        $("#samenumbererr").html(betAmountRequired);
-        this.akhwayconfrimbutton = true;
-        this.enteredStrings = words;
-        // inputElement.minLength=0;
-        this.maxlength = 1;
-        return;
-
-      }
-      else {
-        // $("#samenumbererr").html('');
-        this.enteredStrings.push(lastWord);
-        this.enteredStrings = words;
-        if (this.enteredStrings.length < 2) {
-          this.akhwayconfrimbutton = true;
-        }
-        else {
-          this.akhwayconfrimbutton = false;
-        }
-      }
-    } else {
-      this.enteredStrings = [];
-      if (this.enteredStrings.length < 2) {
-        this.akhwayconfrimbutton = true;
-      }
-      else {
-        this.akhwayconfrimbutton = false;
-      }
-      $("#samenumbererr").html('');
-      inputElement.maxLength = 10;
+    const count = value.split('').filter(v => v === lastChar).length;
+    if (count > 2) {
+      inputElement.value = value.slice(0, -1);
+      const msg = this.translateService.instant("same2number");
+      $("#samenumbererr").html(msg);
+      this.akhwayconfrimbutton = true;
+      return;
     }
+    if (count === 2 && before.includes(lastChar)) {
+      const msg = this.translateService.instant("same2number");
+      $("#samenumbererr").html(msg);
+      this.akhwayconfrimbutton = true;
+      return;
+    }
+
+    if (lastChar === prevChar) {
+      const msg = this.translateService.instant("same2number");
+      $("#samenumbererr").html(msg);
+      this.akhwayconfrimbutton = true;
+      return;
+    }
+    $("#samenumbererr").html('');
+    this.akhwayconfrimbutton = false;
   }
-
 }

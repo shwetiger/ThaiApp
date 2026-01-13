@@ -53,7 +53,7 @@
                             [(ngModel)]="betValue" onfocus="this.value=''" id="betNumber"
                             [ngModelOptions]="{standalone: true}" (keyup)="checkBetNumberCount()"
                             (keypress)="keyPressNumberfornumberintput($event)"
-                            placeholder="{{'threed_number_text' | translate}}" class="form-control input" pattern="\d*">
+                            placeholder="{{'threed_number_text' | translate}}" class="form-control input" pattern="\d*" >
                         <div class="row">
                             <div class="col-9">
                                 <p id="betNumberCountErr" class="error-color sj">

@@ -43,7 +43,7 @@
                     <tr *ngFor="let betDetailListObj of betHistoryDetailList;let i=index;" class="tr-second">
                         <td style="white-space: pre;"> {{ i+1 }}</td>
                         <td>{{ betDetailListObj.number }}</td>
-                        <td>{{ odd }}</td>
+                        <td>{{ betDetailListObj.odd }}</td>
                         <td>{{ betDetailListObj.amount | number :'1.0-2' }}</td>
                         <td><span style="font-weight: bold;margin-top: 10px;" *ngIf="betDetailListObj.isWon==true"
                                 class="win-text">{{'win' | translate}}</span></td>

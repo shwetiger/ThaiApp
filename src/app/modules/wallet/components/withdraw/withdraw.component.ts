@@ -13,9 +13,6 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { TopupAlertMaintenanceComponent } from 'src/app/shared/dialog/topup-alert-maintenance/topup-alert-maintenance.component';
-import { AngularFireAuth } from '@angular/fire/auth';
-
-import firebase from 'firebase';
 
 @Component({
   selector: 'app-withdraw',
@@ -86,9 +83,10 @@ export class WithdrawComponent implements OnInit {
   imgURL: any;
   message: string;
   smstype: any;
-
-
+  functionName: string = 'Withdrawal OTP';
+  Timer: any;
   refreshLoading: any;
+
   constructor(
     public common: CommonService,
     private Location: LocationStrategy,
@@ -102,8 +100,7 @@ export class WithdrawComponent implements OnInit {
     private http: HttpClient,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location,
-    private afAuth: AngularFireAuth,) {
+    private _location: Location,) {
 
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
@@ -162,8 +159,8 @@ export class WithdrawComponent implements OnInit {
       this.mywithdrawalBankAccList = null;
       this.getWithdrawBankAccounts(); //system accounts
     }
-    this.GetSMSProvider();
-    this.getSMSOperators();
+    // this.GetSMSProvider();
+    // this.getSMSOperators();
     this.getsmstype();
   }
 
@@ -171,20 +168,6 @@ export class WithdrawComponent implements OnInit {
   triggerFileInput() {
     this.fileInput.nativeElement.click();
   }
-
-  // preview(files: FileList | null) {
-  //   if (files && files.length > 0) {
-  //     const file = files[0];
-  //     const reader = new FileReader();
-
-  //     reader.onload = (e: any) => {
-  //       this.imgURL = e.target.result;
-  //     };
-
-  //     reader.readAsDataURL(file);
-  //   }
-  // }
-
 
   showMyDialog() {
     const initialState = {
@@ -202,11 +185,9 @@ export class WithdrawComponent implements OnInit {
   handleError(error: HttpErrorResponse) {
     this.refreshLoading = false;
     this.spinner.hide("refreshLoading");
-    // this.loadingSubmiting=false;
     this.loadingInsertBankAcc = false;
     this.spinner.hide("loadingInsertBankAcc");
     this.spinner.hide('loadingWithdrawSubmiting');
-
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
     if (error.status == 0) {
@@ -231,7 +212,6 @@ export class WithdrawComponent implements OnInit {
       }
 
     }
-
     if (error.status == 423) {
       this.toastr.error("", this.translateService.instant("youNeedLogin"), {
         timeOut: 3000,
@@ -239,10 +219,9 @@ export class WithdrawComponent implements OnInit {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
-
     if (error.status == 406 && this.isFromAdd == "add") /*XXXXX add after and*/ {
       if (error.error.message == 'Bank Account Already Exist') {
         this.toastr.error("", this.translateService.instant("bank_acc_limit"), {
@@ -268,7 +247,6 @@ export class WithdrawComponent implements OnInit {
       });
       return;
     }
-
     if (error.status == 503 && this.isFromAdd != "add" && error.error.message.includes("Please wait 1 hours")) {
 
       this.toastr.error("", this.translateService.instant("wait_1_hours"), {
@@ -306,7 +284,6 @@ export class WithdrawComponent implements OnInit {
         });
         return;
       }
-
       if (error.error.message == 'temporary_blocked') {
         this.toastr.error("", this.translateService.instant("tem_block"), {
           timeOut: 3000,
@@ -321,7 +298,6 @@ export class WithdrawComponent implements OnInit {
         });
         return;
       }
-
     }
     else {
       this.toastr.error("", error.status.toString(), {
@@ -330,7 +306,6 @@ export class WithdrawComponent implements OnInit {
       });
       return;
     }
-
   }
 
   getWithdrawBankAccounts() {
@@ -547,145 +522,202 @@ export class WithdrawComponent implements OnInit {
       );
   }
 
+  InsertBankAccount() {
+    if (!this.isValidForm()) return;
+    if (this.loadingInsertBankAcc) return;
 
-  InsertBankAccount() /*Insert bank acc --Use*/ {
+    this.prepareImageBase64();
+    this.prepareBankAccountList();
 
-    let chk2 = this.checkbankaccountname();
-    let chk1 = this.checkbankAccount();
-    let chk3 = this.confirmbankAccount();
-    if (!chk2 || !chk1 || !chk3) {
+    const headers = new HttpHeaders().set(
+      'Authorization',
+      this.storage.retrieve('token')
+    );
 
+    this.loadingInsertBankAcc = true;
+    this.spinner.show("loadingInsertBankAcc");
+
+    this.storage.store('localInsertBankAccountList', this.bankAccountList);
+
+    this.checkInsertAccount(headers);
+  }
+
+  private checkInsertAccount(headers: HttpHeaders) {
+    this.http.post(
+      `${this.funct.ipaddress}userbankaccount/check_insertuserBankAccount`,
+      this.bankAccountList,
+      { headers }
+    )
+      .pipe(catchError(this.handleError.bind(this)))
+      .subscribe(res => {
+        if (res.status !== 'Success') {
+          this.stopLoading();
+          this.showAlreadyExist();
+          return;
+        }
+        this.getUserAccounts(headers);
+      });
+  }
+
+  private getUserAccounts(headers: HttpHeaders) {
+    this.http.get(
+      `${this.funct.ipaddress}userbankaccount/getuserbankaccount-byUserId`,
+      { headers }
+    )
+      .pipe(catchError(this.handleError.bind(this)))
+      .subscribe((accounts: any[]) => {
+
+        const exists = accounts.some(x =>
+          x.account_number === this.bankAccModel.bankAccount &&
+          x.payment_id === this.paymentId
+        );
+
+        if (exists) {
+          this.stopLoading();
+          this.showAlreadyExist();
+          return;
+        }
+
+        this.requestOtp(headers, accounts.length);
+      });
+  }
+
+  private requestOtp(headers: HttpHeaders, accountCount: number) {
+    this.http.get(
+      `${this.funct.apaddressv1}transaction/getWithdrawOTP`,
+      { headers }
+    )
+      .pipe(catchError(this.handleError.bind(this)))
+      .subscribe(res => {
+        this.stopLoading();
+        this.handleOtpResponse(res, accountCount);
+      });
+  }
+
+  private stopLoading() {
+    this.loadingInsertBankAcc = false;
+    this.spinner.hide("loadingInsertBankAcc");
+  }
+
+  private async handleOtpResponse(res: any, accountCount: number) {
+    if (res.status === true) {
+      this.storage.clear('successmsg');
+      this.storage.store('localInsertAccountOtpSms', res);
+      let requestIdList = this.storage.retrieve('requestId');
+      if (requestIdList) {
+        requestIdList += ',' + res.request_id;
+      } else {
+        requestIdList = res.request_id;
+      }
+      this.storage.store('requestId', requestIdList);
+      this.storage.store('bankAccountList', this.bankAccountList);
+      if (accountCount === 0) {
+        this.storage.store("localInsertAccount", 'insertAccount');
+      }
+      this.storage.store('otptype', 'smsotp');
+      this.storage.store('actionType', 'insertAccount');
+      this.storage.store('formPageType', 'withdrawaladd');
+      await this.getCountDown();
+      this.router.navigate(['/login/otp'], {
+        state: {
+          localInsertAccountOtpSms: res,
+          bankAccountList: this.bankAccountList
+        }
+      });
       return;
     }
+    if (res.status === 'Error' && res.message?.includes('180 seconds')) {
+      this.toastr.error("", this.translateService.instant("otp-request-time"), {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      });
+    }
+    if (res.status === 'Error' && res.message?.includes('60 seconds')) {
+      this.toastr.error("", this.translateService.instant("otp-request-time-onemin"), {
+        timeOut: 3000,
+        positionClass: 'toast-top-center',
+      });
+    }
+  }
+
+  async getCountDown(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.storage.clear('Timer');
+      this.prefix = this.storage.retrieve('localPhonePrefix')
+      let phoneNumber;
+      if (this.phoneValue.startsWith("0")) {
+        phoneNumber = this.prefix + this.phoneValue.substring(
+          1, this.phoneValue.length);
+      }
+      if (!this.phoneValue.startsWith("0")) //XXXX
+      {
+        phoneNumber = this.prefix + this.phoneValue;
+      }
+      let headers = new HttpHeaders();
+      this.http.post(
+        this.funct.ipaddress +
+        'countdown/get?phoneno=' + phoneNumber +
+        '&type=' + this.smstype +
+        '&functionName=' + this.functionName,
+        {},
+        { headers: headers }
+      )
+        .pipe(catchError(this.handleError.bind(this)))
+        .subscribe({
+          next: (result: any) => {
+            this.dto.Response = result;
+            if (this.dto.Response.status === 'Success') {
+              const data = this.dto.Response.data;
+              this.Timer = data.remainingSeconds;
+              this.storage.store('Timer', this.Timer);
+            }
+
+            resolve();
+          },
+          error: (err) => {
+            reject(err);
+          }
+        });
+    });
+  }
+  private isValidForm(): boolean {
+    return (
+      this.checkbankaccountname() &&
+      this.checkbankAccount() &&
+      this.confirmbankAccount() &&
+      this.bankAccModel.bankAccount === this.bankAccModel.confirmbankAccount
+    );
+  }
 
 
-    if (this.loadingInsertBankAcc != null && this.loadingInsertBankAcc == true) {
-      return;
-    }
-    if (this.bankAccModel.bankAccount != this.bankAccModel.confirmbankAccount) {
-      return;
-    }
-    this.otpSms = undefined;
-    this.storage.clear('otpSms');
-    this.isFromAdd = this.route.snapshot.paramMap.get("isFromAdd");
-    var bankList = this.storage.retrieve('localInsertBankBankAccount');
+  private prepareImageBase64() {
+    if (!this.imgURL) return;
 
-    if (this.imgURL != undefined) {
-      if (this.imgURL.includes('data:image/jpeg;base64,'))
-        this.bankAccModel.bankaccQRbase64 = this.imgURL.replace("data:image/jpeg;base64,", "");
-      if (this.imgURL.includes('data:image/png;base64,'))
-        this.bankAccModel.bankaccQRbase64 = this.imgURL.replace("data:image/png;base64,", "");
-      if (this.imgURL.includes('data:image/gif;base64,'))
-        this.bankAccModel.bankaccQRbase64 = this.imgURL.replace("data:image/gif;base64,", "");
-    }
+    ['jpeg', 'png', 'gif'].some(type => {
+      const prefix = `data:image/${type};base64,`;
+      if (this.imgURL.includes(prefix)) {
+        this.bankAccModel.bankaccQRbase64 = this.imgURL.replace(prefix, '');
+        return true;
+      }
+      return false;
+    });
+  }
+
+  private showAlreadyExist() {
+    this.toastr.error(
+      "",
+      this.translateService.instant('withdraw_already_exist'),
+      { timeOut: 1000, positionClass: 'toast-top-center' }
+    );
+  }
+
+  private prepareBankAccountList() {
     this.bankAccountList = [{
       payment_id: this.paymentId,
       account_number: this.bankAccModel.bankAccount,
       account_name: this.bankAccModel.bankaccountName,
       imageUrl: this.bankAccModel.bankaccQRbase64
     }];
-    this.token = this.storage.retrieve('token');
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);
-    this.storage.store('localInsertBankAccountList', this.bankAccountList); //store for next otp page
-    this.loadingInsertBankAcc = true;
-    this.spinner.show("loadingInsertBankAcc");
-    this.http.post(this.funct.ipaddress + 'userbankaccount/check_insertuserBankAccount', this.bankAccountList, { headers: headers })
-      .pipe(
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = result;
-          if (this.dto.Response.status != 'Success') {
-            this.toastr.error("", this.translateService.instant('withdraw_already_exist'),
-              {
-                timeOut: 1000,
-                positionClass: 'toast-top-center',
-              });
-            return;
-          }
-          else {
-            this.http.get(this.funct.ipaddress + 'userbankaccount/getuserbankaccount-byUserId', { headers: headers })
-              .pipe(
-                catchError(this.handleError.bind(this))
-              )
-              .subscribe(
-                result => {
-                  this.dto.Response = result;
-                  var myaccount = this.dto.Response;
-                  if (myaccount.find(x => (x.account_number == this.bankAccModel.bankAccount && x.payment_id == this.paymentId))) {
-                    this.toastr.error("", this.translateService.instant('withdraw_already_exist'),
-                      {
-                        timeOut: 1000,
-                        positionClass: 'toast-top-center',
-                      });
-                    this.spinner.hide("loadingInsertBankAcc");
-                    this.loadingInsertBankAcc = false;
-                    return;
-                  }
-                  else {
-                    // if (this.SMSprovider == 'firebase' && this.Usefirebase == true)
-                    if (this.Usefirebase == true && this.smstype == 'sms_poh') {
-                      this.signInWithPhoneNumber();
-                    }
-                    else {
-                      this.http.get(this.funct.apaddressv1 + 'transaction/getWithdrawOTP', { headers: headers })
-                        .pipe(
-                          catchError(this.handleError.bind(this))
-                        )
-                        .subscribe(
-                          result => {
-                            this.dto.Response = result;
-                            if (this.dto.Response.status === true) {
-                              this.loadingInsertBankAcc = false;
-                              this.storage.clear('successmsg');
-                              this.storage.store('localInsertAccountOtpSms', this.dto.Response);
-                              this.storage.store('bankAccountList', this.bankAccountList)
-                              if (myaccount.length == 0) {
-                                this.storage.store("localInsertAccount", 'insertAccount');
-                              }
-                              this.storage.clear('Timer');
-                              this.storage.store("otptype", 'smsotp');
-                              this.storage.store("actionType", 'insertAccount');
-                              this.storage.clear("formage");
-                              this.storage.store("formPageType",'withdrawaladd');
-                              this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'smsotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
-                              this.spinner.hide("loadingInsertBankAcc");
-                            }
-                            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-                              const successmsg=this.storage.retrieve('successmsg');
-                              if (successmsg=='withdrawalsuccess')
-                              {
-                              this.toastr.error("", this.translateService.instant("otp-request-time"), {
-                                timeOut: 3000,
-                                positionClass: 'toast-top-center',
-                              });
-                              }
-                              else{
-                              this.loadingInsertBankAcc = false;
-                              this.storage.store("formPageType",'withdrawaladd');
-                              this.spinner.hide("loadingInsertBankAcc");
-                              this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'smsotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
-                              }
-                            }
-
-                            else if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('60 seconds')) {
-                              this.toastr.error("", this.translateService.instant("otp-request-time-onemin"), {
-                                timeOut: 3000,
-                                positionClass: 'toast-top-center',
-                              });
-                              this.storage.clear('Timer');
-                              return null;
-                            }
-                          }
-                        );
-                    }
-                  }
-                });/*XXX*/
-          }
-        });
-
   }
 
   refreshPage(): void {
@@ -696,47 +728,6 @@ export class WithdrawComponent implements OnInit {
       this.refreshLoading = false;
       this.spinner.hide("refreshLoading");
     }, 1000);
-  }
-
-  signInWithPhoneNumber() {
-    this.recaptcha = true;
-    this.spinner.hide("loadingInsertBankAcc");
-    this.prefix = this.storage.retrieve('localPhonePrefix')
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    let phoneNumber;
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
-    }
-    if (!this.phoneValue.startsWith("0")) //XXXX 
-    {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-    //  const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container'); // Make sure you have an element with id 'recaptcha-container'
-
-    const appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-      }
-    });
-    this.afAuth.signInWithPhoneNumber(phoneNumber, appVerifier)
-      .then(confirmationResult => {
-        this.storage.store('verificationCode', confirmationResult.verificationId)
-        this.storage.store("otptype", 'firebaseotp');
-        this.storage.clear('Timer');
-        this.storage.clear("formPageType")
-        this.storage.store("actionType", 'insertAccount')
-        this.router.navigate(['/login/otp'], { state: { actionType: "insertAccount", otptype: 'firebaseotp', "localInsertAccountOtpSms": this.dto.Response, "bankAccountList": this.bankAccountList }, replaceUrl: false });
-      })
-      .catch(error => {
-        this.recaptcha = false;
-        this.toastr.error("", error.message,
-          {
-            timeOut: 2000,
-            positionClass: 'toast-bottom-center',
-          });
-        console.error('Phone authentication error', error.message);
-      });
   }
 
   GetSMSProvider() {
@@ -1108,16 +1099,9 @@ export class WithdrawComponent implements OnInit {
     this.bsModalRef = this.modalService.show(TopupAlertMaintenanceComponent, { class: 'modal-sm topup-maintenance-alert', initialState });
   }
 
-  // onPasswordInput(event: Event): void {
-  //   const inputElement = this.passwordInput.nativeElement;
-  //   inputElement.value = inputElement.value.replace(/\D/g, '').slice(0, 6);
-  // }
-
   onPasswordInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     inputElement.value = inputElement.value.slice(0, 6);
-
-
   }
 
   keyPressNumberfornumberintput(event: KeyboardEvent) {
@@ -1132,7 +1116,6 @@ export class WithdrawComponent implements OnInit {
       event.preventDefault();
       return false;
     }
-
     return true;
   }
 
@@ -1157,13 +1140,13 @@ export class WithdrawComponent implements OnInit {
   }
 
   getsmstype() {
-     this.prefix = this.storage.retrieve('localPhonePrefix')
+    this.prefix = this.storage.retrieve('localPhonePrefix')
     let phoneNumber;
     if (this.phoneValue.startsWith("0")) {
       phoneNumber = this.prefix + this.phoneValue.substring(
         1, this.phoneValue.length);
     }
-    if (!this.phoneValue.startsWith("0")) //XXXX 
+    if (!this.phoneValue.startsWith("0")) //XXXX
     {
       phoneNumber = this.prefix + this.phoneValue;
     }
@@ -1184,9 +1167,9 @@ export class WithdrawComponent implements OnInit {
 //com
 @Component({
   selector: 'modal-content',
-  template: `    
+  template: `
     <div class="modal-body pb-2">
-    <div class="row px-2">   
+    <div class="row px-2">
     <ul>
     <li>{{newTitle[0]}}</li>
     <li>{{newTitle[1]}}</li>
@@ -1194,13 +1177,13 @@ export class WithdrawComponent implements OnInit {
     <!-- <li>{{newTitle[3]}}</li> -->
     </ul>
     </div>
-    
-    <div class="row" style="justify-content: center;">     
-    <button  type="button" class="btn button-notRound mt-2 mr-1 mb-1" style="width: 125px;height: 40px;color: red;border: 2px solid #ddd;border-radius: 5px;" (click)="goWallet()">{{closeBtnName}}</button>  
-                
+
+    <div class="row" style="justify-content: center;">
+    <button  type="button" class="btn button-notRound mt-2 mr-1 mb-1" style="width: 125px;height: 40px;color: red;border: 2px solid #ddd;border-radius: 5px;" (click)="goWallet()">{{closeBtnName}}</button>
+
     <button type="button" class="mt-2 button-notRound"  style="width: 125px;height: 40px;"  (click)="goOk()" >{{ok}}</button>
-    </div>    
-   
+    </div>
+
     </div>
   ` ,
   styleUrls: ['./withdraw-alert.component.scss'],
@@ -1231,11 +1214,10 @@ export class ModalContentComponent implements OnInit {
     this._location.back();
 
   }
+
   goOk() {
     this.bsModalRef.hide();
   }
-
-
 
 }
 

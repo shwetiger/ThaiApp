@@ -9,9 +9,9 @@ export class Back4appService {
   jsKey: any;
   keyParseServerUrl: any;
   keyLiveQueryUrl: any;
-  
-  constructor() { 
-    this.keyApplicationId = 'dxEhlPEJK3rGaa1viywMIxS31lqCFZMwb0oHQWXJ';
+
+  constructor() {
+    this.keyApplicationId = 'dxEhlPEJK3rGaa1viywMIxS31lqCFZMwb0oHQWXJ'; 
     this.keyClientKey= 'fJ5j4vzm8ZD6tmoCSdzMKE5HYnQovaXdXqYvsqTU';
     this.jsKey='G4ePnxxZcdObpoF8bZMx2QzvgNlFrpGb8WHrF0Bx';
    // this.keyParseServerUrl = 'https://parseapi.back4app.com';

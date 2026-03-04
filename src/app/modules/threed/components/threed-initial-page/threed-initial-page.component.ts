@@ -117,7 +117,7 @@ export class ThreedInitialPageComponent implements OnInit {
       this.router.navigate(['/home'], { replaceUrl: false });
     }
     else {
-      this.location.back();
+      this.router.navigate(['/home'], { replaceUrl: false });
     }
   }
 

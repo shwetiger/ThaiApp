@@ -15,7 +15,7 @@
                     </span>
                   </div>
               </div>
-        
+
         <div class="col-2 text-right mt-2" >
           <input  type="radio" name="1" id="option1" value="sms_poh" [(ngModel)]="selectedType"/>
         </div>
@@ -33,11 +33,11 @@
                 </span>
               </div>
           </div>
-    
+
         <div class="col-2 text-right mt-2" >
           <input  type="radio" name="options2" id="option2" value="vmg_viber" [(ngModel)]="selectedType"/>
         </div>
-     </div> 
+     </div>
 
      <hr style="width: 100%; border-top: 1px solid #E8E9EB; height: 2px; margin-top:10px !important;margin-bottom:10px !important; padding: 0 !important;" *ngIf="emailshow==true && (smspohshow==true || vibershow==true)">
      <div class="row" style="margin: 0 !important;" *ngIf="emailshow==true">
@@ -52,11 +52,11 @@
                 </span>
               </div>
           </div>
-    
+
         <div class="col-2 text-right mt-2" >
           <input  type="radio" name="options3" id="option3" value="email" [(ngModel)]="selectedType"/>
         </div>
-     </div> 
+     </div>
 
       </div>
     </div>
@@ -64,30 +64,30 @@
         <p style="font-size: 0.9rem;">{{'otp_bottom_desc'| translate}}</p>
     </div>
     <div class="pt-2 saveBtn" style="display:flex;justify-content: center;">
-   
+
     </div>
     <div id="recaptcha-container"></div>
     <div class="section d-flex justify-content-around bg-white" id="navTwoDBet" style="position: relative;">
       <!-- Button -->
-      <button 
-        type="submit" 
-        (click)="onSubmit()" 
-        class="btn shadowed" 
-        *ngIf="!common.submitLoading" 
-        style="width: 400px; align-content: center; background-color: #2456A6; border-radius: 5px; color: #fff;" 
+      <button
+        type="submit"
+        (click)="onSubmit()"
+        class="btn shadowed"
+        *ngIf="!common.submitLoading"
+        style="width: 400px; align-content: center; background-color: #2456A6; border-radius: 5px; color: #fff;"
       >
         {{ 'save' | translate }}
       </button>
       <!-- Loading Spinner -->
-      <div 
-        *ngIf="common.submitLoading" 
+      <div
+        *ngIf="common.submitLoading"
         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: auto;"
       >
-        <ngx-spinner 
-          [name]="common.loading.submitLoading.name" 
-          [size]="common.loading.submitLoading.size" 
-          [color]="common.loading.submitLoading.color" 
-          [type]="common.loading.submitLoading.type" 
+        <ngx-spinner
+          [name]="common.loading.submitLoading.name"
+          [size]="common.loading.submitLoading.size"
+          [color]="common.loading.submitLoading.color"
+          [type]="common.loading.submitLoading.type"
           [fullScreen]="false"
         >
         </ngx-spinner>

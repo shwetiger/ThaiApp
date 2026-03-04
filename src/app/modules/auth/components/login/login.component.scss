@@ -3,15 +3,15 @@
 
 
 #appCapsule {
+    margin-top: 0px !important;
+    padding-top: 0 !important;
     padding: 0px !important;
     background-color: #fff !important;
-    height: 100% !important;
+    height: 100% !important;  /* Viewport height */
     overflow-x: hidden;
-  // height: 150px !important
-    
- }
-.login-button {  
-    margin-top: 20px;   
+}
+.login-button {
+    margin-top: 20px;
     margin-bottom: 20px;
 }
 
@@ -27,9 +27,9 @@ a,.active h5 {
   position: absolute;
   z-index: 111;
  // color: blue;
-  
+
   }
-  
+
   .text-eye ion-icon {
     font-size: 20px;
   }
@@ -90,3 +90,4 @@ input::placeholder {
   z-index: 1000;
   box-sizing: border-box;
 }
+

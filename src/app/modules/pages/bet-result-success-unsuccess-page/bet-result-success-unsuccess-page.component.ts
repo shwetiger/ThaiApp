@@ -39,19 +39,21 @@ export class BetResultSuccessUnsuccessPageComponent implements OnInit {
     this.storage.clear('localThreedDPage');
     if ((dream_book != null && dream_book != undefined) || threed == "quickSelect" || threed == "dreamBook") {
       if (this.type == 'threed') {
-        history.go(-3);
+//history.go(-3);
+       this.router.navigate(['/threed/bet'], { replaceUrl: false });
       }
       else {
-        history.go(-3);
+        this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
       }
     }
     else {
       this.storage.clear('localSelectTwoDList')
       if (this.type == 'threed') {
-        history.go(-2);
+        this.router.navigate(['/threed/bet'], { replaceUrl: false });
       }
       else {
-        history.go(-2);
+        //history.go(-2);
+         this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
       }
     }
   }

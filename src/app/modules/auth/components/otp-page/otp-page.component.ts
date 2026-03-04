@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError, finalize, retry } from 'rxjs/operators';
 import { Location } from '@angular/common';
 import isUAWebview from "is-ua-webview";
 import { FunctService } from 'src/app/shared/service/funct.service';
@@ -73,7 +73,7 @@ export class OtpPageComponent implements OnInit {
   remainingSeconds: any;
   type: any;
   functionName: string;
-
+  interval: any;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -143,24 +143,25 @@ export class OtpPageComponent implements OnInit {
         : this.smstype;
     switch (this.commonFormtype) {
       case 'register':
-         this.functionName= 'Register OTP'
+        this.functionName = 'Register OTP'
         break;
 
       case 'NEWDIVICE':
-         this.functionName= 'New Device OTP'
+        this.functionName = 'New Device OTP'
         break;
 
       case 'forgetPassword':
-        this.functionName= 'Forgot Password OTP'
+        this.functionName = 'Forgot Password OTP'
         break;
 
-       case 'withdrawaladd':
-        this.functionName= 'Withdrawal OTP'
+      case 'withdrawaladd':
+        this.functionName = 'Withdrawal OTP'
         break;
 
       default:
-        this.functionName= ''
+        this.functionName = ''
     }
+
     this.updateDeviceId = {
       deviceId: '',
       phone_no: '',
@@ -185,7 +186,6 @@ export class OtpPageComponent implements OnInit {
       phone_no: '',
       register_key: ''
     }
-    this.GetSMSProvider();
     this.listServicePhone();
   }
 
@@ -207,16 +207,42 @@ export class OtpPageComponent implements OnInit {
     }
   }
 
-  startCountdown(seconds) {
-    let counter = seconds;
-    const interval = setInterval(() => {
-      this.coundDown = counter;
-      counter--;
-      if (counter < -1) {
-        clearInterval(interval);
-        this.coundDown = counter;
+  // startCountdown(seconds) {
+  //   let counter = seconds;
+  //   const interval = setInterval(() => {
+  //     this.coundDown = counter;
+  //     counter--;
+  //     if (counter < -1) {
+  //       clearInterval(interval);
+  //       this.coundDown = counter;
+  //     }
+  //     this.storage.store("Timer", this.coundDown)
+  //   }, 1000);
+  // }
+
+  startCountdown(seconds: number) {
+    // 🔹 expire time (milliseconds)
+    const expireAt = Date.now() + seconds * 1000;
+    // 🔹 storage ထဲမှာ expireAt ကိုသိမ်း (app restart / background အတွက်)
+    this.storage.store('expireAt', expireAt);
+
+    this.interval = setInterval(() => {
+
+      const now = Date.now();
+
+      const remainingSeconds = Math.max(
+        -1,
+        Math.floor((expireAt - now) / 1000)
+      );
+
+      this.coundDown = remainingSeconds;
+      this.storage.store('Timer', remainingSeconds);
+
+      if (remainingSeconds <= -1) {
+        clearInterval(this.interval);
+        this.coundDown = remainingSeconds;
       }
-      this.storage.store("Timer", this.coundDown)
+
     }, 1000);
   }
 
@@ -224,7 +250,7 @@ export class OtpPageComponent implements OnInit {
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
-    this.http.post(this.funct.ipaddress + 'countdown/get?phoneno=' + this.phoneNumber + '&email=' + this.emailaddress + '&type=' + this.type + '&functionName=' + this.functionName, { headers: headers })
+    this.http.post(this.funct.ipaddress + 'countdown/get?phoneno=' + this.phoneNumber + '&email=' + this.smssender + '&type=' + this.type + '&functionName=' + this.functionName, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, 'otp'))
       )
@@ -354,26 +380,29 @@ export class OtpPageComponent implements OnInit {
             let headers = new HttpHeaders();
             this.OtpSms = [];
             const localOtpSms = this.storage.retrieve('localOtpSms');
-            var phone_no = this.storage.retrieve('localOtpSms').to;
+           // var phone_no = this.storage.retrieve('localOtpSms').to;
+            var phone_no= this.phoneNumber;
             var request_id = this.request_id = this.storage.retrieve('requestId')
             var code = this.otpcode;
             var link;
             if (this.commonFormtype == "forgetPassword") {
               this.token = this.storage.retrieve('token');
               headers = headers.set('Authorization', this.token);
-              link = 'user/checkOTPXXx?phone_no=' + phone_no + '&code=' + code + '&request_id=' + request_id;
+              link = this.funct.ipaddress +'v1/user/checkOTPXXx?phone_no=' + phone_no + '&email='+ this.smssender +'&code=' + code + '&request_id=' + request_id + '&smstype=' + this.smstype;
             }
             else {
-              link = 'user/checkOTP?phone_no=' + phone_no + '&code=' + code + '&request_id=' + request_id + '&smstype=' + this.registerottype;
+              link = this.funct.ipaddress+'v2/user/checkOTP?phone_no=' + phone_no + '&email='+ this.emailaddress+ '&code=' + code +'&request_id=' + request_id + '&smstype=' + this.registerottype;
             }
-            this.http.get(this.funct.ipaddress + link, { headers: headers })
+            this.http.get(link, { headers: headers })
               .pipe(
                 catchError(this.handleErrorMessage.handleError.bind(this, 'otp'))
               )
               .subscribe(
                 result => {
                   this.dto.Response = result;
+                  console.log("ForgetRsponse>>>>"+JSON.stringify(this.dto.Response));
                   this.OtpSms = this.dto.Response;
+                  this.storage.store('otpVerifyToken',this.dto.Response.otpVerifyToken)
                   this.storage.clear("registeremail")
                   if (this.dto.Response.status == 401) {
                     if (this.dto.Response.code == 0) {
@@ -445,7 +474,7 @@ export class OtpPageComponent implements OnInit {
     this.coundDown = 180;
     this.commonFormtype = this.storage.retrieve('formPageType')
     if (this.commonFormtype == "forgetPassword") {
-      this.ResendOtp("user/getForgotPassowrdOTP?phoneNo=");
+      this.ResendOtp("v1/user/getForgotPassowrdOTP?phoneNo=");
       return
     }
     if (this.common.actionType == "insertAccount") {
@@ -458,108 +487,176 @@ export class OtpPageComponent implements OnInit {
     }
   }
 
-  ResendWithdrawOtp() {
-    this.token = this.storage.retrieve('token');
-    let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);
-    this.storage.store('localInsertBankAccountList', this.bankAccountList); //store for next otp page
-    this.http.get(this.funct.apaddressv1 + 'transaction/getWithdrawOTP', { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = result;
-          this.localInsertAccountOtpSms = this.dto.Response;
-          if (this.dto.Response?.expired_at) {
-            this.storage.store('localInsertAccountOtpSms', this.dto.Response);
-            let requestIdList = this.storage.retrieve('requestId');
-            if (requestIdList && this.dto.Response.request_id !== undefined) {
-              requestIdList += ',' + this.dto.Response.request_id;
-            } else if (this.dto.Response.request_id !== undefined) {
-              requestIdList = this.dto.Response.request_id;
-            }
+ ResendWithdrawOtp() {
+  this.token = this.storage.retrieve('token');
+
+  let headers = new HttpHeaders().set('Authorization', this.token);
+  this.storage.store('localInsertBankAccountList', this.bankAccountList);
+
+  // this.common.submitLoading = true;
+  // this.spinner.show('submitLoading');
+
+  this.http
+    .get(
+      `${this.funct.ipaddress}v1/transaction/getWithdrawOTP`,
+      { headers }
+    )
+    .pipe(
+      catchError(this.handleErrorMessage.handleError.bind(this, '')),
+      finalize(() => {
+        this.common.submitLoading = false;
+        this.spinner.hide('submitLoading');
+      })
+    )
+    .subscribe({
+      next: (result: any) => {
+        this.dto.Response = result;
+        this.localInsertAccountOtpSms = this.dto.Response;
+        if (this.dto.Response?.expired_at) {
+          this.storage.store('localInsertAccountOtpSms', this.dto.Response);
+          let requestIdList = this.storage.retrieve('requestId');
+          if (this.dto.Response.request_id) {
+            requestIdList = requestIdList
+              ? `${requestIdList},${this.dto.Response.request_id}`
+              : this.dto.Response.request_id;
             this.storage.store('requestId', requestIdList);
-            this.getCountDown();
-            if (this.dto.Response.statusCode === 200) {
-              const bodyMsg = this.dto.Response.body?.toString()?.trim();
-              if (bodyMsg === "Not valid OTP code") {
-                this.toastr.error("Bad request.", 'OTP is not correct', {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-                return;
-              }
-              if (bodyMsg === "Try Again") {
-                this.toastr.error("Bad request.", bodyMsg, {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center',
-                });
-                return;
-              }
-            }
-          } else {
-            if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
+          }
+          this.getCountDown();
+          this.showResend = false;
+          if (this.dto.Response.statusCode === 200) {
+            const bodyMsg = this.dto.Response.body?.toString()?.trim();
 
+            if (bodyMsg === 'Not valid OTP code') {
+              this.toastr.error(
+                'OTP is not correct',
+                'Bad request.',
+                {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center'
+                }
+              );
+              return;
             }
 
-            return;
+            if (bodyMsg === 'Try Again') {
+              this.toastr.error(
+                bodyMsg,
+                'Bad request.',
+                {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center'
+                }
+              );
+              return;
+            }
           }
         }
-      );
+        else if (
+          this.dto.Response?.status === 'Error' &&
+          this.dto.Response.message?.includes('180 seconds')
+        ) {
+          this.showResend = false;
+        }
+        else {
+          this.showResend = true;
+        }
+      },
 
-  }
+      error: () => {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.coundDown = -1;
+        this.showResend = true;
+      }
+    });
+}
 
-  getNewOtp() {
-    clearInterval(this.intervalId);
-    this.intervalId = null;
-    this.showResend = false;
-    this.coundDown = 180;
-    this.codeInput.reset();
-    this.common.submitLoading = false;
-    this.spinner.hide("submitLoading");
-    const headers = new HttpHeaders();
-    this.http.get(this.funct.apaddressv1 + 'user/getRegisterDeviceOTP?phoneNo=' + this.phoneNumber, { headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(result => {
+
+ getNewOtp() {
+  clearInterval(this.intervalId);
+  this.intervalId = null;
+  this.showResend = false;
+  this.coundDown = 180;
+  this.codeInput.reset();
+
+  // this.common.submitLoading = true;
+  // this.spinner.show('submitLoading');
+
+  const headers = new HttpHeaders();
+
+  this.http
+    .get(
+      `${this.funct.ipaddress}v1/user/getRegisterDeviceOTP?phoneNo=${this.phoneNumber}`,
+      { headers }
+    )
+    .pipe(
+      catchError(this.handleErrorMessage.handleError.bind(this, '')),
+      finalize(() => {
+        this.common.submitLoading = false;
+        this.spinner.hide('submitLoading');
+      })
+    )
+    .subscribe({
+      next: (result: any) => {
         this.dto.Response = result;
         if (this.dto.Response?.expired_at) {
           this.storage.store('localNewDeviceOtpSms', this.dto.Response);
           let requestIdList = this.storage.retrieve('requestId');
-          if (requestIdList && this.dto.Response.request_id !== undefined) {
-            requestIdList += ',' + this.dto.Response.request_id;
-          } else if (this.dto.Response.request_id !== undefined) {
-            requestIdList = this.dto.Response.request_id;
+          if (this.dto.Response.request_id) {
+            requestIdList = requestIdList
+              ? `${requestIdList},${this.dto.Response.request_id}`
+              : this.dto.Response.request_id;
+            this.storage.store('requestId', requestIdList);
           }
-          this.storage.store('requestId', requestIdList);
           this.getCountDown();
-          if (this.dto.Response.statusCode === 200) {
+          this.showResend = false;
+          if (this.dto.Response.status === 200) {
             const bodyMsg = this.dto.Response.body?.toString()?.trim();
-            if (bodyMsg === "Not valid OTP code") {
-              this.toastr.error("Bad request.", 'OTP is not correct', {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
+
+            if (bodyMsg === 'Not valid OTP code') {
+              this.toastr.error(
+                'OTP is not correct',
+                'Bad request.',
+                {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center'
+                }
+              );
               return;
             }
-            if (bodyMsg === "Try Again") {
-              this.toastr.error("Bad request.", bodyMsg, {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
+
+            if (bodyMsg === 'Try Again') {
+              this.toastr.error(
+                bodyMsg,
+                'Bad request.',
+                {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center'
+                }
+              );
               return;
             }
           }
-        } else {
-          if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-              this.getCountDown();
-          }
-          return;
         }
-      });
-  }
+        else if (
+          this.dto.Response?.status === 'Error' &&
+          this.dto.Response.message?.includes('180 seconds')
+        ) {
+          this.getCountDown();
+          this.showResend = false;
+        }
+        else {
+          this.showResend = true;
+        }
+      },
+      error: () => {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.coundDown = -1;
+        this.showResend = true;
+      }
+    });
+}
 
 
   SubmitNewDeviceOtp() {
@@ -744,83 +841,130 @@ export class OtpPageComponent implements OnInit {
       );
   }
 
-  ResendRegisOtp() {
-    this.remainingSeconds = 180;
-    let headers = new HttpHeaders();
-    this.http.get(`${this.funct.apaddressv1}user/getRegisterOTP?phoneNo=${this.phoneNumber}&type=${this.registerottype}&email=${this.emailaddress}`, { headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          if (this.dto.Response.errorCode == '000') {
-            this.storage.store('localOtpSms', this.dto.Response);
-            this.getCountDown();
-            let requestIdList = this.storage.retrieve('requestId');
-            if (requestIdList && this.dto.Response.request_id !== undefined) {
-              requestIdList += ',' + this.dto.Response.request_id;
-            } else if (this.dto.Response.request_id !== undefined) {
-              requestIdList = this.dto.Response.request_id;
-            }
+ ResendRegisOtp() {
+  const headers = new HttpHeaders();
+
+  // this.common.submitLoading = true;
+  // this.spinner.show('submitLoading');
+
+  this.http
+    .get(
+      `${this.funct.ipaddress}v1/user/getRegisterOTP?phoneNo=${this.phoneNumber}&type=${this.registerottype}&email=${this.emailaddress}`,
+      { headers }
+    )
+    .pipe(
+      catchError(this.handleErrorMessage.handleError.bind(this, '')),
+      finalize(() => {
+        this.common.submitLoading = false;
+        this.spinner.hide('submitLoading');
+      })
+    )
+    .subscribe({
+      next: (result: any) => {
+        this.dto.Response = result;
+        if (this.dto.Response.errorCode === '000') {
+          this.storage.store('localOtpSms', this.dto.Response);
+          this.getCountDown();
+          this.showResend = false;
+          let requestIdList = this.storage.retrieve('requestId');
+          if (this.dto.Response.request_id) {
+            requestIdList = requestIdList
+              ? `${requestIdList},${this.dto.Response.request_id}`
+              : this.dto.Response.request_id;
             this.storage.store('requestId', requestIdList);
           }
-          else {
-            if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-              console.log('Waiting 180 seconds to resend OTP...');
-
-              setTimeout(() => {
-                this.ResendRegisOtp();
-              });
-            }
-          }
         }
-      );
-  }
+        else if (
+          this.dto.Response.status === 'Error' &&
+          this.dto.Response.message?.includes('180 seconds')
+        ) {
+          console.log('Waiting 180 seconds to resend OTP...');
+        }
+        else {
+          this.showResend = true;
+        }
+      },
+      error: err => {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.coundDown = -1;
+        this.showResend = true;
+      }
+    });
+}
 
-  ResendOtp(url) {
-    let headers = new HttpHeaders();
-    this.http.get(this.funct.apaddressv1 + url + this.phoneNumber, { headers: headers })
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
+
+ ResendOtp(url: string) {
+  const headers = new HttpHeaders();
+  // this.common.submitLoading = true;
+  // this.spinner.show('submitLoading');
+  this.http
+    .get(`${this.funct.ipaddress}${url}${this.phoneNumber}`, { headers })
+    .pipe(
+      catchError(this.handleErrorMessage.handleError.bind(this, '')),
+      finalize(() => {
+        this.common.submitLoading = false;
+        this.spinner.hide('submitLoading');
+      })
+    )
+    .subscribe({
+      next: (result: any) => {
+        this.dto.Response = result;
+        if (this.dto.Response?.status === true) {
           this.storage.store('localOtpSms', this.dto.Response);
           let requestIdList = this.storage.retrieve('requestId');
-          if (requestIdList && this.dto.Response.request_id !== undefined) {
-            requestIdList += ',' + this.dto.Response.request_id;
-          } else if (this.dto.Response.request_id !== undefined) {
-            requestIdList = this.dto.Response.request_id;
+          if (this.dto.Response.request_id) {
+            requestIdList = requestIdList
+              ? `${requestIdList},${this.dto.Response.request_id}`
+              : this.dto.Response.request_id;
+            this.storage.store('requestId', requestIdList);
           }
-          this.storage.store('requestId', requestIdList);
           this.getCountDown();
-          if (this.dto.Response.statusCode == 200) {
-            if (this.dto.Response.body.split('').trim() == "Not valid OTP code") {
-              this.toastr.error("Bad request.", 'OTP is not correct', {
+          this.showResend = false;
+          const bodyText = this.dto.Response.body?.toString()?.trim();
+
+          if (bodyText === 'Not valid OTP code') {
+            this.toastr.error(
+              'OTP is not correct',
+              'Bad request.',
+              {
                 timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-              return null;
-            }
-            if (this.dto.Response.body.split('').trim() == "Try Again") {
-              this.toastr.error("Bad request.", this.dto.Response.body.toString(), {
-                timeOut: 3000,
-                positionClass: 'toast-top-center',
-              });
-              return null;
-            }
+                positionClass: 'toast-top-center'
+              }
+            );
+            return;
           }
-          else {
-            if (this.dto.Response.status === 'Error' && this.dto.Response.message?.includes('180 seconds')) {
-            }
+
+          if (bodyText === 'Try Again') {
+            this.toastr.error(
+              bodyText,
+              'Bad request.',
+              {
+                timeOut: 3000,
+                positionClass: 'toast-top-center'
+              }
+            );
+            return;
           }
         }
-      );
-  }
+        else if (
+          this.dto.Response?.status === 'Error' &&
+          this.dto.Response.message?.includes('180 seconds')
+        ) {
+          this.showResend = true;
+        }
+        else {
+          this.showResend = true;
+        }
+      },
+      error: () => {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+        this.coundDown = -1;
+        this.showResend = true;
+      }
+    });
+}
 
   UpdateNewDeviceId() {
     let headers = new HttpHeaders();
@@ -869,18 +1013,7 @@ export class OtpPageComponent implements OnInit {
       );
   }
 
-  GetSMSProvider() {
-    this.http.get(this.funct.ipaddress + 'user/getSMSProvider')
-      .pipe(
-        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSprovider = this.dto.Response.message;
-        });
-  }
+
 
   InsertWithdrawalAccount() {
     let headers = new HttpHeaders();
@@ -956,7 +1089,7 @@ export class OtpPageComponent implements OnInit {
       this.smstype = result.smstype;
       const typeMap: Record<string, { label: string; sender: string }> = {
         vmg_viber: { label: 'Viber', sender: this.phoneNumber },
-        email: { label: 'Email', sender: this.emailaddress }
+        email: { label: 'Email', sender: result.email}
       };
 
       const config = typeMap[this.smstype] || {

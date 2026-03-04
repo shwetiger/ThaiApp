@@ -1,11 +1,18 @@
 @import '../../../variables';
 
+#appCapsule {
+    min-height: 100vh;
+    background :#fff !important;
+    // margin: -56px 0!important;
+    // padding: 56px 0 80px;
+    // overflow-x: hidden;
+}
 
 .account-wallet{
   position: absolute;
-  min-width: calc(100% - 10px); 
+  min-width: calc(100% - 10px);
   z-index: 111;
-  top: calc(100% - 82%); 
+  top: calc(100% - 82%);
   margin: 0px 5px;
 }
 
@@ -25,7 +32,7 @@
   }
   .account-wallet {
   //  min-width:  calc(100% - 71%);
-    top: calc(100% - 82%);  
+    top: calc(100% - 82%);
     margin: 0px 5px;
    }
 }
@@ -43,7 +50,7 @@
 .account-login-active{
   font-size: 70px;
   color: #fff;
-  
+
 }
 .account-title-active {
 color: #fff;
@@ -63,31 +70,31 @@ color: #fff;
 }
 .account-amount {
   position: absolute;
-  top: 16%; 
+  top: 16%;
   left: 0.2%;
   right:  0.2%;
   text-align: center;
-  font-size: 18px; 
- 
+  font-size: 18px;
+
 }
 
-.account-amount > .wide-block {    
+.account-amount > .wide-block {
   border-top: transparent !important;
-  border-bottom: transparent !important;  
+  border-bottom: transparent !important;
   background: #ffffff;
   border: 5px solid #fff !important;
   border-radius: 6px;
   border: 0;
-  //box-shadow: 0 3px 6px 0 rgb(0 0 0 / 10%), 0 1px 3px 0 rgb(0 0 0 / 8%);  
+  //box-shadow: 0 3px 6px 0 rgb(0 0 0 / 10%), 0 1px 3px 0 rgb(0 0 0 / 8%);
 }
 
-.wallet-padding > .wide-block {  
+.wallet-padding > .wide-block {
   margin: 100px 0px;
   border-top: transparent !important;
   border-bottom: transparent !important;
 }
 
-.video-padding {  
+.video-padding {
   background: transparent !important;
   margin: 20px 0px;
   border-top: transparent !important;
@@ -118,14 +125,14 @@ color: #fff;
 #appCapsule {
   padding: 0px 0 !important;
   padding-bottom: 80% !important;
- 
+
 }
 
 .wallet-text {
     background-color:  $second-color;
     border-radius: 10px;
     border: 5px solid #3474db !important;
-   
+
 }
 
 .wallet-text > .card-body :is(h1, h2, h3, h4, h5, h6, p){
@@ -145,4 +152,9 @@ color: #fff;
 .underline {
   text-decoration: underline;
   text-decoration-color: #3474db;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-decoration-color: $second-color;
 }

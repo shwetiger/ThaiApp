@@ -3,24 +3,25 @@
 #appCapsule {
     padding-top: 0px !important;
     background-color: $background-color !important;
-    min-height: 100vh; 
+    min-height: 100vh;
+    background: #fff !important;
 }
-::ng-deep {    
+::ng-deep {
     .twodBetAddClass , .twodBetEdit-class{
       display: flex;
       flex-direction: column;
-      justify-content: center;   
+      justify-content: center;
       min-height: calc(100vh - 60px);
-    } 
+    }
 }
-  
+
 .edit-button {
-    background-color: #2253A2; 
-    color: #fff; 
-    border: 1px solid #ddd; 
+    background-color: #2253A2;
+    color: #fff;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    height: 30px !important; 
-   // padding: 5px !important;  
+    height: 30px !important;
+   // padding: 5px !important;
     width: 75px;
     height: 30px;
     white-space: nowrap;
@@ -31,8 +32,8 @@
     color: #fff;
     font-size: 12px;
     background: $second-color;
-    border-radius: 10px;   
-   
+    border-radius: 10px;
+
 }
 
 .round-active-btn {
@@ -43,7 +44,7 @@
     height: 28px;
     border-radius: 100%;
     background-color: $second-color;
-    display: inline-block;      
+    display: inline-block;
     padding: 5px 0 0 0;
 }
 .round-noactive-btn {
@@ -54,7 +55,7 @@
     height: 28px;
     border-radius: 100%;
     background-color: #ddd;
-    display: inline-block;      
+    display: inline-block;
     padding: 5px 0 0 0;
 }
 
@@ -72,9 +73,9 @@
     margin-top: -22px;
     padding-right: 0px;
     padding-top: 20px;
- 
+
  }
- .wide-block {    
+ .wide-block {
      border-top: 0px solid #dee2e6 !important;
      border-bottom: 0px !important;
  }
@@ -88,10 +89,10 @@
 }
 
 
-.totalbetamount {  
+.totalbetamount {
     border-top: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
-    
+
 }
 
 #navTwoDBetConfirm {
@@ -115,7 +116,7 @@
     margin-left: 10px;
 
 }
-.betconfrimButton2 { 
+.betconfrimButton2 {
    margin-top: 20px;
     border-radius: 0px;
    // padding: 25px 0px;
@@ -127,7 +128,7 @@
     background: #f4f2f2;
     margin: 0px 10px;
     border-radius: 10px;
-    //box-shadow: 0 3px 6px 0 rgb(0 0 0 / 10%), 0 1px 3px 0 rgb(0 0 0 / 8%);  
+    //box-shadow: 0 3px 6px 0 rgb(0 0 0 / 10%), 0 1px 3px 0 rgb(0 0 0 / 8%);
     margin-top: 10px;
     margin-bottom: 120px;
 
@@ -163,8 +164,8 @@
 
 @media screen and (min-width: 1024px) {
     .edit-button {
-        width:  55px !important; 
-        padding: 5px !important;      
+        width:  55px !important;
+        padding: 5px !important;
     }
     .modal-dialog.twodBetAddClass {
         width: 420px !important;
@@ -174,13 +175,13 @@
         max-width: 30% !important;
     }
     .twodBetEdit-class {
-        width: 420px !important;       
+        width: 420px !important;
     }
 }
 
 @media screen and (min-width: 576px){
     .twodBetEdit-class {
-        width: 420px !important;       
+        width: 420px !important;
     }
     .modal-dialog.twodBetAddClass {
         width: 420px !important;

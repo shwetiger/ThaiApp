@@ -51,6 +51,7 @@ export class EmailAddressComponent implements OnInit {
   ngOnInit(): void {
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
+    this.storage.clear("emailaddress");
     this.getUserProfile();
     this.userProfileModel = {
       email_address: ''
@@ -135,18 +136,19 @@ export class EmailAddressComponent implements OnInit {
       headers = headers.set('Authorization', this.token);
       let params = new HttpParams();
       params = params.set("email", this.emailModel.email_address.trim());
-      this.http.get(this.funct.apaddressv1 + 'user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
+      this.http.get(this.funct.ipaddress + 'v1/user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
         .pipe(
           catchError(this.handleErrorMessage.handleError.bind(this, 'emailRequired'))
         )
         .subscribe(
           result => {
             this.dto.Response = result;
+            this.storage.store("emailaddress", this.emailModel.email_address);
             if (this.dto.Response.status == true) {
               this.request_id = parseInt(this.dto.Response.request_id as string, 10);
               this.code = this.dto.Response.code;
               this.storage.store("emailrequestId", this.request_id);
-              this.storage.store("emailaddress", this.emailModel.email_address);
+
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
               this.storage.clear('Timer');

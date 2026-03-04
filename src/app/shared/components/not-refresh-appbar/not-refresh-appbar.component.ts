@@ -9,25 +9,36 @@ import {Location} from '@angular/common';
   styleUrls: ['./not-refresh-appbar.component.scss']
 })
 export class NotRefreshAppbarComponent implements OnInit {
- 
+
   @Input() rootLevel=1;
   @Input() parentLink:string;
-  @Input() typeUrl: string;  
-  @Input() type: string;  
+  @Input() typeUrl: string;
+  @Input() type: string;
+  @Input() backUrl?: string;
   constructor(
     public navigation: NavigationService,
     private router: Router,
     private storage: LocalStorageService,
-    private _location: Location) { 
-   
+    private _location: Location) {
+
   }
-  ngOnInit(): void {  
-  }  
+  ngOnInit(): void {
+  }
   refreshPage(): void{
-    this.ngOnInit();  
+    this.ngOnInit();
   }
-  goBack(){    
-    this._location.back();   
+  // goBack(){
+  //   this._location.back();
+  // }
+
+  goBack() {
+    if (this.backUrl) {
+      this.router.navigate([this.backUrl]);
+    } else if (window.history.length > 1) {
+      this._location.back();
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
- 
+
 }

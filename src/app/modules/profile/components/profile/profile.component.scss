@@ -3,7 +3,7 @@
   & li{
     @include box-shadow;
   }
- 
+
 }
 
 
@@ -15,15 +15,16 @@
     background-image: url(/assets/img/arrow.svg);
 }
 #appCapsule {
-    padding: 0px 0 !important;      
+    padding: 0px 0 !important;
     min-height: 120vh !important;
-    overflow-x: hidden
+    overflow-x: hidden;
+    background: #fff !important;
   }
-.account-bgcolor {  
+.account-bgcolor {
     display: flex;
     border: none !important;
     background: transparent !important;
-    
+
 }
 .wallet-account {
     position:relative;
@@ -37,7 +38,7 @@
 }
 .image-listview > li a.item:after {
   background-image: url('/assets/img/arrow.svg');
-  
+
 }
 
 .image-listview > li {
@@ -56,7 +57,7 @@
 .account-login-active{
     font-size: 70px;
     color: #fff;
-    
+
   }
 .account-login{
     font-size: 100px;

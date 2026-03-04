@@ -1,16 +1,16 @@
 ::ng-deep {
     .section-inner{
-        text-align: center; 
-        -webkit-box-pack: justify; 
-        -ms-flex-pack: justify; 
-        justify-content: space-between; 
-        padding: 0px !important; 
-        margin: 2px 0px !important;        
+        text-align: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        padding: 0px !important;
+        margin: 2px 0px !important;
     }
-    .driver {       
-        border-bottom: 1px solid silver;       
+    .driver {
+        border-bottom: 1px solid silver;
     }
-    
+
     .annimate{
         -webkit-animation: fadeIn 1s infinite alternate; animation: fadeIn 1s infinite alternate;
     }
@@ -18,14 +18,14 @@
         text-align: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;
     }
 }
- 
- 
+
+
 #appCapsule {
     height: 100% !important;
 }
 
 .loader {
-    border: 4px solid #f3f3f3; 
+    border: 4px solid #f3f3f3;
     border-top: 4px solid #2253A2;
     border-radius: 50%;
     width: 30px;
@@ -59,7 +59,7 @@ p{
 .resultStyle{
     font-family: 'Roboto', sans-serif;
     color: #2253A2;
-    font-size: 120px;   
+    font-size: 120px;
     text-align: center;
     font-weight: 800;
     letter-spacing: 1;
@@ -69,7 +69,7 @@ p{
     animation: fadeIn 1s infinite alternate;
     font-family: 'Roboto', sans-serif;
     color: #2253A2;
-    font-size: 120px;   
+    font-size: 120px;
     text-align: center;
     font-weight: 800;
     letter-spacing: 1;
@@ -85,7 +85,7 @@ p{
     margin-top: 20px;
     display: flex;
     justify-content: center;
-  
+
 }
 row{
     text-align: center;

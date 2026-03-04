@@ -22,6 +22,7 @@ import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
 })
 export class RegisterInviteCodeComponent implements OnInit {
   token: any;
+  otpVerifyToken: any;
   refModel: any;
   loadingSubmiting: any;
   loadingSubmitingOne: any;
@@ -41,11 +42,11 @@ export class RegisterInviteCodeComponent implements OnInit {
     private route: ActivatedRoute,
     private readonly _zawgyiDetector: ZawgyiDetector) {
     this.refModel = history.state.registerModel;
-  
+
   }
 
   ngOnInit(): void {
-  
+
   }
 
   checkPhoneNumber() {
@@ -63,6 +64,7 @@ export class RegisterInviteCodeComponent implements OnInit {
   }
 
   handleError(error: HttpErrorResponse) {
+   // console.log("Error>>>>" + JSON.stringify(error));
     this.loadingSubmiting = false;
     this.spinner.hide("loadingSubmiting");
     this.loadingSubmitingOne = false;
@@ -173,8 +175,11 @@ export class RegisterInviteCodeComponent implements OnInit {
       this.spinner.show("loadingSubmiting");
     }
     this.token = this.storage.retrieve('token');
+    this.otpVerifyToken = this.storage.retrieve('otpVerifyToken');
+    this.refModel.otpVerifyToken = this.otpVerifyToken;
+
     let headers = new HttpHeaders().set('Authorization', this.token);
-    this.http.post(this.funct.ipaddress + 'Authenticate/register', this.refModel)
+    this.http.post(this.funct.ipaddress + 'v2/authenticate/register', this.refModel, { headers })
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe(result => {
         this.dto.Response = result;

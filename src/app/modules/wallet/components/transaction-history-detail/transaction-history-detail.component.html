@@ -1,39 +1,39 @@
 
 <div class="appHeader text-light">
     <div class="left">
-      <a (click)="goBack()" class="headerButton">        
-        <i class="material-icons" style="font-size: 26px;">arrow_back</i>  
-     </a> 
+      <a (click)="goBack()" class="headerButton">
+        <i class="material-icons" style="font-size: 26px;">arrow_back</i>
+     </a>
     </div>
     <div class="pageTitle"> Thai 2D3D </div>
   </div>
 
-<div id="appCapsule"   > 
+<div id="appCapsule"   >
 <div class="container" *ngIf = "!isSpinner">
     <div class="pt-2">
-     
+
         <div class="text-center" *ngIf = "tranObj.type== 'TOPUP' && tranObj.status== 'DENIED' ">
             <h4 class="pending-header">
                 {{ 'topup_pending_detail_title' | translate}}
            </h4>
-           
-           <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i> 
+
+           <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i>
             <p class = "deniedIcon">{{'notification_toup_denied' | translate }} </p>
-       </div> 
+       </div>
 
         <div class="text-center" *ngIf = "tranObj.type == 'WITHDRAW' && tranObj.status == 'DENIED' ">
             <h4 class="pending-header">
                 {{ 'withdrawal_pending_detail_title' | translate}}
             </h4>
-            <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i> 
+            <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i>
             <p class = "deniedIcon">{{'notification_toup_denied' | translate }} </p>
-        </div> 
+        </div>
 
         <div class="text-center" *ngIf = "tranObj.type == 'WITHDRAW' && tranObj.status == 'APPROVED' ">
             <h4 class="pending-header">
                 {{ 'withdrawal_pending_detail_title' | translate}}
             </h4>
-            <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i> 
+            <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i>
             <p class = "successfulText">{{'successful' | translate }} </p>
         </div>
 
@@ -41,7 +41,7 @@
             <h4 class="pending-header">
                 {{ 'withdrawal_pending_detail_title' | translate}}
             </h4>
-            <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i> 
+            <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i>
             <p class = "successfulText">{{'successful' | translate }} </p>
         </div>
 
@@ -57,37 +57,37 @@
              <h4 class="pending-header">
                 {{ 'topup_pending_detail_title' | translate}}
             </h4>
-           
-             <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i>                                             
+
+             <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i>
              <p class = "successfulText">{{'successful' | translate }} </p>
-        </div> 
+        </div>
 
         <div class="text-center" *ngIf = "tranObj.type == 'DEPOSIT'">
             <h4 class="pending-header">
                 {{ 'topup_pending_detail_title' | translate}}
            </h4>
-           
+
            <i class="material-icons" style="font-size: 30px; color: green;">check_circle</i>
             <p class = "successfulText">{{'successful' | translate }} </p>
-       </div> 
-    
+       </div>
+
         <div class="text-center" *ngIf = "tranObj.type == 'TOPUP' && tranObj.status == 'PENDING' ">
             <h4 class="pending-header">
                 {{ 'topup_pending_detail_title' | translate}}
            </h4>
             <img src="assets/img/pendingimage.png" alt="pendingimage" width="30px" height="30px">
-            <p class = "pendingText">{{'PENDING' | translate }} </p>       
-       </div> 
-    
-        <div class="section full" >    
+            <p class = "pendingText">{{'PENDING' | translate }} </p>
+       </div>
+
+        <div class="section full" >
             <div class="card1">
                 <div class="card-body1">
                     <div class="container-fluid1">
-                        <div class="row mb-2 justify-content-center">                            
-                            <img [src]="tranObj.paymentLogoUrl" alt="product" class="imaged">                           
+                        <div class="row mb-2 justify-content-center">
+                            <img [src]="tranObj.paymentLogoUrl" alt="product" class="imaged">
                         </div>
-                    </div>  
-                   
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -107,13 +107,13 @@
                     <span *ngIf="tranObj.status=='DENIED'"> {{'transaction_reject_Time' | translate}} </span>
                     <span>{{tranObj.updated_date_string}}</span>
                 </li>
-                
+
                 <li *ngIf = "(tranObj.type == 'DEPOSIT' || tranObj.type == 'TOPUP') && typeOfPage != 1">
                     <span *ngIf="tranObj.status!='DENIED'&& typeOfPage != 1"> {{'transaction_approved_Time' | translate}} </span>
                     <span *ngIf="tranObj.status=='DENIED' && typeOfPage != 1"> {{'transaction_reject_Time' | translate}} </span>
                     <span>{{tranObj.updated_date_string}}</span></li>
 
-                <li>{{'transaction_detail_type' | translate}} 
+                <li>{{'transaction_detail_type' | translate}}
                      <span *ngIf = "tranObj.type == 'DEPOSIT' || tranObj.type == 'TOPUP'">{{'topup_hisdesc' |translate}}</span>
                      <span *ngIf = "tranObj.type == 'WITHDRAWAL' || tranObj.type == 'WITHDRAW'">{{'withdrawal_hisdesc' |translate}}</span>
                 </li>
@@ -129,87 +129,87 @@
                 <li *ngIf = "typeOfPage == 0 && tranObj.type == 'WITHDRAW'">{{'withdrawal_receiving_account' | translate}}<span>{{tranObj.account_no}}</span></li>
 
                 <li *ngIf = "typeOfPage == 0 && tranObj.type == 'TOPUP' ">{{'transaction_detail_topup_account' | translate}}<span>{{tranObj.transaction_no}}</span></li>
-               
+
                 <!---->
                 <!-- <li *ngIf = "typeOfPage == 1">{{'transaction_game_type' | translate}}<span>{{tranObj.name}}</span></li> -->
-                
+
                 <li>{{'transaction_detail_amount' | translate}} <span>{{tranObj.amount | number : 0}} {{'ks' | translate}}</span></li>
             </ul>
         </div>
-    
+
         <!-- * if pending -->
         <div *ngIf = "tranObj.type == 'TOPUP' && tranObj.status == 'PENDING'">
-            <!-- <div class="section full bg-white py-2">       
+            <!-- <div class="section full bg-white py-2">
                 <div class="wide-block pt-2">
                     <div class="row">
                         <div class="col justify-content-center text-center">
                             <h3 class="service-color">{{ 'serviceTime1' | translate}} </h3>
-                        </div>  
+                        </div>
                     </div>
                 </div>
             </div> -->
             <!-- <p> {{transaction_detail_desc}}</p>  -->
-        
-            <!-- <div class="section full mt-2">
-              
 
-                    <div  class="row" *ngFor="let servicePhoneObj of servicePhoneList"> 
-                        <div class="container-fluid " *ngIf="servicePhoneObj.title == 'service_transaction'">  
+            <!-- <div class="section full mt-2">
+
+
+                    <div  class="row" *ngFor="let servicePhoneObj of servicePhoneList">
+                        <div class="container-fluid " *ngIf="servicePhoneObj.title == 'service_transaction'">
                          <div class="row topup-submit-phone-card mx-3">
-                                     
-                                                <div class="title-color col-5" style="margin-top: 5px;" *ngIf="servicePhoneObj.phone_no !=''"> 
+
+                                                <div class="title-color col-5" style="margin-top: 5px;" *ngIf="servicePhoneObj.phone_no !=''">
                                                     <h5 class="text-center" style="font-weight: bold;"> {{ 'service_transaction' | translate }}
                                                         <br>
                                                   {{servicePhoneObj.phone_no}}</h5>
                                                 </div>
-                                                <div class="title-color col-5" style="margin-top: 15px;" *ngIf="servicePhoneObj.phone_no ==''"> 
+                                                <div class="title-color col-5" style="margin-top: 15px;" *ngIf="servicePhoneObj.phone_no ==''">
                                                     <h5 class="text-center" style="font-weight: bold;"> {{ 'service_transaction' | translate }}
                                                        </h5>
                                                 </div>
                                                <div class="col-6 d-flex justify-content-end">
-                                                <div class="row" style="padding-top: 3px;"> 
+                                                <div class="row" style="padding-top: 3px;">
                                                     <div class="col-4" *ngIf="servicePhoneObj.phone_no ==''">
-                                                                                   
+
                                                     </div>
                                                 <div class="col-4" *ngIf="servicePhoneObj.telegram_id !=''">
                                                     <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+openUrl | safeUrl">
-                                                        <img class="service-image ml-2" src="assets/img/telegram.png" alt="phone">                                     
-                                                    </a>                                   
+                                                        <img class="service-image ml-2" src="assets/img/telegram.png" alt="phone">
+                                                    </a>
                                                 </div>
                                                 <div class="col-2" *ngIf="servicePhoneObj.telegram_id ==''">
-                                                                                   
+
                                                 </div>
-                                              
+
                                                 <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
                                                     <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
-                                                        <img class="service-image ml-2" src="assets/img/viber.png" alt="phone">                                     
-                                                    </a>                                   
+                                                        <img class="service-image ml-2" src="assets/img/viber.png" alt="phone">
+                                                    </a>
                                                 </div>
                                                 <div class="col-4" *ngIf="servicePhoneObj.viber ==''">
-                                                                                 
+
                                                 </div>
-                
+
                                                 <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
                                                     <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
-                                                        <img class="service-image ml-2" src="assets/img/phone.png" alt="phone">                                     
-                                                    </a>                                   
+                                                        <img class="service-image ml-2" src="assets/img/phone.png" alt="phone">
+                                                    </a>
                                                 </div>
-                                               
+
                                                 </div>
                                             </div>
                                          </div>
                                      </div>
                 </div>
-        
+
         </div> -->
-    
+
         <!-- <div class="pt-2 mb-2" style="display:flex;justify-content: center;" *ngIf = "tranObj.status != 'DENIED'">
-         
-          
+
+
             <button type="button" class="btn shadowed" (click) = "goMainPage()" style="width: 88%;align-content: center;background-color: #2456A6;border-radius: 5px;color: #fff;">
                {{ 'tran_waiting_btn' | translate}}
             </button>
-      
+
         </div>  -->
 
         <div class="row" *ngIf = "tranObj.type == 'TOPUP' && tranObj.status == 'DENIED'">
@@ -220,10 +220,10 @@
                         <div class="col-10 text-center" style="color:gray">
                         <p>{{ 'topup_denied_detail_title' | translate}}</p>
                         </div>
-                        
+
                         <p style="text-align: left;margin-left: 5px;">{{'topup_denied_state_desc' |translate}}</p>
                     </div>
-                </a>                   
+                </a>
                 </div>
             </div>
         </div>
@@ -238,7 +238,7 @@
                             </div>
                             <p style="text-align: left;margin-left: 5px;">{{'withdrawal_denied_state_desc' |translate}}</p>
                         </div>
-                    </a>                   
+                    </a>
                 </div>
             </div>
         </div>
@@ -248,17 +248,17 @@
                 <!-- {{ 'denied_detail_btn' | translate}} -->
                 {{ 'tran_waiting_btn' | translate}}
             </button>
-        </div> 
+        </div>
 
     </div>
-    
+
 </div>
 </div>
 
  <!--XXX spinner MH-->
  <ngx-spinner name = "spinnerName1" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
- 
+
 <app-navigation-bar></app-navigation-bar>
- 
+
 
 

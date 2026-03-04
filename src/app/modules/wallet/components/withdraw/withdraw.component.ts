@@ -86,6 +86,7 @@ export class WithdrawComponent implements OnInit {
   functionName: string = 'Withdrawal OTP';
   Timer: any;
   refreshLoading: any;
+  emailaddress: any;
 
   constructor(
     public common: CommonService,
@@ -159,11 +160,8 @@ export class WithdrawComponent implements OnInit {
       this.mywithdrawalBankAccList = null;
       this.getWithdrawBankAccounts(); //system accounts
     }
-    // this.GetSMSProvider();
-    // this.getSMSOperators();
     this.getsmstype();
   }
-
 
   triggerFileInput() {
     this.fileInput.nativeElement.click();
@@ -400,6 +398,7 @@ export class WithdrawComponent implements OnInit {
       class: "gameList-class modal-sm"
     });
   }
+
   HideAccList() {
     this.mybankList.hide();
   }
@@ -428,7 +427,13 @@ export class WithdrawComponent implements OnInit {
   insertWithdrawlAcc() {
     this.router.navigate(["/wallet/withdraw-add-acc"]);
   }
+
   changeAction(id, bankName, paymentId) {
+    this.storage.store('selectedBankAction', {
+      id,
+      bankName,
+      paymentId
+    });
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
@@ -473,6 +478,7 @@ export class WithdrawComponent implements OnInit {
       }
     }
     $("#dataForm").show();
+    localStorage.setItem('showDataForm', 'true');
   }
 
   changeBankName(bankName) {
@@ -496,12 +502,6 @@ export class WithdrawComponent implements OnInit {
     this.add_withdraw_account_confirm_hint = this.translateService.instant("add_withdraw_account_confirm_hint");
     this.add_withdraw_account_confirm_hint = this.add_withdraw_account_confirm_hint.toString().replace("@account", bankName);
     document.querySelector('#add_withdraw_account_confirm_hint').setAttribute('placeholder', this.add_withdraw_account_confirm_hint);
-
-
-    //  this.add_withdraw_account_image_hint =  this.translateService.instant("add_withdraw_account_image_hint");
-    //  document.querySelector('#add_withdraw_account_image_hint').setAttribute('placeholder',this.add_withdraw_account_image_hint);
-    // $("#add_withdraw_account_name").html(this.add_withdraw_account_image_hint);
-
 
   }
 
@@ -584,7 +584,7 @@ export class WithdrawComponent implements OnInit {
 
   private requestOtp(headers: HttpHeaders, accountCount: number) {
     this.http.get(
-      `${this.funct.apaddressv1}transaction/getWithdrawOTP`,
+      `${this.funct.ipaddress}v1/transaction/getWithdrawOTP`,
       { headers }
     )
       .pipe(catchError(this.handleError.bind(this)))
@@ -657,6 +657,7 @@ export class WithdrawComponent implements OnInit {
       this.http.post(
         this.funct.ipaddress +
         'countdown/get?phoneno=' + phoneNumber +
+        '&email=' + this.emailaddress +
         '&type=' + this.smstype +
         '&functionName=' + this.functionName,
         {},
@@ -843,6 +844,7 @@ export class WithdrawComponent implements OnInit {
 
     else {
       $("#bankAccountErr").html("");
+      localStorage.setItem('bankAccModel', JSON.stringify(this.bankAccModel));
       return true;
     }
 
@@ -865,6 +867,7 @@ export class WithdrawComponent implements OnInit {
       $("#confirmbankAccountErr").html(this.translateService.instant("withdraw_account_confirm_error"));
       return false;
     }
+    localStorage.setItem('bankAccModel', JSON.stringify(this.bankAccModel));
     return true;
   }
 
@@ -878,6 +881,7 @@ export class WithdrawComponent implements OnInit {
       return false;
     }
     else {
+      localStorage.setItem('bankAccModel', JSON.stringify(this.bankAccModel));
       return true;
     }
     // if (!pattern.test(this.bankAccModel.bankaccountName)) {
@@ -885,6 +889,7 @@ export class WithdrawComponent implements OnInit {
     //   return false;
     // }
   }
+
   getUserProfile() {
     let params = new HttpParams();
     this.token = this.storage.retrieve('token');
@@ -1160,6 +1165,7 @@ export class WithdrawComponent implements OnInit {
         result => {
           this.dto.Response = result;
           this.smstype = this.dto.Response.smstype;
+          this.emailaddress = this.dto.Response.email;
         });
   }
 }

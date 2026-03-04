@@ -16,7 +16,7 @@
   right: 0;
   width: 100%;
   padding: 0px !important;
-  margin-top: env(safe-area-inset-top);
+ // margin-top: env(safe-area-inset-top);
   display: flex;
   align-items: center;
   background: #E1DFE2;
@@ -44,8 +44,8 @@
   font-weight: 600;
 }
 .active {
-  text-align: center;  
-  background-color: $second-color;  
+  text-align: center;
+  background-color: $second-color;
   border-radius: 10px;
   & span {
     color: #fff;
@@ -66,7 +66,7 @@
   right: 0;
   width: 100%;
   padding: 0px !important;
-  margin-top: env(safe-area-inset-top);
+ // margin-top: env(safe-area-inset-top);
   display: flex;
   align-items: center;
   background: #E1DFE2;
@@ -87,19 +87,19 @@
     flex-direction: column !important;
     justify-content: center !important;
     overflow-y: auto !important;
-    min-height: calc(100% - 100px) !important; 
+    min-height: calc(100% - 100px) !important;
   }
-  @media only screen and (max-width: 900px) {   
+  @media only screen and (max-width: 900px) {
     .game-maintenance{
       transform: none;
       display: flex !important;
       flex-direction: column !important;
       justify-content: center !important;
       overflow-y: auto !important;
-      min-height: calc(100% - 100px) !important; 
+      min-height: calc(100% - 100px) !important;
     }
   }
-} 
+}
 
 #appCapsule {
   padding-top: 0px !important;
@@ -112,22 +112,22 @@
  }
 
 
-.slide.ng-star-inserted >img {   
-  border-radius: 15px !important;   
+.slide.ng-star-inserted >img {
+  border-radius: 15px !important;
   height: 200px !important;
   }
-  .slide.ng-star-inserted > a img {   
-    border-radius: 15px !important;   
+  .slide.ng-star-inserted > a img {
+    border-radius: 15px !important;
     height: 200px !important;
     }
 .overlay{
   width: calc( 100% - 20px );
   position: absolute;
   top: calc( 100% - 30px );
-  left: 10px; 
+  left: 10px;
   right: 10px;
   z-index: 10;
-  background-color: rgba(0,0,0,0.5); 
+  background-color: rgba(0,0,0,0.5);
   border-bottom-left-radius: 15px;
   border-bottom-right-radius: 15px;
   height: 26px;
@@ -136,7 +136,7 @@
   color: #fff;
   margin-top: 3px;
   font-size: 12px;
-}  
+}
 .account-login{
   font-size: 60px;
   color: $second-color;
@@ -146,7 +146,7 @@
 font-weight: 600;
 }
 .walletlbl
-{  
+{
  color: #fff;
  font-size: 10px;
  text-align: left;
@@ -168,7 +168,7 @@ font-weight: 600;
   font-size: 12px;
 }
 
-.active-wallet {  
+.active-wallet {
 width:40px;
 height: 40px
 
@@ -181,11 +181,11 @@ height: 40px
   margin-left: -30px;
   font-size: 20px;
   margin-bottom: -5px;
-  
+
 }
 
 .game-searching {
-  width: 75%;   
+  width: 75%;
   padding: 8px;
   border: 1px solid $second-color;
   margin-top: 10px;
@@ -220,8 +220,8 @@ outline: none !important;
     border-radius: 10px;
   }
   .game-play-now-modal  .modal-content > .modal-header, .modal-footer {
-    border:  none !important; 
-    padding: 5px 0px; 
+    border:  none !important;
+    padding: 5px 0px;
   }
   .game-play-modal .modal-header {
     margin-bottom: 20px;
@@ -244,8 +244,8 @@ outline: none !important;
     border-radius: 10px;
   }
   .game-play-modal .modal-content > .modal-header, .modal-footer {
-    border:  none !important; 
-    padding: 5px 0px; 
+    border:  none !important;
+    padding: 5px 0px;
   }
 }
 .gameTitleImgClass
@@ -263,12 +263,12 @@ outline: none !important;
   border: 1px solid #eee;
   color: $first-color;
 }
-.game-list { 
+.game-list {
   margin: 0px 5px;
   display: inline;
 }
 .game {
-  display: block;    
+  display: block;
   margin-left: 10px;
 }
 .bradius {
@@ -277,12 +277,12 @@ outline: none !important;
    border-radius: 10px;
    text-align: center;
    background-color: #2456A6;
-   padding:1px; 
+   padding:1px;
    border-style:solid;
    width: 100px;
    height:70px;
    margin: 10px 0px;
-}  
+}
 .text-wrap
 {
    word-wrap: break-word;
@@ -307,7 +307,7 @@ flex-wrap: wrap
 }
 
 @media screen and (min-width: 1024px) {
-   
+
   .container {
       width: 400px !important;
   }
@@ -326,10 +326,10 @@ history-main {
 }
 .history-main > li .nav-link.active {
   background-color: $second-color !important;
-  color: #fff;   
+  color: #fff;
   border-bottom-color: transparent !important;
 }
-.bet-image{  
+.bet-image{
   border-radius: 10px;
   width: 100% ;
   cursor: pointer;

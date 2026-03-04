@@ -1,7 +1,7 @@
 @import '../../../../variables';
 
-#home { 
-  min-height: 100vh;
+#home {
+    min-height: 100vh;
     background-color: #fff;
     margin: -56px 0!important;
     padding: 56px 0 80px;
@@ -25,14 +25,14 @@
 }
 
 
-   
-  
+
+
 .row {
     margin-left: 0px;
     margin-right: 0px;
    }
 
-.bet-image{  
+.bet-image{
   border-radius: 10px;
   width: 100% ;
   cursor: pointer;
@@ -42,15 +42,13 @@
     font-weight: bold;
     color: $first-color;
   }
-  
+
 
 .appHeader {
    background: linear-gradient(60deg, $first-color 0%, $second-color 100%);
    box-shadow: none !important;
 }
-
 .inner-header {
-  
   width:100%;
   margin: 0;
   padding: 0;
@@ -99,7 +97,7 @@
   0% {
    transform: translate3d(-90px,0,0);
   }
-  100% { 
+  100% {
     transform: translate3d(85px,0,0);
   }
 }
@@ -155,3 +153,4 @@
   align-items: center;
   z-index: 999;
 }
+

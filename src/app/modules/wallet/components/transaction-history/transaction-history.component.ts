@@ -184,7 +184,7 @@ export class TransactionHistoryComponent implements OnInit {
              this.spinner.hide(this.transactionSpinner);
             this.spinner.hide();
             this.loadingMore = true;
-            this.addTopupList = [...this.addTopupList, ...this.maintransactionHistoryList];
+            this.addTopupList = [...this.addTopupList, ...this.maintransactionHistoryList];;
             localStorage.setItem('maintransactionTopupHistoryList', JSON.stringify(this.addTopupList));
             if (this.addTopupList.length == 0 || this.addTopupList.length >= result.totalRows) {
               this.isLastT = true;
@@ -333,4 +333,11 @@ export class TransactionHistoryComponent implements OnInit {
     this.topuptab = false;
     this.getWithdrawalMainTransactionHistory(1, 'WITHDRAW')
   }
+
+  getDescription(desc: any): string {
+  if (!desc || desc === 'null' || desc === 'undefined') {
+    return this.translateService.instant('withdrawal_denied_state_desc');
+  }
+  return desc;
+}
 }

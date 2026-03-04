@@ -1,9 +1,9 @@
 
-<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+<appbar backUrl="/twod/bet-confirm" (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
 
 <div class="section-title justify-content-center pt-2" style="color:#2253A2">{{ 'confirm_bet_list' | translate}}</div>
 
-<div id="appCapsule" *ngIf="!common.refreshLoading">   
+<div id="appCapsule" *ngIf="!common.refreshLoading">
       <div class="container">
         <div class="row" >
           <div class="col-6  d-flex justify-content-start"><span class=" text-center mt-1" style="font-weight: 600;"> {{ 'section' | translate}}</span></div>
@@ -17,23 +17,23 @@
                       <tr >
                         <th scope="col" style="color:#2253A2">{{ 'bet_list_number'  | translate}}</th>
                         <th scope="col" class="text-center" style="color:#2253A2">{{ 'odds' | translate}}</th>
-                        <th scope="col" class="text-right" style="color:#2253A2">{{ 'bet_list_amount' | translate}}</th>                        
+                        <th scope="col" class="text-right" style="color:#2253A2">{{ 'bet_list_amount' | translate}}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let betTwoDListObj of betTwoDList;let i=index;">                       
+                      <tr *ngFor="let betTwoDListObj of betTwoDList;let i=index;">
                         <td>{{betTwoDListObj.number}}</td>
                         <td class="text-center">{{ odd }}</td>
-                        <td class="text-right">{{betTwoDListObj.amount | number:'1.0':'en-US'}}</td>   
+                        <td class="text-right">{{betTwoDListObj.amount | number:'1.0':'en-US'}}</td>
 
-                      </tr>    
+                      </tr>
                       <tr>
                         <td colspan="2" class="text-left" style="color:#2253A2"> {{ 'total_amount' | translate }}</td>
                         <td class="text-right"> <h4 class="bet-amount-color">{{totalAmount | number:'1.0':'en-US'}} {{ 'ks' | translate }}</h4></td>
-                      </tr>                      
+                      </tr>
                     </tbody>
                   </table>
-                  
+
                   <div class="row totalbetamount" *ngIf="limitedAmt != null && discountAmount !=null">
                     <div class="col-6 my-2 text-center">
                       Discount {{ discountPercent }} %
@@ -41,46 +41,46 @@
                     <div class="col-6 my-2">
                       {{ discountAmount | number:'1.0':'en-US'}} {{ 'ks' | translate }}
                     </div>
-                  </div>                    
-                
+                  </div>
+
             </div>
         </div>
 
     </div>
 
 <div class="container">
-<div class="row totalAccountAmount">                        
+<div class="row totalAccountAmount">
   <div class="col-12 d-block my-2 mt-2 text-center bet-amount-color" style="margin-bottom: 0 !important;">
     {{ 'balance' | translate }}:  {{ userProfileModel.balance | number : '1.0'}}
-    {{ 'ks' | translate }}                         
+    {{ 'ks' | translate }}
   </div>
   <div class="col-12 d-block my-2 text-center">
     <a (click)="goToWallet()" >
       <!-- <div class="row" style="margin-top: 0 !important;margin-bottom: 0!important;">
-        <div class="col-12 text-right ">        
-          <i class="material-icons" style="font-size: 20px; color: grey;">arrow_forward_ios</i>           
+        <div class="col-12 text-right ">
+          <i class="material-icons" style="font-size: 20px; color: grey;">arrow_forward_ios</i>
         </div>
       </div> -->
       <div class="row">
         <div class="col-12 underline d-block my-2  text-center" style="color: #2456a6;white-space: nowrap;font-weight: bold;">
           {{ 'low_balance_fill' | translate}}
         </div>
-       
-         
+
+
       </div>
-    </a>                   
+    </a>
   </div>
 </div>
 </div>
 
 <!-- App Bottom Menu -->
-<div class=" section full d-flex justify-content-center" id="navTwoDBetConfirmFinal"  style="background-color: #f4f2f2;">   
-  <div class="mt-2" style=" position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >                  
+<div class=" section full d-flex justify-content-center" id="navTwoDBetConfirmFinal"  style="background-color: none">
+  <div class="mt-2" style=" position: relative; justify-content: center;" class="mt-2" *ngIf="common.submitLoading" >
     <!-- submit loading -->
     <ngx-spinner [name]="common.loading.submitLoading.name" [size]="common.loading.submitLoading.size"
     [color]="common.loading.submitLoading.color" [type]="common.loading.submitLoading.type"
     [fullScreen]="common.loading.submitLoading.fullScreen"></ngx-spinner>
-</div>        
+</div>
   <button type="button" class="bet-buttton mt-1" (click)="doBet(twodBetUnBetList)" style="height: 40px !important;background-color: #2456a6; color: #fff;" *ngIf="!common.submitLoading" >{{ 'confirm_bet' | translate}}</button>
 </div>
 <!-- * App Bottom Menu -->
@@ -89,12 +89,12 @@
 <!-- * App Capsule -->
 <!-- refresh loading -->
 
-<ng-template #twodBetUnBetList>                           
-  <div class="modal-body">  
+<ng-template #twodBetUnBetList>
+  <div class="modal-body">
     <button type="button" class="close pull-right" aria-label="Close" (click)="unBetLimitListModalDelete()">
-      <span aria-hidden="true">×</span>                                    
-   </button>                                   
-    <!-- <div class="section full"> 
+      <span aria-hidden="true">×</span>
+   </button>
+    <!-- <div class="section full">
         <div class="row mt-3">
           <div class="col-6">
             {{ modalService.config.initialState.unBetLimitList}}
@@ -104,10 +104,9 @@
     <div class="mt-1">
       <p class="text-danger">{{'unbetlist_text_second' | translate}}</p>
     </div>
-   
-  </div>                           
+
+  </div>
 </ng-template>
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
   [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
   [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
- 

@@ -350,9 +350,9 @@ export class LoginComponent implements OnInit {
     this.storage.store('localLanguage', lang);
     this.storage.store('localLanguageIndex',lang);
 
-    if (this.oncelogin === 1) {
-      this.login();
-    }
+    // if (this.oncelogin === 1) {
+    //   this.login();
+    // }
   }
 
   async getSMS() {

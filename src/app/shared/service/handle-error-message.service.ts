@@ -66,6 +66,16 @@ export class HandleErrorMessageService {
       //  });
          return;
      }
+    if(error.status == 300 )
+     {
+        if(error.error.message=='next_section')
+        {
+          this.toastr.error("", this.translateService.instant("closed_2D"), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+        }
+     }
 
      if(error.status == 423 || error.status == 417)
      {
@@ -80,6 +90,14 @@ export class HandleErrorMessageService {
      }
 
      if (error.status == 404 ) {
+      if(error.error.message=='User does not exist!')
+      {
+        this.toastr.error("", this.translateService.instant("forgetpwd_nouser"), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+        return;
+      }
       if(error.error.message=='Please add user email first!')
       {
         if(err=='withdrawaladd'){
@@ -172,7 +190,7 @@ export class HandleErrorMessageService {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-        return;
+         return throwError(() => error);
       }
       if(error.error.message=='This email address is already used by another user.')
         {
@@ -373,6 +391,12 @@ export class HandleErrorMessageService {
 
      }
      if(error.status == 429){
+      if(error.error.message?.includes('IP rate limit exceeded. Maximum 10 requests per minut'))
+        this.toastr.error("", this.translateService.instant('getcountdown-request-time'),
+        {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
       return;
      }
 

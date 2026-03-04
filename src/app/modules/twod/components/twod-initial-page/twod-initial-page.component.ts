@@ -28,7 +28,7 @@ import { BetSectionColsedComponent } from '../../../../shared/dialog/bet-section
 export class TwodInitialPageComponent implements OnInit {
   @ViewChild(TwodCloseTimeComponent) child:TwodCloseTimeComponent;
 
-  token: any;  
+  token: any;
   modalRef: BsModalRef;
   allClosed:boolean;
   isUserL
@@ -38,61 +38,61 @@ export class TwodInitialPageComponent implements OnInit {
     backdrop: true,
     ignoreBackdropClick: false,
     class: "betSection-class modal-sm",
-  }; 
+  };
   twodSectionList: any;
   isUserLoggedIn=false;
- 
+
   modalConfig: ModalOptions;
   closeWeekend: boolean=false;
   closeHoliday: boolean=false;
-  constructor(   
+  constructor(
     private handleErrorMessage: HandleErrorMessageService,
     public common: CommonService,
     private translateService: TranslateService,
-    private modalService: BsModalService, 
+    private modalService: BsModalService,
     private http: HttpClient,
     private funct: FunctService,
-    public spinner: NgxSpinnerService, 
-    private toastr: ToastrService, 
+    public spinner: NgxSpinnerService,
+    private toastr: ToastrService,
     private dto: DtoService,
     private router: Router,private storage: LocalStorageService,
-    private location:Location) 
-    {  
-        
-    
+    private location:Location)
+    {
+
+
     }
 
-  ngOnInit(){  
+  ngOnInit(){
     this.storage.clear('Localbetselectcount');
     this.common.refreshLoading=true;
-    this.spinner.show("refreshLoading"); 
+    this.spinner.show("refreshLoading");
 
     this.storage.clear('localNewBetTwodNumber');
     this.isUserLoggedIn= this.storage.retrieve('isUserLoggedIn');
-    this.getCheckUser();   
+    this.getCheckUser();
     this.getSectionList();
   }
 
- 
 
-  public getWeekendClosed(data: any) {   
-    this.closeWeekend = data;   
+
+  public getWeekendClosed(data: any) {
+    this.closeWeekend = data;
     if( this.closeWeekend){
       this.storage.store("localCloseWeekend",this.closeWeekend);
-    }  
-    
+    }
+
   }
 
-  public getHolidayClosed(data: any) {   
+  public getHolidayClosed(data: any) {
     this.closeHoliday = data;
     if(this.closeHoliday){
       this.storage.store("localCloseHoliday",this.closeWeekend);
-    }  
+    }
     else{
-      this.storage.clear("localCloseHoliday");         
+      this.storage.clear("localCloseHoliday");
     }
   }
-  betSectionSelect(id: number,name: string){   
+  betSectionSelect(id: number,name: string){
     for(let i=0; i< this.twodSectionList.length; i++){
       if(this.twodSectionList[i].id == id){
         this.twodSectionList[i].isSelected = true;
@@ -100,18 +100,18 @@ export class TwodInitialPageComponent implements OnInit {
           this.storage.store('localSection',this.twodSectionList[i]);
           this.storage.store('localSectionId',id);
           this.storage.store('localSectionName',name);
-        }       
-      }   
+        }
+      }
       else{
         this.twodSectionList[i].isSelected = false;
       }
-    }    
+    }
   }
 
-  
+
 
   twoDbet()
-  {      
+  {
     let count=0;
     for(let i=0; i< this.twodSectionList.length; i++)
     {
@@ -122,31 +122,31 @@ export class TwodInitialPageComponent implements OnInit {
       }
       else
       {
-       ++count;        
+       ++count;
       }
-    }     
+    }
     if(count == 4){
       this.toastr.warning('',this.translateService.instant('bet-not-select'), {
               timeOut: 1000,
               positionClass: 'toast-top-center',
               });
-    }    
-  }  
+    }
+  }
 
   // getDateTime(){
-  //   let headers = new HttpHeaders(); 
+  //   let headers = new HttpHeaders();
   //     this.http.get( this.funct.ipaddress + 'value/getDateTime', { headers: headers } )
   //     .pipe(
   //       catchError(this.handleErrorMessage.handleError.bind(this,''))
   //    )
   //     .subscribe(
   //       result => {
-  //         this.dto.Response = result;  
-  //         this.storage.store('localDateTime',this.dto.Response.utc_datetime);          
+  //         this.dto.Response = result;
+  //         this.storage.store('localDateTime',this.dto.Response.utc_datetime);
   //       }
-  //     );   
+  //     );
   // }
- 
+
   async getSectionList(){
     let time;
     let x;
@@ -159,56 +159,56 @@ export class TwodInitialPageComponent implements OnInit {
         async result => {
           let count=0;
           this.dto.Response = result;
-          this.twodSectionList=this.dto.Response;  
+          this.twodSectionList=this.dto.Response;
           const dateTime = await this.common.getDateTime();
-          const closeTime= await this.common.convertMyanmarTime(dateTime);        
-          for(let i=0; i< this.twodSectionList.length; i++){    
+          const closeTime= await this.common.convertMyanmarTime(dateTime);
+          for(let i=0; i< this.twodSectionList.length; i++){
               if(this.twodSectionList[i].toTime != null){
-                time = this.twodSectionList[i].toTime.split(":");               
-                x = new Date(closeTime);             
+                time = this.twodSectionList[i].toTime.split(":");
+                x = new Date(closeTime);
                 x.setHours(time[0]);
                 x.setMinutes(time[1]);
-                x.getTime();            
-                if((closeTime.getHours() > x.getHours()) || 
-                (closeTime.getHours() >= x.getHours() && closeTime.getMinutes() >=x.getMinutes()) ){      
+                x.getTime();
+                if((closeTime.getHours() > x.getHours()) ||
+                (closeTime.getHours() >= x.getHours() && closeTime.getMinutes() >=x.getMinutes()) ){
                   this.twodSectionList[i].isClosed= true;
-                  this.twodSectionList[i].isSelected = false;                                        
-                }  
-                        
-                // if((closeTime.getHours() >=14 && closeTime.getMinutes() >=36 )){ 
-                  if((closeTime.getHours() >16 || (closeTime.getHours()==16 && closeTime.getMinutes() >= 36) )){  
+                  this.twodSectionList[i].isSelected = false;
+                }
+
+                // if((closeTime.getHours() >=14 && closeTime.getMinutes() >=36 )){
+                  if((closeTime.getHours() >16 || (closeTime.getHours()==16 && closeTime.getMinutes() >= 36) )){
                   this.twodSectionList[i].isClosed= false;
-                  this.twodSectionList[i].isSelected = false;                                        
-                }                   
-              }  
-              else{      
+                  this.twodSectionList[i].isSelected = false;
+                }
+              }
+              else{
                 ++count;
-              }     
-           
+              }
+
            }
-          if(count > 0){            
+          if(count > 0){
             this.toastr.warning('',this.translateService.instant('Section Null'), {
                     timeOut: 1000,
                     positionClass: 'toast-top-center',
                     });
 
           }
-        //  this.twodSectionList= this.storage.store('localTwodSectionList', this.dto.Response);  
-         
+        //  this.twodSectionList= this.storage.store('localTwodSectionList', this.dto.Response);
+
         }
       );
-  }  
+  }
 
   getDate(date) {
     var formatter = 'dd/MM/yyyy hh:mm:ss a';
     return formatDate(date, formatter, 'en-US');
-    } 
+    }
 
 
   getCheckUser(){
-    this.token = this.storage.retrieve('token');    
+    this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);    
+    headers = headers.set('Authorization', this.token);
     this.http.get(this.funct.ipaddress + 'user/PointUserProfile', { headers: headers })
     .pipe(
       catchError(this.handleErrorMessage.handleError.bind(this,''))
@@ -216,14 +216,14 @@ export class TwodInitialPageComponent implements OnInit {
     .subscribe(
       result => {
         this.common.refreshLoading=false;
-        this.spinner.hide("refreshLoading"); 
+        this.spinner.hide("refreshLoading");
         this.dto.Response = {};
         this.dto.Response = result;
-        this.isUserLoggedIn= true;         
-      }); 
+        this.isUserLoggedIn= true;
+      });
   }
   betHistory(){
-    let login= this.storage.retrieve('isUserLoggedIn'); 
+    let login= this.storage.retrieve('isUserLoggedIn');
     if(!login){
       this.toastr.error("", this.translateService.instant("youNeedLogin"), {
         timeOut: 1000,
@@ -239,18 +239,18 @@ export class TwodInitialPageComponent implements OnInit {
     this.router.navigate(['/twod/winner-page','2D'], {state: {type: '2D'},replaceUrl: false} );
   }
   goToHoliday() {
-    this.router.navigate(['/twod/holiday'], {replaceUrl: false});  
+    this.router.navigate(['/twod/holiday'], {replaceUrl: false});
   }
 
-  refreshPage(): void{    
-    this.ngOnInit();    
-    this.child.ngOnInit(); 
+  refreshPage(): void{
+    this.ngOnInit();
+    this.child.ngOnInit();
     setTimeout(() => {
       this.common.refreshLoading=false;
-      this.spinner.hide("refreshLoading"); 
-    }, 1000);    
+      this.spinner.hide("refreshLoading");
+    }, 1000);
   }
- 
+
   betSectionModal(refLink: any){
     if(this.closeWeekend || this.closeHoliday){
       this.router.navigate(['/twod/bet'],{replaceUrl:false});
@@ -267,9 +267,9 @@ export class TwodInitialPageComponent implements OnInit {
         class: "bet-section-closed-modal modal-sm",
       };
       this.modalRef = this.modalService.show(BetSectionColsedComponent, {...this.modalConfig});
-    
+
        } else {
-       
+
       let initialState = { refLink: refLink };
       this.modalConfig = {
         animated: true,
@@ -281,14 +281,14 @@ export class TwodInitialPageComponent implements OnInit {
       this.modalRef = this.modalService.show(BetSectionDialogComponent, {...this.modalConfig, initialState});
     }
     }
-    
+
   }
 
    async checkTwodCloseTime() {
-    
+
     const dateTime = await this.common.getDateTime();
     const currentTime = await this.common.convertMyanmarTime(dateTime);
-    for(let i=0; i < this.twodSectionList.length; i++){    
+    for(let i=0; i < this.twodSectionList.length; i++){
       if (this.twodSectionList[i].fromTime != null && this.twodSectionList[i].toTime != null) {
         var toTime = this.twodSectionList[i].toTime.split(":");
         var to = new Date(currentTime);
@@ -298,19 +298,19 @@ export class TwodInitialPageComponent implements OnInit {
         var fourHour36Mins = new Date(currentTime);
         fourHour36Mins.setHours(16);
         fourHour36Mins.setMinutes(36);
-      
-        if (currentTime.getTime() >= to.getTime()){      
+
+        if (currentTime.getTime() >= to.getTime()){
           this.twodSectionList[i].isClosed = true;
-          this.twodSectionList[i].isSelected = false;                                        
-        }  
-        
-        if (currentTime.getTime() >= fourHour36Mins.getTime()) {  
-          this.twodSectionList[i].isClosed = false;
-          this.twodSectionList[i].isSelected = false;                                        
+          this.twodSectionList[i].isSelected = false;
         }
-      
-      }        
-      
+
+        if (currentTime.getTime() >= fourHour36Mins.getTime()) {
+          this.twodSectionList[i].isClosed = false;
+          this.twodSectionList[i].isSelected = false;
+        }
+
+      }
+
     }
 
   }
@@ -318,17 +318,18 @@ export class TwodInitialPageComponent implements OnInit {
 
 
   refreshPageHeader() {
-    //this.ngOnInit(); 
+    //this.ngOnInit();
     this.common.refreshLoading=true;
     this.spinner.show("refreshLoading");
     setTimeout(() => {
       this.common.refreshLoading = false;
       this.spinner.hide("refreshLoading");
-    }, 2000);   
+    }, 2000);
   }
 
   goBack(){
-    this.location.back()
+   // this.location.back()
+   this.router.navigate(['/home']);
   }
 
 }

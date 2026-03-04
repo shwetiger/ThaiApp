@@ -1,11 +1,11 @@
 
 @import '../../../../variables';
 ::ng-deep {
-        @media only screen and (max-width: 600px){  
+        @media only screen and (max-width: 600px){
           .day .custom-option:first-of-type,
           .month .custom-option:first-of-type,
           .year .custom-option:first-of-type
-          {          
+          {
             font-size: 10px !important;
           }
           .custom-select-trigger {
@@ -16,24 +16,24 @@
           }
           .custom-select-forget-day-trigger ,
           .custom-select-forget-month-trigger,
-          .custom-select-forget-year-trigger{ 
-          padding: 0 10px 0 10px !important;      
+          .custom-select-forget-year-trigger{
+          padding: 0 10px 0 10px !important;
           font-size: 12px !important;
-         
+
           }
         .custom-select-forget-day-trigger:after,
         .custom-select-forget-month-trigger:after,
         .custom-select-forget-year-trigger:after
         {
-         
-          width: 8px !important; 
-          height: 8px !important;        
+
+          width: 8px !important;
+          height: 8px !important;
           right: 10px !important;
-          
+
         }
 
-        }    
-  
+        }
+
         .custom-select {
         background: transparent !important;
         border: none;
@@ -42,14 +42,14 @@
         }
       .custom-select-trigger , .custom-select-forget-day-trigger ,
       .custom-select-forget-month-trigger,
-      .custom-select-forget-year-trigger{       
+      .custom-select-forget-year-trigger{
         position: relative;
         display: block;
         //width: 200px;
         padding: 0 20px 0 10px;
         font-size: 16px;
         font-weight: 300;
-        color: #495057;
+        color: black;
         line-height: 40px;
         background: #fff;
         border: 1px solid #ced4da;
@@ -64,9 +64,9 @@
           position: absolute;
           display: block;
           content: '';
-          width: 10px; 
+          width: 10px;
           height: 10px;
-          top: 50%; 
+          top: 50%;
           right: 25px;
           margin-top: -3px;
           border-bottom: 1px solid #495057;
@@ -75,7 +75,7 @@
           transition: all .4s ease-in-out;
           transform-origin: 50% 0;
         }
-        .custom-select.opened .custom-select-trigger:after ,  
+        .custom-select.opened .custom-select-trigger:after ,
         .custom-select.opened .custom-select-forget-day-trigger:after,
         .custom-select.opened .custom-select-forget-month-trigger:after,
         .custom-select.opened .custom-select-forget-year-trigger:after
@@ -83,14 +83,14 @@
           margin-top: 3px;
           transform: rotate(-135deg) translateY(-50%);
         }
-        .day .custom-options,  .month .custom-options,  .year .custom-options {           
-          top: 120% !important; 
+        .day .custom-options,  .month .custom-options,  .year .custom-options {
+          top: 120% !important;
         }
       .custom-options {
         position: absolute;
         display: block;
-        top: 80%; 
-        left: 0; 
+        top: 80%;
+        left: 0;
         right: 0;
         min-width: 80%;
         margin: 0px 8px;
@@ -101,7 +101,7 @@
         box-sizing: border-box;
         box-shadow: 0 2px 1px rgba(0,0,0,.07);
         background: #fff;
-        transition: all .4s ease-in-out;      
+        transition: all .4s ease-in-out;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -122,11 +122,11 @@
         pointer-events: all;
         transform: translateY(0);
       }
-      .custom-options:before {        
+      .custom-options:before {
         position: absolute;
         display: block;
         content: '';
-        bottom: 100%; 
+        bottom: 100%;
         left: 25px;
         width: 7px;
         height: 7px;
@@ -144,13 +144,14 @@
         position: relative;
         display: block;
         padding: 0 22px;
+        color:black;
        // border-bottom: 1px solid #b5b5b5;
         font-size: 16px;
         font-weight: 300;
-        color: #495057;
+        color:black;
         line-height: 36px;
         cursor: pointer;
-        transition: all .4s ease-in-out;      
+        transition: all .4s ease-in-out;
       }
       .custom-option:first-of-type {
         border-radius: 4px 4px 0 0;
@@ -163,8 +164,8 @@
       .custom-option.selection {
         background: #f9f9f9;
       }
-      
-      
+
+
     }
 
 //
@@ -182,18 +183,20 @@
 #appCapsule {
     padding: 0px !important;
     background-color: #fff !important;
-    height: 100% !important;
+    min-height: 150vh;
+    // height: 100% !important;
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
-::ng-deep {  
+::ng-deep {
     .forgetPassword-class {
       display: flex;
       flex-direction: column;
       justify-content: center;
       min-height: calc(100vh - 60px);
     }
-    
+
   }
   .forUpload{
     background-color: #fff !important;
@@ -228,14 +231,14 @@
 // }
 
  img {
-    // -ms-filter: grayscale(100%); 
+    // -ms-filter: grayscale(100%);
     // -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
     // filter: grayscale(100%);
     cursor: pointer;
     border: 3px solid #ffffff;
     border-radius: 0px;
-  } 
-// @media (max-width: 768px) 
+  }
+// @media (max-width: 768px)
 // {
 //   .img-wrap .close {
 //     position: absolute;
@@ -245,7 +248,7 @@
 //      }
 // }
 // @media screen and (min-width: 1024px) {
-//   .img-wrap .close 
+//   .img-wrap .close
 //    {
 //     position: absolute;
 //     top: -10px;
@@ -259,8 +262,10 @@
 }
 
 input::placeholder {
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 200;
+  color:black;
 }
 
 
- 
+

@@ -1,4 +1,4 @@
-<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<app-not-refresh-appbar backUrl="/noti">{{ 'helloword' | translate }}</app-not-refresh-appbar>
 <div class="root" *ngIf="isUserLoggedIn && !common.refreshLoading">
     <div *ngIf="notiDetailObj.isFirstTopup != '1' && notiDetailObj.type=='TOPUP'">
         <div class="card noti-card">
@@ -34,9 +34,9 @@
             </div>
             <div class="noti__body">
                 <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')"
-                    style="color:  red;">{{ notiDetailObj.description }}</span>
+                    >{{ notiDetailObj.description }}</span>
                 <span *ngIf="(notiDetailObj.description == null || notiDetailObj.description == 'null')"
-                    style="color:  red;">{{getWithdrawNotiStr(notiDetailObj.state)}}</span>
+                    >{{getWithdrawNotiStr(notiDetailObj.state)}}</span>
             </div>
             <div class="divider">
             </div>
@@ -52,7 +52,8 @@
     <div *ngIf="notiDetailObj.type=='2D Results'">
         <div class="card noti-card">
             <div class="title">
-                <span style="font-size: 17px;"> {{notiDetailObj.title}}</span>
+                <!-- <span style="font-size: 17px;"> {{notiDetailObj.title}}</span> -->
+                 <span style="font-size: 17px;">{{'2dresult' | translate}}</span>
             </div>
             <div class="noti__body">
                 <span>{{ twodResult }}</span>

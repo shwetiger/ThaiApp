@@ -11,7 +11,7 @@
       right: 0;
       width: 100%;
       padding: 0px !important;
-      margin-top: env(safe-area-inset-top);
+     // margin-top: env(safe-area-inset-top);
       display: flex;
       align-items: center;
       //background: #E1DFE2;
@@ -245,43 +245,47 @@
       padding: 5px 0px;
     }
 
-  .game-play-modal .modal-dialog {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 0; /* Reset default margin */
-}
+    .game-play-modal .modal-dialog {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      /* Reset default margin */
+    }
 
-.game-play-modal {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;  /* Center content vertically */
-  align-items: center;      /* Center content horizontally */
-  min-height: calc(100vh - 60px);
-}
+    .game-play-modal {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* Center content vertically */
+      align-items: center;
+      /* Center content horizontally */
+      min-height: calc(100vh - 60px);
+    }
 
-.game-play-modal .modal-header {
-  margin-bottom: 0;
-  margin-right: 20px;
-  margin-top: 10px;
-}
+    .game-play-modal .modal-header {
+      margin-bottom: 0;
+      margin-right: 20px;
+      margin-top: 10px;
+    }
 
-.game-play-modal .modal-footer {
-  margin-bottom: 20px;
-  justify-content: center;
-}
+    .game-play-modal .modal-footer {
+      margin-bottom: 20px;
+      justify-content: center;
+    }
 
-.game-play-modal .modal-content {
-  border-radius: 10px;
-  width: 100%; /* Set width if needed */
-}
+    .game-play-modal .modal-content {
+      border-radius: 10px;
+      width: 100%;
+      /* Set width if needed */
+    }
 
-.game-play-modal .modal-content > .modal-header,
-.game-play-modal .modal-footer {
-  border: none !important;
-  padding: 5px 0;
-}
+    .game-play-modal .modal-content>.modal-header,
+    .game-play-modal .modal-footer {
+      border: none !important;
+      padding: 5px 0;
+    }
 
 
     @media only screen and (max-width: 900px) {

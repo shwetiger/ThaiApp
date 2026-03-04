@@ -120,7 +120,7 @@ export class GameListComponent implements OnInit, OnDestroy {
     private handleErrorMessage: HandleErrorMessageService,
     public common: CommonService,
     private renderer: Renderer2,
-    private Location: LocationStrategy,
+    private location: LocationStrategy,
     private modalService1: ModalDialogService,
     private viewRef: ViewContainerRef,
     private translateService: TranslateService,
@@ -1083,6 +1083,11 @@ export class GameListComponent implements OnInit, OnDestroy {
           this.dto.Response = result;
         }
       );
+  }
+
+
+  refreshPageHeader() {
+    this.ngOnInit();
   }
 }
 

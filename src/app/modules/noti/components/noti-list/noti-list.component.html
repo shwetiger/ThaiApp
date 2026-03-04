@@ -1,4 +1,4 @@
-<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+<appbar  backUrl="/home" (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
 <div class="root" *ngIf="!common.refreshLoading">
     <div [ngClass]="container" style="padding: 0px !important; margin: 0px !important;" *ngFor="let noti of notiList"
         [ngStyle]="{'background-color' :noti.status == '0'? '#afe2f0':'white'}" (click)="goToNotiDetail(noti)">

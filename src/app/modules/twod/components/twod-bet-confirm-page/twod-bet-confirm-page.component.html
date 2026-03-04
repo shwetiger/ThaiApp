@@ -106,7 +106,7 @@
                 {{ 'cancel' | translate}}
               </button>
             </div>
-            <div class="col-3 col-md-3"> 
+            <div class="col-3 col-md-3">
               <button type="button" class="btn btn-block edit-button"
                 (click)="twodBetModalNew(modalService.config.initialState.number, modalService.config.initialState.amount)">
                 {{ 'ok' | translate}}
@@ -185,8 +185,8 @@
   [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
 
 <!-- App Bottom Menu -->
-<div class=" section full d-flex justify-content-center" id="navTwoDBetConfirm" style="background-color: #f4f2f2;">
-  <button type="button" class="text-danger btn btn-lg btn-block  betconfrimButton1 mb-3" (click)="goBack()">{{
+<div class=" section full d-flex justify-content-center" id="navTwoDBetConfirm" style="background-color: none">
+  <button type="button" class="text-danger btn btn-lg btn-block  betconfrimButton1 mb-3" style="font-size: 15px;" (click)="goBack()">{{
     'reselect' | translate}}</button>
   <div class="mt-5"
     style=" position: relative; justify-content: center; background-color: transparent !important; width: 100%; height: 100%;"
@@ -197,7 +197,7 @@
       [fullScreen]="common.loading.betLoading.fullScreen"></ngx-spinner>
   </div>
   <button type="button" class="btn btn-lg btn-block  betconfrimButton2 mb-3"
-    (click)="twodBetUnBetListModal(twodBetUnBetList)" *ngIf="!common.betLoading">{{ 'bet' | translate}}</button>
+    (click)="twodBetUnBetListModal(twodBetUnBetList)" style="font-size: 15px;" *ngIf="!common.betLoading">{{ 'bet' | translate}}</button>
 
 </div>
 <!-- * App Bottom Menu -->

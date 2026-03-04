@@ -70,6 +70,7 @@ export class DefaultOptSettingComponent implements OnInit {
     this.spinner.show("refreshLoading");
     this.common.submitLoading = false;
     this.spinner.hide('submitLoading')
+    this.prefix = this.storage.retrieve('localPhonePrefix');
     this.route.queryParams.subscribe(params => {
       this.phoneNumber = params['phoneNumber'];
     });
@@ -101,7 +102,9 @@ export class DefaultOptSettingComponent implements OnInit {
       case 'registerpage':
         this.Saveregisteropttype();
         break;
-
+      case 'withdrawaladdinitial':
+        this.SaveOtptype();
+        break;
       default:
         this.SaveOtptype();
         break;
@@ -145,7 +148,9 @@ export class DefaultOptSettingComponent implements OnInit {
   SaveOtptype() {
     this.token = this.storage.retrieve('token');
     const headers = new HttpHeaders();
-    this.http.post(this.funct.ipaddress + 'user/setUserSmsType?type=' + this.selectedType + '&phone_no=' + this.phoneNumber, { headers: headers })
+    const phoneValue = this.storage.retrieve('localPhoneValue');
+     const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+    this.http.post(this.funct.ipaddress + 'user/setUserSmsType?type=' + this.selectedType + '&phone_no=' + phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
       )
@@ -171,7 +176,7 @@ export class DefaultOptSettingComponent implements OnInit {
   getGmailOTP() {
     this.token = this.storage.retrieve('token');
     const headers = new HttpHeaders();
-    this.http.get(this.funct.apaddressv1 + 'user/getemailotp?email=' + this.email, { headers: headers })
+    this.http.get(this.funct.ipaddress + 'v1/user/getemailotp?email=' + this.email, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
@@ -196,7 +201,7 @@ export class DefaultOptSettingComponent implements OnInit {
   SaveOtptypeandgetotp(): void {
     this.token = this.storage.retrieve('token');
     const url =
-      `${this.funct.apaddressv1}user/setusersmstypeAndGetOTP` +
+      `${this.funct.ipaddress}v1/user/setusersmstypeAndGetOTP` +
       `?type=${this.selectedType}` +
       `&phone_no=${this.phoneNumber}` +
       `&funcionName=${this.functionName}`;
@@ -208,7 +213,6 @@ export class DefaultOptSettingComponent implements OnInit {
       )
       .subscribe(response => {
         this.dto.Response = response;
-        console.log("DefaultResponse>>>>" + JSON.stringify(this.dto.Response))
         if (this.isSuccessResponse(response)) {
           this.handleSuccess(response);
           return;
@@ -283,6 +287,8 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   getotptype() {
+    const phoneValue = this.storage.retrieve('localPhoneValue');
+    const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
     if (this.formPage == 'register' || this.formPage == 'registerpage') {
       this.selectedType = this.registerotptype;
       if (this.phoneNumber == "" || this.phoneNumber == undefined || this.phoneNumber == null) {
@@ -315,7 +321,7 @@ export class DefaultOptSettingComponent implements OnInit {
     else {
       this.token = this.storage.retrieve('token');
       let headers = new HttpHeaders();
-      this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + this.phoneNumber, { headers: headers })
+      this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + phoneNumber, { headers: headers })
         .pipe(
           catchError(this.handleErrorMessage.handleError.bind(this, ''))
         )
@@ -367,7 +373,7 @@ export class DefaultOptSettingComponent implements OnInit {
       params = params.set('email', this.email);
     }
 
-    const url = `${this.funct.apaddressv1}user/getRegisterOTP`;
+    const url = `${this.funct.ipaddress}v1/user/getRegisterOTP`;
 
     this.http.get(url, { params })
       .pipe(
@@ -391,7 +397,7 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   private async handleRegisterOtpResponse(response: any) {
-    this.dto.Response = response;
+   // this.dto.Response = response;
     await this.getCountDown();
     if (response.errorCode === '000' && response.status === true) {
       this.stopLoading();
@@ -474,6 +480,7 @@ export class DefaultOptSettingComponent implements OnInit {
       this.http.post(
         this.funct.ipaddress +
         'countdown/get?phoneno=' + this.phoneNumber +
+        '&email=' + this.emailsender +
         '&type=' + this.selectedType +
         '&functionName=' + this.functionName,
         {},
@@ -518,5 +525,11 @@ export class DefaultOptSettingComponent implements OnInit {
             this.emailshow = true;
           }
         });
+  }
+
+    private formatPhoneNumber(phone: string, prefix: string): string {
+    return phone.startsWith('0')
+      ? prefix + phone.substring(1)
+      : prefix + phone;
   }
 }

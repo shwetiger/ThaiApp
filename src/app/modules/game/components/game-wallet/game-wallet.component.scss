@@ -12,9 +12,9 @@
     & h4 {
         color: #fff !important;
     }
-    
+
 }
-.game-header {   
+.game-header {
     background-color: #0054a5;
     & h4 {
         color: #fff !important;
@@ -24,7 +24,7 @@
     background-color: #fff !important;
     border-radius: 10px !important;
 }
-.game-img {   
+.game-img {
     width: 40px !important;
     height: 40px;
     border-radius: 5px;
@@ -55,7 +55,7 @@ input::placeholder {
     .game-play-now-modal  .modal-content {
       border-radius: 10px;
     }
-    
+
   }
 .game-list-button {
     padding: 5px 15px;
@@ -67,7 +67,7 @@ input::placeholder {
     margin-top: 5px;
     margin-left: 15px;
     border: 2px solid #fff;
-    height: 40px;    
+    height: 40px;
     width: 40px;
     margin-bottom: 5px;
 }
@@ -110,7 +110,7 @@ input::placeholder {
 .wallet-change{
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
-    margin: 0px 5px; 
+    margin: 0px 5px;
 }
 .card .card-header {
     border-top-left-radius: 10px;
@@ -130,7 +130,7 @@ input::placeholder {
   90% {transform: rotate(0deg);}
   100% {transform: rotate(0deg);}
 
-    
+
   }
 
 .card >.card-body {
@@ -139,18 +139,18 @@ input::placeholder {
     //background-color: transparent !important;
 }
 
-.imaged{   
+.imaged{
     margin-left: 5px;
     width: 50px;
     margin-top: 0px;
 }
 
 .wallet-image {
-    width: 30px; 
-    height: 30px;   
+    width: 30px;
+    height: 30px;
     cursor: pointer;
 }
-@media screen and (max-width: 400px) {      
+@media screen and (max-width: 400px) {
     .service-color {
         font-size: 12px !important;
     }
@@ -174,10 +174,10 @@ input::placeholder {
     margin-top: -30px;
     position: relative;
     z-index: 2;
-    color: blue;  
+    color: blue;
 }
 
-.text-eye ion-icon {    
+.text-eye ion-icon {
     font-size: 20px;
 }
 
@@ -191,6 +191,12 @@ input::placeholder {
   display: inline-block;
   vertical-align: middle;
 }
+
+a:hover{
+   text-decoration: underline;
+   text-decoration-color: $second-color;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

@@ -13,6 +13,7 @@ export class AppbarComponent {
   @Output() myEvent = new EventEmitter();
   @Input() rootLevel=1;
   @Input() parentLink:string;
+  @Input() backUrl?: string;  
   isClose = false;
   private history: string[] = []
   threedsuccessback:boolean=false;
@@ -22,29 +23,40 @@ export class AppbarComponent {
     public navigation: NavigationService,
     private Location: LocationStrategy,
     private router: Router,
-    private storage: LocalStorageService,) { 
-   
+    private storage: LocalStorageService,) {
+
   }
 
   ngOnInit(): void {
      this.isClose = true;
   }
-  
+
   refreshPage(): void{
 
     this.ngOnInit();
     this.myEvent.emit();
-   
+
   }
-  goBack(){ 
-    this._location.back();    
+  // goBack(){
+  //   this._location.back();
+  // }
+
+  goBack() {
+    if (this.backUrl) {
+      this.router.navigate([this.backUrl]);
+    } else if (window.history.length > 1) {
+      this._location.back();
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
 
-  // public getHistory(): string[] {  
+
+  // public getHistory(): string[] {
   //   return this.history;
   // }
-  // public goBack(): void { 
- 
+  // public goBack(): void {
+
   //   this.history.pop();
   //   if (this.history.length > 0) {
   //     this._location.back()
@@ -52,5 +64,5 @@ export class AppbarComponent {
   //     this.router.navigateByUrl("/");
   //   }
   // }
-  
+
 }

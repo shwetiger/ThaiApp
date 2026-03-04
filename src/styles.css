@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -7,68 +8,89 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-button:focus {   
+button:focus {
   outline: none !important;
- } 
- .input { 
-   background: #F5F4F4 !important;
- }
- #appCapsule {      
-     background-color: #FAFAFA !important;     
-     position: relative;
+}
+
+.input {
+  background: #F5F4F4 !important;
+}
+
+#appCapsule {
+  background-color: #FAFAFA !important;
+  position: relative;
+  margin-top: -3px !important;
+}
+
+.appHeader {
+  background: linear-gradient(60deg, #001A52 0%, #2253A2 100%) !important;
+  top: 0px !important;
+}
+
+@media screen and (min-width: 1024px) {
+  #appCapsule {
+    background-color: #FAFAFA !important;
   }
-   .appHeader {
-     background: linear-gradient(60deg, #001A52 0%, #2253A2 100%) !important;
-     top: 0px !important;
-   }
- @media screen and (min-width: 1024px) {     
-   #appCapsule {
-     background-color: #FAFAFA !important;      
 
-   }
-   body,
-   .appBottomMenu,
-   .appHeader {
-     margin: 0px 35% !important;
-     max-width: 30% !important;
+  body,
+  .appBottomMenu,
+  .appHeader {
+    margin: 0px 35% !important;
+    max-width: 30% !important;
 
-   }
-   .appHeader {
-     background: linear-gradient(60deg, #001A52 0%, #2253A2 100%) !important;
-   }
- }
- .button { 
-   background: transparent;
-   border-radius: 30px;
-   color: #2253A2;
-   padding: 8px 20px;
-   font-weight: 600;
-   border: 1px solid #2253A2;
-   width: 80%;
- }
- .button-notRound{ 
-   background: #2253A2;
-   border-radius: 5px;
-   color: #fff;
-   padding: 8px 20px;
-   font-weight: 600;
-   border: 1px solid #2253A2;
-   width: 80%;
- }
- .error-color {
-   color: red;
-   font-size: 12px !important;
-   font-weight: 600 !important;
-   padding-top: 5px;
- }
- .incorrect-border-color {
-   border: 1px solid red !important;
- }
- .incorrect-noborder-color {
-   border: 1px solid #2253A2 !important;
- }
- .no-padding {
-   padding: 0px !important;
-   margin: 0px !important;
- } 
+  }
 
+  .appHeader {
+    background: linear-gradient(60deg, #001A52 0%, #2253A2 100%) !important;
+  }
+}
+
+.button {
+  background: transparent;
+  border-radius: 30px;
+  color: #2253A2;
+  padding: 8px 20px;
+  font-weight: 600;
+  border: 1px solid #2253A2;
+  width: 80%;
+}
+
+.button-notRound {
+  background: #2253A2;
+  border-radius: 5px;
+  color: #fff;
+  padding: 8px 20px;
+  font-weight: 600;
+  border: 1px solid #2253A2;
+  width: 80%;
+}
+
+.error-color {
+  color: red;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding-top: 5px;
+}
+
+.incorrect-border-color {
+  border: 1px solid red !important;
+}
+
+.incorrect-noborder-color {
+  border: 1px solid #2253A2 !important;
+}
+
+.no-padding {
+  padding: 0px !important;
+  margin: 0px !important;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}

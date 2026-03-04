@@ -36,7 +36,7 @@ export class GameAccountLoginComponent implements OnInit {
   gameList: any;
   //test start
   bsModalRef: BsModalRef;
-  data: any;
+  data: any={};
   gameproviderlist: any;
   //end test
   @Input() gameProviderId
@@ -58,6 +58,7 @@ export class GameAccountLoginComponent implements OnInit {
     private funct: FunctService,
     private _location: Location,
   ) {
+    this.data = {};
     this.isUserLoggedIn = this.storage.retrieve('isUserLoggedIn');
   }
   ngOnInit(): void {
@@ -183,7 +184,7 @@ export class GameAccountLoginComponent implements OnInit {
     }
   }
 
- 
+
 async getGameUserBalance() {
   this.gameUserBalance = [];
   this.token = this.storage.retrieve('token');
@@ -240,10 +241,14 @@ async getGameUserBalance() {
           }
         }
       }
-
+      console.log("GameUserBalance>>>"+JSON.stringify(this.gameUserBalance));
       // Save balance of current provider in storage (use first element for example)
       const balance = this.gameUserBalance.find(b => b.providerId === providerId)?.balance ?? 0;
+      const firstbalance = this.gameUserBalance[0]?.balance ?? 0;
+      const secondbalance = this.gameUserBalance[1]?.balance ?? 0;
       this.storage.store('LocalgameUserBalance', balance);
+      this.storage.store('LocalgameUserBalance1', firstbalance);
+      this.storage.store('LocalgameUserBalance2', secondbalance);
 
     } catch (error) {
       console.error(`Failed to fetch balance for provider ${providerId}:`, error);
@@ -262,7 +267,6 @@ async getGameUserBalance() {
   }
 
   gameTransfer(providerId: number, providerName: string, action: string) {
-
     this.getGameProviderList().subscribe((result: any) => {
       this.gameproviderlist = result;
 
@@ -276,6 +280,7 @@ async getGameUserBalance() {
       }
 
       this.storage.store('localGameProviderId', this.gameProviderId);
+
       this.data.display_name = providerName;
       this.data.providerId = providerId;
       const list = { list: this.data, tranfer: action };

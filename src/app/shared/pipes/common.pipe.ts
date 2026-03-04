@@ -29,12 +29,12 @@ export class SafeUrlPipe implements PipeTransform {
     name: "formatTime"
 })
 export class FormatTimePipe implements PipeTransform {
-   
-    transform(value: number): string { 
+
+    transform(value: number): string {
     const hours: number = Math.floor(value / 3600);
-    const minutes: number = Math.floor((value % 3600) / 60);    
+    const minutes: number = Math.floor((value % 3600) / 60);
     return ('00' + hours).slice(-2) + ':' +
-     ('00' + minutes).slice(-2) + ':' + 
+     ('00' + minutes).slice(-2) + ':' +
      ('00' + Math.floor(value - minutes * 60)).slice(-2);
     }
 }
@@ -45,9 +45,9 @@ export class FormatTimePipe implements PipeTransform {
 export class ThreedFormatTimePipe implements PipeTransform {
     constructor(
         private translateService: TranslateService
-    ) { } 
+    ) { }
 
-    transform(value: number): string {   
+    transform(value: number): string {
         // const hours: number = Math.floor(value / 3600);
         // const minutes: number = Math.floor((value % 3600) / 60);
         const days: number = Math.floor(value/ 86400);
@@ -80,7 +80,7 @@ export class ThreedFormatTimePipe implements PipeTransform {
   name: 'thai2d3dPhone1' // *********535
 })
 export class Thai2d3dPhonePipe1 implements PipeTransform {
-  transform(value: string, ...args: unknown[]): unknown {      
+  transform(value: string, ...args: unknown[]): unknown {
    let result = `+95-${value.substring(1,4).toString()} ***** ${value.substring(value.length - 2, value.length).toString()}`;
    return result;
   }
@@ -206,8 +206,9 @@ export class SerialNumberPipe implements PipeTransform {
               return { text: item.trim() };
             }
           });
-      
+
           return parsedItems;
         }
   }
+
 

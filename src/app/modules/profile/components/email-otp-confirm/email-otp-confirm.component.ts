@@ -33,6 +33,7 @@ export class EmailOtpConfirmComponent implements OnInit {
   coundDown: number;
   time: number = 180;
   emailModel: any;
+  interval: any;
 
   constructor(private handleErrorMessage: HandleErrorMessageService,
     public common: CommonService,
@@ -131,7 +132,7 @@ export class EmailOtpConfirmComponent implements OnInit {
     this.emailModel.email_address=this.emailaddress;
     let params = new HttpParams();
     params = params.set("email", this.emailModel.email_address.trim());
-    this.http.get(this.funct.apaddressv1 + 'user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
+    this.http.get(this.funct.ipaddress + 'v1/user/getemailotp?email=' + this.emailModel.email_address, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, 'emailRequired'))
       )
@@ -154,16 +155,42 @@ export class EmailOtpConfirmComponent implements OnInit {
       );
   }
 
-  startCountdown(seconds) {
-    let counter = seconds;
-    const interval = setInterval(() => {
-      this.coundDown = counter;
-      counter--;
-      if (counter < -1) {
-        clearInterval(interval);
-        this.coundDown = counter;
+  // startCountdown(seconds) {
+  //   let counter = seconds;
+  //   const interval = setInterval(() => {
+  //     this.coundDown = counter;
+  //     counter--;
+  //     if (counter < -1) {
+  //       clearInterval(interval);
+  //       this.coundDown = counter;
+  //     }
+  //     this.storage.store("Timer", this.coundDown)
+  //   }, 1000);
+  // }
+
+  startCountdown(seconds: number) {
+    // 🔹 expire time (milliseconds)
+    const expireAt = Date.now() + seconds * 1000;
+    // 🔹 storage ထဲမှာ expireAt ကိုသိမ်း (app restart / background အတွက်)
+    this.storage.store('expireAt', expireAt);
+
+    this.interval = setInterval(() => {
+
+      const now = Date.now();
+
+      const remainingSeconds = Math.max(
+        -1,
+        Math.floor((expireAt - now) / 1000)
+      );
+
+      this.coundDown = remainingSeconds;
+      this.storage.store('Timer', remainingSeconds);
+
+      if (remainingSeconds <= -1) {
+        clearInterval(this.interval);
+        this.coundDown = remainingSeconds;
       }
-      this.storage.store("Timer", this.coundDown)
+
     }, 1000);
   }
 }

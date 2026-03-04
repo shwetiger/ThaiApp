@@ -90,7 +90,7 @@
   "btn-ok-forgot-pass": "Ok",
   "pass-notice": "Note: Please don't share your password with other",
   "underMaintenance": "Under Maintenance",
-  "game-even": "Even",
+  "game-even": "Win/Lose",
   "topup-bank-empty": "Today's bank limited amount is over.Please choose other bank type.",
   "channel-title": "Channel Link",
   "login-block-message": "Incorrect password",
@@ -99,7 +99,7 @@
   "game-win": "Win Amount",
   "game-lose": "Loss Amount",
   "before-game-balance": "Before Balance",
-  "leave-post-game-balance": "Post Balance",
+  "leave-post-game-balance": "After Balance",
   "my-points": "Points Transfer & History",
   "top_up_submit_str": "Topup Submit",
   "cleanCache": "Clean Cache",
@@ -788,5 +788,8 @@
   "referral_code_save_success":"Referral code saved successfully",
   "refreral_ph_save_success":"Referral’s phone number saved successfully",
   "invalid":"Invalid Referral Code and Referral’s Phone Number",
-  "viber_error":"Viber OTP is not available for international numbers"
+  "viber_error":"Viber OTP is not available for international numbers",
+  "closed_2D":"Bet Closed",
+  "2dresult" :"2D Result",
+  "getcountdown-request-time": "Please wait 20 seconds."
 }

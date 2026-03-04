@@ -7,38 +7,38 @@
     </div>
     <div class="row mx-3 mb-1 mt-3 result-card-border">
         <div class="container result-card" *ngFor="let result of item.resultList;let i=index;">
-            <div class="row" [ngClass]="{'driver': (i &gt; 0) }"></div>    
+            <div class="row" [ngClass]="{'driver': (i &gt; 0) }"></div>
             <div class="row pt-2 section-name">
                 <span >{{result.time}}</span>
-            </div>  
+            </div>
             <div class="row">
-                <div class="col-4">                    
+                <div class="col-4">
                     <div class="justify-content-center">
                         <h4 class="setval-title text-center">Set</h4>
                         <!-- <h3 class=" setval text-center">{{result.set}}</h3> -->
                         <h3 class=" setval text-center"><span>{{result.set0}}</span ><span style='color: #ff9100;'>{{result.set1}}</span></h3>
-                    </div>                   
+                    </div>
                 </div>
 
                 <div class="col-4">
                     <div class="justify-content-center">
                         <h4 class="setval-title text-center">Value</h4>
                         <h3 class=" setval text-center"> <span>{{result.val0}}</span><span style='color: #ff9100;'>{{result.val1}}</span><span>{{result.val2}}</span></h3>
-                         
-                    </div>                    
+
+                    </div>
                 </div>
 
                 <div class="col-4">
                     <div class="justify-content-center">
                         <h4 class="setval-title text-center">2D</h4>
                         <h3 class=" text-center" style="color: #ff9100 !important;">{{result.result}}</h3>
-                    </div>                 
+                    </div>
                 </div>
-            </div>   
-                  
+            </div>
+
         </div>
     </div>
-    
+
 </div>
 </div>
 
@@ -46,4 +46,4 @@
         <ngx-spinner size="small" color="rgb(6,56,107)" type="ball-spin-clockwise" [fullScreen]="false"></ngx-spinner>
     </div>
 
-    
+

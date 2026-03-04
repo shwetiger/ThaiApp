@@ -65,7 +65,7 @@
     position: relative;
     border-radius: 10px;
     width: 100px;
-   // height: 40px;
+    // height: 40px;
 
     &::after {
         content: "";
@@ -96,7 +96,7 @@
     height: auto;
     right: 0;
     width: 100%;
-    margin-top: env(safe-area-inset-top);
+   // margin-top: env(safe-area-inset-top);
     display: flex;
     align-items: center;
     background: #fff;
@@ -160,9 +160,11 @@
 
 .extraFooter {
     margin-top: 210px;
+
     & .footer-select-number {
         margin-bottom: 80px !important;
     }
+
     & .reverse-icon {
         color: #fff;
         font-weight: 600;
@@ -176,6 +178,7 @@
         right: -5px;
         top: -5px;
     }
+
     & .khway-icon {
         color: #fff;
         font-size: 0.8em;
@@ -189,6 +192,7 @@
         right: -5px;
         top: -5px;
     }
+
     & .numberCard {
         width: 50px;
         height: 45px;
@@ -196,6 +200,7 @@
         position: relative;
         margin: 5px 10px;
     }
+
     & .numberCard-not-selected {
         width: 50px;
         height: 45px;
@@ -249,16 +254,19 @@
         justify-content: center;
         min-height: calc(100vh - 60px);
     }
+
     .quick {
         border-radius: 10px;
         width: 100px;
         height: 40px;
         padding: 0px !important;
     }
+
     .quick-wide-block {
         background: transparent !important;
         border: none !important;
     }
+
     .quickSelect-class {
         display: flex;
         flex-direction: column;
@@ -411,7 +419,7 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     height: 35px !important;
-    width: 110px;  
+    width: 110px;
 }
 
 .numbertext {
@@ -450,9 +458,11 @@ input::placeholder {
 
 #appCapsule {
     min-height: 100vh !important;
+
     img {
         margin: 0px auto !important;
     }
+
     .button {
         width: 100%;
     }

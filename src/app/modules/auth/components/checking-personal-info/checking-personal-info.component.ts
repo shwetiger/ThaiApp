@@ -58,6 +58,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
   smstype: any;
   functionName: string = 'Forgot Password OTP';
   Timer: any;
+  emailaddress:any;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -98,10 +99,10 @@ export class CheckingPersonalInfoComponent implements OnInit {
     this.topupBank = null;
     this.topupAmt = null;
     this.topupDate = null;
-    this.getBankTypeSelect();
-    this.getForgetDay();
-    this.getForgetMonth();
-    this.getForgetYear();
+    //this.getBankTypeSelect();
+    // this.getForgetDay();
+    // this.getForgetMonth();
+    //this.getForgetYear();
     sessionStorage.setItem('bankType', "");
     sessionStorage.setItem('day', "");
     sessionStorage.setItem('month', "");
@@ -109,6 +110,15 @@ export class CheckingPersonalInfoComponent implements OnInit {
     sessionStorage.setItem("imageUrl", "");
     this.getsmstype();
   }
+
+  ngAfterViewInit() {
+  this.initBankTypeSelect();
+ // this.initYearSelect();
+  this.initGlobalClose();
+  this.getForgetDay();
+  this.getForgetMonth();
+  this.getForgetYear();
+}
 
   async getBankTypeSelect() {
     await this.BankInfoListByType();
@@ -463,143 +473,384 @@ export class CheckingPersonalInfoComponent implements OnInit {
     });
   }
 
+  // getForgetYear() {
+  //  this.calendarYear = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019"];
+  //   var yearlist = this.calendarYear;
+  //   var unselect = this.translateService.instant("forgetpassword-unselect");
+  //   var dateRequired = this.translateService.instant("forget3");
+  //   var calendar = this.translateService.instant("yyyy");
+  //   $(document).ready(function () {
+  //     $(".year").attr("placeholder", calendar);
+  //     $(".year").each(function () {
+  //       var classes = $(this).attr("class");
+  //       var template = '<div class="' + classes + '">';
+  //       template += '<span class="custom-select-forget-year-trigger">' + $(this).attr("placeholder") + '</span>';
+  //       template += '<div class="custom-options">';
+  //       template += '<div class="custom-options-scorll">';
+  //       template += '<span class="custom-option" data-value="" style="white-space: nowrap">' + unselect + '</span>';
+  //       for (let i = 0; i < yearlist.length; i++) {
+  //         template += '<span class="custom-option" data-value="' + yearlist[i] + '">' + yearlist[i] + '</span>';
+  //       }
+  //       template += '</div></div></div>';
+  //       $(this).wrap('<div class="custom-select-wrapper"></div>');
+  //       $(this).hide();
+  //       $(this).after(template);
+  //     });
+  //     $(".custom-option:first-of-type").hover(function () {
+  //       $(this).parents(".custom-options").addClass("option-hover");
+  //     }, function () {
+  //       $(this).parents(".custom-options").removeClass("option-hover");
+  //     });
+  //     $(".custom-select-forget-year-trigger").on("click", function () {
+  //       $(document).ready(function () {
+  //         $(".day").removeClass("opened");
+  //         $(".month").removeClass("opened");
+  //       });
+  //       $('html').one('click', function () {
+  //         $(".custom-select").removeClass("opened");
+  //       });
+  //       $(this).parents(".custom-select").toggleClass("opened");
+  //       event.stopPropagation();
+  //     });
+  //     $(".year .custom-option").on("click", function () {
+  //       $(this).parents(".custom-select-wrapper").find("select").val($(this).data("value"));
+  //       $(this).parents(".custom-options").find(".custom-option").removeClass("selection");
+  //       $(this).addClass("selection");
+  //       $(this).parents(".custom-select").removeClass("opened");
+  //       $(this).parents(".custom-select").find(".custom-select-forget-year-trigger").text($(this).text());
+  //       $(this).parents(".custom-select").find(".custom-select-forget-year-trigger").attr("data-value", $(this).data("value"));
+  //       sessionStorage.setItem("year", $(this).data("value"));
+  //       $.fn.update_day_select_forYear();
+  //       $(document).ready(function () {
+  //         var day = sessionStorage.getItem("day");
+  //         var month = sessionStorage.getItem("month");
+  //         var year = sessionStorage.getItem("year");
+  //         var imgURL = sessionStorage.getItem("imageUrl");
+  //         if (imgURL != null && imgURL != undefined && imgURL != "") {
+  //           if ((day == '' && month == '' && year == '') || (day != '' && month != '' && year != '')) {
+  //             $("#errDate").html("");
+  //             return true;
+  //           }
+  //         }
+  //         else {
+  //           if ((day == null || day == '' || day == undefined) || (month == null || month == '' || month == undefined) || (year == null || year == '' || year == undefined)) {
+  //             $("#errDate").html(dateRequired);
+  //             return false;
+  //           }
+  //           else {
+  //             $("#errDate").html("");
+  //             this.topupDate = year.toString() + "-" + month.toString() + "-" + day.toString();
+  //             return true;
+  //           }
+  //         }
+  //       });
+  //     });
+
+  //     $.fn.get_last_day_value_forYear = function () {
+  //       var last_value_for_day;
+  //       var last_days = [31, 30, 29, 28, 27];
+  //       var i = 0;
+  //       while (i <= 3) {
+  //         last_value_for_day = $('.day .custom-options-scorll').find("span:eq(" + last_days[i] + ")").data("value");
+  //         if (last_value_for_day != undefined) {
+  //           return last_value_for_day = parseInt(last_value_for_day);
+  //         }
+  //         i++;
+  //       }
+  //     }
+  //     $.fn.update_day_select_forYear = function () {
+  //       var last_value_for_day;
+  //       var selected_month;
+  //       var selected_day;
+  //       var selected_year;
+  //       var last_day_of_month;
+  //       var days_to_remove;
+  //       var days_to_add;
+  //       selected_day = sessionStorage.getItem("day");
+  //       selected_month = sessionStorage.getItem("month");
+  //       selected_year = sessionStorage.getItem("year");
+  //       last_value_for_day = $.fn.get_last_day_value_forYear();
+  //       selected_month = parseInt(selected_month);
+  //       if ($.inArray(selected_month, [4, 6, 9, 11]) != -1) {
+  //         last_day_of_month = 30;
+  //       } else if (selected_month == 2) {
+  //         if (new Date(selected_year, 1, 29).getDate() == 29) {
+  //           last_day_of_month = 29;
+  //         } else {
+  //           last_day_of_month = 28;
+  //         }
+  //       } else {
+  //         last_day_of_month = 31;
+  //       }
+  //       // Remove days
+  //       if (last_value_for_day > last_day_of_month) {
+  //         days_to_remove = last_value_for_day - last_day_of_month;
+  //         var i = 0;
+  //         while (i < days_to_remove) {
+  //           $('.day .custom-options-scorll').find("span:eq(" + (last_value_for_day - i) + ")").remove();
+  //           i++;
+  //         }
+
+  //         // Add days
+  //       } else if (last_value_for_day < last_day_of_month) {
+  //         days_to_add = last_day_of_month - last_value_for_day;
+  //         var i = 1;
+  //         while (i <= days_to_add) {
+  //           $('.day .custom-options-scorll').append("<span class='custom-option' data-value='" + (last_value_for_day + i) + "'>" + (last_value_for_day + i) + "</span>");
+  //           i++;
+  //         }
+  //       }
+
+  //       // If selected day is invalid, move to last valid day
+  //       last_value_for_day = $.fn.get_last_day_value_forYear();
+  //       if (selected_day > last_value_for_day) {
+  //         $('.day .custom-options-scorll').find("span:eq(" + (last_value_for_day - 1) + ")").addClass("selection");
+  //       }
+  //     }
+  //   });
+  // }
+
   getForgetYear() {
-    this.calendarYear = ["2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026"];
-    var yearlist = this.calendarYear;
-    var unselect = this.translateService.instant("forgetpassword-unselect");
-    var dateRequired = this.translateService.instant("forget3");
-    var calendar = this.translateService.instant("yyyy");
-    $(document).ready(function () {
-      $(".year").attr("placeholder", calendar);
-      $(".year").each(function () {
-        var classes = $(this).attr("class");
-        var template = '<div class="' + classes + '">';
-        template += '<span class="custom-select-forget-year-trigger">' + $(this).attr("placeholder") + '</span>';
-        template += '<div class="custom-options">';
-        template += '<div class="custom-options-scorll">';
-        template += '<span class="custom-option" data-value="" style="white-space: nowrap">' + unselect + '</span>';
-        for (let i = 0; i < yearlist.length; i++) {
-          template += '<span class="custom-option" data-value="' + yearlist[i] + '">' + yearlist[i] + '</span>';
-        }
-        template += '</div></div></div>';
-        $(this).wrap('<div class="custom-select-wrapper"></div>');
-        $(this).hide();
-        $(this).after(template);
-      });
-      $(".custom-option:first-of-type").hover(function () {
-        $(this).parents(".custom-options").addClass("option-hover");
-      }, function () {
-        $(this).parents(".custom-options").removeClass("option-hover");
-      });
-      $(".custom-select-forget-year-trigger").on("click", function () {
-        $(document).ready(function () {
-          $(".day").removeClass("opened");
-          $(".month").removeClass("opened");
-        });
-        $('html').one('click', function () {
-          $(".custom-select").removeClass("opened");
-        });
-        $(this).parents(".custom-select").toggleClass("opened");
-        event.stopPropagation();
-      });
-      $(".year .custom-option").on("click", function () {
-        $(this).parents(".custom-select-wrapper").find("select").val($(this).data("value"));
-        $(this).parents(".custom-options").find(".custom-option").removeClass("selection");
-        $(this).addClass("selection");
-        $(this).parents(".custom-select").removeClass("opened");
-        $(this).parents(".custom-select").find(".custom-select-forget-year-trigger").text($(this).text());
-        $(this).parents(".custom-select").find(".custom-select-forget-year-trigger").attr("data-value", $(this).data("value"));
-        sessionStorage.setItem("year", $(this).data("value"));
-        $.fn.update_day_select_forYear();
-        $(document).ready(function () {
-          var day = sessionStorage.getItem("day");
-          var month = sessionStorage.getItem("month");
-          var year = sessionStorage.getItem("year");
-          var imgURL = sessionStorage.getItem("imageUrl");
-          if (imgURL != null && imgURL != undefined && imgURL != "") {
-            if ((day == '' && month == '' && year == '') || (day != '' && month != '' && year != '')) {
-              $("#errDate").html("");
-              return true;
-            }
-          }
-          else {
-            if ((day == null || day == '' || day == undefined) || (month == null || month == '' || month == undefined) || (year == null || year == '' || year == undefined)) {
-              $("#errDate").html(dateRequired);
-              return false;
-            }
-            else {
-              $("#errDate").html("");
-              this.topupDate = year.toString() + "-" + month.toString() + "-" + day.toString();
-              return true;
-            }
-          }
-        });
-      });
+  var unselect = this.translateService.instant("forgetpassword-unselect");
+  var dateRequired = this.translateService.instant("forget3");
+  var calendar = this.translateService.instant("yyyy");
 
-      $.fn.get_last_day_value_forYear = function () {
-        var last_value_for_day;
-        var last_days = [31, 30, 29, 28, 27];
-        var i = 0;
-        while (i <= 3) {
-          last_value_for_day = $('.day .custom-options-scorll').find("span:eq(" + last_days[i] + ")").data("value");
-          if (last_value_for_day != undefined) {
-            return last_value_for_day = parseInt(last_value_for_day);
-          }
-          i++;
-        }
+  var yearList = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019"];
+
+  $(document).ready(function () {
+
+    $(".year").attr("placeholder", calendar);
+
+    $(".year").each(function () {
+
+      var classes = $(this).attr("class");
+      var template = '<div class="' + classes + '">';
+
+      template += '<span class="custom-select-forget-year-trigger">' + $(this).attr("placeholder") + '</span>';
+      template += '<div class="custom-options">';
+      template += '<div class="custom-options-scorll">';   // ✅ Scroll container
+
+      template += '<span class="custom-option" data-value="" style="white-space: nowrap">' + unselect + '</span>';
+
+      for (let i = 0; i < yearList.length; i++) {
+        template += '<span class="custom-option" data-value="' + yearList[i] + '">' + yearList[i] + '</span>';
       }
-      $.fn.update_day_select_forYear = function () {
-        var last_value_for_day;
-        var selected_month;
-        var selected_day;
-        var selected_year;
-        var last_day_of_month;
-        var days_to_remove;
-        var days_to_add;
-        selected_day = sessionStorage.getItem("day");
-        selected_month = sessionStorage.getItem("month");
-        selected_year = sessionStorage.getItem("year");
-        last_value_for_day = $.fn.get_last_day_value_forYear();
-        selected_month = parseInt(selected_month);
-        if ($.inArray(selected_month, [4, 6, 9, 11]) != -1) {
-          last_day_of_month = 30;
-        } else if (selected_month == 2) {
-          if (new Date(selected_year, 1, 29).getDate() == 29) {
-            last_day_of_month = 29;
-          } else {
-            last_day_of_month = 28;
-          }
-        } else {
-          last_day_of_month = 31;
-        }
-        // Remove days
-        if (last_value_for_day > last_day_of_month) {
-          days_to_remove = last_value_for_day - last_day_of_month;
-          var i = 0;
-          while (i < days_to_remove) {
-            $('.day .custom-options-scorll').find("span:eq(" + (last_value_for_day - i) + ")").remove();
-            i++;
-          }
 
-          // Add days
-        } else if (last_value_for_day < last_day_of_month) {
-          days_to_add = last_day_of_month - last_value_for_day;
-          var i = 1;
-          while (i <= days_to_add) {
-            $('.day .custom-options-scorll').append("<span class='custom-option' data-value='" + (last_value_for_day + i) + "'>" + (last_value_for_day + i) + "</span>");
-            i++;
-          }
-        }
+      template += '</div></div></div>';
 
-        // If selected day is invalid, move to last valid day
-        last_value_for_day = $.fn.get_last_day_value_forYear();
-        if (selected_day > last_value_for_day) {
-          $('.day .custom-options-scorll').find("span:eq(" + (last_value_for_day - 1) + ")").addClass("selection");
-        }
-      }
+      $(this).wrap('<div class="custom-select-wrapper"></div>');
+      $(this).hide();
+      $(this).after(template);
     });
+
+    // Open dropdown
+    $(".custom-select-forget-year-trigger").on("click", function (event) {
+
+      $(".day").removeClass("opened");
+      $(".month").removeClass("opened");
+
+      $('html').one('click', function () {
+        $(".custom-select").removeClass("opened");
+      });
+
+      $(this).parents(".custom-select").toggleClass("opened");
+      event.stopPropagation();
+    });
+
+    // Select option
+    $(".year .custom-option").on("click", function () {
+
+      $(this).parents(".custom-select-wrapper").find("select").val($(this).data("value"));
+      $(this).parents(".custom-options").find(".custom-option").removeClass("selection");
+      $(this).addClass("selection");
+      $(this).parents(".custom-select").removeClass("opened");
+
+      $(this).parents(".custom-select").find(".custom-select-forget-year-trigger")
+        .text($(this).text())
+        .attr("data-value", $(this).data("value"));
+
+      sessionStorage.setItem("year", $(this).data("value"));
+
+      var day = sessionStorage.getItem("day");
+      var month = sessionStorage.getItem("month");
+      var year = sessionStorage.getItem("year");
+
+      if (!day || !month || !year) {
+        $("#errDate").html(dateRequired);
+      } else {
+        $("#errDate").html("");
+      }
+
+    });
+
+  });
+}
+
+  async initBankTypeSelect() {
+  await this.BankInfoListByType();
+
+  const placeholder = this.translateService.instant("latest-bank-type");
+  const unselect = this.translateService.instant("forgetpassword-unselect");
+  const bankRequired = this.translateService.instant("forget1");
+
+  let bankList = this.storage.retrieve('localBankTypeList');
+  if (!bankList) {
+    bankList = ["AYA Pay", "CB Pay", "KBZ Pay", "Wave Pay"];
   }
 
+  const $select = $(".bank-type-select");
+
+  $select.attr("placeholder", placeholder);
+
+  $select.each(function () {
+    const $this = $(this);
+    const template = `
+      <div class="custom-select bank-select">
+        <span class="custom-select-trigger">${placeholder}</span>
+        <div class="custom-options">
+          <span class="custom-option" data-value="">${unselect}</span>
+          ${bankList.map(b => `<span class="custom-option" data-value="${b}">${b}</span>`).join("")}
+        </div>
+      </div>
+    `;
+
+    $this.wrap('<div class="custom-select-wrapper"></div>');
+    $this.hide().after(template);
+  });
+
+  // 🔐 scoped click event
+  $(".bank-select .custom-select-trigger").off().on("click", function (e) {
+    e.stopPropagation();
+    $(".bank-select").removeClass("opened");
+    $(this).parent().toggleClass("opened");
+  });
+
+  $(".bank-select .custom-option").off().on("click", function () {
+    const value = $(this).data("value");
+
+    const $parent = $(this).closest(".bank-select");
+    $parent.find(".custom-option").removeClass("selection");
+    $(this).addClass("selection");
+
+    $parent.find(".custom-select-trigger").text($(this).text());
+    $parent.removeClass("opened");
+
+    sessionStorage.setItem("bankType", value);
+
+    value ? $("#errBankList").html("") : $("#errBankList").html(bankRequired);
+  });
+}
+
+// initYearSelect() {
+//   const yearList =  ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019"];
+//   const unselect = this.translateService.instant("forgetpassword-unselect");
+//   const placeholder = this.translateService.instant("yyyy");
+//   const dateRequired = this.translateService.instant("forget3");
+
+//   const $select = $(".year");
+
+//   $select.attr("placeholder", placeholder);
+
+//   $select.each(function () {
+//     const template = `
+//       <div class="custom-select year-select">
+//         <span class="custom-select-trigger">${placeholder}</span>
+//         <div class="custom-options">
+//           <span class="custom-option" data-value="">${unselect}</span>
+//           ${yearList.map(y => `<span class="custom-option" data-value="${y}">${y}</span>`).join("")}
+//         </div>
+//       </div>
+//     `;
+
+//     $(this).wrap('<div class="custom-select-wrapper"></div>');
+//     $(this).hide().after(template);
+//   });
+
+//   $(".year-select .custom-select-trigger").off().on("click", function (e) {
+//     e.stopPropagation();
+//     $(".year-select").removeClass("opened");
+//     $(this).parent().toggleClass("opened");
+//   });
+
+//   $(".year-select .custom-option").off().on("click", () => {
+//     const value = $(event.target).data("value");
+//     const $parent = $(event.target).closest(".year-select");
+
+//     $parent.find(".custom-option").removeClass("selection");
+//     $(event.target).addClass("selection");
+
+//     $parent.find(".custom-select-trigger").text(value || placeholder);
+//     $parent.removeClass("opened");
+
+//     sessionStorage.setItem("year", value);
+
+//     value ? $("#errDate").html("") : $("#errDate").html(dateRequired);
+
+//   });
+// }
+
+initYearSelect() {
+  const yearList = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019"];
+  const unselect = this.translateService.instant("forgetpassword-unselect");
+  const placeholder = this.translateService.instant("yyyy");
+  const dateRequired = this.translateService.instant("forget3");
+
+  const $select = $(".year");
+
+  $select.attr("placeholder", placeholder);
+
+  $select.each(function () {
+    const template = `
+      <div class="custom-select year-select">
+        <span class="custom-select-trigger">${placeholder}</span>
+        <div class="custom-options">
+          <div class="custom-options-scroll">
+            <span class="custom-option" data-value="">${unselect}</span>
+            ${yearList.map(y => `
+              <span class="custom-option" data-value="${y}">${y}</span>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+
+    $(this).wrap('<div class="custom-select-wrapper"></div>');
+    $(this).hide().after(template);
+  });
+
+  $(".year-select .custom-select-trigger").off().on("click", function (e) {
+    e.stopPropagation();
+    $(".year-select").removeClass("opened");
+    $(this).parent().toggleClass("opened");
+  });
+
+  $(".year-select .custom-option").off().on("click", function (e) {
+    const value = $(this).data("value");
+    const $parent = $(this).closest(".year-select");
+
+    $parent.find(".custom-option").removeClass("selection");
+    $(this).addClass("selection");
+
+    $parent.find(".custom-select-trigger").text(value || placeholder);
+    $parent.removeClass("opened");
+
+    sessionStorage.setItem("year", value);
+
+    value
+      ? $("#errDate").html("")
+      : $("#errDate").html(dateRequired);
+  });
+
+  $(document).on("click", function () {
+    $(".year-select").removeClass("opened");
+  });
+}
+
+initGlobalClose() {
+  $("html").off("click").on("click", () => {
+    $(".custom-select").removeClass("opened");
+  });
+}
   /*XXX*/
   BankInfoListByType() {
     let headers = new HttpHeaders();
@@ -823,7 +1074,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
             this.common.submitLoading = false;
             this.spinner.hide("submitLoading");
           }, 1000);
-
           switch (this.dto.Response.validestatus) {
             case 0:
               switch (this.dto.Response.attempcount) {
@@ -899,6 +1149,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
       this.http.post(
         this.funct.ipaddress +
         'countdown/get?phoneno=' + phoneNumber +
+        '&email=' + this.emailaddress +
         '&type=' + this.smstype +
         '&functionName=' + this.functionName,
         {},
@@ -930,7 +1181,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     }
     const phoneNumber = this.preparePhoneNumber();
     this.http.get(
-      `${this.funct.apaddressv1}user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
+      `${this.funct.ipaddress}v1/user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
     )
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ""))
@@ -950,7 +1201,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
   private async handleForgetOtpResponse(result: any) {
     this.dto.Response = result;
     if (this.dto.Response.status === true) {
-      await this.getCountDown();
       this.handleSuccessOtp();
     }
     if (this.dto.Response.status === 'Error') {
@@ -979,7 +1229,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     }
   }
 
-  private handleSuccessOtp() {
+  private async handleSuccessOtp() {
     this.storage.clear('registeropttype');
     this.storage.clear('actionType');
     this.storage.store('localOtpSms', this.dto.Response);
@@ -987,6 +1237,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     sessionStorage.setItem('rootUrl', "/home");
     this.storage.store("formPageType", 'forgetPassword');
     this.storage.store('localForgetPasswordSuccess', 'success');
+    await this.getCountDown();
     this.router.navigate(['/login/otp'], { replaceUrl: true });
   }
 
@@ -1076,6 +1327,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
       .subscribe(
         result => {
           this.dto.Response = result;
+          this.emailaddress=this.dto.Response.email;
           this.smstype = this.dto.Response.smstype;
         });
   }

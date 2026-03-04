@@ -1,17 +1,17 @@
-    
+
      <div class="container" style="padding: 0px !important;margin:0px !important;">
       <div class="row"  style="padding: 0px !important;margin:0px !important;">
         <div class="col-2" style="padding: 0;" *ngIf="actionType != 'NEWDIVICE'">
           <div class="d-flex justify-content-start">
             <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true" (click)="getRegisterCountryCode()">
-              <button id="button-basic" dropdownToggle type="button" 
-                      class="btn dropdown-toggle input_prefix" 
+              <button id="button-basic" dropdownToggle type="button"
+                      class="btn dropdown-toggle input_prefix"
                       style="padding-left: 5px !important; margin-left: 5px !important; display: inline-flex; align-items: center;">
-                <img src="{{imageUrl}}" alt="" width="20px" height="20px" style="padding: 0; margin: 0;">
+                <img  *ngIf="imageUrl" src="{{imageUrl}}" alt="" width="20px" height="20px" style="padding: 0; margin: 0;">
               </button>
               <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-                <a class="dropdown-item" *ngFor="let registerCountryCodeobj of registerCountryCode; let i = index;" 
-                   [class.active]="selectedIndex == i" 
+                <a class="dropdown-item" *ngFor="let registerCountryCodeobj of registerCountryCode; let i = index;"
+                   [class.active]="selectedIndex == i"
                    (click)="selectedRegisterCountryCode(i, dropdown.isOpen = !dropdown.isOpen)">
                   <li role="menuitem" class="menu-item d-flex align-items-center">
                     <img class="flag-icon" src="{{registerCountryCodeobj.imageUrl}}" alt="" width="25px" height="25px">
@@ -23,20 +23,20 @@
             </div>
           </div>
         </div>
-        
-        
+
+
         <!-- <div class="col-3" *ngIf="actionType == 'NEWDIVICE' "> -->
           <div class="col-2" style="padding: 0;"  *ngIf="actionType == 'NEWDIVICE' ">
             <div class="d-flex justify-content-start">
               <div class="btn-group" dropdown #dropdown="bs-dropdown" [autoClose]="true" (click)="getRegisterCountryCode()">
-                <button id="button-basic" dropdownToggle type="button" 
-                        class="btn dropdown-toggle input_prefix" 
+                <button id="button-basic" dropdownToggle type="button"
+                        class="btn dropdown-toggle input_prefix"
                         style="padding-left: 5px !important; margin-left: 5px !important; display: inline-flex; align-items: center;">
                   <img src="{{imageUrl}}" alt="" width="20px" height="20px" style="padding: 0; margin: 0;">
                 </button>
                 <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
-                  <a class="dropdown-item" *ngFor="let registerCountryCodeobj of registerCountryCode; let i = index;" 
-                     [class.active]="selectedIndex == i" 
+                  <a class="dropdown-item" *ngFor="let registerCountryCodeobj of registerCountryCode; let i = index;"
+                     [class.active]="selectedIndex == i"
                      (click)="selectedRegisterCountryCode(i, dropdown.isOpen = !dropdown.isOpen)">
                     <li role="menuitem" class="menu-item d-flex align-items-center">
                       <img class="flag-icon" src="{{registerCountryCodeobj.imageUrl}}" alt="" width="25px" height="25px">
@@ -47,10 +47,10 @@
                 </ul>
               </div>
             </div>
-          </div>       
+          </div>
         <!-- </div> -->
         <div class="vertical-line" style="margin-left: 5px;"></div>
-        <div class="col-9">         
+        <div class="col-9">
           <input type="tel" pattern="[0-9]*"  class="form-control" (focusout)='checkPhoneNumber()' (keyup) ='checkPhoneNumber()' id="loginPhone"
           placeholder="{{ 'phoneNumberHint' | translate}}" [disabled]="actionType === 'NEWDIVICE' || isDisabled"
            [(ngModel)]="phoneValue" [ngModelOptions]="{standalone: true}" (keyup.enter)="enter($event)"/>

@@ -172,7 +172,6 @@ export class RegisterPageComponent implements OnInit {
   }
 
   handleError(error: HttpErrorResponse) {
-    console.log("RegError>>>" + JSON.stringify(error));
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
     if (error.status == 0) {
@@ -282,7 +281,6 @@ export class RegisterPageComponent implements OnInit {
         .subscribe({
           next: (result: any) => {
             this.dto.Response = result;
-            console.log("TimerRes>>>>" + JSON.stringify(this.dto.Response));
             if (this.dto.Response.status === 'Success') {
               const data = this.dto.Response.data;
               this.Timer = data.remainingSeconds;
@@ -305,12 +303,11 @@ export class RegisterPageComponent implements OnInit {
 
   handleOtpRequest(phoneNumber: string) {
     const headers = new HttpHeaders();
-    this.http.get(`${this.funct.apaddressv1}user/getRegisterOTP?phoneNo=${phoneNumber}&type=${this.registerottype}&email=${this.registerModel.email_address}`, { headers })
+    this.http.get(`${this.funct.ipaddress}v1/user/getRegisterOTP?phoneNo=${phoneNumber}&type=${this.registerottype}&email=${this.registerModel.email_address}`, { headers })
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe(
         result => {
           this.dto.Response = result;
-          console.log("Response>>>>" + JSON.stringify(this.dto.Response));
           if (this.dto.Response.errorCode === '000' && this.dto.Response.status === true) {
             this.processSuccessfulOtpResponse(phoneNumber);
           } else {

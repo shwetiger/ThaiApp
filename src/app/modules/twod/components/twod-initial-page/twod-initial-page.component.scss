@@ -8,7 +8,7 @@
     height: auto;
     right: 0;
     width: 100%;
-    margin-top: env(safe-area-inset-top);
+   // margin-top: env(safe-area-inset-top);
     display: flex;
     align-items: center;
     background: #fff;
@@ -18,7 +18,7 @@
       border-radius: 5px;
       padding-top: 5px;
     }
-   
+
   }
   .extraFooter {
     margin-top: 100px;
@@ -35,16 +35,16 @@
   background: #FFFFFF;
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; 
+  display: flex;
   -webkit-box-pack: space-evenly;
       -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
 }
 
 @media screen and (min-width: 1024px) {
-  
+
   .extraHeader1 {
-    left: 35% !important;   
+    left: 35% !important;
     max-width: 30% !important;
   }
   #navTwoDBet {
@@ -55,15 +55,15 @@
 
 
 
-.imaged.init { 
+.imaged.init {
   height: 35px !important;
 }
-.imagedwinner.init { 
+.imagedwinner.init {
   height: 35px !important;
 }
 
 ::ng-deep {
- 
+
   .betSection-class {
     display: flex;
     flex-direction: column;
@@ -82,7 +82,7 @@
 .not-bet {
   cursor: not-allowed;
   pointer-events: none;
-  border: 2px solid #ddd !important;  
+  border: 2px solid #ddd !important;
   color: #ddd !important;
 }
 .active {
@@ -94,13 +94,13 @@
   cursor: pointer;
   padding: 10px;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   width: auto;
-  height: auto;  
+  height: auto;
   border: 2px solid #2456a6;
   border-radius: 50px;
   color: #2456a6;
-  margin: 10px 5px;  
+  margin: 10px 5px;
 }
 
 .twodbet-number-class {
@@ -372,7 +372,7 @@ row {
 }
 
 // @media screen and (min-width: 1024px) {
- 
+
 //   .modal.action-sheet .modal-content {
 //     width: 30% !important;
 //     height: 94% !important;

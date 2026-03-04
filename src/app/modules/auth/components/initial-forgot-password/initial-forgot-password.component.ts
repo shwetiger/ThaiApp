@@ -43,6 +43,7 @@ export class InitialForgotPasswordComponent implements OnInit {
   smstype: any;
   functionName: string = 'Forgot Password OTP';
   Timer: any;
+  emailaddress:any;
 
   constructor(
     private modalService: BsModalService,
@@ -358,7 +359,7 @@ export class InitialForgotPasswordComponent implements OnInit {
 
     this.http
       .get<any>(
-        `${this.funct.apaddressv1}user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
+        `${this.funct.ipaddress}v1/user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
       )
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe(response => {
@@ -460,6 +461,7 @@ export class InitialForgotPasswordComponent implements OnInit {
       this.http.post(
         this.funct.ipaddress +
         'countdown/get?phoneno=' + phoneNumber +
+        '&email=' + this.emailaddress +
         '&type=' + this.smstype +
         '&functionName=' + this.functionName,
         {},
@@ -507,6 +509,7 @@ export class InitialForgotPasswordComponent implements OnInit {
         result => {
           this.dto.Response = result;
           this.smstype = this.dto.Response.smstype;
+          this.emailaddress=this.dto.Response.email;
         });
   }
 

@@ -12,20 +12,19 @@ export class FunctService {
   }
   public ipaddress: any;
   public apaddressv1: any;
+  public apaddressv2 :any;
   public appName: any;
   public secretKey: any;
   public ipaddresslive: any;
   public ipaddressluke: any;
   constructor() {
    this.appName = "Thai 2D3D";
+
   //  this.ipaddress = "https://api.thaisinapp.com/api/";
-  //  this.apaddressv1="https://api.thaisinapp.com/api/v1/";
 
    this.ipaddress = "https://apitest.thai2d3dgame.com/api/";
-   this.apaddressv1 = "https://apitest.thai2d3dgame.com/api/v1/";
 
     // this.ipaddress = "https://api.thai2d3dgame.com/api/";
-    // this.apaddressv1 = "https://api.thai2d3dgame.com/api/v1/";
 
     this.ipaddresslive = "https://api.thai2dlive.com/api/";
     this.ipaddressluke = "https://luke.2dboss.com/api/luke/twod-result-live";

@@ -900,7 +900,7 @@ export class ThreedBetComponent implements OnInit {
       this.router.navigate(['/threed'], { state: { threedsuccessback: true }, replaceUrl: false });
     }
     else {
-      this.location.back();
+      this.router.navigate(['/threed'], { replaceUrl: false });
     }
   }
 

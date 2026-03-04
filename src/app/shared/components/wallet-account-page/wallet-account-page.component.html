@@ -5,19 +5,19 @@
        <div class="section full" *ngIf="!isUserLoggedIn">
         <div class="wide-block bg-white mt-1">
           <a [routerLink]="['/login']" [replaceUrl]="false">
-            <div class="row py-2">            
+            <div class="row py-2">
               <h3 class="pt-4 pl-2 account-title">{{ 'click_to_login' | translate}}</h3>
             </div>
           </a>
         </div>
-      </div>       
+      </div>
       <!-- login -->
       <!-- <app-account-login></app-account-login> -->
-      <div class="section full wallet-account " *ngIf="isUserLoggedIn">   
-        <div class="container-fluid" style="padding: 0px !important;margin: 0px !important;"> 
-          <div class="account-wallet" *ngIf="isUserLoggedIn">       
+      <div class="section full wallet-account " *ngIf="isUserLoggedIn">
+        <div class="container-fluid" style="padding: 0px !important;margin: 0px !important;">
+          <div class="account-wallet" *ngIf="isUserLoggedIn">
             <div class="card " style="padding: 0px !important;margin: 0px !important;">
-              <div class="card-body" style="padding: 0px !important;margin: 0px !important;">              
+              <div class="card-body" style="padding: 0px !important;margin: 0px !important;">
               <div class="container py-1">
                 <div class="row" style="padding: 0px !important;margin: 0px !important;">
                   <div class="col-3" style="padding: 0px 5px !important;margin: 0px !important;"  (click)="goToTopup()">
@@ -27,7 +27,7 @@
                     <div class="row justify-content-center">
                       <h5 class="wallet-title" style="margin: 0px;">{{ 'topupPage' | translate}}</h5>
                     </div>
-                     
+
                   </div>
                   <div class="col-3" style="padding: 0px 5px  !important;margin: 0px !important;" (click)="gotoWithdraw()">
                     <div class="row justify-content-center">
@@ -36,7 +36,7 @@
                     <div class="row justify-content-center">
                       <h5 class="wallet-title" style="margin: 0px;">{{ 'withdrawPage' | translate}}</h5>
                     </div>
-                     
+
                   </div>
                   <div class="col-3" style="padding: 0px 5px  !important;margin: 0px !important;"   (click)="goToGameWallet()">
                     <div class="row justify-content-center" >
@@ -44,65 +44,67 @@
                     </div>
                     <div class="row justify-content-center">
                       <h5 class="wallet-title" style="margin: 0px;">{{ 'game_wallet' | translate}}</h5>
-                    </div>                     
+                    </div>
                   </div>
                   <div class="col-3" style="padding: 0px 5px  !important;margin: 0px !important;" (click)="goToHistory()">
-                    <div class="row justify-content-center" > 
+                    <div class="row justify-content-center" >
                       <img class="wallet-image-css" src="assets/img/transaction_history.png" alt="">
                     </div>
                     <div class="row justify-content-center">
                       <h5 class="wallet-title " style="margin: 0px;">{{ 'wallet_history' | translate}}</h5>
-                    </div>                     
-                  </div>              
-              </div> 
+                    </div>
+                  </div>
+              </div>
               </div>
               </div>
             </div>
-                
-          </div>  
+
+          </div>
           <div class="container-fluid account-bgcolor pb-3" >
-            
+
             <div class="row py-1">
-        
+
             <div *ngIf=" userProfileModel.imageUrl == null || userProfileModel.imageUrl == ''" (click)="goToProfile()" >
-              <img src="assets/img/icons/login-image.png" alt="" class="account-login-active py-2" width="60px;"> 
-            </div>  
-            <div *ngIf="userProfileModel.imageUrl != null  && userProfileModel.imageUrl != '' " (click)="goToProfile()" > 
-                <img [src] = "userProfileModel.imageUrl" class="account-login-active py-2" width="60px"  height="74px" style="border-radius: 50%;">  
-            </div>  
+              <img src="assets/img/icons/login-image.png" alt="" class="account-login-active py-2" width="60px;">
+            </div>
+            <div *ngIf="userProfileModel.imageUrl != null  && userProfileModel.imageUrl != '' " (click)="goToProfile()" >
+                <img [src] = "userProfileModel.imageUrl" class="account-login-active py-2" width="60px"  height="74px" style="border-radius: 50%;">
+            </div>
               <div class="col py-2">
                  <div class="row" style="padding: 0px !important; margin: 0px !important;">
+                  <a (click)="goToProfile()">
                   <h4 style="padding: 0px !important; margin: 0px !important;color: #fff;">{{ changeName() }}</h4>
+                  </a>
                  </div>
-                <div class="row" style="padding: 0px !important; margin: 0px !important;">                 
-                  <h5 class="pt-2 pl-2 account-title-active" style="padding: 0px !important; margin: 0px !important;">{{ 'balance' | translate}}:&nbsp;</h5>                
+                <div class="row" style="padding: 0px !important; margin: 0px !important;">
+                  <h5 class="pt-2 pl-2 account-title-active" style="padding: 0px !important; margin: 0px !important;">{{ 'balance' | translate}}:&nbsp;</h5>
                     <h4 *ngIf="showBalance > 0 " style="color: #fff;padding: 0px !important; margin: 0px !important;">{{ showBalance | number : '1.2-2'}}</h4>
                     <h4 *ngIf="showBalance == 0 " style="color: #fff;padding: 0px !important; margin: 0px !important;">{{ showBalance}}</h4>
                     <h4 *ngIf="showBalance == '*****' " style="color: #fff;padding: 0px !important; margin: 0px !important;">{{ showBalance}}</h4>
                   <h4 class="ml-1 pt-2 text-white" style="padding: 0px !important; margin: 0px !important;"> &nbsp;{{ 'ks' | translate}}</h4>
                   <span class="text-eye" style="padding: 0px !important; margin:0px !important;">
                     <a [routerLink] = "" (click)="showPassword(!showAmount)">
-                      <i class="material-icons open-wallet" style="color: #fff !important; margin-left: 2px; font-size: 20px;" *ngIf="showAmount">visibility</i> 
+                      <i class="material-icons open-wallet" style="color: #fff !important; margin-left: 2px; font-size: 20px;" *ngIf="showAmount">visibility</i>
                      <i class="material-icons open-wallet" style="color: #fff !important; margin-left: 2px; font-size: 20px;" *ngIf="!showAmount">visibility_off</i>
-                   
+
                     </a>
                   </span>
-                </div>   
+                </div>
                 <div class="row" style="padding-left: 8px !important;">
                   <h5 style="padding: 0px !important; margin: 0px !important; color: #fff;" class="mb-2">{{ 'pf_point' | translate}} &nbsp;<span style=" font-weight: 600;">{{userProfileModel.referral_point_wallet | number:'1.0':'en-US'}}</span> </h5>
                 </div>
-                
-              </div>   
+
+              </div>
             </div>
           </div>
         </div>
-        <div class="" style="margin-bottom: 80px;" *ngIf="isUserLoggedIn">      
+        <div class="" style="margin-bottom: 80px;" *ngIf="isUserLoggedIn">
         </div>
-    
+
       <div class="container mt-3 ">
         <div class="card wallet-text">
             <div class="card-body">
-              <h2 class="text-center" style="color: #fff;">{{ 'wallet_dec_title' | translate}}</h2>   
+              <h2 class="text-center" style="color: #fff;">{{ 'wallet_dec_title' | translate}}</h2>
               <div class="row mb-2">
                 <div class="col-1 d-flex justify-content-end text-white" style="padding-right: 0px !important;">
                   {{ 'wallet_num_one' | translate }}&nbsp;
@@ -110,7 +112,7 @@
                 <div class="col-11 d-flex justify-content-start" style="padding-left: 0px !important;">
                   <p class="card-text" >{{ wallet_description2 }}</p>
                 </div>
-              </div> 
+              </div>
               <div class="row mb-2">
                 <div class="col-1 d-flex justify-content-end text-white" style="padding-right: 0px !important;">
                   {{ 'wallet_num_two' | translate }}&nbsp;
@@ -118,36 +120,35 @@
                 <div class="col-11 d-flex justify-content-start"  style="padding-left: 0px !important;">
                   <p class="card-text" > {{ 'wallet_description2_two' | translate}}
                 </div>
-              </div> 
+              </div>
               <div class="row">
                 <div class="col-1 d-flex justify-content-end text-white" style="padding-right: 0px !important;">
                   {{ 'wallet_num_three' | translate }}&nbsp;
                 </div>
                 <div class="col-11 d-flex justify-content-start" style="padding-left: 0px !important;">
                   <p class="card-text" >{{ 'wallet_description2_three' | translate}}</p>
-                </div>                
-              </div>  
-             
+                </div>
+              </div>
+
             </div>
         </div>
       </div>
 
-      <div class="section full mt-1 mx-2">       
+      <div class="section full mt-1 mx-2">
         <div class="container pt-2 video-padding">
           <div class="row">
-            <img style="margin-top: 2px;" src="assets/img/walletvideo.png" alt="" width="30px" height="30px"> &nbsp;            
-            <a (click)="goToTutorial('Topup')" class="mr-2" style="margin-top:4px" ><h4 class="underline" style="color:rgb(0, 42, 255)">{{'showvideo_topup' | translate}}</h4> </a> 
-            
+            <img style="margin-top: 2px;" src="assets/img/walletvideo.png" alt="" width="30px" height="30px"> &nbsp;
+            <a (click)="goToTutorial('Topup')" class="mr-2" style="margin-top:4px" ><h4 class="underline" style="color:rgb(0, 42, 255)">{{'showvideo_topup' | translate}}</h4> </a>
+
           </div>
           <div class="row">
-            <img style="margin-top: 2px;" src="assets/img/walletvideo.png" alt="" width="30px" height="30px">&nbsp;            
+            <img style="margin-top: 2px;" src="assets/img/walletvideo.png" alt="" width="30px" height="30px">&nbsp;
             <a (click)="goToTutorial('Withdrawal')" class="mr-2" style="margin-top:4px"> <h4 class="underline" style="color:rgb(0, 42, 255)">{{ 'showvideo_withdrawl' | translate}}</h4> </a>
-             
+
           </div>
 
         </div>
       </div>
     </div>
 
- 
-    
+

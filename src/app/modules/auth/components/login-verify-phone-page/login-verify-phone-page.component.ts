@@ -57,6 +57,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
   smstype: any;
   functionName:string ='New Device OTP'
   Timer:any;
+  emailaddress:any;
 
   constructor(
     public common: CommonService,
@@ -174,7 +175,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
     const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
     this.http
       .get<any>(
-        `${this.funct.apaddressv1}user/getNewDeviceOTP?phoneNo=${phoneNumber}`
+        `${this.funct.ipaddress}v1/user/getNewDeviceOTP?phoneNo=${phoneNumber}`
       )
       .pipe(catchError(this.handleErrorMessage.handleError.bind(this, '')))
       .subscribe(response => {
@@ -273,6 +274,7 @@ export class LoginVerifyPhonePageComponent implements OnInit {
       this.http.post(
         this.funct.ipaddress +
         'countdown/get?phoneno=' + phoneNumber +
+        '&email=' + this.emailaddress +
         '&type=' + this.smstype +
         '&functionName=' + this.functionName,
         {},
@@ -320,13 +322,16 @@ export class LoginVerifyPhonePageComponent implements OnInit {
   getsmstype() {
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + this.phoneNumber, { headers: headers })
+    const phoneValue = this.storage.retrieve('localPhoneValue');
+    const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+    this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' +phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ''))
       )
       .subscribe(
         result => {
           this.dto.Response = result;
+          this.emailaddress=this.dto.Response.email;
           this.smstype = this.dto.Response.smstype;
         });
   }

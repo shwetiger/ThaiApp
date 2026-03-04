@@ -34,7 +34,8 @@ export class AppPhonePickerComponent implements OnInit {
   registerCountryCode: any;
   CountryCodeActive: any;
   selectedIndex: any;
-  imageUrl = "assets/img/my_flag.png";
+ // imageUrl = "assets/img/my_flag.png";
+  imageUrl: string | null = null;
   @Input() prefix = "";
   localRegisterCountryCode: any;
   regularExpression = "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";//'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$';//'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$';

@@ -55,9 +55,9 @@
   <br />
   <div class="row mx-3">
     <div class="col-12 justify-content-center">
-      <input type="number" class="form-control" (keyup)="checkAmt()" (keyup.enter)="enter($event)"
+      <input type="number"  class="form-control" (keyup)="checkAmt()" (keyup.enter)="enter($event)"
         [ngModelOptions]="{standalone: true}" [(ngModel)]="topupAmt" placeholder="{{'latest-topup-amount' | translate}}"
-        style="font-size: 14px;">
+        style="font-size: 16px;">
       <p id="errAmt" class="error-color pb-1" style="text-align: left; width: 100%;"></p>
     </div>
     <div class="col-1"></div>
@@ -89,7 +89,7 @@
   <div class="row">
     <div class="col-5">
     </div>
-    <div class="col-2">
+    <div class="col-3">
       {{'or' | translate}}
     </div>
     <div class="col-5">
@@ -130,7 +130,7 @@
 
         <i class="material-icons close" [hidden]="(imgURL != null && imgURL !='' && imgURL != undefined)? false : true"
           style="color: red !important;
-                      font-size: 30px !important;                     
+                      font-size: 30px !important;
                       float: right;
                       margin-top: -13px;
                       margin-right: -17px;
@@ -148,7 +148,7 @@
   <div class="row justify-content-center pt-2 pb-2">
     <div class="col-1">
     </div>
-    <div class="col-10" *ngIf="(Usefirebase == true && smstype != 'sms_poh') || 
+    <div class="col-10" *ngIf="(Usefirebase == true && smstype != 'sms_poh') ||
          (Usefirebase == false && (smstype == 'vmg_viber' || smstype == 'sms_poh' || smstype == 'email'))">
 
       <!-- submit loading -->

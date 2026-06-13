@@ -40,7 +40,8 @@ export class LoginSuccessPageComponent implements OnInit {
     private storage: LocalStorageService,
     private funct: FunctService,
     private _location: Location,) {
-    this.oldLoginModel = history.state.loginModel;
+   this.oldLoginModel=this.storage.retrieve('loginModel')
+
   }
 
   async ngOnInit(): Promise<void> {
@@ -71,7 +72,7 @@ export class LoginSuccessPageComponent implements OnInit {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (error.status == 406) {
       this.toastr.error("Tip", 'This mobile is already registered', {
@@ -83,7 +84,10 @@ export class LoginSuccessPageComponent implements OnInit {
 
     return throwError(error);
   }
+
   async goToAutoLogin() {
+    this.loadingSubmiting = true;
+    this.spinner.show("loadingSubmiting");
     let headers = new HttpHeaders();
     this.loginModel.phone_no = this.oldLoginModel.phone_no;
     this.loginModel.app_version = require('../../../../../../package.json').version;
@@ -110,9 +114,7 @@ export class LoginSuccessPageComponent implements OnInit {
               this.storage.clear('localLoginModel');
               this.storage.clear('localNewNotiCount');
               this.deviceId = this.storage.retrieve('localDeviceId');
-              history.pushState(null, '', '/');    // history stack ကို reset တူတူလုပ်
               this.router.navigate(['/home', this.deviceId], { replaceUrl: true });
-             // history.go(-3);
             }
           }
           else {

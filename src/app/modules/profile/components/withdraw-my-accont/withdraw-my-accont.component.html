@@ -4,6 +4,17 @@
   <!-- * App Header -->
   <h3 class="pt-2 text-center font-weight-bold">{{'withdraw_account_select' | translate}}</h3>
   <div class="modal-body">
+     <div *ngIf="mywithdrawalBankAccList?.length === 0"
+         style="
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #999;
+         ">
+        {{'nobankaccount' | translate}}
+    </div>
     <div class="col-12">
       <div class="card mt-4" *ngFor="let bankAccObj of mywithdrawalBankAccList">
         <div class="row justify-content-center" style="margin-top: -25px;">
@@ -45,7 +56,7 @@
   <div class="modal-body" style="padding: 0px !important;">
     <h3 class="ml-2 mt-2" style="color:#2253A2">{{'enter_bank_acc_name' | translate }}</h3>
     <div ngClass="mx-3">
-      <input type="text" style="color:#2253A2" class="editname-text" [(ngModel)]="editName"
+      <input type="text" style="color:#2253A2" class="editname-text" (keydown)="checkKey($event)"  (input)="checkInput($event)" [(ngModel)]="editName"
         [ngModelOptions]="{standalone: true}">
     </div>
   </div>

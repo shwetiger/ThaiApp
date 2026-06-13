@@ -46,6 +46,9 @@ export class ThreedInitialPageComponent implements OnInit {
   ngOnInit(): void {
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
+    this.storage.clear('localresult');
+    this.storage.clear('localshowlink');
+    this.storage.clear('localHistoryType');
     this.storage.clear('localNewBetThreedNumber');
     this.storage.clear('localSelectTwoDList');
     this.storage.clear('localSelectTwoDList');

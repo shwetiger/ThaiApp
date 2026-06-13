@@ -1,36 +1,25 @@
-    <appbar (myEvent) = "refreshPage()" >{{ 'helloword' | translate }}</appbar>
- <div id="appCapsule">
-     <head>
+<appbar (myEvent)="refreshPage()">{{ 'helloword' | translate }}</appbar>
+<div id="appCapsule">
+
+    <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     </head>
-    <div class="extraHeader pt-2 pb-2" style="box-shadow: none !important;margin-top: -10px;">
-        <ul class="nav nav-tabs lined history-main"  role="tablist">
+    <div class="extraHeader pt-2 pb-2" style="box-shadow: none !important;margin-top: -5px;">
+        <ul class="nav nav-tabs lined history-main" role="tablist">
             <li class="nav-item">
-                <a class="nav-link" [ngClass]="{'active': historyMain}" data-toggle="tab" href="#mainwallet" (click) = "getTopupMainTransactionHistory(pageNumber, 'TOPUP')"> {{ 'main_wallet' | translate }}</a>
+                <a class="nav-link" [ngClass]="{'active': historyMain}" data-toggle="tab" href="#mainwallet"
+                    (click)="getTopupMainTransactionHistory(pageNumber, 'TOPUP')"> {{ 'main_wallet' | translate }}</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link"  [ngClass]="{'active': historyGame}" data-toggle="tab" (click)="goToRoute()"> {{ 'game_wallet_tran_text' | translate }}</a>
+                <a class="nav-link" [ngClass]="{'active': historyGame}" data-toggle="tab" (click)="goToRoute()"> {{
+                    'game_wallet_tran_text' | translate }}</a>
             </li>
         </ul>
     </div>
-
-      <!-- <div class="tab-content">
-        <div id="mainwallet"  style="margin-top: 70px;">
-            <ul class="nav nav-tabs lined history-main" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link " [ngClass]="{'active': mainTopup}" data-toggle="tab" href="#Topup" (click) = "getTopupMainTransactionHistory(pageNumber, 'TOPUP')"> {{ 'toup_history' | translate }}</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" [ngClass]="{'active': mainWithdrawal}" data-toggle="tab" href="#Withdrawal" (click)= "getWithdrawalMainTransactionHistory(pageNumber,'WITHDRAW')"> {{ 'withdrawal_history' | translate }}</a>
-                </li>
-            </ul>
-
-        </div>
-      </div> -->
-
-      <div class="row mt-5 ml-2 mr-2">
+<div style="height:10px"></div>
+    <div class="row mt-5 ml-2 mr-2" >
         <div [ngClass]="topuptab? 'header-active':'header'" (click)='Gototopup()'
             style="padding-top: 5px;display: flex;">
             <span [ngStyle]="topuptab?{'color': '#2253A2'} : {'color': 'black'}"
@@ -45,162 +34,211 @@
 
     </div>
 
-    <div >
+    <div>
         <div id="Topup" class="" style="margin-top: 10px;" *ngIf="topuptab==true">
-                <div class="section" id="appCapsule">
-                    <div style="margin: 0px 10px;">
-                        <div class="card mb-2" *ngFor="let tranObj of addTopupList">
-                            <div class=""  (click) = "viewDetail(tranObj,0)">
-                                <div class="in card-body" style="padding: 10px 16px 0px !important;">
-                                    <div class="container">
-                                        <div class="row">
-                                            <img [src]="tranObj.paymentLogoUrl" alt="product" class="imaged">
-                                            <div class="detailInfo">
-                                                <h3 style="font-weight: bold;color: black;margin: 0px;">{{tranObj.transaction_no}}</h3>
-                                                <span class="text-muted">{{tranObj.created_date_string}}</span>
-                                            </div>
-                                            <div class="link-listview">
-                                                <div>
-                                                        <span class="amount" style="color: #000; font-weight: 600;">{{tranObj.amount_Str}} {{'ks' | translate}} &nbsp;
-
-                                                            <img src="assets/img/icon/arrow_forward_ios.png" alt=""  width="20" >
-                                                        </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row" style="margin-bottom: 5px;">
-                                            <div class="driver"></div>
-                                            <div class="container-fluid" style="padding: 0px !important; margin: 0px !important;">
-                                                <div class="row  justify-content-center" *ngIf = "tranObj.status == 'APPROVED' ">
-                                                    <div class="col-9  pl-2">
-                                                        <h4 style="margin: 0px;" class="descText">{{'topup_approved_state_title' | translate}}</h4>
-                                                        <h4 style="margin: 0px;white-space: nowrap;" class="descText">{{'topup_approved_state_desc' | translate}}
-                                                            <i class="fas fa-check-circle ml-5"></i>
-                                                        </h4>
-                                                    </div>
-                                                    <div class="col-3 text-right pt-2 pr-2" >
-                                                        <img src="assets/img/icon/check.png" alt=""  width="20">
-                                                    </div>
-
-                                                </div>
-                                                <div class="row" style="margin-bottom: 0px;" *ngIf = "tranObj.status == 'DENIED' ">
-                                                    <div class="col-8 pl-2">
-                                                        <h3 style="margin: 0px;" class="denieddescText">{{'topup_denied_state_title' | translate}}</h3>
-                                                        <h4 style="margin: 0px;white-space: nowrap;" class="denieddescText"  *ngIf="tranObj.description=='null'" >{{'topup_denied_state_desc' | translate}}
-                                                            <i class="fas fa-times-circle ml-5"></i>
-                                                        </h4>
-                                                         <h4 style="margin: 0px;white-space: nowrap;" class="denieddescText" *ngIf="tranObj.description!='null'">{{ tranObj.description}}
-                                                                 <i class="fas fa-times-circle ml-5"></i>
-                                                        </h4>
-                                                    </div>
-                                                    <div class="col-4 text-right pt-3 pr-2">
-                                                        <img src="assets/img/icon/close.png" alt=""  width="20">
-                                                    </div>
-                                                </div>
-                                                <div class="row" style="margin-bottom: 5px;" *ngIf = "tranObj.status == 'PENDING' ">
-                                                    <h3 style="margin: 0px;white-space: nowrap;" class="pl-2 pendingdescText">{{'pending_detail_state' | translate}}</h3>
-                                                    <div class="col-3 mt-1" style="padding: 0px !important;margin-left: 33%;">
-                                                        <!-- <div >
-                                                            <button  class="btn" style="width: 80%;border-color: #2253A2;color:#2253A2 !important;font-size: 13px; height: 35px; border-radius: 20px;" (click)=" gotoTopuppage()" ><span><img src="assets/img/icons/edit.png" alt=""  width="20"> </span>{{'topup_edit' | translate}}</button>
-                                                        </div> -->
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                        <div style="display: flex;justify-content: center;">
-                            <button type="button" [hidden] = isLastT (click)="getTopupMainTransactionHistoryMore(pageNumber,'TOPUP')" style="background-color: #2253A2; color: #fff;border:none;border-radius: 5px;width: 80%;Height:40px" *ngIf="loadingMore">
-                               {{'morebtn' | translate}}
-                            </button>
-                    </div>
-                </div>
-        </div>
-        <div  style="margin-top: 10px;" *ngIf="withdrawaltab==true">
+            <div *ngIf="addTopupList?.length === 0 && !loading" style="
+        height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: #999;
+     ">{{'nohistory' | translate}}
+            </div>
             <div class="section" id="appCapsule">
                 <div style="margin: 0px 10px;">
-                    <div class="card mb-2" *ngFor="let tranObj of addWithdrawalList">
-                        <div class="mb-1" (click) = "viewDetail(tranObj,0)">
+                    <div class="card mb-2" *ngFor="let tranObj of addTopupList">
+                        <div class="" (click)="viewDetail(tranObj,0)">
                             <div class="in card-body" style="padding: 10px 16px 0px !important;">
                                 <div class="container">
-                                    <div class="row mb-1">
+                                    <div class="row">
                                         <img [src]="tranObj.paymentLogoUrl" alt="product" class="imaged">
                                         <div class="detailInfo">
-                                            <h3 style="font-weight: bold;color: black;margin: 0px;">{{tranObj.account_no}}</h3>
+                                            <h3 style="font-weight: bold;color: black;margin: 0px;">
+                                                {{tranObj.transaction_no}}</h3>
                                             <span class="text-muted">{{tranObj.created_date_string}}</span>
                                         </div>
                                         <div class="link-listview">
                                             <div>
-                                                    <span class="amount" >{{tranObj.amount_Str}} {{'ks' | translate}}&nbsp;
-                                                        <img  src="assets/img/icon/arrow_forward_ios.png" alt=""  width="20" >
-                                                    </span>
+                                                <span class="amount"
+                                                    style="color: #000; font-weight: 600;">{{tranObj.amount_Str}} {{'ks'
+                                                    | translate}} &nbsp;
+
+                                                    <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">
+                                                </span>
                                             </div>
                                         </div>
-
                                     </div>
 
-                                    <div class="row">
+                                    <div class="row" style="margin-bottom: 5px;">
                                         <div class="driver"></div>
-                                        <div class="container-fluid" style="padding: 0px !important; margin: 0px !important;">
-                                            <div class="row" *ngIf = "tranObj.status == 'APPROVED'">
-                                                <div class="col-9 pl-2">
-                                                    <h3 style="margin: 0px;white-space: nowrap;" class="descText">{{'notification_withdrawal_success' | translate}}
-                                                        <i class="fas fa-check-circle ml-5"></i></h3>
-
+                                        <div class="container-fluid"
+                                            style="padding: 0px !important; margin: 0px !important;">
+                                            <div class="row  justify-content-center"
+                                                *ngIf="tranObj.status == 'APPROVED' ">
+                                                <div class="col-9  pl-2">
+                                                    <h4 style="margin: 0px;" class="descText">
+                                                        {{'topup_approved_state_title' | translate}}</h4>
+                                                    <h4 style="margin: 0px;white-space: nowrap;" class="descText">
+                                                        {{'topup_approved_state_desc' | translate}}
+                                                        <i class="fas fa-check-circle ml-5"></i>
+                                                    </h4>
                                                 </div>
-                                                <div class="col-3 text-right pt-1 pr-2">
-                                                    <img src="assets/img/icon/check.png" alt=""  width="20">
+                                                <div class="col-3 text-right pt-2 pr-2">
+                                                    <img src="assets/img/icon/check.png" alt="" width="20">
+                                                </div>
+
+                                            </div>
+                                            <div class="row" style="margin-bottom: 0px;"
+                                                *ngIf="tranObj.status == 'DENIED' ">
+                                                <div class="col-8 pl-2">
+                                                    <h3 style="margin: 0px;" class="denieddescText">
+                                                        {{'topup_denied_state_title' | translate}}</h3>
+                                                    <h4 style="margin: 0px;white-space: nowrap;" class="denieddescText"
+                                                        *ngIf="tranObj.description=='null'">{{'topup_denied_state_desc'
+                                                        | translate}}
+                                                        <i class="fas fa-times-circle ml-5"></i>
+                                                    </h4>
+                                                    <h4 style="margin: 0px;white-space: nowrap;" class="denieddescText"
+                                                        *ngIf="tranObj.description!='null'">{{ tranObj.description}}
+                                                        <i class="fas fa-times-circle ml-5"></i>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-4 text-right pt-3 pr-2">
+                                                    <img src="assets/img/icon/close.png" alt="" width="20">
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf = "tranObj.status == 'PENDING'">
-                                                <h3 style="margin: 0px;white-space: nowrap;" class="pl-2 pendingdescText">{{'pending_detail_state' | translate}}</h3>
-
+                                            <div class="row" style="margin-bottom: 5px;"
+                                                *ngIf="tranObj.status == 'PENDING' ">
+                                                <h3 style="margin: 0px;white-space: nowrap;"
+                                                    class="pl-2 pendingdescText">{{'pending_detail_state' | translate}}
+                                                </h3>
+                                                <div class="col-3 mt-1"
+                                                    style="padding: 0px !important;margin-left: 33%;">
+                                                    <!-- <div >
+                                                            <button  class="btn" style="width: 80%;border-color: #2253A2;color:#2253A2 !important;font-size: 13px; height: 35px; border-radius: 20px;" (click)=" gotoTopuppage()" ><span><img src="assets/img/icons/edit.png" alt=""  width="20"> </span>{{'topup_edit' | translate}}</button>
+                                                        </div> -->
+                                                </div>
                                             </div>
-                                            <div class="row" *ngIf = "tranObj.status == 'DENIED'">
-                                                <div class="col-11">
-                                                    <h3 style="margin: 0px;color : red" class="pendingText">{{'topup_denied_state_title' | translate}}</h3>
-                                                    <h3 style="margin: 0px;color : red;white-space:normal;" class="pendingText" *ngIf="tranObj.description == null" >{{'withdrawal_denied_state_desc' | translate}}</h3>
-                                                    <h3 style="margin: 0px;color : red; white-space: normal;" class="pendingText" *ngIf="tranObj.description != null">{{ tranObj.description }}</h3>
-                                                </div>
-                                                <div class="col-1 text-right pt-3 pr-1">
-                                                    <img src="assets/img/icon/close.png" alt=""  width="20">
-                                                </div>
+                                            <div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-                <div style="display: flex;justify-content: center; padding: 0px; margin: 0px;" >
-
-                    <button type="button" class="mt-2" [hidden]=isLastW  (click)="getWithdrawalMainTransactionHistoryMore(pageNumber,'WITHDRAWAL')" style="background-color: #2253A2; color: #fff;border:none;border-radius: 5px;width: 80%;Height:40px" *ngIf="loadingMore">
-                     {{'morebtn' | translate}}
+                <div style="display: flex;justify-content: center;">
+                    <button type="button" [hidden]=isLastT
+                        (click)="getTopupMainTransactionHistoryMore(pageNumber,'TOPUP')"
+                        style="background-color: #2253A2; color: #fff;border:none;border-radius: 5px;width: 80%;Height:40px"
+                        *ngIf="loadingMore">
+                        {{'morebtn' | translate}}
                     </button>
                 </div>
             </div>
         </div>
+        <div style="margin-top: 10px;" *ngIf="withdrawaltab==true">
+                <div *ngIf="addWithdrawalList?.length === 0 && !loading" style="
+        height: 70vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        color: #999;
+     ">
+                    {{'nohistory' | translate}}
+                </div>
+                <div class="section" id="appCapsule">
+                    <div style="margin: 0px 10px;">
+                        <div class="card mb-2" *ngFor="let tranObj of addWithdrawalList">
+                            <div class="mb-1" (click)="viewDetail(tranObj,0)">
+                                <div class="in card-body" style="padding: 10px 16px 0px !important;">
+                                    <div class="container">
+                                        <div class="row mb-1">
+                                            <img [src]="tranObj.paymentLogoUrl" alt="product" class="imaged">
+                                            <div class="detailInfo">
+                                                <h3 style="font-weight: bold;color: black;margin: 0px;">
+                                                    {{tranObj.account_no}}</h3>
+                                                <span class="text-muted">{{tranObj.created_date_string}}</span>
+                                            </div>
+                                            <div class="link-listview">
+                                                <div>
+                                                    <span class="amount">{{tranObj.amount_Str}} {{'ks' |
+                                                        translate}}&nbsp;
+                                                        <img src="assets/img/icon/arrow_forward_ios.png" alt=""
+                                                            width="20">
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="driver"></div>
+                                            <div class="container-fluid"
+                                                style="padding: 0px !important; margin: 0px !important;">
+                                                <div class="row" *ngIf="tranObj.status == 'APPROVED'">
+                                                    <div class="col-9 pl-2">
+                                                        <h3 style="margin: 0px;white-space: nowrap;" class="descText">
+                                                            {{'notification_withdrawal_success' | translate}}
+                                                            <i class="fas fa-check-circle ml-5"></i>
+                                                        </h3>
+
+                                                    </div>
+                                                    <div class="col-3 text-right pt-1 pr-2">
+                                                        <img src="assets/img/icon/check.png" alt="" width="20">
+                                                    </div>
+                                                </div>
+                                                <div class="row" *ngIf="tranObj.status == 'PENDING'">
+                                                    <h3 style="margin: 0px;white-space: nowrap;"
+                                                        class="pl-2 pendingdescText">{{'pending_detail_state' |
+                                                        translate}}
+                                                    </h3>
+
+                                                </div>
+                                                <div class="row" *ngIf="tranObj.status == 'DENIED'">
+                                                    <div class="col-11">
+                                                        <h3 style="margin: 0px;color : red" class="pendingText">
+                                                            {{'topup_denied_state_title' | translate}}</h3>
+                                                        <h3 style="margin: 0px;color : red;white-space:normal;"
+                                                            class="pendingText" *ngIf="tranObj.description == null">
+                                                            {{'withdrawal_denied_state_desc' | translate}}</h3>
+                                                        <h3 style="margin: 0px;color : red; white-space: normal;"
+                                                            class="pendingText" *ngIf="tranObj.description != null">{{
+                                                            tranObj.description }}</h3>
+                                                    </div>
+                                                    <div class="col-1 text-right pt-3 pr-1">
+                                                        <img src="assets/img/icon/close.png" alt="" width="20">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex;justify-content: center; padding: 0px; margin: 0px;">
+
+                        <button type="button" class="mt-2" [hidden]=isLastW
+                            (click)="getWithdrawalMainTransactionHistoryMore(pageNumber,'WITHDRAWAL')"
+                            style="background-color: #2253A2; color: #fff;border:none;border-radius: 5px;width: 80%;Height:40px"
+                            *ngIf="loadingMore">
+                            {{'morebtn' | translate}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
     <!-- <div style="position: relative; justify-content: center;" class="mt-2" *ngIf="loading">
         <ngx-spinner [name] = "transactionSpinner" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
     </div>    -->
-     <div *ngIf="loading" [name] = "transactionSpinner"  style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
+    <div *ngIf="loading" [name]="transactionSpinner"
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
         <ngx-spinner size="small" color="rgb(6,56,107)" type="ball-spin-clockwise" [fullScreen]="false"></ngx-spinner>
     </div>
     <!-- <ngx-spinner [name] = "spinnerName" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "false"></ngx-spinner> -->
-
-
-
-
-
-
-

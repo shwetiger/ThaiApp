@@ -13,9 +13,10 @@
             <div class="form-group boxed">
                 <div class="input-wrapper">
                     <label for="phone5" style="margin-bottom: 5px;">{{ 'game_transfer_amount' | translate}}</label>
-                    <input type="number" class="form-control" id="amount" maxlength="10"
-                        [(ngModel)]="depositModel.transferAmount" [ngModelOptions]="{standalone: true}"
-                        (keyup)="checkAmount()" (keyup.enter)="enter($event)"   [ngClass]="{'invalid-input': isAmountInvalid}" style="border: 1px solid #2253A2;">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" class="form-control" id="amount"
+                        maxlength="10" (input)="onAmountInput($event)" [(ngModel)]="depositModel.transferAmount"
+                        [ngModelOptions]="{standalone: true}" (keyup)="checkAmount()" (keyup.enter)="enter($event)"
+                        [ngClass]="{'invalid-input': isAmountInvalid}" style="border: 1px solid #2253A2;">
                     <i class="text-ks">
                         <h3 style=" color: gray !important">{{ 'ks' | translate}}</h3>
                     </i>

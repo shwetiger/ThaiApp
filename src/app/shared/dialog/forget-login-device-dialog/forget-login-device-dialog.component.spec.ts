@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ForgetLoginDeviceDialogComponent } from './forget-login-device-dialog.component';
 
 describe('ForgetLoginDeviceDialogComponent', () => {

@@ -18,13 +18,13 @@ import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
 })
 export class GameWalletInOutComponent implements OnInit, OnDestroy {
   title: string = '';
-  closeBtnName: string='';
+  closeBtnName: string = '';
   term_conditions: any;
   @Input() data: any = [];
   description: any;
   gameType: any;
   depositModel: any;
-  showPass: boolean=false
+  showPass: boolean = false
   passwordType = 'password';
   token: any;
   loadingSubmiting: boolean = false;
@@ -117,11 +117,12 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
 
   checkAmount() {
     this.amount_error_message = "";
-    const myanmarRegex = /[\u1000-\u109F]/;
-    if (myanmarRegex.test(this.depositModel.transferAmount)) {
-      this.isAmountInvalid = true;
-      this.depositModel.transferAmount= this.depositModel.transferAmount.slice(0, -1);
-    }
+    // const myanmarRegex = /[\u1000-\u109F]/;
+    // if (myanmarRegex.test(this.depositModel.transferAmount)) {
+    //   this.isAmountInvalid = true;
+    //   this.depositModel.transferAmount= this.depositModel.transferAmount.slice(0, -1);
+    // }
+
     if (this.depositModel.transferAmount == '' || this.depositModel.transferAmount == null || this.depositModel.transferAmount == undefined) {
       var amountRequired = this.translateService.instant("requiredFiled");
       amountRequired = amountRequired.toString().replace("@value", this.translateService.instant("amount"));
@@ -132,41 +133,41 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
     if (this.gameType == 'out') {
       if (this.depositModel.transferAmount >= 100) {
         this.amount_error_message = "";
-         this.isAmountInvalid = false;
+        this.isAmountInvalid = false;
         return true;
 
       }
       if (this.depositModel.transferAmount < 100) {
         this.amount_error_message = this.translateService.instant('amount_error_one');
         // $("#amountErr").html(this.translateService.instant('amount_error_one'));
-         this.isAmountInvalid = true;
+        this.isAmountInvalid = true;
         return false;
       }
     }
     if (this.gameType == 'in') {
       if (this.depositModel.transferAmount >= 1000) {
-         this.isAmountInvalid = false;
+        this.isAmountInvalid = false;
         this.amount_error_message = "";
         return true;
       }
       if (this.depositModel.transferAmount < 1000) {
         //$("#amountErr").html(this.translateService.instant('amount_error'));
         this.amount_error_message = this.translateService.instant('amount_error');
-         this.isAmountInvalid = true;
+        this.isAmountInvalid = true;
         return false;
       }
     }
   }
 
-blockMyanmar(event: KeyboardEvent) {
-  const char = event.key;
-  const code = char.charCodeAt(0);
+  blockMyanmar(event: KeyboardEvent) {
+    const char = event.key;
+    const code = char.charCodeAt(0);
 
-  // Myanmar Unicode Range: 1024–1279 (0x1000–0x127F)
-  if (code >= 0x1000 && code <= 0x127F) {
-    event.preventDefault();
+    // Myanmar Unicode Range: 1024–1279 (0x1000–0x127F)
+    if (code >= 0x1000 && code <= 0x127F) {
+      event.preventDefault();
+    }
   }
-}
 
   handleError(error: HttpErrorResponse) {
     this.loadingSubmiting = false;
@@ -565,5 +566,25 @@ blockMyanmar(event: KeyboardEvent) {
         }
       );
   }
+
+  // onAmountInput(event: Event): void {
+  //   const inputElement = event.target as HTMLInputElement;
+  //   let currentValue = inputElement.value;
+  //   currentValue = currentValue.replace('.', '');
+  //   inputElement.value = currentValue;
+
+  // }
+
+ onAmountInput(event: Event): void {
+  const input = event.target as HTMLInputElement;
+
+  input.value = input.value.replace(/\./g, '').replace(/[^0-9]/g, '');
+
+  this.depositModel.transferAmount = input.value;
+
+  setTimeout(() => {
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
+}
 
 }

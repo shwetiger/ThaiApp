@@ -42,8 +42,24 @@
 </div>
 </div>
 
- <div *ngIf="loading" style="position: absolute;top:50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
+ <!-- <div *ngIf="loading" style="position: absolute; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
         <ngx-spinner size="small" color="rgb(6,56,107)" type="ball-spin-clockwise" [fullScreen]="false"></ngx-spinner>
-    </div>
+    </div> -->
+<div *ngIf="loading"
+     style="
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1050;
+     ">
+    <ngx-spinner
+        size="small"
+        color="rgb(6,56,107)"
+        type="ball-spin-clockwise"
+        [fullScreen]="false">
+    </ngx-spinner>
+</div>
+
 
 

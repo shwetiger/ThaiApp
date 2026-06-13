@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PromotionListComponent } from './components/promotion-list/promotion-list.component';
 import { PromotionDetailComponent } from './components/promotion-detail/promotion-detail.component';
+import { AuthGuard } from '../../shared/service/auth.guard';
 
 const routes: Routes = [
-  { path:'', component: PromotionListComponent },      
+  { path:'', component: PromotionListComponent },
   {
-    path : 'detail/:id',component: PromotionDetailComponent
+    path : 'detail/:id',component: PromotionDetailComponent,canActivate: [AuthGuard]
   },
 ];
 

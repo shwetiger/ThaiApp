@@ -19,8 +19,12 @@
                         <input type="text" maxlength="12" formControlName="refCode" [(ngModel)]="refModel.referral_code"
                             class="form-control refCode" placeholder="{{ 'enterRef' | translate}}">
                     </div>
-
-                    <div class="col justify-content-center text-center mt-3"
+                         <div class="line-container">
+                            <div class="line mt-3"></div>
+                            <span class="text-or">{{'login_or' | translate}}</span>
+                            <div class="line"></div>
+                        </div>
+                    <div class="col justify-content-center text-center"
                         *ngIf="userProfileModel.referral_phone_no!=null && userProfileModel.referral_phone_no!=''">
                         <input type="text" maxlength="12" formControlName="refPhoneNumber"
                             [(ngModel)]="userProfileModel.referral_phone_no" disabled

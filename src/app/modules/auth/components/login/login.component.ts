@@ -30,7 +30,7 @@ declare var require: any;
 export class LoginComponent implements OnInit {
   lang: any;
   phoneValue = "";
-  regularExpressionPhone = "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$"; //"^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
+  regularExpressionPhone = "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
   standalone: true;
   active: string;
   supportLanguages = ['en', 'my', 'th', 'zh'];
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
   loginModel: any;
   phone_no: any;
   password: any;
-  app_version: any;//string = require( '../../../../package.json').version;
+  app_version: any;
   fcmtoken: any;
   deviceId: any;
   ipAddress: any;
@@ -63,8 +63,10 @@ export class LoginComponent implements OnInit {
   isKeyboardVisible = false;
   oncelogin: any;
   version: string | null = null;
+  passErr: string = '';
+  phoneErr: string = '';
+  tg: any;
 
-  // Listen for window resize events to detect keyboard visibility changes
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.isKeyboardVisible = window.innerHeight < window.innerWidth;
@@ -129,6 +131,7 @@ export class LoginComponent implements OnInit {
     this.getIpAddress();
   }
 
+
   updateFCMtoken() {
     var token = this.storage.retrieve('localFcmtoken');
     let headers = new HttpHeaders();
@@ -160,72 +163,80 @@ export class LoginComponent implements OnInit {
         }
       );
   }
-  checkPhoneNumber() {
+
+  checkPhoneNumber(): boolean {
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
 
-    $("#phoneErr").html("");
-    var prefix = this.storage.retrieve('localPhonePrefix');
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    if (this.phoneValue.length == 0) {
-      var phoneRequired = this.translateService.instant("requiredFiled");
-      phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
-      $("#phoneErr").html(phoneRequired);
-      return false;
-    }
-    if (prefix == "+95") {
-      if (!this.phoneValue.startsWith("0")) {
-        var checkNumber = this.translateService.instant("not-allowed-phone");
-        checkNumber = checkNumber.toString().replace("@number", "09");
-        $("#phoneErr").html(checkNumber);
-        return false;
-      }
-    }
-    if (prefix == "+66") {
-      if (!this.phoneValue.startsWith("0")) {
-        var checkNumber = this.translateService.instant("not-allowed-phone");
-        checkNumber = checkNumber.toString().replace("@number", "06, 08, 09");
-        $("#phoneErr").html(checkNumber);
-        return false;
-      }
-    }
-    let mobNumber = RegExp(this.regularExpressionPhone);
+    this.phoneErr = '';
 
-    if (!mobNumber.test(this.phoneValue)) {
-      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
+    const prefix = this.storage.retrieve('localPhonePrefix');
+    this.phoneValue = this.storage.retrieve('localPhoneValue');
+
+    if (!this.phoneValue || this.phoneValue.length === 0) {
+      this.translateService.get(['requiredFiled', 'phonenumbererr']).subscribe(translations => {
+        this.phoneErr = translations['requiredFiled'].replace('@value', translations['phonenumbererr']);
+      });
       return false;
     }
-    else {
-      $("#phoneErr").html("");
-      return true;
+
+    // Myanmar (+95) phone number validation
+    if (prefix === '+95' && !this.phoneValue.startsWith('0')) {
+      this.translateService.get('not-allowed-phone').subscribe(res => {
+        this.phoneErr = res.replace('@number', '09');
+      });
+      return false;
     }
+
+    // Thailand (+66) phone number validation
+    if (prefix === '+66' && !this.phoneValue.startsWith('0')) {
+      this.translateService.get('not-allowed-phone').subscribe(res => {
+        this.phoneErr = res.replace('@number', '06, 08, 09');
+      });
+      return false;
+    }
+
+    const mobNumber = new RegExp(this.regularExpressionPhone);
+    if (!mobNumber.test(this.phoneValue)) {
+      this.translateService.get('phoneInvaild').subscribe(res => this.phoneErr = res);
+      return false;
+    }
+    this.phoneErr = '';
+    return true;
   }
-  checkPassword() {
+
+  checkPassword(): boolean {
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
     const myanmarRegex = /[\u1000-\u109F]/;
     if (myanmarRegex.test(this.loginModel.password)) {
       this.loginModel.password = this.loginModel.password.slice(0, -1);
     }
-    $("#passErr").html("");
-    if (this.loginModel.password.length < 4) {
-      $("#passErr").html(this.translateService.instant("reqPassLength"));
+
+    this.passErr = '';
+
+    if (this.loginModel.password.trim().length < 6) {
+      this.translateService.get('reqPassLength').subscribe(res => this.passErr = res);
       return false;
     }
+
     if (this.loginModel.password.length > 20) {
-      $("#passErr").html(this.translateService.instant("charlength"));
+      this.translateService.get('charlength').subscribe(res => this.passErr = res);
       return false;
     }
-    if (this.loginModel.password.length == 4) {
-      $("#passErr").html("");
+
+    if (this.loginModel.password.length === 6) {
+      this.passErr = '';
       return true;
     }
-    if (this.loginModel.password == '' || this.loginModel.password == null || this.loginModel.password == undefined) {
-      var passwordRequired = this.translateService.instant("requiredFiled");
-      passwordRequired = passwordRequired.toString().replace("@value", this.translateService.instant("passwordHint"));
-      $("#passErr").html(passwordRequired);
+    if (!this.loginModel.password) {
+      this.translateService.get(['requiredFiled', 'passwordHint']).subscribe(translations => {
+        let passwordRequired = translations['requiredFiled'].replace('@value', translations['passwordHint']);
+        this.passErr = passwordRequired;
+      });
       return false;
     }
+    return true;
   }
 
   getIpAddress() {
@@ -260,7 +271,6 @@ export class LoginComponent implements OnInit {
     }
     await this.getIpAddress();
     this.updateFCMtoken();
-
     this.http.post(this.funct.ipaddress + 'Authenticate/login', this.loginModel, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ''))
@@ -278,10 +288,10 @@ export class LoginComponent implements OnInit {
               this.storage.clear('localLoginModel');
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
-                 this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
-                history.replaceState(null, '', location.href); // replaceState is safer
+              this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+                history.replaceState(null, '', location.href);
                 window.addEventListener('popstate', () => {
-                  history.replaceState(null, '', location.href);  // prevent navigation
+                  history.replaceState(null, '', location.href);
                 });
               });
             }
@@ -296,6 +306,7 @@ export class LoginComponent implements OnInit {
           }
         }
       );
+
   }
 
   showPassword(show: boolean) {
@@ -322,37 +333,17 @@ export class LoginComponent implements OnInit {
       });
   }
 
-  // selectLang(lang: string) {
-  //   if (lang == null || lang == '' || lang == undefined) {
-  //     this.translateService.use("en");
-  //     this.storage.store('localLanguage', "en");
-  //     this.active = 'active';
-  //     return;
-  //   }
-  //   this.translateService.use(lang);
-  //   this.storage.store('localLanguage', lang);
-  //   this.active = 'active';
-  //   if (this.oncelogin == 1) {
-  //     this.login();
-  //   }
-  // }
-
   selectLang(lang: string) {
-    if (!lang) {
-      lang = 'en'; // default language
-      this.storage.store('localLanguageIndex',lang);
-      this.storage.store('localLanguageIndex',lang);
-    }
-
+    if (!lang) lang = 'en';
     this.activeLang = lang;
-
     this.translateService.use(lang);
     this.storage.store('localLanguage', lang);
-    this.storage.store('localLanguageIndex',lang);
+    this.storage.store('localLanguageIndex', lang);
 
-    // if (this.oncelogin === 1) {
-    //   this.login();
-    // }
+    if (this.passErr) {
+      this.checkPassword();
+      this.checkPhoneNumber();
+    }
   }
 
   async getSMS() {
@@ -372,4 +363,13 @@ export class LoginComponent implements OnInit {
   enter(event) {
     event.target.blur();
   }
+
+openTelegramBot() {
+  // window.open(
+  //   'https://t.me/Thaisinapp_bot?openinnewtap=1'
+  // );
+   window.open(
+    'https://t.me/Thaisinofficial_bot?openinnewtap=1'
+  );
+}
 }

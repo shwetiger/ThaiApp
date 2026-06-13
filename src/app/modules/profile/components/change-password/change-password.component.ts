@@ -57,11 +57,11 @@ export class ChangePasswordComponent implements OnInit {
     if (myanmarRegex.test(this.password)) {
       this.password = this.password.slice(0, -1);
     }
-    if (this.password == '' || this.password == undefined || this.password == null) {
+    if (this.password.trim() == '' || this.password.trim() == undefined || this.password.trim() == null) {
       $(".passError1").html(this.translateService.instant("curretPassisRequired"));
       return false;
     }
-    if (this.password.length > 20) {
+    if (this.password.trim().length > 20) {
       $(".passError1").html(this.translateService.instant("charlength"));
       return false;
     }
@@ -76,20 +76,20 @@ export class ChangePasswordComponent implements OnInit {
     if (myanmarRegex.test(this.newPassword)) {
       this.newPassword = this.newPassword.slice(0, -1);
     }
-    if (this.newPassword == '' || this.newPassword == undefined || this.newPassword == null) {
+    if (this.newPassword.trim() == '' || this.newPassword.trim() == undefined || this.newPassword.trim() == null) {
       $(".passError2").html(this.translateService.instant("newPassisRequired"));
       return false;
     }
-    if (this.newPassword.length > 20) {
+    if (this.newPassword.trim().length > 20) {
       $(".passError2").html(this.translateService.instant("charlength"));
       return false;
     }
-    if (this.newPassword != '' || this.newPassword != undefined || this.newPassword != null) {
+    if (this.newPassword.trim() != '' || this.newPassword.trim() != undefined || this.newPassword.trim() != null) {
       if (this.newPassword.length < 6) {
         $(".passError2").html(this.translateService.instant("reqPassSixLength"));
         return false;
       }
-      if (this.newPassword.length == 0) {
+      if (this.newPassword.trim().length == 0) {
         $(".passError2").html(this.translateService.instant("newPassisRequired"));
         return false;
       }
@@ -109,15 +109,15 @@ export class ChangePasswordComponent implements OnInit {
     if (myanmarRegex.test(this.confirmPassword)) {
       this.confirmPassword = this.confirmPassword.slice(0, -1);
     }
-    if (this.confirmPassword == '' || this.confirmPassword == undefined || this.confirmPassword == null) {
+    if (this.confirmPassword.trim() == '' || this.confirmPassword.trim() == undefined || this.confirmPassword.trim() == null) {
       $(".passError3").html(this.translateService.instant("confirmPassLength"));
       return false;
     }
-    if (this.confirmPassword.length > 20) {
+    if (this.confirmPassword.trim().length > 20) {
       $(".passError3").html(this.translateService.instant("charlength"));
       return false;
     }
-    if (this.confirmPassword != this.newPassword) {
+    if (this.confirmPassword.trim() != this.newPassword) {
       $(".passError3").html(this.translateService.instant("confirmPassIncorrect"));
       return false;
     }

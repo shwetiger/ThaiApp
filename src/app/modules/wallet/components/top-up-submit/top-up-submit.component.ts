@@ -109,14 +109,13 @@ export class TopUpSubmitComponent implements OnInit {
     private location: Location,
     private sanitizer: DomSanitizer,
   ) {
-
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
     this.parentLink = history.state.parentLink;
-
-    this.transfer_amount = history.state.transfer_amount;
-    this.transfer_payment_id = history.state.transfer_payment_id;
-
+    // this.transfer_amount = history.state.transfer_amount;
+    // this.transfer_payment_id = history.state.transfer_payment_id;
+    this.transfer_payment_id= this.storage.retrieve('transfer_payment_id')
+    this.transfer_amount=this.storage.retrieve('transfer_amount')
   }
 
   ngOnInit() {
@@ -310,7 +309,7 @@ export class TopUpSubmitComponent implements OnInit {
       this.storage.store('isLoggedIn', false);
        this.router.navigate(['/login'], { replaceUrl: true });
       return;
-      
+
 
     }
     else {
@@ -409,7 +408,7 @@ export class TopUpSubmitComponent implements OnInit {
       return false;
     }
     if (transactionNumber.includes('-')) {
-    $("#TopupTransErr").html(topupTransactionRequired); 
+    $("#TopupTransErr").html(topupTransactionRequired);
     return false;
     }
 
@@ -432,24 +431,39 @@ export class TopUpSubmitComponent implements OnInit {
       $("#TopupTransErr").html(topupTransactionRequired);
       return false;
     }
- 
-  
+
+
   }
 
-  // onPasswordInput(event: Event): void {
-  //   const inputElement = event.target as HTMLInputElement;
-  //   inputElement.value = inputElement.value.slice(0, 6);
-  //   this.topupModel.transaction_no=inputElement.value.slice(0, 6);
-  // }
+ preventInvalidInput(event: KeyboardEvent): void {
+  // allow control keys
+  const allowedKeys = [
+    'Backspace',
+    'Delete',
+    'ArrowLeft',
+    'ArrowRight',
+    'Tab'
+  ];
 
-  onPasswordInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    let currentValue = inputElement.value.slice(0, 6);
-    currentValue = currentValue.replace('.', '');
-    inputElement.value = currentValue;
-    this.topupModel.transaction_no = currentValue;
+  if (allowedKeys.includes(event.key)) {
+    return;
   }
 
+  // allow only numbers
+  if (!/^\d$/.test(event.key)) {
+    event.preventDefault();
+  }
+}
+
+onPasswordInput(event: Event): void {
+  const input = event.target as HTMLInputElement;
+
+  // keep only numbers and max 6 digits
+  const value = input.value.replace(/\D/g, '').slice(0, 6);
+
+  input.value = value;
+  this.topupModel.transaction_no = value;
+}
   enter(event) {
     event.target.blur();
   }
@@ -543,18 +557,6 @@ export class TopUpSubmitComponent implements OnInit {
       });
   }
 
-  // saveImage(imageUrl) {
-  //   this.imageDownloadService.downloadImage(imageUrl).subscribe((data) => {
-  //     const blob = new Blob([data]);
-  //     const url = window.URL.createObjectURL(blob);
 
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = 'image.jpg'; // Specify the filename
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   });
-  // }
 
 }

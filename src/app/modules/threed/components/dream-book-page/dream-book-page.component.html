@@ -10,7 +10,8 @@
             </div>
 
             <div class="col pt-1" style="padding-left: 15px;">
-                <input type="number" minlength="3" class="form-control input" placeholder="{{'amountHint' | translate}}"
+                <input type="text" minlength="3" inputmode="numeric" pattern="[0-9]*"
+                (input)="onlyNumber($event)" class="form-control input" placeholder="{{'amountHint' | translate}}"
                     [(ngModel)]="amount" id="betAmount" (keyup.enter)="enter($event)"
                     [ngModelOptions]="{standalone: true}" (keyup)="checkBetAmount()">
                 <p id="betAmountErr" class="error-color"></p>

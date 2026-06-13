@@ -154,6 +154,20 @@ export class TwodBetComponent implements OnInit {
     }
   }
 
+  onlyNumber(event: any) {
+  const input = event.target;
+
+  // remove non-numbers
+  input.value = input.value.replace(/[^0-9]/g, '');
+
+  this.betAmount = input.value;
+
+  // keep cursor at end
+  setTimeout(() => {
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
+}
+
   public twoDClose(data: any) {
     this.twoDCloseTime = data.status;
     this.twoDCloseSection = this.translateService.instant("twoDCloseTime").toString().replace("@section", data.section);

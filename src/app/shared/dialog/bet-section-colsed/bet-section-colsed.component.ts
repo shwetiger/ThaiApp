@@ -6,6 +6,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
   templateUrl: './bet-section-colsed.component.html',
   styleUrls: ['./bet-section-colsed.component.scss']
 })
+
 export class BetSectionColsedComponent implements OnInit {
 
   constructor( public modalRef: BsModalRef,) { }
@@ -15,9 +16,7 @@ export class BetSectionColsedComponent implements OnInit {
 
   sectionclosediglogclose()
   {
-   
     this.modalRef.hide();
-    
   }
 
 }

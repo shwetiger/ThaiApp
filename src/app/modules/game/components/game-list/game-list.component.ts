@@ -115,6 +115,7 @@ export class GameListComponent implements OnInit, OnDestroy {
   gameName: any;
   launchTagName: any;
   isChrome: boolean;
+  providerName1:any;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -179,6 +180,7 @@ export class GameListComponent implements OnInit, OnDestroy {
     this.getGameAlert();
     this.createGSGameMember();
     this.createSKMGameMember();
+    this.getGSgamelist();
     this.data = {
       display_name: '',
       providerId: ''
@@ -352,6 +354,7 @@ export class GameListComponent implements OnInit, OnDestroy {
           if (this.gameList != null && this.gameList.gsGameList != null) {
             this.gameItems = this.gameList.gsGameList;
             this.providerName = this.gameList.name;
+            this.providerName1= this.gameList.display_name;
           } else {
             this.gameItems = [];
           }
@@ -515,11 +518,6 @@ export class GameListComponent implements OnInit, OnDestroy {
   }
 
   prepareLaunchDGameModel(gameObj: any, gameCode: any) {
-    // this.gameType = gameObj.type;
-    // this.gameOption = gameObj.option;
-    // this.providerCode = gameObj.providercode;
-    // this.gameCode = gameCode;
-
     this.launchDameModel.gcode = gameCode;
     this.launchDameModel.gpcode = gameObj.providercode;
     this.skmGameModel.lang = "my_MM";
@@ -911,7 +909,7 @@ export class GameListComponent implements OnInit, OnDestroy {
   goToWallet() {
     this.transferAlert.hide();
     this.storage.store("localListGameLaunch", this.launchGameModel);
-    this.data.display_name = this.providerName;
+    this.data.display_name = this.providerName1;
     this.data.providerId = this.providerId;
     const list = { list: this.data, tranfer: 'in' };
     this.showGameInOutDialog(list);

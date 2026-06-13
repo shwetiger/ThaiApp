@@ -7,33 +7,41 @@
 .slider img {
   height: 200px;
 }
-  
+
   /* .owl-carousel .owl-item img {
     display: block;
     width: 100%;
     height: 300px !important;
   }
   .slide.ng-star-inserted >img {
-    
+
     height: 200px !important;
     } */
-  .overlay{   
-    position: absolute;
-    bottom: 0;
-    left: 0;  
-    z-index: 10;
-    background-color: rgba(0,0,0,0.5); 
+
+   .overlay {
     width: 100%;
+    position: absolute;
+    top: calc(100% - 30px);
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
     height: 26px;
   }
+
   .overlay marquee h5 {
     color: #fff;
-    /* margin: 10px 0px; */
     margin-top: 3px;
     font-size: 12px;
-  }  
-  
-/*   
+   // animation: marqueeAnim 20s linear infinite;
+  }
+
+  @keyframes marqueeAnim {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+
+
+/*
 @media screen and (min-width: 900px) {
   .slide.ng-star-inserted >img {
     height: 600px !important;
@@ -45,13 +53,13 @@
       width: 100%;
       height: 10%;
       z-index: 10;
-      background-color: rgba(0,0,0,0.5); 
+      background-color: rgba(0,0,0,0.5);
     }
     .overlay marquee {
       color: #fff;
       padding-top: 20px;
     }
-   
+
 }
 
 @media screen and (max-width: 992px) {
@@ -66,7 +74,7 @@
       height: 10%;
       z-index: 10;
       background-color: rgba(0,0,0,0.5);
-    }  
+    }
     .overlay marquee {
       color: #fff;
       padding-top: 5px;
@@ -94,7 +102,7 @@
       padding-top: 5px;
       font-size: 15px;
     }
-   
+
 }
 
 
@@ -109,20 +117,20 @@
       width: 100%;
       height: 15%;
       z-index: 10;
-      background-color: rgba(0,0,0,0.5); 
+      background-color: rgba(0,0,0,0.5);
     }
     .overlay marquee {
       color: #fff;
       padding-top: 5px;
       font-size: 12px;
     }
-   
+
 }
 @media screen and (min-width: 1024px) {
   .slide.ng-star-inserted >img {
     height: 160px !important;
     }
-   
+
     .overlay marquee {
       color: #fff;
       padding-top: 5px;

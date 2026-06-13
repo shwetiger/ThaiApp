@@ -8,6 +8,7 @@ import { Location } from '@angular/common';
   templateUrl: './country-black-list.component.html',
   styleUrls: ['./country-black-list.component.scss']
 })
+
 export class CountryBlackListComponent implements OnInit {
   qmBlackList: [];
   providerId: any;

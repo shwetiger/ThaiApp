@@ -1,5 +1,4 @@
 import { TestBed } from '@angular/core/testing';
-
 import { AppVersionService } from './app-version.service';
 
 describe('AppVersionService', () => {

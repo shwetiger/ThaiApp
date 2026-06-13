@@ -17,7 +17,6 @@ const routes: Routes = [
   {
     path: '', component: LoginComponent
   },  
-  //forget
   {
     path : 'initial-forgot-password', component: InitialForgotPasswordComponent
   },
@@ -35,7 +34,7 @@ const routes: Routes = [
   },
   {
     path: 'resetPassword', component: PasswordResetComponent
-  }, 
+  },
   {
     path: 'forget-password-success', component: ForgetPasswordSuccessPageComponent
   },
@@ -45,14 +44,14 @@ const routes: Routes = [
 
   {
     path: 'register', component: RegisterPageComponent
-  },  
+  },
   {
     path: 'register-invite-code', component: RegisterInviteCodeComponent
   },
   {
     path: 'success', component: LoginSuccessPageComponent
   },
-  
+
 ];
 
 @NgModule({

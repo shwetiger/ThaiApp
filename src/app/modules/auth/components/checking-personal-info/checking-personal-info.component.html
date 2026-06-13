@@ -55,7 +55,7 @@
   <br />
   <div class="row mx-3">
     <div class="col-12 justify-content-center">
-      <input type="number"  class="form-control" (keyup)="checkAmt()" (keyup.enter)="enter($event)"
+      <input type="number" (input)="onAmountInput($event)" class="form-control" (keyup)="checkAmt()" (keyup.enter)="enter($event)"
         [ngModelOptions]="{standalone: true}" [(ngModel)]="topupAmt" placeholder="{{'latest-topup-amount' | translate}}"
         style="font-size: 16px;">
       <p id="errAmt" class="error-color pb-1" style="text-align: left; width: 100%;"></p>

@@ -24,7 +24,8 @@
                         <div class="row  justify-content-center">
                             <div style="border: 2px solid #2253A2;border-radius: 5px;Height:'42px';width:'85%'">
                                 <div style="width: 100%;"><app-phone-picker [prefix]="prefix" [phoneValue]="phoneValue"
-                                        [regularExpressionPhone]="regularExpressionPhone"></app-phone-picker></div>
+                                        [regularExpressionPhone]="regularExpressionPhone"
+                                        placeholder="{{ 'phoneNumberHint' | translate}}"></app-phone-picker></div>
                             </div>
                         </div>
                         <div class="row mt-4 justify-content-center">
@@ -48,7 +49,7 @@
                         </div>
                         <div class="row justify-content-center">
                             <div style="width:85%">
-                                <p id="passErr" class="error-color pb-1" style="text-align: left; "></p>
+                                <p class="error-color pb-1">{{ passErr }}</p>
                             </div>
                         </div>
                         <div class="row justify-content-center">
@@ -75,6 +76,19 @@
                             <div class="line"></div>
                         </div>
                         <div class="row mt-2 mb-2 justify-content-center">
+                            <button type="button" style="
+                              border-radius: 5px;
+                              background-color: #229ED9;
+                              border: 2px solid #229ED9;
+                              color: #fff;
+                              width: 85%;
+                              height: 40px;
+                              "(click)="openTelegramBot()">
+                                <i class="fab fa-telegram-plane me-2"></i>
+                                {{ 'telegram_login' | translate }}
+                            </button>
+                        </div>
+                        <div class="row mt-2 mb-2 justify-content-center">
                             <button type="button"
                                 style="border-radius: 5px; background-color: #fff;border:2px solid #2253A2;color:#2253A2;width: 85%;height:40px"
                                 [routerLink]="['/login/register']" [replaceUrl]="false">{{ 'creadeAccount' |
@@ -86,7 +100,8 @@
         </div>
     </div>
 </div>
+<!-- </div> -->
 
 <footer class="app-footer" style="color:red">
-    <small>Version: {{ version }}</small>
+    <small>{{'version' | translate}}: {{ version }}</small>
 </footer>

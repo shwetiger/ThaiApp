@@ -18,13 +18,13 @@ export class FunctService {
   public ipaddresslive: any;
   public ipaddressluke: any;
   constructor() {
-   this.appName = "Thai 2D3D";
+  this.appName = "Thai 2D3D";
 
-  //  this.ipaddress = "https://api.thaisinapp.com/api/";
+  //this.ipaddress = "https://api.thaisinapp.com/api/";
 
-   this.ipaddress = "https://apitest.thai2d3dgame.com/api/";
+  this.ipaddress = "https://apitest.thai2d3dgame.com/api/";
 
-    // this.ipaddress = "https://api.thai2d3dgame.com/api/";
+  //this.ipaddress = "https://api.thai2d3dgame.com/api/";
 
     this.ipaddresslive = "https://api.thai2dlive.com/api/";
     this.ipaddressluke = "https://luke.2dboss.com/api/luke/twod-result-live";

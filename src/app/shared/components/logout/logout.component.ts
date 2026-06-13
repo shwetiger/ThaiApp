@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
-import { HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
@@ -9,6 +9,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { UtilService } from '../../service/util.service';
 import { DtoService } from '../../service/dto.service';
 import { FunctService } from '../../service/funct.service';
+declare var window: any;
+
 @Component({
   selector: 'logout',
   templateUrl: './logout.component.html',
@@ -17,47 +19,71 @@ import { FunctService } from '../../service/funct.service';
 export class LogoutComponent implements OnInit {
   deviceId: any;
   logout: BsModalRef;
+  tg: any;
   constructor(
     private modalService: BsModalService,
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private spinner: NgxSpinnerService,
-    private dto: DtoService, 
+    private dto: DtoService,
     private http: HttpClient,
-    private util: UtilService, 
-    private router: Router, 
-    private storage: LocalStorageService, 
+    private util: UtilService,
+    private router: Router,
+    private storage: LocalStorageService,
     private funct: FunctService) {
-    
-   }
+
+  }
 
   ngOnInit(): void {
-    this.deviceId=this.storage.retrieve('localDeviceId');
+    this.deviceId = this.storage.retrieve('localDeviceId');
   }
-  logoutModel(logout: TemplateRef<any>){
-    this.logout=this.modalService.show(logout,
+  logoutModel(logout: TemplateRef<any>) {
+    this.logout = this.modalService.show(logout,
       {
         class: "logout-modal",
-        ignoreBackdropClick: true, 
+        ignoreBackdropClick: true,
         keyboard: false
-      });       
+      });
   }
-  HidelogoutModel(){
+  HidelogoutModel() {
     this.logout.hide();
   }
-  
-  goLogOut()
-  {   
-           this.logout.hide();
-            this.util.isLogged = false;
-            this.dto.token = ""; 
-            this.storage.store('token', this.dto.token);
-            this.storage.store('isUserLoggedIn', this.util.isLogged);
-            if(this.deviceId != null){
-              this.router.navigate(['/home',this.deviceId],{replaceUrl: false});
-              return;
-            }
-            this.router.navigate(['/home'],{replaceUrl: false});
-           
+
+  doLogOut() {
+    this.logout.hide();
+    this.util.isLogged = false;
+    this.dto.token = "";
+    this.storage.store('token', this.dto.token);
+    this.storage.store('isUserLoggedIn', this.util.isLogged);
+    if (this.deviceId != null) {
+      this.router.navigate(['/home', this.deviceId], { replaceUrl: false });
+      return;
+    }
+    this.router.navigate(['/home'], { replaceUrl: false });
+
+  }
+
+  goLogOut() {
+    if (window.Telegram?.WebApp?.initData) {
+      this.tg = window.Telegram.WebApp;
+      this.tg.ready();
+      const payload = {
+        initData: this.tg.initData
+      };
+      this.http.post<any>(
+        `${this.funct.ipaddress}tg/webappLogout`, payload
+      ).subscribe({
+        next: (res) => {
+           this.tg.close();
+        },
+        error: (err) => {
+         console.log(JSON.stringify(err));
+         // this.doLogOut();
+        }
+      });
+
+    } else {
+      this.doLogOut();
+    }
   }
 
 }

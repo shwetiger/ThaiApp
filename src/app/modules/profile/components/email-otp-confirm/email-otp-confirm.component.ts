@@ -94,7 +94,7 @@ export class EmailOtpConfirmComponent implements OnInit {
     headers = headers.set('Authorization', this.token);
     let params = new HttpParams()
       .set('email', this.emailaddress)
-      .set('request_id', String(this.request_Id)) // Convert `request_id` to a string
+      .set('request_id', String(this.storage.retrieve('emailrequestId'))) // Convert `request_id` to a string
       .set('code', String(this.otpcode));
     this.http.get(this.funct.ipaddress + 'user/updateuseremail', { params: params, headers: headers })
       .pipe(
@@ -113,6 +113,22 @@ export class EmailOtpConfirmComponent implements OnInit {
             this._location.back();
           }
           else {
+            if(this.dto.Response.message=='Invalid OTP Token')
+            {
+              this.toastr.error("", this.translateService.instant("invalid-otp-code"), {
+              timeOut: 3000,
+              positionClass: 'toast-top-center',
+            });
+            return;
+            }
+            if(this.dto.Response.message=='The OTP Token has expired')
+            {
+              this.toastr.error("", this.translateService.instant("otp-token-expired"), {
+              timeOut: 3000,
+              positionClass: 'toast-top-center',
+            });
+            return;
+            }
             this.toastr.error("", this.dto.Response.message, {
               timeOut: 3000,
               positionClass: 'toast-top-center',
@@ -124,6 +140,7 @@ export class EmailOtpConfirmComponent implements OnInit {
   }
 
   getOtp() {
+    this.codeInput.reset();
     this.time = 180;
     this.startCountdown(this.time);
     this.token = this.storage.retrieve('token');
@@ -140,7 +157,14 @@ export class EmailOtpConfirmComponent implements OnInit {
         result => {
           this.dto.Response = result;
           if (this.dto.Response.status == true) {
-            this.request_Id = parseInt(this.dto.Response.request_id as string, 10);
+              this.request_Id = parseInt(this.dto.Response.request_id as string, 10);
+              let requestIdList = this.storage.retrieve('emailrequestId');
+              if (requestIdList && this.dto.Response.request_id !== undefined) {
+                requestIdList += ',' + this.dto.Response.request_id;
+              } else if (this.dto.Response.request_id !== undefined) {
+                requestIdList = this.request_Id;
+              }
+              this.storage.store('emailrequestId', requestIdList);
             this.otpcode = this.dto.Response.code;
             this.common.submitLoading = false;
             this.spinner.hide("submitLoading");

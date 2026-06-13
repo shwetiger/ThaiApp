@@ -14,8 +14,6 @@ import { UtilService } from 'src/app/shared/service/util.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 
-
-
 @Component({
   selector: 'app-register-page',
   templateUrl: './register-page.component.html',
@@ -25,7 +23,7 @@ export class RegisterPageComponent implements OnInit {
   phoneValue = "";
   regularExpressionPhone = "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
   emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$"
-  prefix = '+95';//"+95";
+  prefix = '+95';
   OtpSms: any;
   localOtpSms: any;
   localPhoneNumber: any;
@@ -63,7 +61,6 @@ export class RegisterPageComponent implements OnInit {
     private _location: Location,) {
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
-
   }
 
   ngOnInit(): void {
@@ -286,7 +283,6 @@ export class RegisterPageComponent implements OnInit {
               this.Timer = data.remainingSeconds;
               this.storage.store('Timer', this.Timer);
             }
-
             resolve();
           },
           error: (err) => {
@@ -391,6 +387,11 @@ export class RegisterPageComponent implements OnInit {
     const prefix = this.storage.retrieve('localPhonePrefix');
     return phoneValue.startsWith("0") ? prefix + phoneValue.substring(1) : prefix + phoneValue;
   }
-
+openTelegramBot() {
+  // window.open('https://t.me/Thaisinapp_bot?openinnewtap=1', '_blank');
+    window.open(
+    'https://t.me/Thaisinofficial_bot?openinnewtap=1'
+  );
+}
 
 }

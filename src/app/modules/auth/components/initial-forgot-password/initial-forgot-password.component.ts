@@ -181,7 +181,6 @@ export class InitialForgotPasswordComponent implements OnInit {
     }
   }
 
-
   forgetPasswordModal(forgetPassword: TemplateRef<any>) {
     let checkPhone = this.checkPhoneNumber();
     if (!checkPhone) {
@@ -229,6 +228,7 @@ export class InitialForgotPasswordComponent implements OnInit {
     this.ForgotPasswordBankSlipCheck();
     return;
   }
+
   updateFCMtoken() {
     var token = this.storage.retrieve('localFcmtoken');
     let headers = new HttpHeaders();
@@ -258,7 +258,6 @@ export class InitialForgotPasswordComponent implements OnInit {
           this.dto.Response = result;
         }
       );
-
   }
 
   ForgotPasswordBankSlipCheck() {
@@ -416,7 +415,6 @@ export class InitialForgotPasswordComponent implements OnInit {
 
   private async handleErrorResponse(response: any): Promise<void> {
     const message: string = response.message || '';
-
     if (message.includes('180 seconds')) {
       if (!this.storage.retrieve('localOtpSms')) {
         this.common.submitLoading = false;
@@ -476,7 +474,6 @@ export class InitialForgotPasswordComponent implements OnInit {
               this.Timer = data.remainingSeconds;
               this.storage.store('Timer', this.Timer);
             }
-
             resolve();
           },
           error: (err) => {
@@ -517,8 +514,6 @@ export class InitialForgotPasswordComponent implements OnInit {
     this.location.back();
   }
 }
-
-
 
 function JSONEncoder() {
   throw new Error('Function not implemented.');

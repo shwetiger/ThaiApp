@@ -65,6 +65,11 @@
     font-size: 12px;
   }
 
+  @keyframes marqueeAnim {
+    0%   { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
   //   .account-login {
   //     font-size: 60px;
   //     color: $second-color;

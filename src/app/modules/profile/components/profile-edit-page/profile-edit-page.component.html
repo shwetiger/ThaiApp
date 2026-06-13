@@ -18,8 +18,11 @@
         </div>
         <div class="row mx-1" style="justify-content: center;">
             <div class="col-12 form-group mx-2">
-                <input type="text" class="form-control input" (keyup.enter)="enter($event)" [(ngModel)]="userModel.name"
-                    [ngModelOptions]="{standalone: true}">
+                <!-- <input type="text" class="form-control input" maxlength="25" (keyup.enter)="enter($event)" [(ngModel)]="userModel.name"
+                    [ngModelOptions]="{standalone: true}"> -->
+                <input type="text" class="form-control input" [(ngModel)]="userModel.name" (keyup.enter)="enter($event)"
+                    (keydown)="checkKey($event)" (input)="checkInput($event)" [ngModelOptions]="{standalone: true}">
+
             </div>
         </div>
         <div class="row mx-1" style="justify-content: center;">
@@ -51,22 +54,26 @@
     <div class="modal-body justify-content-center"
         style="padding: 0px !important; max-height:400px; overflow-x: hidden;">
         <div class="profilemodal">
-            <div class="row d-flex justify-content-center mb-2">
-                <label for="file-input" style="display: flex; align-items: center;">
-                    <img src="assets/img/icons/gallery_new.png" alt="" width="20" height="20"
-                        style="margin-right: 5px;">
-                    <span style="font-weight: bold;color:#000; cursor: pointer;">{{'upload_photo' |translate}}</span>
-                    <input #file id="file-input" accept="image/*" type="file" style="display: none;"
-                        onchange="document.getElementById('profileImg').src = window.URL.createObjectURL(this.files[0])"
-                        [(ngModel)]="userModel.imageUrl" [ngModelOptions]="{standalone: true}"
-                        (change)="preview(file.files);HidelogoutModel()" />
-                </label>
+            <div class="row d-flex justify-content-center mb-2" style="cursor: pointer;"
+                (click)="fileInput.click()">
+
+                <img src="assets/img/icons/gallery_new.png" alt="" width="20" height="20" style="margin-right: 5px;">
+
+                <span style="font-weight: bold;color:#000;">
+                    {{'upload_photo' | translate}}
+                </span>
+
+                <!-- hidden input -->
+                <input #fileInput type="file" accept="image/*" style="display: none;"
+       (change)="preview($event.target.files); HidelogoutModel()" />
             </div>
+
+            <!-- preview -->
+            <img [src]="imagePreview" *ngIf="imagePreview" width="100">
             <hr style="width: 100%; margin-top: 0; border-top: 1px solid #000; box-sizing: border-box;">
             <div (click)="deleteprofilephoto()" class="row d-flex justify-content-center mb-3">
                 <img src="assets/img/icons/delete_new.png" alt="" width="20" height="20" style="margin-right: 5px;">
-                <span style="font-weight: bold;color:#000; cursor: pointer;"
-                    >{{'remove_photo' |translate}}</span>
+                <span style="font-weight: bold;color:#000; cursor: pointer;">{{'remove_photo' |translate}}</span>
             </div>
         </div>
     </div>

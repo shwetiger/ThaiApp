@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BetSectionDialogComponent } from './bet-section-dialog.component';
 
 describe('BetSectionDialogComponent', () => {

@@ -52,7 +52,7 @@ export class PasswordResetComponent implements OnInit {
     this.confirmPassword = '';
     this.passwordType = "password";
     this.confirmpasswordType = "password";
-    this.registerKey = history.state.registerKey;
+   this.registerKey=this.storage.retrieve('registerKey');
   }
 
   ngOnInit(): void {
@@ -80,7 +80,6 @@ export class PasswordResetComponent implements OnInit {
        this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (error.status == 406) {
-      // phone number is taken
       this.toastr.error("Tip", 'This mobile is already registered', {
         timeOut: 3000,
         positionClass: 'toast-top-center',
@@ -89,7 +88,6 @@ export class PasswordResetComponent implements OnInit {
     }
     return throwError(error);
   }
-
 
   resetPwd() {
     let aaa = this.checkPassword();
@@ -107,7 +105,7 @@ export class PasswordResetComponent implements OnInit {
     else {
       phoneNumber = this.prefix + this.phoneValue;
     }
-    this.registerModel.phone_no = phoneNumber; //AdminDTO
+    this.registerModel.phone_no = phoneNumber;
     this.registerModel.password = this.password;
     this.registerModel.referral_code = '';
     this.registerModel.appVersion = require('../../../../../../package.json').version;
@@ -118,6 +116,7 @@ export class PasswordResetComponent implements OnInit {
       result => {
         this.dto.Response = result;
         if (this.dto.Response == true) {
+          this.storage.store('forgetPasswordModel',this.registerModel);
           this.router.navigate(['/login/forget-password-success'], { state: { 'forgetPasswordModel': this.registerModel }, replaceUrl: true });
           return true;
         }
@@ -137,16 +136,16 @@ export class PasswordResetComponent implements OnInit {
     if (myanmarRegex.test(this.password)) {
       this.password = this.password.slice(0, -1);
     }
-    if (this.password.length > 20) {
+    if (this.password.trim().length > 20) {
       $("#passwordErr").html(this.translateService.instant("charlength"));
       return false;
     }
     $("#passwordErr").html('');
-    if (!this.password || this.password.length < 6) {
+    if (!this.password.trim() || this.password.length < 6) {
       $("#passwordErr").html(this.translateService.instant("reqPassSixLength"));
       return false;
     }
-    if (this.password && this.password.length == 6) {
+    if (this.password && this.password.trim().length == 6) {
       $("#passwordErr").html("");
       return true;
     }
@@ -164,12 +163,12 @@ export class PasswordResetComponent implements OnInit {
     if (myanmarRegex.test(this.confirmPassword)) {
       this.confirmPassword = this.confirmPassword.slice(0, -1);
     }
-    if (this.confirmPassword.length > 20) {
+    if (this.confirmPassword.trim().length > 20) {
       $("#confirmPasswordErr").html(this.translateService.instant("charlength"));
       return false;
     }
     $("#confirmPasswordErr").html('');
-    if (this.password && this.password.length == this.confirmPassword.length && this.password == this.confirmPassword) {
+    if (this.password.trim() && this.password.trim().length == this.confirmPassword.trim().length && this.password.trim() == this.confirmPassword.trim()) {
       return true;
     }
     else {

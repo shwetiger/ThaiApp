@@ -6,7 +6,7 @@
                 <span style="font-size: 17px;">{{'topup_title' | translate}}</span>
             </div>
             <div class="title" *ngIf="notiDetailObj.title!='Topup Successful'">
-                <span style="font-size: 17px;">{{notiDetailObj.title}}</span>
+                <span style="font-size: 17px;">{{'notification_toup_denied' | translate}}</span>
             </div>
             <div class="noti__body">
                 <span *ngIf="(notiDetailObj.description !=null && notiDetailObj.description != 'null')"
@@ -79,7 +79,7 @@
     <div *ngIf="notiDetailObj.type=='3D Results'">
         <div class="card noti-card">
             <div class="title">
-                <span style="font-size: 17px;"> {{notiDetailObj.title}}</span>
+                <span style="font-size: 17px;"> {{'3dresult'|translate}}</span>
             </div>
             <div class="noti__body">
                 <span>{{'threed_result' | translate}}</span>
@@ -137,7 +137,8 @@
     <div *ngIf="notiDetailObj.type=='WINNER'">
         <div class="card noti-card">
             <div class="title">
-                <span style="font-size: 17px;"> {{notiDetailObj.title}} </span>
+                <span *ngIf="notiDetailObj.category == '2D'" style="font-size: 17px;"> {{'2dwinner' | translate}} </span>
+                  <span *ngIf="notiDetailObj.category == '3D'" style="font-size: 17px;"> {{'3dwinner' | translate}} </span>
             </div>
             <div class="noti__body">
                 <div style="font-weight: bold;font-size: 16;">{{userProfileModel.name}}</div>

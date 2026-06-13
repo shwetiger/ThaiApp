@@ -39,21 +39,25 @@ export class BetResultSuccessUnsuccessPageComponent implements OnInit {
     this.storage.clear('localThreedDPage');
     if ((dream_book != null && dream_book != undefined) || threed == "quickSelect" || threed == "dreamBook") {
       if (this.type == 'threed') {
-//history.go(-3);
-       this.router.navigate(['/threed/bet'], { replaceUrl: false });
+       //history.go(-3);
+       //this.router.navigate(['/threed/bet'], { replaceUrl: true });
+       this.router.navigate(['/home'], { replaceUrl: true })
       }
       else {
-        this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
+        //this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
+          this.router.navigate(['/home'], { replaceUrl: true })
       }
     }
     else {
       this.storage.clear('localSelectTwoDList')
       if (this.type == 'threed') {
-        this.router.navigate(['/threed/bet'], { replaceUrl: false });
+        //this.router.navigate(['/threed/bet'], { replaceUrl: false });
+         this.router.navigate(['/home'], { replaceUrl: true })
       }
       else {
         //history.go(-2);
-         this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
+        // this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
+          this.router.navigate(['/home'], { replaceUrl: true })
       }
     }
   }

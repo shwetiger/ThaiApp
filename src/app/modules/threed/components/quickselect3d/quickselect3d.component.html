@@ -6,7 +6,8 @@
             <div class="countnumber">{{ count }} </div>
         </div>
         <div class="col-9 justify-content-center">
-            <input type="number" (keyup.enter)="enter($event)" class="form-control amount-input"
+            <input type="text" (keyup.enter)="enter($event)" inputmode="numeric" pattern="[0-9]*"
+                (input)="onlyNumber($event)" class="form-control amount-input"
                 placeholder="{{'amountHint' | translate}}" [(ngModel)]="amount" [ngModelOptions]="{standalone: true}"
                 (keyup)="checkBetAmount()">
             <p id="betAmountErr" class="error-color"></p>
@@ -17,8 +18,8 @@
 
     <div class="container pt-2 pr-1">
         <!-- <div class="row">
-            <p>ဂဏန်းအရေအတွက်: {{ count }} </p>  
-        <div class="col-2"></div> 
+            <p>ဂဏန်းအရေအတွက်: {{ count }} </p>
+        <div class="col-2"></div>
        </div>    -->
 
         <div class="row">
@@ -44,18 +45,18 @@
         </div>
 
         <!-- <div class="row">
-            <div class="container pt-2"> 
+            <div class="container pt-2">
                 <div class="row justify-content-around">
-                    <div class="col-6 col-md-4"> 
-                        <button type="button" class="btn button-notRound clear "  
-                        (click)="quickSelectCancel()">{{ 'clean' | translate}}</button>  
-                    </div> 
-                    
                     <div class="col-6 col-md-4">
-                       <button type="button" class="btn button-notRound submit"  
+                        <button type="button" class="btn button-notRound clear "
+                        (click)="quickSelectCancel()">{{ 'clean' | translate}}</button>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                       <button type="button" class="btn button-notRound submit"
                        (click)="quickSelectBet()">{{ 'bet' | translate}}</button>
                     </div>
-                </div>             
+                </div>
             </div>
         </div>    -->
     </div>

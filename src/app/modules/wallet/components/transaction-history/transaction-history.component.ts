@@ -171,6 +171,7 @@ export class TransactionHistoryComponent implements OnInit {
       .subscribe(
         result => {
           this.dto.Response = result;
+          this.loading=false;
           if (this.dto.Response.message == 'too many request') {
             this.loading =true;
             this.spinner.show(this.transactionSpinner);

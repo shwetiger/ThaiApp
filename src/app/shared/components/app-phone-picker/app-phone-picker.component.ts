@@ -12,7 +12,7 @@ import { UtilService } from '../../service/util.service';
 import { FunctService } from '../../service/funct.service';
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, retry } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { BehaviorSubject, throwError } from 'rxjs';
 import { HandleErrorMessageService } from '../../service/handle-error-message.service';
 import { CommonService } from '../../service/common.service';
 import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
@@ -48,6 +48,7 @@ export class AppPhonePickerComponent implements OnInit {
   @Output() phoneValueChange = new EventEmitter<string>();
   @Output() regularExpressionPhoneChange = new EventEmitter<string>();
   @Output() prefixChange = new EventEmitter<string>();
+  phoneErr$ = new BehaviorSubject<string>('');
 
 
   loginModel: { phone_no: string; password: string; app_version: string; fcmtoken: string; deviceId: string; ipAddress: string; };
@@ -69,11 +70,16 @@ export class AppPhonePickerComponent implements OnInit {
 
 
   async ngOnInit(): Promise<void> {
+     this.translateService.onLangChange.subscribe(() => {
+    if (this.phoneErr$.value) {
+      this.checkPhoneNumber(); // ပြန် translate လုပ်
+    }
+  });
     this.prefix = "+95";
     if (this.storage.retrieve('localPhonePrefix') == null) {
       this.storage.store('localPhonePrefix', this.prefix);
     }
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
+  //  this.phoneValue = this.storage.retrieve('localPhoneValue');
     this.loginModel = {
       phone_no: '',
       password: '',
@@ -199,72 +205,120 @@ export class AppPhonePickerComponent implements OnInit {
         }
       );
   }
-  checkPhoneNumber() {
+  // checkPhoneNumber() {
 
+  //   this.common.submitLoading = false;
+  //   this.spinner.hide("submitLoading");
+
+  //   $("#phoneErr").html("");
+  //   var prefix = this.storage.retrieve('localPhonePrefix');
+  //   this.phoneValueChange.emit(this.phoneValue);
+  //   $("#phoneErr").html("");
+  //   this.storage.store('localPhoneValue', this.phoneValue);
+  //   if (this.phoneValue.length == 0) {
+  //     var phoneRequired = this.translateService.instant("requiredFiled");
+  //     phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
+  //     $("#phoneErr").html(phoneRequired);
+  //     return false;
+  //   }
+  //   const result = this._zawgyiDetector.detect(this.phoneValue);
+  //   if (result.detectedEnc === 'zg') {
+  //     $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
+  //     return false;
+  //   } else if (result.detectedEnc === 'uni') {
+  //     $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
+  //     return false;
+  //   }
+  //   if (prefix == "+95") {
+
+  //     if (!this.phoneValue.startsWith("09")) {
+  //       var checkNumber = this.translateService.instant("not-allowed-phone");
+  //       checkNumber = checkNumber.toString().replace("@number", "09");
+  //       $("#phoneErr").html(checkNumber);
+  //       return false;
+  //     }
+
+  //   }
+  //   if (prefix == "+66") {
+  //     if (
+  //       !this.phoneValue.startsWith("09") &&
+  //       !this.phoneValue.startsWith("08") &&
+  //       !this.phoneValue.startsWith("06")
+  //     ) {
+  //       var checkNumber = this.translateService.instant("not-allowed-phone");
+  //       checkNumber = checkNumber.toString().replace("@number", "06, 08, 09");
+  //       $("#phoneErr").html(checkNumber);
+  //       return false;
+  //     }
+  //   }
+  //   if (prefix == "+60") {
+  //     if (
+  //       !this.phoneValue.startsWith("01")) {
+  //       var checkNumber = this.translateService.instant("not-allowed-phone");
+  //       checkNumber = checkNumber.toString().replace("@number", "01");
+  //       $("#phoneErr").html(checkNumber);
+  //       this.common.submitLoading = false;
+  //       this.spinner.hide("submitLoading");
+  //       return false;
+  //     }
+  //   }
+  //   let pattern = RegExp(this.regularExpressionPhone);// /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/;
+
+  //   if (!pattern.test(this.phoneValue)) {
+  //     $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+  checkPhoneNumber(): boolean {
+ // this.phoneErr$.next(''); // reset
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
-
-    $("#phoneErr").html("");
-    var prefix = this.storage.retrieve('localPhonePrefix');
+    this.phoneErr$.next('');
     this.phoneValueChange.emit(this.phoneValue);
-    $("#phoneErr").html("");
+    this.phoneErr$.next('');
     this.storage.store('localPhoneValue', this.phoneValue);
-    if (this.phoneValue.length == 0) {
-      var phoneRequired = this.translateService.instant("requiredFiled");
-      phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
-      $("#phoneErr").html(phoneRequired);
-      return false;
-    }
-    const result = this._zawgyiDetector.detect(this.phoneValue);
-    if (result.detectedEnc === 'zg') {
-      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
-      return false;
-    } else if (result.detectedEnc === 'uni') {
-      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
-      return false;
-    }
-    if (prefix == "+95") {
-
-      if (!this.phoneValue.startsWith("09")) {
-        var checkNumber = this.translateService.instant("not-allowed-phone");
-        checkNumber = checkNumber.toString().replace("@number", "09");
-        $("#phoneErr").html(checkNumber);
-        return false;
-      }
-
-    }
-    if (prefix == "+66") {
-      if (
-        !this.phoneValue.startsWith("09") &&
-        !this.phoneValue.startsWith("08") &&
-        !this.phoneValue.startsWith("06")
-      ) {
-        var checkNumber = this.translateService.instant("not-allowed-phone");
-        checkNumber = checkNumber.toString().replace("@number", "06, 08, 09");
-        $("#phoneErr").html(checkNumber);
-        return false;
-      }
-    }
-    if (prefix == "+60") {
-      if (
-        !this.phoneValue.startsWith("01")) {
-        var checkNumber = this.translateService.instant("not-allowed-phone");
-        checkNumber = checkNumber.toString().replace("@number", "01");
-        $("#phoneErr").html(checkNumber);
-        this.common.submitLoading = false;
-        this.spinner.hide("submitLoading");
-        return false;
-      }
-    }
-    let pattern = RegExp(this.regularExpressionPhone);// /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/;
-
-    if (!pattern.test(this.phoneValue)) {
-      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
-      return false;
-    }
-    return true;
-
+  if (!this.phoneValue || this.phoneValue.length === 0) {
+    this.translateService.get(['requiredFiled','phonenumbererr'])
+      .subscribe(translations => {
+        this.phoneErr$.next(translations['requiredFiled'].replace('@value', translations['phonenumbererr']));
+      });
+    return false;
   }
+
+  // Myanmar +95 validation
+   if (this.storage.retrieve('localPhonePrefix') === '+95' && !this.phoneValue.startsWith('0')) {
+    this.translateService.get('not-allowed-phone')
+      .subscribe(res => this.phoneErr$.next(res.replace('@number','09')));
+    return false;
+  }
+
+   if (this.storage.retrieve('localPhonePrefix') === '+66' && !this.phoneValue.startsWith('0')) {
+    this.translateService.get('not-allowed-phone')
+      .subscribe(res => this.phoneErr$.next(res.replace('@number',"06, 08, 09")));
+    return false;
+  }
+
+  if (this.storage.retrieve('localPhonePrefix') === '+60' && !this.phoneValue.startsWith('0')) {
+    this.translateService.get('not-allowed-phone')
+      .subscribe(res => this.phoneErr$.next(res.replace('@number',"01")));
+    return false;
+  }
+
+  // Regex
+  const pattern = new RegExp(this.regularExpressionPhone);
+  if (!pattern.test(this.phoneValue)) {
+    this.translateService.get('phoneInvaild')
+      .subscribe(res => this.phoneErr$.next(res));
+    return false;
+  }
+
+  this.phoneErr$.next('');
+  return true;
+}
+
+
   enter(event) {
     event.target.blur();
   }

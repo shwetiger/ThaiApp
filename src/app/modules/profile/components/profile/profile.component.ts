@@ -163,6 +163,7 @@ export class ProfileComponent implements OnInit {
   }
 
   gotofeedback() {
+    this.storage.store('type','feedback');
     this.router.navigate(['/me-page/feedback'], { state: { type: 'feedback' }, replaceUrl: false });
   }
 

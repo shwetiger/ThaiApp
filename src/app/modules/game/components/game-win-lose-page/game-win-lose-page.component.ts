@@ -13,6 +13,7 @@ import isUAWebview from "is-ua-webview";
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { Location } from '@angular/common';
+declare var window: any;
 
 @Component({
   selector: 'app-game-win-lose-page',
@@ -84,13 +85,34 @@ export class GameWinLosePageComponent {
     this.getUserProfile();
     this.LaunchGameList = this.storage.retrieve('localLaunchGameList');
     if (this.launchUrl != undefined || this.launchUrl != null) {
-      this.fbAuthWindow = window.open(this.launchUrl);
-      this.checkWindow = true;
-      setTimeout(() => this.checkAuthWindow(), 0);
-    }
-    else {
+      const tg = window.Telegram?.WebApp;
+      if (tg?.initData) {
+        // if (this.providerId == '16') {
+        //   this.spinner.hide();
+        //   this.showUI = true;
+        //   this.fbAuthWindow = window.open(this.launchUrl);
+        //   this.checkWindow = true;
+        //   setTimeout(() => this.checkAuthWindow(), 0);
+        // }
+        // else {
+          this.router.navigate(['/game/telegram_game'], {
+            queryParams: {
+              url: this.launchUrl,
+              providerId: this.providerId
+            }
+          });
+       // }
+      } else {
+        this.fbAuthWindow = window.open(this.launchUrl);
+        this.checkWindow = true;
+        setTimeout(() => this.checkAuthWindow(), 0);
+
+      }
+
+    } else {
       this.spinner.hide();
       this.showUI = true;
+
     }
   }
 
@@ -138,7 +160,7 @@ export class GameWinLosePageComponent {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (error.status == 400) {
       this.toastr.error("Bad request.", 'Invalid!', {
@@ -262,7 +284,14 @@ export class GameWinLosePageComponent {
   }
 
   goToGame() {
-    this._location.back();
+    if(this.providerId=='8' || this.providerId=='2')
+    {
+      this.router.navigate(['/game/gamecategory',this.providerId])
+    }
+    else{
+    this.router.navigate(['/game/gameList',this.providerId], {
+      replaceUrl: true
+    });
+  }
   }
 }
-

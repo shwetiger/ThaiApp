@@ -147,20 +147,25 @@ export class EmailAddressComponent implements OnInit {
             if (this.dto.Response.status == true) {
               this.request_id = parseInt(this.dto.Response.request_id as string, 10);
               this.code = this.dto.Response.code;
-              this.storage.store("emailrequestId", this.request_id);
+              let requestIdList = this.storage.retrieve('emailrequestId');
+              if (requestIdList && this.dto.Response.request_id !== undefined) {
+                requestIdList += ',' + this.dto.Response.request_id;
+              } else if (this.dto.Response.request_id !== undefined) {
+                requestIdList = this.dto.Response.request_id;
+              }
+              this.storage.store('emailrequestId', requestIdList);
 
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
               this.storage.clear('Timer');
               this.router.navigate(['/me-page/email-otp-comfirm'], { replaceUrl: true });
             }
-            if(this.dto.Response.message=" Only one text message can be sent within 180 seconds ")
-            {
+            if (this.dto.Response.message = " Only one text message can be sent within 180 seconds ") {
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
               this.router.navigate(['/me-page/email-otp-comfirm'], { replaceUrl: true });
             }
-              if(this.dto.Response.message=='too many request'){
+            if (this.dto.Response.message == 'too many request') {
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
               this.toastr.error("", this.translateService.instant("transaction_wait_5sec"), {

@@ -244,6 +244,21 @@ export class Quickselect3dComponent implements OnInit {
     }
   }
 
+  onlyNumber(event: any) {
+  const input = event.target;
+
+  // remove non-numbers
+  input.value = input.value.replace(/[^0-9]/g, '');
+
+  this.amount = input.value;
+
+  // keep cursor at end
+  setTimeout(() => {
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
+}
+
+
   quickSelectCancel() {
     this.selectedNumberList = [];
     this.selectedRangeNumberList = [];

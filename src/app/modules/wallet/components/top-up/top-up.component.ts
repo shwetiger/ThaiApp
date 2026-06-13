@@ -126,6 +126,7 @@ export class TopUpComponent implements OnInit {
   }
 
   checkAmountTopup() {
+
     for (let k = 0; k < this.chooseTopupAmount.length; k++) {
       if (this.topupAmount == this.chooseTopupAmount[k].amount) {
         this.chooseTopupAmount[k].selected = true;
@@ -190,12 +191,15 @@ export class TopUpComponent implements OnInit {
     this.spinner.hide("submitLoading");
     this.storage.store('transfer_amount', this.topupSelectedAmount)
     this.storage.store('transfer_payment_id', this.payment_id)
+    this.storage.store('transfer_amount',this.topupSelectedAmount)
     this.router.navigate(['/wallet/top-up-submit'], { state: { transfer_amount: this.topupSelectedAmount, transfer_payment_id: this.payment_id }, replaceUrl: false });
   }
 
   enter(event) {
     event.target.blur();
   }
+
+
 
   getTopupDetail(id) {
     this.token = this.storage.retrieve('token');
@@ -243,4 +247,15 @@ export class TopUpComponent implements OnInit {
     }
     return true;
   }
+
+  onAmountInput(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  let value = input.value.replace(/\./g, '');
+  value = value.replace(/[^0-9]/g, '');
+  input.value = value;
+  this.topupAmount = value;
+  setTimeout(() => {
+    input.setSelectionRange(value.length, value.length);
+  });
+}
 }

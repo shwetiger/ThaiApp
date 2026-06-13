@@ -268,20 +268,130 @@ export class OtpPageComponent implements OnInit {
   SubmitOtp() {
     this.common.submitLoading = true;
     this.spinner.show("submitLoading");
-    setTimeout(() => {
-      this.storage.clear("changeoptprocess");
-      let checkOPTINput = this.validateOtp();
-      if (!checkOPTINput) {
-        return;
+    this.storage.clear("changeoptprocess");
+    let checkOPTINput = this.validateOtp();
+    if (!checkOPTINput) {
+      return;
+    }
+    if (this.common.actionType == "insertAccount") {
+      if (this.localInsertAccountOtpSms.request_id != null) {
+        this.request_id = this.storage.retrieve('requestId')
+        this.token = this.storage.retrieve('token');
+        let headers = new HttpHeaders();
+        headers = headers.set('Authorization', this.token);
+        this.OtpSms = [];
+        this.http.get(this.funct.ipaddress + 'transaction/withdrawcheckOTP?code=' + this.otpcode + '&request_id=' + this.request_id, { headers: headers })
+          .pipe(
+            catchError(this.handleErrorMessage.handleError.bind(this, 'otp'))
+          )
+          .subscribe(
+            result => {
+              this.dto.Response = result;
+              this.OtpSms = this.dto.Response;
+              this.common.submitLoading = false;
+              this.spinner.hide("submitLoading");
+              if (this.dto.Response.status == 401) {
+                if (this.dto.Response.code == 0) {
+                  this.toastr.error("", this.translateService.instant('invalid-otp-code'),
+                    {
+                      timeOut: 3000,
+                      positionClass: 'toast-bottom-center',
+                    });
+                  return;
+                }
+                if (this.dto.Response.code == 11) {
+                  this.common.submitLoading = false;
+                  this.spinner.hide("submitLoading");
+                  this.toastr.error("", this.translateService.instant('otp-token-expired'),
+                    {
+                      timeOut: 3000,
+                      positionClass: 'toast-bottom-center',
+                    });
+                  return;
+                }
+              }
+              if (this.OtpSms != null) {
+                if (this.OtpSms.status == true) {
+                  this.http.post(this.funct.ipaddress + 'userbankaccount/insertuserBankAccount', this.bankAccountList, { headers: headers })
+                    .pipe(
+                      catchError(this.handleErrorMessage.handleError.bind(this, ''))
+                    )
+                    .subscribe(
+                      result => {
+                        this.dto.Response = result;
+                        this.toastr.success("", this.translateService.instant('bankacc_addsuccess'),
+                          {
+                            timeOut: 3000,
+                            positionClass: 'toast-top-center',
+                          });
+                        this.storage.store('otpSms', "insert");
+                        this.storage.store('successmsg', 'withdrawalsuccess');
+                        var insertAccount = this.storage.retrieve("localInsertAccount");
+                        this.storage.clear("localInsertAccount");
+                        this.storage.clear('localInsertAccountOtpSms');
+                        this.storage.clear('bankAccountList');
+                        this.storage.clear('requestId');
+                        if (insertAccount == 'insertAccount') {
+                          this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: true });
+                        }
+                        else {
+                          history.go(-2);
+                        }
+                      }
+                    );
+                  this.storage.clear('localInsertAccountOtpSms');
+                  return true;
+                }
+                else if (this.OtpSms.status == 401) {
+                  this.toastr.error("", 'The OTP Token has expired',
+                    {
+                      timeOut: 3000,
+                      positionClass: 'toast-top-center',
+                    });
+                  return false;
+                }
+                else if (this.OtpSms.status == 'Error' && this.OtpSms.message == 'too many request') {
+                  this.toastr.error("", this.translateService.instant('transaction_wait_5sec'),
+                    {
+                      timeOut: 3000,
+                      positionClass: 'toast-top-center',
+                    });
+                  return false;
+                }
+                else {
+                  this.toastr.error("", 'OTP is not correct',
+                    {
+                      timeOut: 3000,
+                      positionClass: 'toast-top-center',
+                    });
+                  return false;
+                }
+              }
+            }
+          );
       }
-      if (this.common.actionType == "insertAccount") {
-        if (this.localInsertAccountOtpSms.request_id != null) {
-          this.request_id = this.storage.retrieve('requestId')
-          this.token = this.storage.retrieve('token');
+      return;
+    }
+    if (this.otpcode != null && this.otpcode.length == 6) {
+      if (this.storage.retrieve('localOtpSms') != null) {
+        if (this.storage.retrieve('localOtpSms').request_id != null) {
           let headers = new HttpHeaders();
-          headers = headers.set('Authorization', this.token);
           this.OtpSms = [];
-          this.http.get(this.funct.ipaddress + 'transaction/withdrawcheckOTP?code=' + this.otpcode + '&request_id=' + this.request_id, { headers: headers })
+          const localOtpSms = this.storage.retrieve('localOtpSms');
+          // var phone_no = this.storage.retrieve('localOtpSms').to;
+          var phone_no = this.phoneNumber;
+          var request_id = this.request_id = this.storage.retrieve('requestId')
+          var code = this.otpcode;
+          var link;
+          if (this.commonFormtype == "forgetPassword") {
+            this.token = this.storage.retrieve('token');
+            headers = headers.set('Authorization', this.token);
+            link = this.funct.ipaddress + 'v1/user/checkOTPXXx?phone_no=' + phone_no + '&email=' + this.smssender + '&code=' + code + '&request_id=' + request_id + '&smstype=' + this.smstype;
+          }
+          else {
+            link = this.funct.ipaddress + 'v2/user/checkOTP?phone_no=' + phone_no + '&email=' + this.emailaddress + '&code=' + code + '&request_id=' + request_id + '&smstype=' + this.registerottype;
+          }
+          this.http.get(link, { headers: headers })
             .pipe(
               catchError(this.handleErrorMessage.handleError.bind(this, 'otp'))
             )
@@ -289,6 +399,10 @@ export class OtpPageComponent implements OnInit {
               result => {
                 this.dto.Response = result;
                 this.OtpSms = this.dto.Response;
+                this.common.submitLoading = false;
+                this.spinner.hide("submitLoading");
+                this.storage.store('otpVerifyToken', this.dto.Response.otpVerifyToken)
+                this.storage.clear("registeremail")
                 if (this.dto.Response.status == 401) {
                   if (this.dto.Response.code == 0) {
                     this.toastr.error("", this.translateService.instant('invalid-otp-code'),
@@ -297,8 +411,7 @@ export class OtpPageComponent implements OnInit {
                         positionClass: 'toast-bottom-center',
                       });
                     return;
-                  }
-                  if (this.dto.Response.code == 11) {
+                  } if (this.dto.Response.code == 11) {
                     this.toastr.error("", this.translateService.instant('otp-token-expired'),
                       {
                         timeOut: 3000,
@@ -309,155 +422,33 @@ export class OtpPageComponent implements OnInit {
                 }
                 if (this.OtpSms != null) {
                   if (this.OtpSms.status == true) {
-                    this.http.post(this.funct.ipaddress + 'userbankaccount/insertuserBankAccount', this.bankAccountList, { headers: headers })
-                      .pipe(
-                        catchError(this.handleErrorMessage.handleError.bind(this, ''))
-                      )
-                      .subscribe(
-                        result => {
-                          this.dto.Response = result;
-                          this.toastr.success("", this.translateService.instant('bankacc_addsuccess'),
-                            {
-                              timeOut: 3000,
-                              positionClass: 'toast-top-center',
-                            });
-                          this.storage.store('otpSms', "insert");
-                          this.storage.store('successmsg', 'withdrawalsuccess');
-                          var insertAccount = this.storage.retrieve("localInsertAccount");
-                          this.storage.clear("localInsertAccount");
-                          this.storage.clear('localInsertAccountOtpSms');
-                          this.storage.clear('bankAccountList');
-                          this.storage.clear('requestId');
-                          if (insertAccount == 'insertAccount') {
-                            this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: true }).then(() => {
-                              history.pushState(null, '', location.href);
-                              window.addEventListener('popstate', () => {
-                                history.pushState(null, '', location.href);
-                              });
-                            });
-                          }
-                          else {
-                            history.go(-2);
-                          }
-                        }
-                      );
-                    this.storage.clear('localInsertAccountOtpSms');
+                    this.commonFormtype = this.storage.retrieve('formPageType')
+                    if (this.commonFormtype == "forgetPassword") {
+                      this.storage.clear('localOtpSms');
+                      this.storage.clear('requestId');
+                      var registerKey = this.funct.encrypt();
+                      this.storage.store('registerKey', registerKey)
+                      this.router.navigate(['/login/resetPassword'], { state: { registerKey: registerKey }, replaceUrl: true });
+                    } else {
+                      this.storage.clear('localOtpSms');
+                      this.storage.clear('requestId');
+                      var registerKey = this.funct.encrypt();
+                      this.storage.store('registerKey', registerKey)
+                      this.router.navigate(['/login/registration'], { state: { registerKey: registerKey }, replaceUrl: true });
+                    }
                     return true;
                   }
-                  else if (this.OtpSms.status == 401) {
-                    this.toastr.error("", 'The OTP Token has expired',
-                      {
-                        timeOut: 3000,
-                        positionClass: 'toast-top-center',
-                      });
-                    return false;
-                  }
-                  else if (this.OtpSms.status == 'Error' && this.OtpSms.message == 'too many request') {
-                    this.toastr.error("", this.translateService.instant('transaction_wait_5sec'),
-                      {
-                        timeOut: 3000,
-                        positionClass: 'toast-top-center',
-                      });
-                    return false;
-                  }
                   else {
-                    this.toastr.error("", 'OTP is not correct',
-                      {
-                        timeOut: 3000,
-                        positionClass: 'toast-top-center',
-                      });
+                    // this.toastr.error("Tip", 'OTP is not correct', {
+                    //   timeOut: 3000,
+                    //   positionClass: 'toast-top-center',
+                    // });
                     return false;
                   }
                 }
               }
             );
         }
-        return;
-      }
-      if (this.otpcode != null && this.otpcode.length == 6) {
-        if (this.storage.retrieve('localOtpSms') != null) {
-          if (this.storage.retrieve('localOtpSms').request_id != null) {
-            let headers = new HttpHeaders();
-            this.OtpSms = [];
-            const localOtpSms = this.storage.retrieve('localOtpSms');
-           // var phone_no = this.storage.retrieve('localOtpSms').to;
-            var phone_no= this.phoneNumber;
-            var request_id = this.request_id = this.storage.retrieve('requestId')
-            var code = this.otpcode;
-            var link;
-            if (this.commonFormtype == "forgetPassword") {
-              this.token = this.storage.retrieve('token');
-              headers = headers.set('Authorization', this.token);
-              link = this.funct.ipaddress +'v1/user/checkOTPXXx?phone_no=' + phone_no + '&email='+ this.smssender +'&code=' + code + '&request_id=' + request_id + '&smstype=' + this.smstype;
-            }
-            else {
-              link = this.funct.ipaddress+'v2/user/checkOTP?phone_no=' + phone_no + '&email='+ this.emailaddress+ '&code=' + code +'&request_id=' + request_id + '&smstype=' + this.registerottype;
-            }
-            this.http.get(link, { headers: headers })
-              .pipe(
-                catchError(this.handleErrorMessage.handleError.bind(this, 'otp'))
-              )
-              .subscribe(
-                result => {
-                  this.dto.Response = result;
-                  console.log("ForgetRsponse>>>>"+JSON.stringify(this.dto.Response));
-                  this.OtpSms = this.dto.Response;
-                  this.storage.store('otpVerifyToken',this.dto.Response.otpVerifyToken)
-                  this.storage.clear("registeremail")
-                  if (this.dto.Response.status == 401) {
-                    if (this.dto.Response.code == 0) {
-                      this.toastr.error("", this.translateService.instant('invalid-otp-code'),
-                        {
-                          timeOut: 3000,
-                          positionClass: 'toast-bottom-center',
-                        });
-                      return;
-                    } if (this.dto.Response.code == 11) {
-                      this.toastr.error("", this.translateService.instant('otp-token-expired'),
-                        {
-                          timeOut: 3000,
-                          positionClass: 'toast-bottom-center',
-                        });
-                      return;
-                    }
-
-                  }
-                  if (this.OtpSms != null) {
-                    if (this.OtpSms.status == true) {
-                      this.commonFormtype = this.storage.retrieve('formPageType')
-                      if (this.commonFormtype == "forgetPassword") {
-                        this.storage.clear('localOtpSms');
-                        this.storage.clear('requestId');
-                        var registerKey = this.funct.encrypt();
-                        this.router.navigate(['/login/resetPassword'], { state: { registerKey: registerKey }, replaceUrl: true });
-                      } else {
-                        this.storage.clear('localOtpSms');
-                        this.storage.clear('requestId');
-                        var registerKey = this.funct.encrypt();
-                        this.router.navigate(['/login/registration'], { state: { registerKey: registerKey }, replaceUrl: true });
-                      }
-                      return true;
-                    }
-                    else {
-                      this.toastr.error("Tip", 'OTP is not correct', {
-                        timeOut: 3000,
-                        positionClass: 'toast-top-center',
-                      });
-                      return false;
-                    }
-                  }
-                }
-              );
-          }
-          else {
-            this.toastr.error("", this.translateService.instant('invalid-otp-code'), {
-              timeOut: 3000,
-              positionClass: 'toast-bottom-center',
-            });
-            return false;
-          }
-        }
-
         else {
           this.toastr.error("", this.translateService.instant('invalid-otp-code'), {
             timeOut: 3000,
@@ -465,13 +456,23 @@ export class OtpPageComponent implements OnInit {
           });
           return false;
         }
-
       }
-    }, 1000);
+
+      else {
+        this.toastr.error("", this.translateService.instant('invalid-otp-code'), {
+          timeOut: 3000,
+          positionClass: 'toast-bottom-center',
+        });
+        return false;
+      }
+
+    }
+
   }
 
   getOtp() {
     this.coundDown = 180;
+    this.codeInput.reset();
     this.commonFormtype = this.storage.retrieve('formPageType')
     if (this.commonFormtype == "forgetPassword") {
       this.ResendOtp("v1/user/getForgotPassowrdOTP?phoneNo=");
@@ -487,176 +488,176 @@ export class OtpPageComponent implements OnInit {
     }
   }
 
- ResendWithdrawOtp() {
-  this.token = this.storage.retrieve('token');
+  ResendWithdrawOtp() {
+    this.token = this.storage.retrieve('token');
 
-  let headers = new HttpHeaders().set('Authorization', this.token);
-  this.storage.store('localInsertBankAccountList', this.bankAccountList);
+    let headers = new HttpHeaders().set('Authorization', this.token);
+    this.storage.store('localInsertBankAccountList', this.bankAccountList);
 
-  // this.common.submitLoading = true;
-  // this.spinner.show('submitLoading');
+    // this.common.submitLoading = true;
+    // this.spinner.show('submitLoading');
 
-  this.http
-    .get(
-      `${this.funct.ipaddress}v1/transaction/getWithdrawOTP`,
-      { headers }
-    )
-    .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this, '')),
-      finalize(() => {
-        this.common.submitLoading = false;
-        this.spinner.hide('submitLoading');
-      })
-    )
-    .subscribe({
-      next: (result: any) => {
-        this.dto.Response = result;
-        this.localInsertAccountOtpSms = this.dto.Response;
-        if (this.dto.Response?.expired_at) {
-          this.storage.store('localInsertAccountOtpSms', this.dto.Response);
-          let requestIdList = this.storage.retrieve('requestId');
-          if (this.dto.Response.request_id) {
-            requestIdList = requestIdList
-              ? `${requestIdList},${this.dto.Response.request_id}`
-              : this.dto.Response.request_id;
-            this.storage.store('requestId', requestIdList);
-          }
-          this.getCountDown();
-          this.showResend = false;
-          if (this.dto.Response.statusCode === 200) {
-            const bodyMsg = this.dto.Response.body?.toString()?.trim();
-
-            if (bodyMsg === 'Not valid OTP code') {
-              this.toastr.error(
-                'OTP is not correct',
-                'Bad request.',
-                {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center'
-                }
-              );
-              return;
+    this.http
+      .get(
+        `${this.funct.ipaddress}v1/transaction/getWithdrawOTP`,
+        { headers }
+      )
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, '')),
+        finalize(() => {
+          this.common.submitLoading = false;
+          this.spinner.hide('submitLoading');
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          this.dto.Response = result;
+          this.localInsertAccountOtpSms = this.dto.Response;
+          if (this.dto.Response?.expired_at) {
+            this.storage.store('localInsertAccountOtpSms', this.dto.Response);
+            let requestIdList = this.storage.retrieve('requestId');
+            if (this.dto.Response.request_id) {
+              requestIdList = requestIdList
+                ? `${requestIdList},${this.dto.Response.request_id}`
+                : this.dto.Response.request_id;
+              this.storage.store('requestId', requestIdList);
             }
+            this.getCountDown();
+            this.showResend = false;
+            if (this.dto.Response.statusCode === 200) {
+              const bodyMsg = this.dto.Response.body?.toString()?.trim();
 
-            if (bodyMsg === 'Try Again') {
-              this.toastr.error(
-                bodyMsg,
-                'Bad request.',
-                {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center'
-                }
-              );
-              return;
+              if (bodyMsg === 'Not valid OTP code') {
+                this.toastr.error(
+                  'OTP is not correct',
+                  'Bad request.',
+                  {
+                    timeOut: 3000,
+                    positionClass: 'toast-top-center'
+                  }
+                );
+                return;
+              }
+
+              if (bodyMsg === 'Try Again') {
+                this.toastr.error(
+                  bodyMsg,
+                  'Bad request.',
+                  {
+                    timeOut: 3000,
+                    positionClass: 'toast-top-center'
+                  }
+                );
+                return;
+              }
             }
           }
-        }
-        else if (
-          this.dto.Response?.status === 'Error' &&
-          this.dto.Response.message?.includes('180 seconds')
-        ) {
-          this.showResend = false;
-        }
-        else {
+          else if (
+            this.dto.Response?.status === 'Error' &&
+            this.dto.Response.message?.includes('180 seconds')
+          ) {
+            this.showResend = false;
+          }
+          else {
+            this.showResend = true;
+          }
+        },
+
+        error: () => {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+          this.coundDown = -1;
           this.showResend = true;
         }
-      },
-
-      error: () => {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-        this.coundDown = -1;
-        this.showResend = true;
-      }
-    });
-}
+      });
+  }
 
 
- getNewOtp() {
-  clearInterval(this.intervalId);
-  this.intervalId = null;
-  this.showResend = false;
-  this.coundDown = 180;
-  this.codeInput.reset();
+  getNewOtp() {
+    clearInterval(this.intervalId);
+    this.intervalId = null;
+    this.showResend = false;
+    this.coundDown = 180;
+    this.codeInput.reset();
 
-  // this.common.submitLoading = true;
-  // this.spinner.show('submitLoading');
+    // this.common.submitLoading = true;
+    // this.spinner.show('submitLoading');
 
-  const headers = new HttpHeaders();
+    const headers = new HttpHeaders();
 
-  this.http
-    .get(
-      `${this.funct.ipaddress}v1/user/getRegisterDeviceOTP?phoneNo=${this.phoneNumber}`,
-      { headers }
-    )
-    .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this, '')),
-      finalize(() => {
-        this.common.submitLoading = false;
-        this.spinner.hide('submitLoading');
-      })
-    )
-    .subscribe({
-      next: (result: any) => {
-        this.dto.Response = result;
-        if (this.dto.Response?.expired_at) {
-          this.storage.store('localNewDeviceOtpSms', this.dto.Response);
-          let requestIdList = this.storage.retrieve('requestId');
-          if (this.dto.Response.request_id) {
-            requestIdList = requestIdList
-              ? `${requestIdList},${this.dto.Response.request_id}`
-              : this.dto.Response.request_id;
-            this.storage.store('requestId', requestIdList);
-          }
-          this.getCountDown();
-          this.showResend = false;
-          if (this.dto.Response.status === 200) {
-            const bodyMsg = this.dto.Response.body?.toString()?.trim();
-
-            if (bodyMsg === 'Not valid OTP code') {
-              this.toastr.error(
-                'OTP is not correct',
-                'Bad request.',
-                {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center'
-                }
-              );
-              return;
+    this.http
+      .get(
+        `${this.funct.ipaddress}v1/user/getRegisterDeviceOTP?phoneNo=${this.phoneNumber}`,
+        { headers }
+      )
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, '')),
+        finalize(() => {
+          this.common.submitLoading = false;
+          this.spinner.hide('submitLoading');
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          this.dto.Response = result;
+          if (this.dto.Response?.expired_at) {
+            this.storage.store('localNewDeviceOtpSms', this.dto.Response);
+            let requestIdList = this.storage.retrieve('requestId');
+            if (this.dto.Response.request_id) {
+              requestIdList = requestIdList
+                ? `${requestIdList},${this.dto.Response.request_id}`
+                : this.dto.Response.request_id;
+              this.storage.store('requestId', requestIdList);
             }
+            this.getCountDown();
+            this.showResend = false;
+            if (this.dto.Response.status === 200) {
+              const bodyMsg = this.dto.Response.body?.toString()?.trim();
 
-            if (bodyMsg === 'Try Again') {
-              this.toastr.error(
-                bodyMsg,
-                'Bad request.',
-                {
-                  timeOut: 3000,
-                  positionClass: 'toast-top-center'
-                }
-              );
-              return;
+              if (bodyMsg === 'Not valid OTP code') {
+                this.toastr.error(
+                  'OTP is not correct',
+                  'Bad request.',
+                  {
+                    timeOut: 3000,
+                    positionClass: 'toast-top-center'
+                  }
+                );
+                return;
+              }
+
+              if (bodyMsg === 'Try Again') {
+                this.toastr.error(
+                  bodyMsg,
+                  'Bad request.',
+                  {
+                    timeOut: 3000,
+                    positionClass: 'toast-top-center'
+                  }
+                );
+                return;
+              }
             }
           }
-        }
-        else if (
-          this.dto.Response?.status === 'Error' &&
-          this.dto.Response.message?.includes('180 seconds')
-        ) {
-          this.getCountDown();
-          this.showResend = false;
-        }
-        else {
+          else if (
+            this.dto.Response?.status === 'Error' &&
+            this.dto.Response.message?.includes('180 seconds')
+          ) {
+            this.getCountDown();
+            this.showResend = false;
+          }
+          else {
+            this.showResend = true;
+          }
+        },
+        error: () => {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+          this.coundDown = -1;
           this.showResend = true;
         }
-      },
-      error: () => {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-        this.coundDown = -1;
-        this.showResend = true;
-      }
-    });
-}
+      });
+  }
 
 
   SubmitNewDeviceOtp() {
@@ -686,13 +687,13 @@ export class OtpPageComponent implements OnInit {
                   positionClass: 'toast-bottom-center',
                 });
               return;
-            } if (this.dto.Response.code == 10) {
+            } if (this.dto.Response.code == 10 || this.dto.Response.code == 11) {
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
               this.toastr.error("", this.translateService.instant('otp-token-expired'),
                 {
                   timeOut: 2000,
-                  positionClass: 'toast-bottom-center',
+                  positionClass: 'toast-top-center',
                 });
               return;
             }
@@ -713,10 +714,12 @@ export class OtpPageComponent implements OnInit {
             }
           }
           else {
-            this.toastr.error("Tip", this.dto.Response.message.toString(), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
+            this.common.submitLoading = false;
+            this.spinner.hide("submitLoading");
+            // this.toastr.error("Tip", this.dto.Response.message.toString(), {
+            //   timeOut: 3000,
+            //   positionClass: 'toast-top-center',
+            // });
             return false;
           }
         }
@@ -841,130 +844,128 @@ export class OtpPageComponent implements OnInit {
       );
   }
 
- ResendRegisOtp() {
-  const headers = new HttpHeaders();
+  ResendRegisOtp() {
+    const headers = new HttpHeaders();
 
-  // this.common.submitLoading = true;
-  // this.spinner.show('submitLoading');
+    // this.common.submitLoading = true;
+    // this.spinner.show('submitLoading');
 
-  this.http
-    .get(
-      `${this.funct.ipaddress}v1/user/getRegisterOTP?phoneNo=${this.phoneNumber}&type=${this.registerottype}&email=${this.emailaddress}`,
-      { headers }
-    )
-    .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this, '')),
-      finalize(() => {
-        this.common.submitLoading = false;
-        this.spinner.hide('submitLoading');
-      })
-    )
-    .subscribe({
-      next: (result: any) => {
-        this.dto.Response = result;
-        if (this.dto.Response.errorCode === '000') {
-          this.storage.store('localOtpSms', this.dto.Response);
-          this.getCountDown();
-          this.showResend = false;
-          let requestIdList = this.storage.retrieve('requestId');
-          if (this.dto.Response.request_id) {
-            requestIdList = requestIdList
-              ? `${requestIdList},${this.dto.Response.request_id}`
-              : this.dto.Response.request_id;
-            this.storage.store('requestId', requestIdList);
+    this.http
+      .get(
+        `${this.funct.ipaddress}v1/user/getRegisterOTP?phoneNo=${this.phoneNumber}&type=${this.registerottype}&email=${this.emailaddress}`,
+        { headers }
+      )
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, '')),
+        finalize(() => {
+          this.common.submitLoading = false;
+          this.spinner.hide('submitLoading');
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          this.dto.Response = result;
+          if (this.dto.Response.errorCode === '000') {
+            this.storage.store('localOtpSms', this.dto.Response);
+            this.getCountDown();
+            this.showResend = false;
+            let requestIdList = this.storage.retrieve('requestId');
+            if (this.dto.Response.request_id) {
+              requestIdList = requestIdList
+                ? `${requestIdList},${this.dto.Response.request_id}`
+                : this.dto.Response.request_id;
+              this.storage.store('requestId', requestIdList);
+            }
           }
-        }
-        else if (
-          this.dto.Response.status === 'Error' &&
-          this.dto.Response.message?.includes('180 seconds')
-        ) {
-          console.log('Waiting 180 seconds to resend OTP...');
-        }
-        else {
+          else if (
+            this.dto.Response.status === 'Error' &&
+            this.dto.Response.message?.includes('180 seconds')
+          ) {
+            console.log('Waiting 180 seconds to resend OTP...');
+          }
+          else {
+            this.showResend = true;
+          }
+        },
+        error: err => {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+          this.coundDown = -1;
           this.showResend = true;
         }
-      },
-      error: err => {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-        this.coundDown = -1;
-        this.showResend = true;
-      }
-    });
-}
+      });
+  }
 
 
- ResendOtp(url: string) {
-  const headers = new HttpHeaders();
-  // this.common.submitLoading = true;
-  // this.spinner.show('submitLoading');
-  this.http
-    .get(`${this.funct.ipaddress}${url}${this.phoneNumber}`, { headers })
-    .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this, '')),
-      finalize(() => {
-        this.common.submitLoading = false;
-        this.spinner.hide('submitLoading');
-      })
-    )
-    .subscribe({
-      next: (result: any) => {
-        this.dto.Response = result;
-        if (this.dto.Response?.status === true) {
-          this.storage.store('localOtpSms', this.dto.Response);
-          let requestIdList = this.storage.retrieve('requestId');
-          if (this.dto.Response.request_id) {
-            requestIdList = requestIdList
-              ? `${requestIdList},${this.dto.Response.request_id}`
-              : this.dto.Response.request_id;
-            this.storage.store('requestId', requestIdList);
+  ResendOtp(url: string) {
+    const headers = new HttpHeaders();
+    this.http
+      .get(`${this.funct.ipaddress}${url}${this.phoneNumber}`, { headers })
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, '')),
+        finalize(() => {
+          this.common.submitLoading = false;
+          this.spinner.hide('submitLoading');
+        })
+      )
+      .subscribe({
+        next: (result: any) => {
+          this.dto.Response = result;
+          if (this.dto.Response?.status === true) {
+            this.storage.store('localOtpSms', this.dto.Response);
+            let requestIdList = this.storage.retrieve('requestId');
+            if (this.dto.Response.request_id) {
+              requestIdList = requestIdList
+                ? `${requestIdList},${this.dto.Response.request_id}`
+                : this.dto.Response.request_id;
+              this.storage.store('requestId', requestIdList);
+            }
+            this.getCountDown();
+            this.showResend = false;
+            const bodyText = this.dto.Response.body?.toString()?.trim();
+
+            if (bodyText === 'Not valid OTP code') {
+              this.toastr.error(
+                'OTP is not correct',
+                'Bad request.',
+                {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center'
+                }
+              );
+              return;
+            }
+
+            if (bodyText === 'Try Again') {
+              this.toastr.error(
+                bodyText,
+                'Bad request.',
+                {
+                  timeOut: 3000,
+                  positionClass: 'toast-top-center'
+                }
+              );
+              return;
+            }
           }
-          this.getCountDown();
-          this.showResend = false;
-          const bodyText = this.dto.Response.body?.toString()?.trim();
-
-          if (bodyText === 'Not valid OTP code') {
-            this.toastr.error(
-              'OTP is not correct',
-              'Bad request.',
-              {
-                timeOut: 3000,
-                positionClass: 'toast-top-center'
-              }
-            );
-            return;
+          else if (
+            this.dto.Response?.status === 'Error' &&
+            this.dto.Response.message?.includes('180 seconds')
+          ) {
+            this.showResend = true;
           }
-
-          if (bodyText === 'Try Again') {
-            this.toastr.error(
-              bodyText,
-              'Bad request.',
-              {
-                timeOut: 3000,
-                positionClass: 'toast-top-center'
-              }
-            );
-            return;
+          else {
+            this.showResend = true;
           }
-        }
-        else if (
-          this.dto.Response?.status === 'Error' &&
-          this.dto.Response.message?.includes('180 seconds')
-        ) {
+        },
+        error: () => {
+          clearInterval(this.intervalId);
+          this.intervalId = null;
+          this.coundDown = -1;
           this.showResend = true;
         }
-        else {
-          this.showResend = true;
-        }
-      },
-      error: () => {
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-        this.coundDown = -1;
-        this.showResend = true;
-      }
-    });
-}
+      });
+  }
 
   UpdateNewDeviceId() {
     let headers = new HttpHeaders();
@@ -1003,10 +1004,6 @@ export class OtpPageComponent implements OnInit {
             }
           }
           else {
-            this.toastr.error("Tip", this.dto.Response.message.toString(), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
             return false;
           }
         }
@@ -1036,21 +1033,11 @@ export class OtpPageComponent implements OnInit {
           this.storage.clear("localInsertAccount");
           if (insertAccount == 'insertAccount') {
             this.storage.store('successmsg', 'withdrawalsuccess');
-            this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: true }).then(() => {
-              history.pushState(null, '', location.href);
-              window.addEventListener('popstate', () => {
-                history.pushState(null, '', location.href);
-              });
-            });
+            this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: true })
           }
           else {
             this.storage.store('successmsg', 'withdrawalsuccess');
-            this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: true }).then(() => {
-              history.pushState(null, '', location.href);
-              window.addEventListener('popstate', () => {
-                history.pushState(null, '', location.href);
-              });
-            });
+            this.router.navigate(['/wallet/withdraw-change-acc'], { replaceUrl: true })
           }
         }
       );
@@ -1089,7 +1076,7 @@ export class OtpPageComponent implements OnInit {
       this.smstype = result.smstype;
       const typeMap: Record<string, { label: string; sender: string }> = {
         vmg_viber: { label: 'Viber', sender: this.phoneNumber },
-        email: { label: 'Email', sender: result.email}
+        email: { label: 'Email', sender: result.email }
       };
 
       const config = typeMap[this.smstype] || {
@@ -1110,18 +1097,15 @@ export class OtpPageComponent implements OnInit {
 
   setOtpText() {
     this.viberorsmsotptype = this.storage.retrieve('localotptype');
-
     this.otpheader = this.translateService
       .instant('otpheader')
       .toString()
       .replace('@type', this.viberorsmsotptype);
-
     this.otpdesciption = this.translateService
       .instant('otpdescription')
       .toString()
       .replace('@type', this.viberorsmsotptype);
   }
-
 
   listServicePhone() {
     this.service_transaction = 0;

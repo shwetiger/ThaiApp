@@ -48,7 +48,8 @@ export class FeedbackPageComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute) {
-    this.type = history.state.type;
+    //this.type = history.state.type;
+    this.type=this.storage.retrieve('type');
     this.validation();
   }
 
@@ -91,8 +92,8 @@ export class FeedbackPageComponent implements OnInit {
     return descri;
   }
 
-  goBack() {
-    this._location.back();
+  cancel() {
+    this.feedbackModel.description ='';
   }
 
   containsSpecialCharacters(str) {
@@ -132,11 +133,13 @@ export class FeedbackPageComponent implements OnInit {
   }
 
   GotoFaq() {
+    this.storage.store('type','faq');
     this.faqTab = true;
     this.feedbackTab = false;
   }
 
   GotoFeedback() {
+    this.storage.store('type','feedback');
     this.feedbackTab = true;
     this.faqTab = false;
   }

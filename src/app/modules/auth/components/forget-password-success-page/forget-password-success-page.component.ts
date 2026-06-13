@@ -45,7 +45,7 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
     private funct: FunctService,
     private location: Location,
     private common: CommonService) {
-    this.oldLoginModel = history.state.forgetPasswordModel;
+    this.oldLoginModel= this.storage.retrieve('forgetPasswordModel');
   }
 
   async ngOnInit(): Promise<void> {
@@ -139,24 +139,11 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
               var successBack = this.storage.retrieve('localForgetPasswordSuccess');
               if (successBack != null && successBack != undefined) {
                 this.storage.clear('localForgetPasswordSuccess');
-                this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
-                  // Prevent browser back
-                  history.pushState(null, '', location.href);
-                  window.addEventListener('popstate', () => {
-                    history.pushState(null, '', location.href);
-                  });
-                });
+                this.router.navigate(['/home'], { replaceUrl: true })
               }
               else {
                 this.storage.clear('localForgetPasswordSuccess');
-                  this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
-                  // Prevent browser back
-                  history.pushState(null, '', location.href);
-                  window.addEventListener('popstate', () => {
-                    history.pushState(null, '', location.href);
-                  });
-                });
-               // history.go(-3);
+                  this.router.navigate(['/home'], { replaceUrl: true })
               }
             }
           }

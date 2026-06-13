@@ -34,7 +34,7 @@ export class RegistrationPageComponent implements OnInit {
   prefix: any;
   registerKey: any = "";
   email_address: any;
-  registerottype:any;
+  registerottype: any;
   constructor(
     private translateService: TranslateService,
     private toastr: ToastrService,
@@ -51,7 +51,7 @@ export class RegistrationPageComponent implements OnInit {
     this.confirmPassword = '';
     this.passwordType = "password";
     this.confirmpasswordType = "password"
-    this.registerKey = history.state.registerKey;
+    this.registerKey = this.storage.retrieve('registerKey');
     this.email_address = this.storage.retrieve("localEmail")
   }
 
@@ -64,7 +64,7 @@ export class RegistrationPageComponent implements OnInit {
       password: '',
       registerKey: '',
       email: '',
-      smstype:''
+      smstype: ''
     }
   }
 
@@ -82,7 +82,7 @@ export class RegistrationPageComponent implements OnInit {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (error.status == 406) {
       this.toastr.error("Tip", 'This mobile is already registered', {
@@ -115,7 +115,8 @@ export class RegistrationPageComponent implements OnInit {
     this.registerModel.registerKey = this.registerKey;
     this.registerModel.phone_no = this.registerModel.phone_no;
     this.registerModel.email = this.email_address;
-    this.registerModel.smstype=this.registerottype;
+    this.registerModel.smstype = this.registerottype;
+    this.storage.store('registerModel', this.registerModel);
     this.router.navigate(['/login/register-invite-code'], { state: { registerModel: this.registerModel }, replaceUrl: true });
   }
 
@@ -134,18 +135,17 @@ export class RegistrationPageComponent implements OnInit {
     }
   }
 
-
   checkPassword() {
     const myanmarRegex = /[\u1000-\u109F]/;
     if (myanmarRegex.test(this.password)) {
       this.password = this.password.slice(0, -1);
     }
     $("#passwordErr").html('');
-    if (!this.password || this.password.length < 6) {
+    if (!this.password || this.password.trim().length < 6) {
       $("#passwordErr").html(this.translateService.instant("reqPassSixLength"));
       return false;
     }
-    if (this.password && this.password.length == 6) {
+    if (this.password && this.password.trim().length == 6) {
       $("#passwordErr").html("");
       return true;
     }
@@ -155,7 +155,7 @@ export class RegistrationPageComponent implements OnInit {
       $("#passwordErr").html(passwordRequired);
       return false;
     }
-     if (this.password.length > 20) {
+    if (this.password.length > 20) {
       $("#passwordErr").html(this.translateService.instant("charlength"));
       return false;
     }
@@ -168,7 +168,7 @@ export class RegistrationPageComponent implements OnInit {
       this.confirmPassword = this.confirmPassword.slice(0, -1);
     }
     $("#confirmPasswordErr").html('');
-    if (this.password && this.password.length == this.confirmPassword.length && this.password == this.confirmPassword) {
+    if (this.password && this.password.trim().length == this.confirmPassword.trim().length && this.password.trim() == this.confirmPassword.trim()) {
       return true;
     }
     if (this.password.length > 20) {
@@ -204,4 +204,59 @@ export class RegistrationPageComponent implements OnInit {
   enter(event) {
     event.target.blur();
   }
+
+  checkInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  let value = input.value;
+  const trimmedLength = value.replace(/\s/g, '').length;
+  let charArray = Array.from(value);
+  if (charArray.length > 25) {
+    charArray = charArray.slice(0, 25);
+  }
+
+  const newValue = charArray.join('');
+
+  this.name = newValue;
+  input.value = newValue;
+
+  this.updateNameError(newValue.length, trimmedLength);
+}
+
+  checkKey(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+    const charArray = Array.from(input.value);
+
+    const allowedKeys = [
+      'Backspace', 'Delete',
+      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+      'Tab', 'Home', 'End'
+    ];
+
+    if (allowedKeys.includes(event.key)) {
+      return;
+    }
+
+    if (charArray.length >= 25) {
+      event.preventDefault();
+    }
+  }
+
+  updateNameError(length: number, trimmedLength: number) {
+  if (trimmedLength === 0 && length > 0) {
+    let msg = this.translateService.instant("requiredFiled");
+    msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
+    $("#nameErr").html(msg);
+  }
+  else if (length === 0) {
+    $("#nameErr").html("");
+  }
+  else if (length >= 25) {
+    let msg = this.translateService.instant("requiredFiled");
+    msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
+    $("#nameErr").html(msg);
+  }
+  else {
+    $("#nameErr").html("");
+  }
+}
 }

@@ -35,6 +35,12 @@ export class ProfileEditPageComponent implements OnInit {
   phoneNumber: any;
   parentLink: any;
   refreshLoading: boolean;
+
+  maxMyanmarLength = 25; // Max length for Myanmar text
+  maxEngLength = 25;     // Max length for English text
+
+  myanmarCount = 0;  // To store Myanmar characters count
+  engCount = 0;
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
     public common: CommonService,
@@ -91,21 +97,47 @@ export class ProfileEditPageComponent implements OnInit {
         });
   }
 
-  preview(files) {
-    if (files.length === 0)
-      return;
-    var mimeType = files[0].type;
-    if (mimeType.match(/image\/*/) == null) {
-      this.message = "Only images are supported.";
-      return;
-    }
-    var reader = new FileReader();
-    this.imagePath = files;
-    reader.readAsDataURL(files[0]);
-    reader.onload = (_event) => {
-      this.imgURL = reader.result;
-    }
+  // preview(files) {
+  //   if (files.length === 0)
+  //     return;
+  //   var mimeType = files[0].type;
+  //   if (mimeType.match(/image\/*/) == null) {
+  //     this.message = "Only images are supported.";
+  //     return;
+  //   }
+  //   var reader = new FileReader();
+  //   this.imagePath = files;
+  //   reader.readAsDataURL(files[0]);
+  //   reader.onload = (_event) => {
+  //     this.imgURL = reader.result;
+  //   }
+  // }
+
+  preview(files: FileList) {
+  if (!files || files.length === 0) {
+    return;
   }
+
+  const file = files[0];
+
+  // file type check
+  if (!file.type.match(/image\/*/)) {
+    this.message = "Only images are supported.";
+    return;
+  }
+
+  // file သိမ်းထားချင်ရင်
+  this.userModel.imageFile = file;
+
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    this.imgURL = reader.result; // preview
+    this.userModel.imageUrl = reader.result; // optional (bind ပြချင်ရင်)
+  };
+
+  reader.readAsDataURL(file);
+}
 
   changeProfile() {
     this.common.submitLoading = true;
@@ -234,4 +266,54 @@ export class ProfileEditPageComponent implements OnInit {
         );
     }
   }
+
+  checkInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  let charArray = Array.from(input.value);
+
+  if (charArray.length > 25) {
+    charArray = charArray.slice(0, 25);
+  }
+
+  const newValue = charArray.join('');
+
+  this.userModel.name = newValue;
+  input.value = newValue; // IME / paste case fix
+
+  this.updateNameError(charArray.length);
+}
+
+checkKey(event: KeyboardEvent) {
+  const input = event.target as HTMLInputElement;
+  const charArray = Array.from(input.value);
+
+  const allowedKeys = [
+    'Backspace','Delete',
+    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
+    'Tab','Home','End'
+  ];
+
+  if (allowedKeys.includes(event.key)) {
+    return;
+  }
+
+  if (charArray.length >= 25) {
+    event.preventDefault();
+  }
+}
+
+updateNameError(length: number) {
+  if (length === 0) {
+    $("#nameErr").html("");
+  }
+  else if (length >= 25) {
+    let msg = this.translateService.instant("requiredFiled");
+    msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
+    $("#nameErr").html(msg);
+  }
+  else {
+    $("#nameErr").html("");
+  }
+}
 }

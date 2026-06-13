@@ -1,5 +1,5 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse  } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -15,7 +15,7 @@ import { CommonService } from '../../service/common.service';
   styleUrls: ['./bet-section-dialog.component.scss']
 })
 export class BetSectionDialogComponent implements OnInit {
-  
+
   public selectedEvent: EventEmitter<any> = new EventEmitter();
 
   refLink: any;
@@ -42,7 +42,7 @@ export class BetSectionDialogComponent implements OnInit {
       this.twodSectionList = await this.getSectionList();
     }
     this.checkTwodCloseTime();
-    
+
   }
 
   async getSectionList() {
@@ -56,7 +56,7 @@ export class BetSectionDialogComponent implements OnInit {
     const dateTime = await this.common.getDateTime();
     const currentTime = await this.common.convertMyanmarTime(dateTime);
 
-    for(let i=0; i < this.twodSectionList.length; i++){    
+    for(let i=0; i < this.twodSectionList.length; i++){
       if (this.twodSectionList[i].fromTime != null && this.twodSectionList[i].toTime != null) {
 
         var toTime = this.twodSectionList[i].toTime.split(":");
@@ -67,32 +67,32 @@ export class BetSectionDialogComponent implements OnInit {
         var fourHour36Mins = new Date(currentTime);
         fourHour36Mins.setHours(16);
         fourHour36Mins.setMinutes(36);
-      
-        if (currentTime.getTime() >= to.getTime()){      
+
+        if (currentTime.getTime() >= to.getTime()){
           this.twodSectionList[i].isClosed = true;
-          this.twodSectionList[i].isSelected = false;                                        
-        }  
-        
-        if (currentTime.getTime() >= fourHour36Mins.getTime()) {  
-          this.twodSectionList[i].isClosed = false;
-          this.twodSectionList[i].isSelected = false;                                        
+          this.twodSectionList[i].isSelected = false;
         }
 
-      }        
+        if (currentTime.getTime() >= fourHour36Mins.getTime()) {
+          this.twodSectionList[i].isClosed = false;
+          this.twodSectionList[i].isSelected = false;
+        }
+
+      }
     }
-    
+
     this.storage.store('localTwodSectionList', this.twodSectionList);
   }
 
-  betSectionSelect(id: number){    
+  betSectionSelect(id: number){
     for(let i=0; i< this.twodSectionList.length; i++){
-      if(this.twodSectionList[i].id == id){        
+      if(this.twodSectionList[i].id == id){
         this.twodSectionList[i].isSelected = true;
         this.storage.store('localSection', this.twodSectionList[i]);
         this.storage.store('localSectionId', this.twodSectionList[i].id);
-      } 
+      }
       else{
-        
+
         this.twodSectionList[i].isSelected = false;
       }
     }
@@ -104,9 +104,9 @@ export class BetSectionDialogComponent implements OnInit {
     this.twodSectionList[i].isSelected = false;
     }
     this.modalRef.hide();
-    
+
   }
-  twoDbet(){   
+  twoDbet(){
     let count=0;
     for (let i=0; i< this.twodSectionList.length; i++) {
       if (this.twodSectionList[i].isSelected) {
@@ -122,9 +122,9 @@ export class BetSectionDialogComponent implements OnInit {
         ++count;
       }
     }
-     
+
     if (count == 4) {
-      this.common.warningMsg('bet-not-select', 'top');
+      this.common.errorMsg('bet-not-select', 'top');
     }
   }
 

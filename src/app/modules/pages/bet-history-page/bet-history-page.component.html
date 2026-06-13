@@ -1,147 +1,219 @@
-
-
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
 
 
-<div id="appCapsule" >
+<div id="appCapsule">
     <!-- add -->
     <div class="container" style="margin: 0px !important; padding: 0px !important;">
         <div class="row pt-1 justify-content-center" *ngIf="twoD_Active  || threeD_Active">
-            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="!isActive">{{ 'history' | translate }}</h3>
-            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="result == '3D' &&  isActive">{{ '3D_result' | translate}}</h3>
-            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="result != '3D' && isActive && type=='3D'">3D &nbsp;{{ 'betHistory' | translate}}</h3>
-            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="result != '3D' && isActive && type=='2D'">{{ 'history' | translate}}</h3>
+            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="!isActive && threeD_Result_Active">{{ 'history' | translate }}</h3>
+            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="result == '3D' &&  isActive">{{ '3D_result' |
+                translate}}</h3>
+            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="result != '3D' && isActive && type=='3D'">3D &nbsp;{{
+                'betHistory' | translate}}</h3>
+            <h3 style="color: #2253A2; font-weight: 600;" *ngIf="result != '3D' && isActive && type=='2D'">{{ 'history'
+                | translate}}</h3>
         </div>
-        <div *ngIf="showBothHeader && !isActive" class="row" style="margin: 0px !important; padding: 0px !important;" >
-            <div [ngClass]="twoD_Active? 'header-active':'header'"  (click) ='changeResultType("2D")'  style="padding-top: 5px;display: inline-block;" *ngIf="!isActive">
+        <div *ngIf="showBothHeader && !isActive" class="row" style="margin: 0px !important; padding: 0px !important;">
+            <div [ngClass]="twoD_Active? 'header-active':'header'" (click)='changeResultType("2D")'
+                style="padding-top: 5px;display: inline-block;" *ngIf="!isActive">
                 <div class=" d-flex justify-content-center">
-                    <img src="assets/img/history/2d-bet-history-icon.png" alt=""  width="36" height="auto">
+                    <img src="assets/img/history/2d-bet-history-icon.png" alt="" width="36" height="auto">
                 </div>
-                <p [ngStyle]="twoD_Active?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1">2D &nbsp;{{ 'betHistory' | translate}}</p>
+                <p [ngStyle]="twoD_Active?{'color': '#2253A2'} : {'color': 'black'}"
+                    class="d-flex justify-content-center pt-1">2D &nbsp;{{ 'betHistory' | translate}}</p>
             </div>
-            <div [ngClass]="threeD_Active? 'header-active':'header'"  (click) ='changeResultType("3D")'  style="padding-top: 5px;display: inline-block;" *ngIf="!isActive">
+            <div [ngClass]="threeD_Active? 'header-active':'header'" (click)='changeResultType("3D")'
+                style="padding-top: 5px;display: inline-block;" *ngIf="!isActive">
                 <div class=" d-flex justify-content-center">
-                    <img src="assets/img/history/3d-bet-history-icon.png" alt=""  width="36" height="auto">
+                    <img src="assets/img/history/3d-bet-history-icon.png" alt="" width="36" height="auto">
                 </div>
-                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1" *ngIf="result == '3D'">{{ '3D_result' | translate}}</p>
-                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1" *ngIf="result != '3D'">3D &nbsp;{{ 'betHistory' | translate}}</p>
+                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}"
+                    class="d-flex justify-content-center pt-1" *ngIf="result == '3D'">{{ '3D_result' | translate}}</p>
+                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}"
+                    class="d-flex justify-content-center pt-1" *ngIf="result != '3D'">3D &nbsp;{{ 'betHistory' |
+                    translate}}</p>
             </div>
-            <div [ngClass]="threeD_Active? 'header-active':'header'"  (click) ='changeResultType("3D")'  style="padding-top: 5px;display: inline-block;width: 100%; padding-left: 10px;padding-right: 0px;" *ngIf="isActive">
+            <div [ngClass]="threeD_Active? 'header-active':'header'" (click)='changeResultType("3D")'
+                style="padding-top: 5px;display: inline-block;width: 100%; padding-left: 10px;padding-right: 0px;"
+                *ngIf="isActive">
                 <div class=" d-flex justify-content-center">
-                    <img src="assets/img/history/3d-bet-history-icon.png" alt=""  width="36" height="auto">
+                    <img src="assets/img/history/3d-bet-history-icon.png" alt="" width="36" height="auto">
                 </div>
-                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1" *ngIf="result == '3D'">{{ '3D_result' | translate}}</p>
-                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1" *ngIf="result != '3D'">3D &nbsp;{{ 'betHistory' | translate}}</p>
+                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}"
+                    class="d-flex justify-content-center pt-1" *ngIf="result == '3D'">{{ '3D_result' | translate}}</p>
+                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}"
+                    class="d-flex justify-content-center pt-1" *ngIf="result != '3D'">3D &nbsp;{{ 'betHistory' |
+                    translate}}</p>
             </div>
         </div>
         <!-- change ui -->
-        <div *ngIf="!showBothHeader && twoD_Active"  class="row" style="margin: 0px !important; padding: 0px !important;">
-            <div [ngClass]="twoD_Active && !twoD_Result_Active? 'header-2d-active':'header-2d'"  (click) ='changeResultType("2D")' style="padding-top: 5px;display: inline-block;">
+        <div *ngIf="!showBothHeader && twoD_Active" class="row"
+            style="margin: 0px !important; padding: 0px !important;">
+            <div [ngClass]="twoD_Active && !twoD_Result_Active? 'header-2d-active':'header-2d'"
+                (click)='changeResultType("2D")' style="padding-top: 5px;display: inline-block;">
                 <div class=" d-flex justify-content-center">
-                    <img src="assets/img/history/2d-bet-history-icon.png" alt=""  width="36" height="auto">
+                    <img src="assets/img/history/2d-bet-history-icon.png" alt="" width="36" height="auto">
                 </div>
-                <p [ngStyle]="twoD_Active?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1">2D &nbsp;{{ 'betHistory' | translate}}</p>
+                <p [ngStyle]="twoD_Active?{'color': '#2253A2'} : {'color': 'black'}"
+                    class="d-flex justify-content-center pt-1">2D &nbsp;{{ 'betHistory' | translate}}</p>
             </div>
-            <div [ngClass]="twoD_Result_Active? 'header-2d-active-right':'header-2d'"  (click) ='changeResult("2D")' style="padding-top: 5px;display: inline-block;">
+            <div [ngClass]="twoD_Result_Active? 'header-2d-active-right':'header-2d'" (click)='changeResult("2D")'
+                style="padding-top: 5px;display: inline-block;">
                 <div class=" d-flex justify-content-center">
                     <img src="assets/img/history/2D.png" alt="" width="36" height="auto">
                 </div>
-                <p [ngStyle]="twoD_Result_Active?{'color': '#2253A2'} : {'color': '#2253A2'}" class="d-flex justify-content-center" style="padding-top: 12px;">{{'2D_result' | translate}}</p>
+                <p [ngStyle]="twoD_Result_Active?{'color': '#2253A2'} : {'color': '#2253A2'}"
+                    class="d-flex justify-content-center" style="padding-top: 12px;">{{'2D_result' | translate}}</p>
             </div>
         </div>
         <!-- change ui -->
-        <div *ngIf="!showBothHeader && threeD_Active"  class="row" style="margin: 0px !important; padding: 0px !important;">
+        <div *ngIf="!showBothHeader && threeD_Active" class="row"
+            style="margin: 0px !important; padding: 0px !important;">
             <h1>ccc</h1>
-            <div [ngClass]="threeD_Active && !threeD_Result_Active? 'header-3d-active':'header-3d'"  (click) ='changeResultType("3D")'  style="padding-top: 5px;display: inline-block;">
+            <div [ngClass]="threeD_Active && !threeD_Result_Active? 'header-3d-active':'header-3d'"
+                (click)='changeResultType("3D")' style="padding-top: 5px;display: inline-block;">
                 <div class=" d-flex justify-content-center">
-                    <img src="assets/img/history/3d-bet-history-icon.png" alt=""  width="36" height="auto">
+                    <img src="assets/img/history/3d-bet-history-icon.png" alt="" width="36" height="auto">
                 </div>
-                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}" class="d-flex justify-content-center pt-1">3D &nbsp;{{ 'betHistory' | translate}}</p>
+                <p [ngStyle]="threeD_Active?{'color': '#2253A2'} : {'color': 'black'}"
+                    class="d-flex justify-content-center pt-1">3D &nbsp;{{ 'betHistory' | translate}}</p>
             </div>
-            <div [ngClass]="threeD_Result_Active? 'header-3d-active-right':'header-3d'"  (click) ='changeResult("3D")' style="padding-top: 5px;display: inline-block;">
+            <div [ngClass]="threeD_Result_Active? 'header-3d-active-right':'header-3d'" (click)='changeResult("3D")'
+                style="padding-top: 5px;display: inline-block;">
                 <div class=" d-flex justify-content-center">
                     <img src="assets/img/history/3d_result_history.png" alt="" width="36" height="auto">
                 </div>
-                <p [ngStyle]="threeD_Result_Active?{'color': '#2253A2'} : {'color': '#2253A2'}" class="d-flex justify-content-center" style="padding-top: 12px;">{{'3D_result' | translate}}</p>
+                <p [ngStyle]="threeD_Result_Active?{'color': '#2253A2'} : {'color': '#2253A2'}"
+                    class="d-flex justify-content-center" style="padding-top: 12px;">{{'3D_result' | translate}}</p>
             </div>
         </div>
 
         <div *ngIf="twoD_Active==true" class="mt-2">
-            <div id="appCapsule" *ngIf = "type == '2D' && !twoD_Result_Active">
-                <div class="card shadowed mb-1 mx-1" style="height: 85px;" *ngFor="let betHistoryObj of addList;let i=index;" (click)="betHistoryDetail(addList[i])" >
+
+            <div id="appCapsule" *ngIf="type == '2D' && !twoD_Result_Active">
+                <div *ngIf="addList?.length === 0 && !loading" style="
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #999;
+         ">{{'nohistory' | translate}}</div>
+                <div class="card shadowed mb-1 mx-1 position-relative" style="height: 85px;"
+                    *ngFor="let betHistoryObj of addList;let i=index;" (click)="betHistoryDetail(addList[i])">
+
+                    <!-- 👉 2D Image (center of whole card) -->
+                    <img src="assets/img/history/2DList.png" class="center-2d-img" width="36" height="auto">
+
                     <div class="card-body" style="padding: 10px 20px !important;">
                         <div class="row pb-1 text-center">
                             <div class="col-2"></div>
                             <div class="col-3" style="color:#2253A2">{{ 'time' | translate }}</div>
-                            <div class="col-3" style="color: #2253A2">{{ 'bet_time' | translate }}</div>
+                            <div class="col-3" style="color:#2253A2">{{ 'bet_time' | translate }}</div>
                             <div class="col-3" style="color:#2253A2">{{ 'amount' | translate }}</div>
-                            <div class="col-1"><img src="assets/img/prize.png" alt="" width="20px" height="20px" *ngIf="betHistoryObj.isWon==true"></div>
+                            <div class="col-1">
+                                <img src="assets/img/prize.png" width="20" *ngIf="betHistoryObj.isWon">
+                            </div>
                         </div>
+
                         <div class="row">
-                            <div class="col-2"><span class="twod_image">2D</span></div> <!--XXXX getTimeTransformDate(betHistoryObj.bet_date,betHistoryObj.bet_time)-->
-                            <div class="col-3 text-center"><h5 class="text-muted" style="white-space: pre;">{{getTimeTransformDate(betHistoryObj.bet_date,betHistoryObj.bet_time)}}</h5></div>
-                            <div class="col-3 text-center"><h5 style="white-space: pre;">{{ getDate(betHistoryObj.created_date)}}</h5></div>
-                            <div class="col-3 text-center"><h5 style="font-weight: 600;">{{ betHistoryObj.total_amount | number :'1.0-2'}}</h5></div>
-                            <div class="col-1" >
-                                <img src="assets/img/icon/arrow_forward_ios.png" alt=""  width="20" >
+                            <div class="col-2"></div> <!-- empty space for image -->
+                            <div class="col-3 text-center">
+                                <h5 class="text-muted">
+                                    {{getTimeTransformDate(betHistoryObj.bet_date,betHistoryObj.bet_time)}}
+                                </h5>
+                            </div>
+                            <div class="col-3 text-center">
+                                <h5>{{ getDate(betHistoryObj.created_date)}}</h5>
+                            </div>
+                            <div class="col-3 text-center">
+                                <h5 style="font-weight:600;">
+                                    {{ betHistoryObj.total_amount | number :'1.0-2'}}
+                                </h5>
+                            </div>
+                            <div class="col-1">
+                                <img src="assets/img/icon/arrow_forward_ios.png" width="20">
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div style="display:flex;justify-content: center;" class="mt-2">
-                    <button type="button"  style="width: 90%; height: 40px; border-radius: 5px; border:2px solid;border-color:#2253A2;color:#2253A2 ;background-color: #fff;"  [hidden]=isLast (click)="getBetHistory(pageNumber)" *ngIf="loadingMore">
-                       {{'morebtn' | translate}}
+                    <button type="button"
+                        style="width: 90%; height: 40px; border-radius: 5px; border:2px solid;border-color:#2253A2;color:#2253A2 ;background-color: #fff;"
+                        [hidden]=isLast (click)="getBetHistory(pageNumber)" *ngIf="loadingMore">
+                        {{'morebtn' | translate}}
                     </button>
                     <!-- <p [hidden]=!isLast>
                         No More Data
                     </p> -->
                 </div>
             </div>
-            <div *ngIf = "type == '2D' && twoD_Result_Active" class="pb-5">
+            <div *ngIf="type == '2D' && twoD_Result_Active" class="pb-5">
                 <app-twod-result-page></app-twod-result-page>
             </div>
         </div>
         <div *ngIf="threeD_Active==true" class="mt-2">
-            <div id="appCapsule" *ngIf = "type == '3D' && !threeD_Result_Active">
-                <div class="card shadowed mb-1 mx-1" style="height: 85px;" *ngFor="let betHistoryObj of addList;let i=index;" (click)="betHistoryDetail(addList[i])" >
-                    <div class="card-body" style="padding: 10px  20px  !important;">
-                        <div class="row pb-1 text-center">
-                            <div class="col-3 ml-2"></div>
-                            <div class="col-4"style="color:#2253A2">{{ 'bet_time' | translate }}</div>
-                            <div class="col-3" style="color:#2253A2">{{ 'amount' | translate }}</div>
-                            <div class="col-1" style="padding: 0px !important;margin: 0px !important;"><img src="assets/img/prize.png" alt="" width="20px" height="20px" *ngIf="(betHistoryObj.isWon==true || betHistoryObj.isThwit==true || betHistoryObj.isRound==true)"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-3 ml-2"><span class="twod_image">3D</span></div>
-                            <div class="col-4 text-center"><h5 style="white-space: pre;">{{ getDate(betHistoryObj.created_date)}}</h5></div>
-                            <div class="col-3 text-center"><h5 style="font-weight: 600;">{{ betHistoryObj.total_amount | number :'1.0-2' }}</h5></div>
-                            <div class="col-1" style="padding: 0px !important;margin: 0px !important;text-align: end;">
-                                <img src="assets/img/icon/arrow_forward_ios.png" alt=""  width="20" >
+            <div *ngIf="addList?.length === 0 && !loading && !threeD_Result_Active" style="
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #999;
+         ">{{'nohistory' | translate}}</div>
+            <div id="appCapsule" *ngIf="type == '3D' && !threeD_Result_Active">
+                <div class="card shadowed mb-1 mx-1 position-relative" style="height: 85px;"
+                    *ngFor="let betHistoryObj of addList;let i=index;" (click)="betHistoryDetail(addList[i])">
 
+                    <!-- 👉 3D Image (center of whole card) -->
+                    <img src="assets/img/history/3DList.png" class="center-3d-img" width="36" height="auto">
+
+                    <div class="card-body" style="padding: 10px 20px !important;">
+                        <div class="row pb-1 text-center">
+                            <div class="col-2 ml-2"></div>
+                            <div class="col-4" style="color:#2253A2">{{ 'bet_time' | translate }}</div>
+                            <div class="col-4" style="color:#2253A2">{{ 'amount' | translate }}</div>
+                            <div class="col-1 p-0 m-0">
+                                <img src="assets/img/prize.png" width="20"
+                                    *ngIf="(betHistoryObj.isWon || betHistoryObj.isThwit || betHistoryObj.isRound)">
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-2 ml-2"></div> <!-- empty because image moved -->
+                            <div class="col-4 text-center">
+                                <h5 style="white-space: pre;">{{ getDate(betHistoryObj.created_date)}}</h5>
+                            </div>
+                            <div class="col-4 text-center">
+                                <h5 style="font-weight:600;">
+                                    {{ betHistoryObj.total_amount | number :'1.0-2' }}
+                                </h5>
+                            </div>
+                            <div class="col-1 p-0 m-0 text-end">
+                                <img src="assets/img/icon/arrow_forward_ios.png" width="20">
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
                 <div style="display:flex;justify-content: center;" class="mt-2">
-                    <button type="button" class="button" [hidden]=isLast (click)="getBetHistory(pageNumber)" *ngIf="loadingMore">
-                       {{'morebtn' | translate}}
+                    <button type="button" class="button" [hidden]=isLast (click)="getBetHistory(pageNumber)"
+                        *ngIf="loadingMore">
+                        {{'morebtn' | translate}}
                     </button>
                     <!-- <p [hidden]=!isLast>
                         No More Data
                     </p> -->
                 </div>
             </div>
-            <div *ngIf = "type == '3D' && threeD_Result_Active" class="pb-5">
+            <div *ngIf="type == '3D' && threeD_Result_Active" class="pb-5">
                 <app-threed-result></app-threed-result>
             </div>
         </div>
     </div>
-    <div *ngIf="loading" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
+    <div *ngIf="loading"
+        style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1050;">
         <ngx-spinner size="small" color="rgb(6,56,107)" type="ball-spin-clockwise" [fullScreen]="false"></ngx-spinner>
     </div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -6,9 +6,8 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
 import { TranslateService } from '@ngx-translate/core';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
-import { Location } from '@angular/common';
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { UtilService } from 'src/app/shared/service/util.service';
@@ -32,8 +31,7 @@ export class DownloadPageComponent implements OnInit {
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private location: Location,
-    private route: ActivatedRoute,) {
+   ) {
 
   }
 
@@ -86,4 +84,5 @@ export class DownloadPageComponent implements OnInit {
   downloadPage() {
     this.router.navigate(['/download/ios-download'], { replaceUrl: false });
   }
+  
 }

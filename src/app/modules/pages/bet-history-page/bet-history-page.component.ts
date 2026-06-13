@@ -56,7 +56,13 @@ export class BetHistoryPageComponent implements OnInit {
     this.type = history.state.type;
     this.betType = this.route.snapshot.paramMap.get("betType");
     this.result = history.state.result;
+    if (this.result) {
+      this.storage.store('localresult', this.result);
+    }
     this.isActive = history.state.isActive;
+     if (this.isActive) {
+      this.storage.store('localThreedIsActive', this.isActive);
+    }
     this.pagefrom = history.state.pagefrom;
     if (history.state.type == null || history.state.type == undefined) {
       this.type = this.storage.retrieve("localHistoryType");
@@ -68,6 +74,8 @@ export class BetHistoryPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.type = this.storage.retrieve('localHistoryType');
+    this.result = this.storage.retrieve('localresult');
+    this.isActive=this.storage.retrieve('localThreedIsActive');
     if (this.betType == "2D") {
       this.type = "2D";
       this.twoD_Active = true;
@@ -102,6 +110,7 @@ export class BetHistoryPageComponent implements OnInit {
     this.getBetHistory(0);
     this.addList = [] ? [] : JSON.parse(localStorage.getItem('localBetHistory' + this.type));
   }
+
 
   ngOnDestroy() {
     this.storage.clear("localHistoryType");
@@ -148,7 +157,7 @@ export class BetHistoryPageComponent implements OnInit {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (error.status == 400) {
       this.toastr.error("Bad request.", 'Invalid!', {

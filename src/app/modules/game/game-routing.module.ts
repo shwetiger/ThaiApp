@@ -7,31 +7,35 @@ import { GameWalletComponent } from './components/game-wallet/game-wallet.compon
 import { GameDepositSuccessComponent } from './components/game-deposit-success/game-deposit-success.component';
 import { GameDepositErrorComponent } from './components/game-deposit-error/game-deposit-error.component';
 import { CountryBlackListComponent } from './components/country-black-list/country-black-list.component';
+import { AuthGuard } from '../../shared/service/auth.guard';
+import { TelegramGameComponent } from './components/telegram-game/telegram-game.component';
 
 const routes: Routes = [
   { path: '', component: GameListComponent },
   {
-    path: 'gameList/:providerId', component: GameListComponent
+    path: 'gameList/:providerId', component: GameListComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'gamecategory/:catId', component: GamecategoryComponent
+    path: 'gamecategory/:catId', component: GamecategoryComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'play', component: GameWinLosePageComponent
+    path: 'play', component: GameWinLosePageComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'wallet', component: GameWalletComponent
+    path: 'wallet', component: GameWalletComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'deposit-success/:successCode', component: GameDepositSuccessComponent
+    path: 'deposit-success/:successCode', component: GameDepositSuccessComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'deposit-error/:errorCode', component: GameDepositErrorComponent
+    path: 'deposit-error/:errorCode', component: GameDepositErrorComponent, canActivate: [AuthGuard]
   },
   {
-    path: 'country-black-list', component: CountryBlackListComponent
+    path: 'country-black-list', component: CountryBlackListComponent, canActivate: [AuthGuard]
   },
-
+  {
+    path: 'telegram_game', component: TelegramGameComponent, canActivate: [AuthGuard]
+  },
 
 ];
 

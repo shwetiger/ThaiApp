@@ -1,42 +1,42 @@
-<div id="twod-close-time"> 
+<div id="twod-close-time">
     <div class="container no-padding">
         <div class="row">
             <div class="col-6 d-flex justify-content-start">
-                <div class="balance"  *ngIf="!common.balanceLoading">       
+                <div class="balance"  *ngIf="!common.balanceLoading">
                     <div class="d-flex" >
                         <img src="assets/img/close_kyat.png" alt="" class="close-imaged">
                         <span style="padding: 5px 0 0 0;">{{ 'balance' | translate }}</span>
                     </div>
                     <h4 style="margin: 10px 0 0 0;">
-                        <ng-container>{{ balance | number : '1.2-2' }} ({{ 'ks' | translate }})</ng-container>              
-                    </h4>        
-                </div> 
+                        <ng-container>{{ balance | number : '1.2-2' }} ({{ 'ks' | translate }})</ng-container>
+                    </h4>
+                </div>
                 <div class="loading-balance" *ngIf="common.balanceLoading"  >
                     <ngx-spinner [name]="common.loading.balanceLoading.name"
                     [size]="common.loading.balanceLoading.size" [color]="common.loading.balanceLoading.color"
                     [type]="common.loading.balanceLoading.type" [fullScreen]="common.loading.balanceLoading.fullScreen"
                     [bdColor]="common.loading.balanceLoading.bdColor"></ngx-spinner>
                 </div>
-        
+
             </div>
             <div class="col-6 d-flex justify-content-end">
                 <!-- end of balance -->
-                <div class="bet-close" *ngIf="!common.twodCloseTimeLoading">        
+                <div class="bet-close" *ngIf="!common.twodCloseTimeLoading">
                     <ng-container *ngIf="!weekend_close">
-                        <div class="d-flex justify-content-end" >               
+                        <div class="d-flex justify-content-end" >
                             <img [src]="(twoDCloseTime) ? 'assets/img/clockpause.png' : 'assets/img/clock.png'" alt=""class="close-imaged">
                             <span [ngStyle]="{color: (twoDCloseTime) ? '#ff3f3f': '#2253A2'}" style="padding: 5px 0 0 0;">{{ 'betclosetime' | translate }}</span>
                         </div>
                         <ng-container *ngIf="twoDCloseTime"><div> <h4  style="margin: 5px 0 0 0;color: #ff3f3f;white-space:nowrap;"> {{ 'towDbet_time_close' | translate }}</h4></div></ng-container>
                         <ng-container *ngIf="!twoDCloseTime"><h4  style="margin: 5px 0 0 0;"> {{ toCloseTime|formatTime }} {{ Timeformat }}</h4></ng-container>
                         <!-- <ng-container *ngIf="!twoDCloseTime"><h4  style="margin: 5px 0 0 0;"> {{ countDown | async | formatTime }}</h4></ng-container> -->
-                    </ng-container>     
+                    </ng-container>
                     <ng-container  *ngIf="weekend_close">
                         <div class="d-flex justify-content-end">
                             <img [src]="'assets/img/clockpause.png'" alt="" class="close-imaged">
-                            <span style="color: #ff3f3f; padding: 5px 0 0 0;">{{ 'weekend_close' | translate }}</span>
-                        </div> 
-                    </ng-container>              
+                            <span style="color: #ff3f3f; padding: 5px 0 0 0;white-space: nowrap;">{{ 'weekend_close' | translate }}</span>
+                        </div>
+                    </ng-container>
 
                 </div> <!-- end of bet-close -->
                 <div class="loading-balance" *ngIf="common.twodCloseTimeLoading">
@@ -49,7 +49,7 @@
 
             </div>
         </div>
-    </div>   
-   
-    
+    </div>
+
+
 </div>

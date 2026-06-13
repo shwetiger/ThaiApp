@@ -2,8 +2,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslateService } from '@ngx-translate/core';
-import { CommonService } from '../service/common.service';
-import { NgxSpinnerService } from 'ngx-spinner';
 
 @Pipe({
     name: 'timeAgo',
@@ -29,7 +27,6 @@ export class SafeUrlPipe implements PipeTransform {
     name: "formatTime"
 })
 export class FormatTimePipe implements PipeTransform {
-
     transform(value: number): string {
     const hours: number = Math.floor(value / 3600);
     const minutes: number = Math.floor((value % 3600) / 60);
@@ -48,8 +45,6 @@ export class ThreedFormatTimePipe implements PipeTransform {
     ) { }
 
     transform(value: number): string {
-        // const hours: number = Math.floor(value / 3600);
-        // const minutes: number = Math.floor((value % 3600) / 60);
         const days: number = Math.floor(value/ 86400);
         const hours: number = Math.floor((value % 86400) / 3600);
         const minutes: number = Math.floor((value % 3600) / 60);
@@ -71,13 +66,12 @@ export class ThreedFormatTimePipe implements PipeTransform {
         ("00" + minutes).slice(-2) +
         ":" +
         ("00" + seconds).slice(-2)
-        //("00" + Math.floor(value - minutes * 60)).slice(-2)
         );
     }
 }
 
 @Pipe({
-  name: 'thai2d3dPhone1' // *********535
+  name: 'thai2d3dPhone1'
 })
 export class Thai2d3dPhonePipe1 implements PipeTransform {
   transform(value: string, ...args: unknown[]): unknown {
@@ -91,7 +85,7 @@ export class Thai2d3dPhonePipe1 implements PipeTransform {
 })
 export class TwodSetFormatPipe implements PipeTransform {
     constructor(private domSanitizer: DomSanitizer) { }
-    transform(value: string, ...args: unknown[]): unknown { // 1,680.2<8>
+    transform(value: string, ...args: unknown[]): unknown {
         if (value) {
             const num1 = value.split('').slice(0, -1).join('');
             const num2 = value.charAt(value.length - 1);
@@ -104,9 +98,10 @@ export class TwodSetFormatPipe implements PipeTransform {
 @Pipe({
     name: 'twodValFormat'
 })
+
 export class TwodValFormatPipe implements PipeTransform {
     constructor(private domSanitizer: DomSanitizer) { }
-    transform(value: string, ...args: unknown[]): unknown { // 28,06<7>.03
+    transform(value: string, ...args: unknown[]): unknown {
         if (value) {
             const num1 = value.split('.')[0].split('').slice(0, -1).join('');
             const num2 = value.split('.')[0].charAt(value.split('.')[0].length - 1);
@@ -120,9 +115,10 @@ export class TwodValFormatPipe implements PipeTransform {
 @Pipe({
     name: 'usernameFormat'
 })
+
 export class UsernameFormatPipe implements PipeTransform {
     constructor(private domSanitizer: DomSanitizer) { }
-    transform(value: string, ...args: unknown[]): unknown { // ...
+    transform(value: string, ...args: unknown[]): unknown {
         if (value != null && value.length > 30) {
             let name = value.substring(0, 20)+" ...";
             return name;
@@ -133,8 +129,9 @@ export class UsernameFormatPipe implements PipeTransform {
 }
 
 @Pipe({
-    name: 'thai2d3dPhone2' // +95-944*****35
+    name: 'thai2d3dPhone2'
 })
+
 export class Thai2d3dPhonePipe2 implements PipeTransform {
     transform(value: string, ...args: unknown[]): unknown {
         if (value) {
@@ -145,8 +142,9 @@ export class Thai2d3dPhonePipe2 implements PipeTransform {
 }
 
 @Pipe({
-    name: 'thai2d3dPhone3' // +959 445 *** ***
+    name: 'thai2d3dPhone3'
 })
+
 export class Thai2d3dPhonePipe3 implements PipeTransform {
     transform(value: string, ...args: unknown[]): unknown {
         if (value) {
@@ -157,8 +155,9 @@ export class Thai2d3dPhonePipe3 implements PipeTransform {
 }
 
 @Pipe({
-    name: 'thai2d3dPhone4' // +0944*****35
+    name: 'thai2d3dPhone4'
 })
+
 export class Thai2d3dPhonePipe4 implements PipeTransform {
     transform(value: string, ...args: unknown[]): unknown {
         if (value) {
@@ -169,8 +168,9 @@ export class Thai2d3dPhonePipe4 implements PipeTransform {
 }
 
 @Pipe({
-    name: 'serialNumber' // 1st, 2nd, 3rd, 4th, 5th
+    name: 'serialNumber'
 })
+
 export class SerialNumberPipe implements PipeTransform {
     transform(value: string, ...args: unknown[]): unknown {
         if (value) {
@@ -195,9 +195,7 @@ export class SerialNumberPipe implements PipeTransform {
   })
   export class ListPipe implements PipeTransform {
       transform(value: string): { text: string, link?: string }[] {
-         // const items= value.split(/\d+\.\s*|\n/).filter(item => item.trim().length > 0);
          const items = value.split(/<br>/).filter(item => item.trim().length > 0)
-          //const items = value.split(/\n/).filter(item => item.trim().length > 0);
             const parsedItems = items.map(item => {
             const linkMatch = item.match(/(.*?)\[(.*?)\]\((.*?)\)/);
             if (linkMatch && linkMatch.length ===4) {

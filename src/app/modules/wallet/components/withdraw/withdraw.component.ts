@@ -609,11 +609,13 @@ export class WithdrawComponent implements OnInit {
       } else {
         requestIdList = res.request_id;
       }
+
       this.storage.store('requestId', requestIdList);
       this.storage.store('bankAccountList', this.bankAccountList);
       if (accountCount === 0) {
         this.storage.store("localInsertAccount", 'insertAccount');
       }
+
       this.storage.store('otptype', 'smsotp');
       this.storage.store('actionType', 'insertAccount');
       this.storage.store('formPageType', 'withdrawaladd');
@@ -874,7 +876,7 @@ export class WithdrawComponent implements OnInit {
   checkbankaccountname() {
     $("#bankNameErr").html("");
     //let pattern = RegExp(/^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/);
-    if (this.bankAccModel.bankaccountName.length == 0) {
+    if (this.bankAccModel.bankaccountName.trim().length == 0) {
       var phoneRequired = this.translateService.instant("requiredFiled");
       phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("withdrawal_account_name"));
       $("#bankNameErr").html(phoneRequired);
@@ -939,20 +941,21 @@ export class WithdrawComponent implements OnInit {
     }
   }
 
-  onAmountInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    let currentValue = inputElement.value;
-    currentValue = currentValue.replace('.', '');
-    inputElement.value = currentValue;
-
-  }
-
-
-
+   onAmountInput(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  let value = input.value.replace(/\./g, '');
+  value = value.replace(/[^0-9]/g, '');
+  input.value = value;
+  this.withdrawalRequestModel.amount = value;
+  setTimeout(() => {
+    input.setSelectionRange(value.length, value.length);
+  });
+}
 
   amountKeyEnter(id) {
     document.getElementById(id).focus();
   }
+
   loginPassError() {
     const myanmarRegex = /[\u1000-\u109F]/;
 
@@ -961,11 +964,11 @@ export class WithdrawComponent implements OnInit {
     }
     if (this.withdrawalRequestModel.login_password != '' && this.withdrawalRequestModel.login_password != undefined && this.withdrawalRequestModel.login_password != null) {
       $("#loginPassErr").html("");
-      if (this.withdrawalRequestModel.login_password.length > 20) {
+      if (this.withdrawalRequestModel.login_password.trim().length > 20) {
         $("#loginPassErr").html(this.translateService.instant("charlength"));
         return false;
       }
-      if (this.withdrawalRequestModel.login_password.length < 6) {
+      if (this.withdrawalRequestModel.login_password.trim().length < 6) {
         var passlen = this.translateService.instant("lenghtInvaild1");
         passlen = passlen.toString().replace("@filed", this.translateService.instant("length_field"));
         passlen = passlen.toString().replace("@size", '6');
@@ -1168,8 +1171,58 @@ export class WithdrawComponent implements OnInit {
           this.emailaddress = this.dto.Response.email;
         });
   }
+
+
+ checkInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  let charArray = Array.from(input.value);
+
+  if (charArray.length > 25) {
+    charArray = charArray.slice(0, 25);
+  }
+
+  const newValue = charArray.join('');
+
+  this.bankAccModel.bankaccountName = newValue;
+  input.value = newValue; // IME / paste case fix
+
+  this.updateNameError(charArray.length);
 }
 
+checkKey(event: KeyboardEvent) {
+  const input = event.target as HTMLInputElement;
+  const charArray = Array.from(input.value);
+
+  const allowedKeys = [
+    'Backspace','Delete',
+    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
+    'Tab','Home','End'
+  ];
+
+  if (allowedKeys.includes(event.key)) {
+    return;
+  }
+
+  if (charArray.length >= 25) {
+    event.preventDefault();
+  }
+}
+
+updateNameError(length: number) {
+  if (length === 0) {
+    $("#nameErr").html("");
+  }
+  else if (length >= 25) {
+    let msg = this.translateService.instant("requiredFiled");
+    msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
+    $("#nameErr").html(msg);
+  }
+  else {
+    $("#nameErr").html("");
+  }
+}
+}
 //com
 @Component({
   selector: 'modal-content',
@@ -1224,6 +1277,7 @@ export class ModalContentComponent implements OnInit {
   goOk() {
     this.bsModalRef.hide();
   }
+
 
 }
 

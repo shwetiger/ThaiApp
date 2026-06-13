@@ -5,7 +5,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { LocalStorageService } from 'ngx-webstorage';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from "ngx-spinner";
-
 import { TranslateService } from '@ngx-translate/core';
 import { catchError, retry } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -41,12 +40,20 @@ export class RegisterInviteCodeComponent implements OnInit {
     private location: Location,
     private route: ActivatedRoute,
     private readonly _zawgyiDetector: ZawgyiDetector) {
-    this.refModel = history.state.registerModel;
-
+    this.refModel = this.storage.retrieve('registerModel');
   }
 
   ngOnInit(): void {
+    if (this.refModel) {
+      this.storage.store('registerModel', this.refModel);
+    }
+    const lang = this.storage.retrieve('localLanguage') || 'en';
+    this.translateService.setDefaultLang('en');
+    this.translateService.use(lang);
+  }
 
+  onRefChange() {
+    this.storage.store('registerModel', this.refModel);
   }
 
   checkPhoneNumber() {
@@ -64,7 +71,7 @@ export class RegisterInviteCodeComponent implements OnInit {
   }
 
   handleError(error: HttpErrorResponse) {
-   // console.log("Error>>>>" + JSON.stringify(error));
+  // console.log("Error>>>>" + JSON.stringify(error));
     this.loadingSubmiting = false;
     this.spinner.hide("loadingSubmiting");
     this.loadingSubmitingOne = false;
@@ -177,7 +184,6 @@ export class RegisterInviteCodeComponent implements OnInit {
     this.token = this.storage.retrieve('token');
     this.otpVerifyToken = this.storage.retrieve('otpVerifyToken');
     this.refModel.otpVerifyToken = this.otpVerifyToken;
-
     let headers = new HttpHeaders().set('Authorization', this.token);
     this.http.post(this.funct.ipaddress + 'v2/authenticate/register', this.refModel, { headers })
       .pipe(catchError(this.handleError.bind(this)))
@@ -190,6 +196,7 @@ export class RegisterInviteCodeComponent implements OnInit {
           this.loadingSubmitingOne = false;
           this.spinner.hide("loadingSubmitingOne");
           this.storage.clear('registeropttype');
+          this.storage.store('loginModel', this.refModel);
           this.router.navigate(['/login/success'], {
             state: { 'loginModel': this.refModel },
             replaceUrl: true

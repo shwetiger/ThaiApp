@@ -57,11 +57,11 @@
         </div>
         <div class="row d-flex justify-content-center">
           <!-- <div class="text-center pt-2">
-                      <a (click)="withdrawAdd()" > 
-                        <img src="assets/img/icon/withdraw-insert.png" alt=""  width="30" style="margin-top: 0px !important;">   
-                       
+                      <a (click)="withdrawAdd()" >
+                        <img src="assets/img/icon/withdraw-insert.png" alt=""  width="30" style="margin-top: 0px !important;">
+
                       </a>
-                      <span style="margin-top: -20px !important;margin-left:5px">Add Bank Account</span> 
+                      <span style="margin-top: -20px !important;margin-left:5px">Add Bank Account</span>
                   </div> -->
 
           <div class="text-center pt-2">
@@ -85,7 +85,7 @@
   <div class="modal-body" style="padding: 0px !important;">
     <h3 class="ml-2 mt-2" style="color:#2253A2">{{'enter_bank_acc_name' | translate }}</h3>
     <div ngClass="mx-3">
-      <input type="text" style="color:#2253A2" maxlength="50" class="editname-text" [(ngModel)]="editName"
+      <input type="text" style="color:#2253A2" class="editname-text" (keydown)="checkKey($event)"  (input)="checkInput($event)" [(ngModel)]="editName"
         [ngModelOptions]="{standalone: true}">
     </div>
   </div>

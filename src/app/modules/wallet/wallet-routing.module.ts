@@ -12,47 +12,47 @@ import { GameWalletComponent } from './components/game-wallet/game-wallet.compon
 import { TransactionHistoryComponent } from './components/transaction-history/transaction-history.component';
 import { GameTransactionHistoryComponent } from './components/game-transaction-history/game-transaction-history.component';
 import { TransactionHistoryDetailComponent } from './components/transaction-history-detail/transaction-history-detail.component';
-
+import { AuthGuard } from '../../shared/service/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: WalletPageComponent },  
+  { path: '', component: WalletPageComponent },
   {
-    path: 'top-up', component: TopUpComponent
-  },    
-  {
-    path: 'top-up-submit', component: TopUpSubmitComponent
+    path: 'top-up', component: TopUpComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'transcation-waiting-page', component: TopupTranscationWaitingPageComponent
+    path: 'top-up-submit', component: TopUpSubmitComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'tutorial-video', component: TutorialVideoPageComponent
-  }, 
-  {
-    path: 'withdraw', component: WithdrawComponent
+    path: 'transcation-waiting-page', component: TopupTranscationWaitingPageComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'withdraw/:isFromAdd', component: WithdrawComponent
+    path: 'tutorial-video', component: TutorialVideoPageComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'withdraw-success', component: WithdrawPendingComponent
+    path: 'withdraw', component: WithdrawComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'withdraw-change-acc', component: WithdrawChangeAccountComponent
+    path: 'withdraw/:isFromAdd', component: WithdrawComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'game-wallet', component: GameWalletComponent
+    path: 'withdraw-success', component: WithdrawPendingComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'history', component: TransactionHistoryComponent
+    path: 'withdraw-change-acc', component: WithdrawChangeAccountComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'game-transaction-history', component: GameTransactionHistoryComponent
+    path: 'game-wallet', component: GameWalletComponent,canActivate: [AuthGuard]
   },
   {
-    path: 'transaction-history-detail', component: TransactionHistoryDetailComponent
+    path: 'history', component: TransactionHistoryComponent,canActivate: [AuthGuard]
   },
-  
+  {
+    path: 'game-transaction-history', component: GameTransactionHistoryComponent,canActivate: [AuthGuard]
+  },
+  {
+    path: 'transaction-history-detail', component: TransactionHistoryDetailComponent,canActivate: [AuthGuard]
+  },
+
 ];
 
 @NgModule({

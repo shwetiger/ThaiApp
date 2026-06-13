@@ -42,7 +42,8 @@
                     </button>
                 </div>
                 <div class="col px-2">
-                    <input type="number" class="form-control input" id="betAmount" [(ngModel)]="betAmount"
+                    <input type="text" (input)="onlyNumber($event)"  inputmode="numeric"
+                        pattern="[0-9]*" class="form-control input" id="betAmount" [(ngModel)]="betAmount"
                         [ngModelOptions]="{standalone: true}" (keyup.enter)="enter($event)" (keyup)="checkBetAmount()"
                         placeholder="{{'amountHint' | translate}}" (keypress)="keyPressNumbers($event)"
                         (input)="checkMaxLength($event)">

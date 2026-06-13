@@ -118,6 +118,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
   gamecatSlotsList: any = [];
   maintanance: any;
   deviceId1: any;
+  gameProviderCode:any;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -266,7 +267,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
         "mainBalance": this.userProfileBalance,
         "gameBalance": this.gameUserBalance,
         "categoryId": "",
-        "name": this.gameProviderCodeName,
+        "name": this.gameProviderCode,
         "LiveGameLaunch": data
       };
       this.showTransferDialog(transferData);
@@ -465,6 +466,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
           this.dto.Response = result;
           this.gamecatSlotsList = this.dto.Response.gsGameList;
           this.gameProviderCodeName = this.dto.Response.name;
+          this.gameProviderCode=this.dto.Response.display_name
           if (this.dto.Response.isMaintenance == true) {
             this.gameMaintenanceSlot = true;
             this.getGameAlert(id.toString());
@@ -510,6 +512,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
           this.dto.Response = result;
           this.gamecatFishingList = this.dto.Response.gsGameList;
           this.gameProviderCodeName = this.dto.Response.name;
+          this.gameProviderCode =this.dto.Response.display_name;
           if (this.dto.Response.isMaintenance == true) {
             this.gameMaintenanceFishing = true;
             this.getGameAlert(id.toString());
@@ -770,6 +773,19 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
       this.playAutoGameListLaunch(data);
     }
   }
+
+   goBack() {
+    if (this.deviceId != null) {
+      this.router.navigate(['/home', this.deviceId]);
+      return;
+    }
+    this.router.navigate(['/home'])
+  }
+
+    refreshPageHeader() {
+    this.ngOnInit();
+  }
 }
+
 
 

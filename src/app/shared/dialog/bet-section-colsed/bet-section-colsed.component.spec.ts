@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BetSectionColsedComponent } from './bet-section-colsed.component';
 
 describe('BetSectionColsedComponent', () => {

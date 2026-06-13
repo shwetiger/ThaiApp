@@ -157,4 +157,53 @@ export class WithdrawMyAccontComponent implements OnInit {
 
   }
 
+  checkInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  let charArray = Array.from(input.value);
+
+  if (charArray.length > 25) {
+    charArray = charArray.slice(0, 25);
+  }
+
+  const newValue = charArray.join('');
+
+  this.editName = newValue;
+  input.value = newValue; // IME / paste case fix
+
+  this.updateNameError(charArray.length);
+}
+
+checkKey(event: KeyboardEvent) {
+  const input = event.target as HTMLInputElement;
+  const charArray = Array.from(input.value);
+
+  const allowedKeys = [
+    'Backspace','Delete',
+    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
+    'Tab','Home','End'
+  ];
+
+  if (allowedKeys.includes(event.key)) {
+    return;
+  }
+
+  if (charArray.length >= 25) {
+    event.preventDefault();
+  }
+}
+
+updateNameError(length: number) {
+  if (length === 0) {
+    $("#nameErr").html("");
+  }
+  else if (length >= 25) {
+    let msg = this.translateService.instant("requiredFiled");
+    msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
+    $("#nameErr").html(msg);
+  }
+  else {
+    $("#nameErr").html("");
+  }
+}
 }

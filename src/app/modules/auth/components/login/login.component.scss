@@ -7,7 +7,9 @@
     padding-top: 0 !important;
     padding: 0px !important;
     background-color: #fff !important;
-    height: 100% !important;  /* Viewport height */
+    min-height: 100vh;
+    overflow-y: auto !important;
+    padding-bottom: 80px !important;
     overflow-x: hidden;
 }
 .login-button {
@@ -26,8 +28,6 @@ a,.active h5 {
   margin-top: 8px;
   position: absolute;
   z-index: 111;
- // color: blue;
-
   }
 
   .text-eye ion-icon {
@@ -35,13 +35,12 @@ a,.active h5 {
   }
 
 .p-viewer {
-  // margin-right: 20px;
   float: right;
   margin-top: -30px;
   position: relative;
   z-index: 2;
-  //color: blue;
 }
+
 #loginPassword {
   border: none;
   outline: none;
@@ -50,7 +49,7 @@ a,.active h5 {
 #loginPassword:focus {
   border: none;
   outline: none;
-  box-shadow: none; /* This removes the shadow that might appear on focus */
+  box-shadow: none;
 }
 
 input::placeholder {

@@ -6,11 +6,14 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 import { catchError } from 'rxjs/operators';
 import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-message.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
+import { TranslateService } from '@ngx-translate/core';
+import { CommonService } from 'src/app/shared/service/common.service';
+
 
 @Component({
   selector: 'app-user-guide',
   templateUrl: './user-guide.component.html',
-  styleUrls: ['./user-guide.component.scss']
+  styleUrls: ['./user-guide.component.scss'],
 })
 export class UserGuideComponent implements OnInit {
   FaqId: any;
@@ -25,6 +28,7 @@ export class UserGuideComponent implements OnInit {
   isPreviousDisabled: boolean = true;
   isNextDisabled: boolean = false;
   disabledButtonColor: string = 'grey';
+  lang: string = 'my'
   constructor(
     private route: ActivatedRoute,
     private storage: LocalStorageService,
@@ -32,13 +36,28 @@ export class UserGuideComponent implements OnInit {
     private funct: FunctService,
     private handleErrorMessage: HandleErrorMessageService,
     private dto: DtoService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private translateService: TranslateService,
+    public common: CommonService,
+  ) {
+      console.log('CURRENT LANG =', this.translateService.currentLang);
+      this.lang=this.translateService.currentLang;
+
+  this.translateService.get('previous').subscribe(res => {
+    console.log('TRANSLATE TEST =', res);
+  });
+
+      // <h4 *ngIf="lang == 'en'" class="">{{ video.description_en}}</h4>
+      //           <h4 *ngIf="lang == 'my'" class="">{{ video.description_my}}</h4>
+      //           <h4 *ngIf="lang == 'th'" class="">{{ video.description_th}}</h4>
+      //           <h4 *ngIf="lang == 'zh'" class="">{{ video.description_zh}}</h4>
+   }
 
   ngOnInit(): void {
     this.FaqId = this.route.snapshot.params.FaqId;
     this.Question = this.route.snapshot.params.Question;
     this.getqusetionbyId(this.FaqId);
+
   }
 
   getqusetionbyId(FaqId: any) {

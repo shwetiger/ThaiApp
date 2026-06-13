@@ -572,7 +572,7 @@
   "phoneInvaild": "Phone number is not correct",
   "accountInvaild": "Account is not correct",
   "requiredFiled": " @value is required",
-  "creadeAccount": "Create Account",
+  "creadeAccount": "Register",
   "forgotPassword": "Forgot Password?",
   "login": "Login",
   "phoneNumberHint": "09 XXX XXX XXX",
@@ -743,7 +743,7 @@
   "pt_trans_pending": "Pending",
   "pt_trans_denied": "Denied",
   "min_pt_required": "Minimum point is 1000",
-  "points": "Point",
+  "points": "Points",
   "pt_not_enought": "You don’t have enough points",
   "akhway_close": "Close",
   "morebtn": "More",
@@ -791,5 +791,14 @@
   "viber_error":"Viber OTP is not available for international numbers",
   "closed_2D":"Bet Closed",
   "2dresult" :"2D Result",
-  "getcountdown-request-time": "Please wait 20 seconds."
+  "getcountdown-request-time": "Please wait 20 seconds.",
+  "previous":"Previous",
+  "next1":"Next",
+  "2dwinner":"2D Winners",
+  "3dwinner":"3D Winners",
+  "3dresult":"3D Result",
+  "nohistory":"No data found !",
+  "nobankaccount":"No bank account",
+  "telegram_login":"Login with Telegram",
+  "telegram_register":"Register with Telegram"
 }

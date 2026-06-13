@@ -5,14 +5,10 @@ import { DtoService } from './service/dto.service';
 import { UtilService } from './service/util.service';
 import { FunctService } from './service/funct.service';
 import { CommonService } from './service/common.service';
-
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-//dialog
 import { LoginDeviceDialogComponent } from './dialog/login-device-dialog/login-device-dialog.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-//shared component
 import { AccountLoginComponent } from './components/account-login/account-login.component';
 import { AppNavigationBarComponent} from './components/navigation-bar/navigation.component';
 import { PageHeaderComponent } from './components/page-header/page-header.component';
@@ -25,7 +21,6 @@ import { AppbarComponent } from './components/appbar/appbar.component';
 import { BetSectionDialogComponent } from './dialog/bet-section-dialog/bet-section-dialog.component';
 import { ThreedCloseTimeComponent } from './components/threed-close-time/threed-close-time.component';
 import { ThreedResultComponent } from './components/threed-result/threed-result.component';
-//Pie
 import { TimeAgoExtendsPipePipe, SafeUrlPipe, FormatTimePipe, ThreedFormatTimePipe, ListPipe} from './pipes/common.pipe';
 import { FormsModule } from '@angular/forms';
 import { CarouselModule } from 'ngx-owl-carousel-o';
@@ -57,8 +52,6 @@ import { GameWebMobileViewComponent } from './dialog/game-web-mobile-view/game-w
 import { QrViewDialogComponent } from './dialog/qr-view-dialog/qr-view-dialog.component';
 import { AppSplashScreenAdsComponent } from './components/app-splash-screen-ads/app-splash-screen-ads.component';
 import { BetSectionColsedComponent } from './dialog/bet-section-colsed/bet-section-colsed.component';
-//import { MaintenanceTimeComponent } from './maintenance-time/maintenance-time.component';
-
 
 export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
   return () => new Promise<any>((resolve: any) => {
@@ -71,12 +64,10 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       }
       else{
         langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
+      }
       translate.setDefaultLang(langToSet);
       translate.use(langToSet).subscribe(() => {
-        //console.info(`Successfully initialized '${langToSet}' language.'`);
       }, err => {
-       // console.error(`Problem with '${langToSet}' language initialization.'`);
       }, () => {
         resolve(null);
       });
@@ -87,49 +78,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
 
 @NgModule({
   exports: [
-    AppNavigationBarComponent,   
-    AccountLoginComponent,   
-    LoginDeviceDialogComponent,
-    PageHeaderComponent,
-    LogoutComponent,
-    NotRefreshAppbarComponent,
-    AdsSliderComponent,
-    AppPhonePickerComponent,
-    LanguagePageComponent,
-    AppbarComponent,
-    TwodCloseTimeComponent,
-    TwodLiveComponent,
-    ForgetLoginDeviceDialogComponent,
-    BetSectionDialogComponent,
-    ThreedCloseTimeComponent,
-    ThreedResultComponent,
-    TwodResultPageComponent, 
-    WalletAccountPageComponent,
-    TopupAlertMaintenanceComponent,
-    NotAppbarComponent,
-    GameWalletInOutComponent,
-    GameAccountLoginComponent,
-    GameShowFreePlayComponent,
-    GameOpenChromeComponent,
-    GameCategoryTransferComponent,
-    GameCategoryMaintenanceComponent,
-    GameListTransferComponent,
-    GameWinLoseComponent,  
-    SportDialogComponent, 
-  
-    MaintenanceTimeComponent,
-    AppSplashScreenAdsComponent,
-
-    //pipe
-    TimeAgoExtendsPipePipe,
-    FormatTimePipe,
-    ThreedFormatTimePipe,
-    SafeUrlPipe,
-    ListPipe
-    
-  ],
-  declarations: [
-    AppNavigationBarComponent,    
+    AppNavigationBarComponent,
     AccountLoginComponent,
     LoginDeviceDialogComponent,
     PageHeaderComponent,
@@ -158,8 +107,47 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     GameListTransferComponent,
     GameWinLoseComponent,
     SportDialogComponent,
- 
-    //pipe
+
+    MaintenanceTimeComponent,
+    AppSplashScreenAdsComponent,
+
+    TimeAgoExtendsPipePipe,
+    FormatTimePipe,
+    ThreedFormatTimePipe,
+    SafeUrlPipe,
+    ListPipe
+
+  ],
+  declarations: [
+    AppNavigationBarComponent,
+    AccountLoginComponent,
+    LoginDeviceDialogComponent,
+    PageHeaderComponent,
+    LogoutComponent,
+    NotRefreshAppbarComponent,
+    AdsSliderComponent,
+    AppPhonePickerComponent,
+    LanguagePageComponent,
+    AppbarComponent,
+    TwodCloseTimeComponent,
+    TwodLiveComponent,
+    ForgetLoginDeviceDialogComponent,
+    BetSectionDialogComponent,
+    ThreedCloseTimeComponent,
+    ThreedResultComponent,
+    TwodResultPageComponent,
+    WalletAccountPageComponent,
+    TopupAlertMaintenanceComponent,
+    NotAppbarComponent,
+    GameWalletInOutComponent,
+    GameAccountLoginComponent,
+    GameShowFreePlayComponent,
+    GameOpenChromeComponent,
+    GameCategoryTransferComponent,
+    GameCategoryMaintenanceComponent,
+    GameListTransferComponent,
+    GameWinLoseComponent,
+    SportDialogComponent,
     TimeAgoExtendsPipePipe,
     FormatTimePipe,
     ThreedFormatTimePipe,
@@ -174,33 +162,33 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
   imports: [
     ModalModule.forRoot(),
     ModalDialogModule,
-    FormsModule, 
+    FormsModule,
     CommonModule,
     TranslateModule.forChild({
       loader: {
           provide: TranslateLoader,
           useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
+          deps: [HttpClient]
       }
     }),
     CarouselModule,
-    NgxSpinnerModule,     
-    ToastrModule.forRoot(),    
+    NgxSpinnerModule,
+    ToastrModule.forRoot(),
     HttpClientModule,
     NgxWebstorageModule.forRoot(),
     BsDropdownModule,
     CodeInputModule,
     ModalModule,
     CommonModule,
-    
-  ],  
+
+  ],
   providers: [
     NavigationService,
     DtoService,
     UtilService,
-    FunctService,    
-    CommonService,  
-    BsDropdownConfig,  
+    FunctService,
+    CommonService,
+    BsDropdownConfig,
     BsModalService,
     {
       provide: APP_INITIALIZER,

@@ -14,12 +14,33 @@
   #gmailInput:focus {
     border: none;
     outline: none;
-    box-shadow: none; /* This removes the shadow that might appear on focus */
+    box-shadow: none;
   }
-  
+
   input::placeholder {
     font-size: 13px;
   }
+
+  .line-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 30px 30px 10px 30px;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  width:40%;
+  background-color: rgb(215, 212, 212);
+}
+
+.text-or {
+  padding: 0 10px;
+  font-size: 16px;
+  color: rgb(215, 212, 212);
+}
+
 
 
 

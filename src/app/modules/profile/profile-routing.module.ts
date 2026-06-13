@@ -13,49 +13,50 @@ import { DefaultOptSettingComponent } from './components/default-opt-setting/def
 import { EmailAddressComponent } from './components/email-address/email-address.component';
 import { EmailOtpConfirmComponent } from './components/email-otp-confirm/email-otp-confirm.component';
 import { PointsHistoryComponent } from './components/points-history/points-history.component';
+import { AuthGuard } from '../../shared/service/auth.guard';
 
 const routes: Routes = [
   {
     path: '', component: ProfileComponent
   },
   {
-    path: 'feedback', component: FeedbackPageComponent
+    path: 'feedback', component: FeedbackPageComponent,canActivate:[AuthGuard]
   },
   {
-    path: 'user-guide', component: UserGuideComponent
+    path: 'user-guide', component: UserGuideComponent,canActivate:[AuthGuard]
   },
   {
-    path: 'invite-code', component: InviteCodeComponent
+    path: 'invite-code', component: InviteCodeComponent,canActivate:[AuthGuard]
   },
   {
-    path: 'withdrawl-account-list', component: WithdrawMyAccontComponent
+    path: 'withdrawl-account-list', component: WithdrawMyAccontComponent,canActivate:[AuthGuard]
   },
   {
     path: 'bet-history', component: BetHistoryPageComponent
   },
   {
-    path: 'result', component: ResultComponent
+    path: 'result', component: ResultComponent,canActivate:[AuthGuard]
   },
   {
-    path: 'change-password', component: ChangePasswordComponent
+    path: 'change-password', component: ChangePasswordComponent,canActivate:[AuthGuard]
   },
   {
-    path: 'profile-edit', component: ProfileEditPageComponent
+    path: 'profile-edit', component: ProfileEditPageComponent,canActivate:[AuthGuard]
   },
   {
     path: 'default-otp', component: DefaultOptSettingComponent
   },
 
   {
-    path: 'email-address', component: EmailAddressComponent
+    path: 'email-address', component: EmailAddressComponent,canActivate:[AuthGuard]
   },
 
   {
-    path: 'email-otp-comfirm', component: EmailOtpConfirmComponent
+    path: 'email-otp-comfirm', component: EmailOtpConfirmComponent,canActivate:[AuthGuard]
   },
 
   {
-    path: 'points-history', component: PointsHistoryComponent
+    path: 'points-history', component: PointsHistoryComponent,canActivate:[AuthGuard]
   }
 ];
 

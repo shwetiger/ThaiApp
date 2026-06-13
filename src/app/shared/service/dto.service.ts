@@ -6,24 +6,19 @@ import { Injectable } from '@angular/core';
 export class DtoService {
 
   AdminDTO: any;
-  AdminLoginModel : any ; //Net
-
+  AdminLoginModel : any ;
   Response: any;
-  Response1 : any;// add this
+  Response1 : any;
   Message: any;
   Data: any;
   token: any;
   tempDateData: any;
-
   registerPhoneModel : any;
-
   userIsLoginModel: any;
 
   constructor() {
-
     this.token = '';
     this.tempDateData = '';
-
     this.Response = {
       message: this.Message,
       data: this.Data,
@@ -38,7 +33,7 @@ export class DtoService {
       token: '',
       model: this.AdminLoginModel,
       adminDTOList: []
-    }  //ADD NEW
+    }
 
     this.AdminLoginModel = {
       id: 0,
@@ -54,8 +49,8 @@ export class DtoService {
       referralCode: '',
       image: '',
       status: ''
-    } //add new
-     
+    }
+
     this.Data = {
       token: '',
       adminDTO: this.AdminDTO,
@@ -83,7 +78,6 @@ export class DtoService {
       phoneNumber : ''
     }
 
-    //12-16-2021
     this.userIsLoginModel={
 
     }

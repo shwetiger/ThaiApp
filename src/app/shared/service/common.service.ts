@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
-import { NgxSpinnerService } from "ngx-spinner";
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse  } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-webstorage';
 import { catchError, retry } from 'rxjs/operators';
@@ -22,9 +20,8 @@ export class CommonService {
   token: any;
   userProfileBalance : any;
   mainWallet : any;
-  subject = new Subject<string>();  
-  dataSubject = new BehaviorSubject<any>(null);  
-  //add ***
+  subject = new Subject<string>();
+  dataSubject = new BehaviorSubject<any>(null);
   refreshLoading: boolean=false;
   submitLoading: boolean=false;
   betLoading: boolean=false;
@@ -44,7 +41,7 @@ export class CommonService {
       color: '#ffffff',
       type: 'ball-spin-clockwise',
       fullScreen: true
-    },   
+    },
     balanceLoading: {
       name: 'balanceLoading',
       size: 'small',
@@ -70,7 +67,7 @@ export class CommonService {
       fullScreen: false,
       bdColor: "rgba(0, 0, 0, 0)"
     },
-     //add ***
+
      refreshLoading: {
       name: 'refreshLoading',
       size: 'medium',
@@ -83,14 +80,14 @@ export class CommonService {
       size: 'medium',
       color: 'rgb(6,56,107)',
       type: 'ball-elastic-dots',
-      fullScreen: false,      
+      fullScreen: false,
     },
     betLoading: {
       name: 'betLoading',
       size: 'small',
       color: 'rgb(6,56,107)',
       type: 'ball-spin-clockwise',
-      fullScreen: false,      
+      fullScreen: false,
     },
     closeLoadingSubmit: {
       name: 'closeLoadingSubmit',
@@ -118,44 +115,31 @@ export class CommonService {
     },
 
   };
-  
+
   constructor(
     private funct: FunctService,
     private translateService: TranslateService,
     private toastr: ToastrService,
     private http: HttpClient,
     private dto: DtoService,
-    private storage: LocalStorageService) {       
-     
+    private storage: LocalStorageService) {
   }
- 
-
-  // setData(data: any) {
-  //   this.data = data;
-  // }
-
-  // getData(): any {
-  //   const temp = this.data;
-  //   this.data = null; // clear after use
-  //   return temp;
-  // }
 
    setData(data: any) {
     this.dataSubject.next(data);
   }
 
   getData() {
-    return this.dataSubject.asObservable(); // Use async pipe or subscribe
+    return this.dataSubject.asObservable();
   }
 
   clearData() {
-    this.dataSubject.next(null);  // or undefined
+    this.dataSubject.next(null);
   }
 
   getCurrentData() {
-    return this.dataSubject.getValue(); // Use this for sync access
+    return this.dataSubject.getValue();
   }
-
 
   handleError(error: HttpErrorResponse) {
       if (error.status == 423) {
@@ -171,9 +155,9 @@ export class CommonService {
 
   getUserProfile() {
     let params = new HttpParams();
-    this.token = this.storage.retrieve('token');    
+    this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);  
+    headers = headers.set('Authorization', this.token);
    this.http.get(this.funct.ipaddress + 'user/PointUserProfile', {headers: headers })
     .pipe
       (
@@ -190,62 +174,51 @@ export class CommonService {
   }
 
   getCloseDateTime(){
-    let headers = new HttpHeaders(); 
-    return this.http.get(this.funct.ipaddress + 'threedconfig/3d_close_time', { headers: headers } ); 
+    let headers = new HttpHeaders();
+    return this.http.get(this.funct.ipaddress + 'threedconfig/3d_close_time', { headers: headers } );
   }
 
   async getDateTime() {
     const axios = require('axios').default;
     const response = await axios.get(this.funct.ipaddress + 'value/getDateTime');
     return response.data.utc_datetime;
-    //return '2022-10-04T05:37:00.0736772Z';
-    // 00:01AM(UTC-17:31), 09:35AM(UTC-03:05), 
-    // 10:21AM(UTC-03:51), 10:30AM(UTC-04:00)
-    // 11:54PM(UTC-05:24), 12:01PM(UTC-05:31)
-    // 02:21PM(UTC-07:51), 02:30PM(UTC-08:00)
-    // 03:57PM(UTC-09:27), 04:36PM(UTC-10:06)
-    // 04:01PM(UTC-10:01)
+
   }
   async convertMyanmarTime(date: any) {
     const localDate = new Date(date);
     const timeZoneOffset = new Date(date).getTimezoneOffset();
     let offsetMinutes: any;
-    // console.warn("server utc dateTime ==>", date);
-    // console.warn("local utc dateTime ==>", new Date().toISOString());
-    // console.warn("timezone offset ==>", new Date().getTimezoneOffset());
-
     if (timeZoneOffset != -390) {
-      if (timeZoneOffset < -390) { // thai= -420, china = -480 (early than myanmar)
+      if (timeZoneOffset < -390) {
         offsetMinutes = Math.abs(timeZoneOffset) - 390;
-
         var hours = (offsetMinutes / 60);
         var rhours = Math.floor(hours);
         var minutes = (hours - rhours) * 60;
         var rminutes = Math.round(minutes);
-  
+
         localDate.setHours(localDate.getHours()-rhours);
         localDate.setMinutes(localDate.getMinutes()-rminutes);
       }
-      if (timeZoneOffset > -390) { // us = 420 (later than myanmar)
+      if (timeZoneOffset > -390) {
         offsetMinutes = timeZoneOffset - (-390);
-
         var hours = (offsetMinutes / 60);
         var rhours = Math.floor(hours);
         var minutes = (hours - rhours) * 60;
-        var rminutes = Math.round(minutes);  
+        var rminutes = Math.round(minutes);
         localDate.setHours(localDate.getHours()+rhours);
         localDate.setMinutes(localDate.getMinutes()+rminutes);
       }
-    }   
+    }
     return localDate;
   }
+
   warningMsg(msg: string, position: string) {
     this.toastr.warning('', this.translateService.instant(msg), {
       timeOut: 1000,
       positionClass: `toast-${position}-center`,
     });
   }
-  
+
   errorMsg(msg: string, position: string) {
     this.toastr.error('', this.translateService.instant(msg), {
       positionClass: `toast-${position}-center`,
@@ -253,44 +226,41 @@ export class CommonService {
     });
   }
 
-
-  //add fcmtoken
-  updateFCMtoken(){   
+  updateFCMtoken(){
     var fcmtoken = this.storage.retrieve('localFcmtoken');
     let headers = new HttpHeaders();
-   // headers = headers.set('Authorization', this.token); 
     if(fcmtoken !=null && fcmtoken !=undefined && fcmtoken !=""){
       var phone_no='';
       var phoneValue=this.storage.retrieve('localPhoneValue');
       var prefix = this.storage.retrieve('localPhonePrefix');
-      
+
       if((phoneValue == null || phoneValue ==undefined || phoneValue =="")){
         return;
-      } 
+      }
       if(phoneValue.startsWith('0'))
       {
         phone_no= prefix + phoneValue.substring(1,phoneValue.length);
       }
       else{
         phone_no= prefix + phoneValue;
-      }  
+      }
       var newToken={
         fcmtoken: fcmtoken,
         phone_no: phone_no
-      } 
+      }
       this.http.post(this.funct.ipaddress +'user/updateFcmtokenInitial', newToken, { headers: headers })
       .pipe
         (
            catchError(this.handleError.bind(this))
         )
       .subscribe(
-        result => {        
-          this.dto.Response = result;        
-          return this.dto.Response;         
+        result => {
+          this.dto.Response = result;
+          return this.dto.Response;
         }
       );
-    }   
+    }
 
   }
- 
+
 }

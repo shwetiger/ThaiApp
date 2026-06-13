@@ -24,6 +24,7 @@ import { EmailOtpConfirmComponent } from './components/email-otp-confirm/email-o
 import { PointsHistoryComponent } from './components/points-history/points-history.component';
 
 
+
 export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
   return () => new Promise<any>((resolve: any) => {
     const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
@@ -35,7 +36,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       }
       else{
         langToSet=lang.toString().replace(/['"]+/g, '')
-      }    
+      }
       translate.setDefaultLang(langToSet);
       translate.use(langToSet).subscribe(() => {
       }, err => {
@@ -46,8 +47,8 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
   });
 }
 @NgModule({
-  declarations: [ 
-    ProfileComponent, 
+  declarations: [
+    ProfileComponent,
     FeedbackPageComponent,
     InviteCodeComponent,
     WithdrawMyAccontComponent,
@@ -61,7 +62,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     PointsHistoryComponent,
   ],
   imports: [
-    FormsModule, 
+    FormsModule,
     CommonModule,
     ProfileRoutingModule,
     SharedModule,
@@ -69,7 +70,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
       loader: {
           provide: TranslateLoader,
           useFactory: (http:HttpClient) => { return new TranslateHttpLoader(http, './assets/i18n/', '.json');},
-          deps: [HttpClient]         
+          deps: [HttpClient]
       }
     }),
     ModalModule.forRoot(),
@@ -78,14 +79,14 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     CodeInputModule,
   ],
   providers: [
-    CommonService,   
+    CommonService,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
       deps: [TranslateService, Injector],
       multi: true
     }
-    
+
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

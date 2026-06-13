@@ -30,10 +30,11 @@
                         </button>
                     </div>
                     <div class="col pt-1 bet-inpt-padding">
-                        <input [type]="threedNumberFieldType" minlength="3" [(ngModel)]="amount"
-                            (keyup.enter)="enter($event)" id="betAmt" [ngModelOptions]="{standalone: true}"
-                            (keyup)="checkBetAmount()" (keypress)="keyPressNumbers($event)"
-                            placeholder="{{'amountHint' | translate}}" class="form-control input">
+                        <input type="text" minlength="3" (input)="onlyNumber($event)" [(ngModel)]="amount" inputmode="numeric"
+                            pattern="[0-9]*" (keyup.enter)="enter($event)" id="betAmt"
+                            [ngModelOptions]="{standalone: true}" (keyup)="checkBetAmount()"
+                            (keypress)="keyPressNumbers($event)" placeholder="{{'amountHint' | translate}}"
+                            class="form-control input">
                         <p id="betAmountErr" class="error-color"></p>
                     </div>
                 </div>
@@ -53,7 +54,7 @@
                             [(ngModel)]="betValue" onfocus="this.value=''" id="betNumber"
                             [ngModelOptions]="{standalone: true}" (keyup)="checkBetNumberCount()"
                             (keypress)="keyPressNumberfornumberintput($event)"
-                            placeholder="{{'threed_number_text' | translate}}" class="form-control input" pattern="\d*" >
+                            placeholder="{{'threed_number_text' | translate}}" class="form-control input" pattern="\d*">
                         <div class="row">
                             <div class="col-9">
                                 <p id="betNumberCountErr" class="error-color sj">

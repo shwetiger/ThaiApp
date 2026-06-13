@@ -55,6 +55,8 @@
           placeholder="{{ 'phoneNumberHint' | translate}}" [disabled]="actionType === 'NEWDIVICE' || isDisabled"
            [(ngModel)]="phoneValue" [ngModelOptions]="{standalone: true}" (keyup.enter)="enter($event)"/>
         </div>
-        <p id ="phoneErr" class="error-color" style="text-align: left; width: 100%;" ></p>
+        <!-- <p id ="phoneErr" class="error-color" style="text-align: left; width: 100%;" ></p> -->
+         <p class="error-color" style="text-align: left; width: 100%;">{{ phoneErr$ | async }}</p>
+         <!-- <div *ngIf="phoneErr$ | async as err">{{ err }}</div> -->
       </div>
     </div>

@@ -13,6 +13,7 @@ import { DtoService } from 'src/app/shared/service/dto.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
 import { AccountLoginComponent } from 'src/app/shared/components/account-login/account-login.component';
 import { AppVersionService } from 'src/app/shared/service/app-version.service';
+declare var window: any;
 
 @Component({
   selector: 'app-home',
@@ -36,6 +37,9 @@ export class HomeComponent implements OnInit {
   isWebview: any;
   deviceId1: any;
   version: string | null = null;
+  tg: any;
+  isTelegramLoggingIn = false;
+  isAppReady = false;
 
   constructor(
     public handleErrorMessage: HandleErrorMessageService,
@@ -61,39 +65,131 @@ export class HomeComponent implements OnInit {
     this.isUserLogin = this.storage.retrieve('isUserLoggedIn');
   }
 
-  async ngOnInit(): Promise<void> {
+ async ngOnInit(): Promise<void> {
+
+  if (window.Telegram?.WebApp?.initData) {
+    this.tg = window.Telegram.WebApp;
+    this.tg.ready();
+
+    await this.telegramLogin();
+    return;
+  }
+
+  this.initializeHomeData();
+  this.isAppReady = true;
+}
+
+  initializeHomeData() {
+
     this.versionService.currentVersion$.subscribe(v => {
       this.version = v;
     });
+
     this.storage.clear('fishingmaintenance');
     this.storage.clear('localCloseGameBalance');
+
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
-    var lan = this.storage.retrieve('localLanguage');
-    if (this.isWebview) {
-      this.deviceId1 = "mobile";
-    }
-    else {
-      this.deviceId1 = 'chrome';
-    }
+
+    const lan = this.storage.retrieve('localLanguage');
+
+    this.deviceId1 = this.isWebview ? 'mobile' : 'chrome';
+
     this.clearLocationHistory();
-    if (lan == null || lan == undefined) {
+
+    if (!lan) {
       this.storage.store('localLanguage', "my");
     }
+
     this.storage.store("localDeviceId", this.deviceId);
-    this.gameProviderList = [];
+
     this.getGameProviderList();
-    this.gameProviderList = this.storage.retrieve("localgameProviderList");
+
     this.notiCount = this.storage.retrieve("localNotiCount");
+
+    this.isUserLogin = this.storage.retrieve('isUserLoggedIn');
+
     if (this.isUserLogin) {
       this.updateUsedTime();
       this.updateFCMtoken();
+      this.getAllNoti();
     }
+
     this.storage.clear('localadsList');
     this.storage.clear('localmarqueeText');
+    this.storage.clear("localNotiList");
+
     this.closeMaintenance();
-    this.storage.clear("localNotiList")
   }
+
+  async telegramLogin() {
+  if (this.isTelegramLoggingIn) {
+    return;
+  }
+
+  this.isTelegramLoggingIn = true;
+
+  if (!this.tg?.initData) {
+    this.isTelegramLoggingIn = false;
+    this.initializeHomeData();
+    this.isAppReady = true;
+    return;
+  }
+
+  this.common.submitLoading = true;
+  this.spinner.show("submitLoading");
+
+  const payload = {
+    initData: this.tg.initData
+  };
+
+  this.http.post<any>(
+    `${this.funct.ipaddress}tg/webappLogin`,
+    payload
+  ).subscribe({
+
+    next: (res) => {
+
+      if (res?.token) {
+
+        this.storage.store('token', res.token);
+        this.storage.store('isUserLoggedIn', true);
+
+        this.token = res.token;
+        this.isUserLogin = true;
+        this.initializeHomeData();
+        this.isAppReady = true;
+
+      } else {
+
+        this.toastr.error('', 'Telegram Login Failed');
+      }
+
+      this.finishTelegramLogin();
+    },
+
+    error: (err) => {
+
+      console.error('Telegram Login Error : ', err);
+
+      this.finishTelegramLogin();
+
+      this.initializeHomeData();
+
+      this.isAppReady = true;
+    }
+  });
+}
+
+  finishTelegramLogin() {
+
+    this.common.submitLoading = false;
+
+    this.spinner.hide("submitLoading");
+
+    this.isTelegramLoggingIn = false;
+  }
+
 
   getAllNoti() {
     let userlogin = this.storage.retrieve('isUserLoggedIn');
@@ -203,18 +299,7 @@ export class HomeComponent implements OnInit {
     });
     return;
   }
-  // closeMaintenance()
-  // {
-  //  this.http.get(this.funct.ipaddress + 'gameProvider/closeMaintenance')
-  //  .pipe(
-  //    catchError(this.handleErrorMessage.handleError.bind(this,''))
-  //   )
-  //  .subscribe(
-  //    result => {
-  //      this.dto.Response = {};
-  //      this.dto.Response = result;
-  //    });
-  // }
+
 
   goToNotiList() {
     this.router.navigate(['/noti-list'], { replaceUrl: false });
@@ -277,7 +362,7 @@ export class HomeComponent implements OnInit {
 
   refreshPage() {
     this.ngOnInit();
-    window.location.reload();
+   // window.location.reload();
     this.child.getUserProfile();
     setTimeout(() => {
       this.common.refreshLoading = false;

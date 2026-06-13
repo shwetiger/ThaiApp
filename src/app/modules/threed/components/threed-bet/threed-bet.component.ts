@@ -33,6 +33,7 @@ export class ThreedBetComponent implements OnInit {
   token: any;
   selectnum: any;
   threedNumberFieldType: any;
+  dunum: any;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -97,17 +98,17 @@ export class ThreedBetComponent implements OnInit {
     try {
 
       if (num1.includes('-')) {
-      this.toastr.error(
-        "",
-        this.translateService.instant("invalid_bet_number"),
-        {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        }
-      );
-      this.storeBetNumber(newNumber, false);
-      return;
-    }
+        this.toastr.error(
+          "",
+          this.translateService.instant("invalid_bet_number"),
+          {
+            timeOut: 3000,
+            positionClass: 'toast-top-center',
+          }
+        );
+        this.storeBetNumber(newNumber, false);
+        return;
+      }
       if (num1.includes('.')) {
         this.toastr.error("", this.translateService.instant("invalid_bet_number"), {
           timeOut: 3000,
@@ -165,6 +166,12 @@ export class ThreedBetComponent implements OnInit {
     this.betNumberList = [];
     if (num1.length == 0) {
       num1 = this.selectnum;
+      if (this.dunum == num1) {
+        this.toastr.error("", this.translateService.instant("select_numbers"), {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        });
+      }
       if (num1 == undefined || num1 == '') {
         if (this.storage.retrieve('localSelectTwoDList') != null) {
           this.betNumberList = this.storage.retrieve('localSelectTwoDList');
@@ -184,6 +191,7 @@ export class ThreedBetComponent implements OnInit {
         return;
       }
       if (num1) {
+        this.dunum = num1;
         var newNumber = [];
         var splitted = ("" + num1).split("");
         if (splitted.length == 3) {
@@ -273,6 +281,19 @@ export class ThreedBetComponent implements OnInit {
     }
   }
 
+onlyNumber(event: any) {
+  const input = event.target;
+
+  // remove non-numbers
+  input.value = input.value.replace(/[^0-9]/g, '');
+
+  this.amount = input.value;
+
+  // keep cursor at end
+  setTimeout(() => {
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
+}
   keyPressNumberfornumberintput(event: KeyboardEvent) {
     const inputElement = event.target as HTMLInputElement;
     const charCode = (event.which) ? event.which : event.keyCode;

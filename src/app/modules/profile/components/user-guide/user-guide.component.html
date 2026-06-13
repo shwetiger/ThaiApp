@@ -1,34 +1,67 @@
 <app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
-<div id="appCapsule"> 
+<div id="appCapsule">
     <div class="container">
-    <div class="row mt-3 justify-content-center" style="color: #2253A2;font-weight: bold; font-size: 16px;">{{Question}}</div>
-    <div class="mt-3" >
-        <div class="row justify-content-center" style="max-height: 100%; overflow-y: auto;">
-       <img class=""  [src]="Questiondetaillisshow.image" width="70%" height="auto">
-       </div>
-       </div>
+        <div class="row mt-3 justify-content-center" style="color: #2253A2;font-weight: bold; font-size: 16px;">
+            {{Question}}</div>
+        <div class="mt-3">
+            <div class="row justify-content-center" style="max-height: 100%; overflow-y: auto;">
+                <img class="" [src]="Questiondetaillisshow.image" width="70%" height="auto">
+            </div>
+        </div>
     </div>
+</div>
+<div class="card" id="navTwoDBetConfirm">
+    <div class="row ml-2 mt-1">{{Questiondetaillisshow.stepNo}}</div>
+    <div class="row ml-2 mr-2" style="white-space: pre-line;text-align: justify;">{{Questiondetaillisshow.describe}}
     </div>
-       <div class="card" id="navTwoDBetConfirm" >
-       <div class="row ml-2 mt-1">{{Questiondetaillisshow.stepNo}}</div>
-       <div class="row ml-2 mr-2" style="white-space: pre-line;text-align: justify;">{{Questiondetaillisshow.describe}}</div>
-        <div class="row mt-3 justify-content-center">
-            <div class="progress" style="width: 80%; height: 8px; border-radius: 0;">
-                <div class="progress-bar bg-custom-blue" role="progressbar" [style.width.%]="currentpercent" [attr.aria-valuenow]="currentpercent" aria-valuemin="0" aria-valuemax="100"></div>
+    <div class="row mt-3 justify-content-center">
+        <div class="progress" style="width: 80%; height: 8px; border-radius: 0;">
+            <div class="progress-bar bg-custom-blue" role="progressbar" [style.width.%]="currentpercent"
+                [attr.aria-valuenow]="currentpercent" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+    </div>
+    <div class="row ml-3 justify-content-left">{{this.progressValue}}/{{totallist}}</div>
+    <div class="row mb-2">
+        <div class="col-6">
+            <div class="d-flex justify-content-start">
+                <button type="button" class="button" *ngIf="lang=='my'" (click)="gotoprevious()" [disabled]="isPreviousDisabled"
+                    [ngStyle]="{ 'color': isPreviousDisabled ? disabledButtonColor : '' }"
+                    style="width:120px;border:none;color:red">
+                 &laquo;<span>ရှေ့</span>
+                </button>
+                <button type="button" class="button" *ngIf="lang=='en'" (click)="gotoprevious()" [disabled]="isPreviousDisabled"
+                    [ngStyle]="{ 'color': isPreviousDisabled ? disabledButtonColor : '' }"
+                    style="width:120px;border:none;color:red">
+                 &laquo;<span>Previous</span>
+                </button>
+                 <button type="button" class="button" *ngIf="lang=='th'" (click)="gotoprevious()" [disabled]="isPreviousDisabled"
+                    [ngStyle]="{ 'color': isPreviousDisabled ? disabledButtonColor : '' }"
+                    style="width:120px;border:none;color:red">
+                 &laquo;<span>ก่อนหน้า</span>
+                </button>
+                   <button type="button" class="button" *ngIf="lang=='zh'" (click)="gotoprevious()" [disabled]="isPreviousDisabled"
+                    [ngStyle]="{ 'color': isPreviousDisabled ? disabledButtonColor : '' }"
+                    style="width:120px;border:none;">
+                 &laquo;<span>上一页</span>
+                </button>
             </div>
         </div>
-        <div class="row ml-3 justify-content-left">{{this.progressValue}}/{{totallist}}</div>
-        <div class="row mb-2">
-            <div class="col-6" >
-                <div class="d-flex justify-content-start">
-            <button type="button" class="button" (click)="gotoprevious()" [disabled]="isPreviousDisabled" [ngStyle]="{ 'color': isPreviousDisabled ? disabledButtonColor : '' }" style=" width:120px !important;border:none ">&laquo; Previous</button>
-            </div>
-            </div>
-            <div class="col-6">
-                <div class="d-flex justify-content-end">
-            <button type="button"  class="button" (click)="gotonext()" [disabled]="isNextDisabled" [ngStyle]="{ 'color': isNextDisabled ? disabledButtonColor : '' }" style=" width: 85px !important;border:none; ">Next &raquo;</button>
-        </div>
-        </div>
-</div>
-</div>
+        <div class="col-6">
+            <div class="d-flex justify-content-end">
+                <button type="button" class="button" *ngIf="lang=='my'" (click)="gotonext()" [disabled]="isNextDisabled"
+                    [ngStyle]="{ 'color': isNextDisabled ? disabledButtonColor : '' }"
+                    style=" width: 85px !important;border:none; ">နောက် &raquo;</button>
+                    <button type="button" class="button" *ngIf="lang=='en'" (click)="gotonext()" [disabled]="isNextDisabled"
+                    [ngStyle]="{ 'color': isNextDisabled ? disabledButtonColor : '' }"
+                    style=" width: 85px !important;border:none; white-space: nowrap;">Next &raquo;</button>
+                      <button type="button" class="button" *ngIf="lang=='th'" (click)="gotonext()" [disabled]="isNextDisabled"
+                    [ngStyle]="{ 'color': isNextDisabled ? disabledButtonColor : '' }"
+                    style=" width: 85px !important;border:none; white-space: nowrap;">ถัดไป &raquo;</button>
+                     <button type="button" class="button" *ngIf="lang=='zh'" (click)="gotonext()" [disabled]="isNextDisabled"
+                    [ngStyle]="{ 'color': isNextDisabled ? disabledButtonColor : '' }"
+                    style=" width: 85px !important;border:none; white-space: nowrap;">下一页 &raquo;</button>
 
+            </div>
+        </div>
+    </div>
+</div>

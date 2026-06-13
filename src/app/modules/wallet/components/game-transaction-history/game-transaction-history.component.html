@@ -48,6 +48,17 @@
 
   <div class="tab-content" >
     <div id="Topup" style="margin-top: 10px;" *ngIf="gametopuptab==true">
+<div *ngIf="addList?.length === 0 && !loading"
+         style="
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #999;
+         ">
+        {{'nohistory' | translate}}
+    </div>
             <div class="section" id="appCapsule">
                 <div style="margin: 0px 10px;">
                     <div class="card mb-2" *ngFor="let tranObj of addList">
@@ -120,6 +131,17 @@
         </div>
    </div>
         <div class="" id="Withdrawal" style="margin-top: 10px;" *ngIf="gamewithdrawaltab==true">
+            <div *ngIf="addWithGameList?.length === 0 && !loading"
+         style="
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: #999;
+         ">
+        {{'nohistory' | translate}}
+    </div>
             <div class="section full" id="appCapsule">
                 <div style="margin: 0px 10px;">
                     <div class="card mb-2" *ngFor="let tranObj of addWithGameList">

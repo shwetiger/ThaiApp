@@ -1,14 +1,12 @@
 <app-splash-screen-ads *ngIf="deviceId1 === 'chrome'"></app-splash-screen-ads>
+<div *ngIf="isAppReady">
 <div class="bottom-wrapper">
   <footer class="app-footer">
-    <small>Version: {{ version }}</small>
+    <small>{{'version' | translate}}: {{ version }}</small>
   </footer>
 <app-navigation-bar></app-navigation-bar>
 </div>
-<!-- <footer class="app-footer" style="color:red">
-  <small>Version: {{ version }}</small>
-</footer> -->
-<!-- App Header -->
+
 <div class="appHeader text-light">
   <div class="left">
     <div class="app-download" (click)="downloadPage()">
@@ -69,7 +67,7 @@
     <div class="row mt-2"></div>
   </div>
 </div>
-
+</div>
 <!-- * App Capsule -->
 
 <!-- refresh loading -->

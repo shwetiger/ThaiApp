@@ -30,26 +30,20 @@ export class HandleErrorMessageService {
   ) { }
 
   handleError(err: string, error: HttpErrorResponse) {
-    console.log("ERROR>>>>>"+JSON.stringify(error))
+  //  console.log("ERROR>>>>>"+JSON.stringify(error))
     this.common.threedCloseTimeLoading = false;
     this.spinner.hide("threedCloseTimeLoading");
-    //gameLoading
     this.common.gameLoading = false;
     this.spinner.hide("gameLoading");
-    //balance
     this.common.balanceLoading = false;
     this.spinner.hide("balanceLoading");
-    // mainbalance
     this.common.mainBananceLoadingSubmit=false;
     this.spinner.hide("mainBananceLoadingSubmit");
-    //submit
     this.common.submitLoading= false;
     this.spinner.hide("submitLoading");
-    //refresh
     this.common.refreshLoading=false;
     this.spinner.hide("refreshLoading");
 
-    //betloading
     this.common.betLoading= false;
     this.spinner.hide("betLoading");
      if(error.status==200){
@@ -60,10 +54,6 @@ export class HandleErrorMessageService {
         return;
      }
      if(error.status == 0){
-      //  this.toastr.error("", this.translateService.instant("checkInternetConnection"), {
-      //    timeOut: 3000,
-      //    positionClass: 'toast-top-center',
-      //  });
          return;
      }
     if(error.status == 300 )
@@ -79,10 +69,6 @@ export class HandleErrorMessageService {
 
      if(error.status == 423 || error.status == 417)
      {
-      //  this.toastr.error("",this.translateService.instant("youNeedLogin"), {
-      //    timeOut: 3000,
-      //    positionClass: 'toast-top-center',
-      //    });
          this.storage.clear('token');
          this.storage.clear('isUserLoggedIn');
          this.router.navigate(['/login'], { replaceUrl: true });
@@ -105,7 +91,6 @@ export class HandleErrorMessageService {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-        //return;
         this.router.navigate(['/me-page/email-address']);
       }
       if(error.error.message=='viber verification code currently does not support international numbers!')
@@ -114,7 +99,6 @@ export class HandleErrorMessageService {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
-       // this.router.navigate(['/me-page/email-address']);
       }
       else{
         this.toastr.warning("", this.translateService.instant("emailRequired"), {
@@ -124,10 +108,6 @@ export class HandleErrorMessageService {
         return;
       }
       }
-
-
-
-       //phoneOrPwdIncorrect
         if(error.message == "No game alert found"){
           return;
         }
@@ -200,7 +180,7 @@ export class HandleErrorMessageService {
             });
             return;
         }
-       // temporary_blocked
+
         if(error.error.message=='temporary_blocked')
         {
           this.toastr.error("", this.translateService.instant("tem_block"), {
@@ -242,11 +222,6 @@ export class HandleErrorMessageService {
      {
       if(err == "otp")
        {
-        // this.toastr.error("", this.translateService.instant('otp-token-expired'),
-        // {
-        //   timeOut: 3000,
-        //   positionClass: 'toast-bottom-center',
-        // });
          return;
        }
        else{
@@ -268,13 +243,7 @@ export class HandleErrorMessageService {
         });
         return;
       }
-        // if(err == "withdraw delete fail"){
-        //   this.toastr.error("", this.translateService.instant("withdraw_delete_fail"), {
-        //     timeOut: 3000,
-        //     positionClass: 'toast-top-center',
-        //   });
-        //   return;
-        // }
+
         if(error.message == "Holiday"){
           this.toastr.error("", error.message, {
             timeOut: 3000,
@@ -327,16 +296,6 @@ export class HandleErrorMessageService {
 
      }
 
-    //  if(error.status == 406)
-    // {
-    //   this.router.navigate(['/game-deposit-error', '406'], {replaceUrl: true});
-    //   return;
-    // }
-    // if(error.status == 700)
-    // {
-    //   this.router.navigate(['/game-deposit-error', '700'], {replaceUrl: true});
-    //   return;
-    // }
      if (error.status == 401)
      {
       if(error.message == "Invalid OTP Token"){
@@ -407,8 +366,6 @@ export class HandleErrorMessageService {
 
    }
 
-
-   //304
    openNewDialog() {
     const initialState= {
       title: '',

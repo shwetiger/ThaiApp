@@ -18,6 +18,7 @@ import { BsModalService, ModalModule } from 'ngx-bootstrap/modal';
 import { CountryBlackListComponent } from './components/country-black-list/country-black-list.component';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { ToastrModule } from 'ngx-toastr';
+import { TelegramGameComponent } from './components/telegram-game/telegram-game.component';
 
 export function appInitializerFactory(translate: TranslateService, injector: Injector,) {
   return () => new Promise<any>((resolve: any) => {
@@ -49,6 +50,7 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     GameDepositSuccessComponent,
     GameDepositErrorComponent,
     CountryBlackListComponent,
+    TelegramGameComponent,
   ],
 
   imports: [

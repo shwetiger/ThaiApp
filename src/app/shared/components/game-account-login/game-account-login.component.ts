@@ -241,7 +241,6 @@ async getGameUserBalance() {
           }
         }
       }
-      console.log("GameUserBalance>>>"+JSON.stringify(this.gameUserBalance));
       // Save balance of current provider in storage (use first element for example)
       const balance = this.gameUserBalance.find(b => b.providerId === providerId)?.balance ?? 0;
       const firstbalance = this.gameUserBalance[0]?.balance ?? 0;

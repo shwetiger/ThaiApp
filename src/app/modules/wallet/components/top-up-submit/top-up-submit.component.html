@@ -1,78 +1,89 @@
-<app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar>
+<app-not-refresh-appbar>{{ 'helloword' | translate }}</app-not-refresh-appbar>
 
-<div id="topup-submit" *ngIf="!common.refreshLoading">    
-    <div class="container" > 
-        <h3 class="text-center title-color" style="font-weight: 600;padding-top: 20px !important;">{{'top_up_submit' | translate}}</h3>        
-        <h4 class="mx-3 title-color" style="justify-content: left;">{{ topup_submit_des }}</h4>         
-        <div class="mt-2 container topup-submit-card" *ngIf=" paymentDetailMethodList != '' || paymentDetailMethodList.length !=0 " >
-            <div class="row">               
+<div id="topup-submit" *ngIf="!common.refreshLoading">
+    <div class="container">
+        <h3 class="text-center title-color" style="font-weight: 600;padding-top: 20px !important;">{{'top_up_submit' |
+            translate}}</h3>
+        <h4 class="mx-3 title-color" style="justify-content: left;">{{ topup_submit_des }}</h4>
+        <div class="mt-2 container topup-submit-card"
+            *ngIf="paymentDetailMethodList != '' || paymentDetailMethodList.length !=0 ">
+            <div class="row">
                 <div class="container mt-2">
-                  
+
                 </div>
                 <div class="container" *ngIf=" paymentDetailMethodList == null || paymentDetailMethodList.length ==0 ">
                     <h4 class="title-color">{{'topup-bank-empty' | translate}}</h4>
                 </div>
                 <div *ngIf="paymentDetailMethodList.length == 1" class="mb-1 container no-padding">
-                    <div class="container-fluid" *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index"  >
-                        <div  [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"></div>
+                    <div class="container-fluid"
+                        *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index">
+                        <div [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"></div>
                         <div class="row ml-1">
                             <div class="col-3" style="margin-bottom: 3px;">
                                 <img [src]="newTopuplistPayment.image_url" alt="product" class="imaged-detail">
                             </div>
-                            <div class="col-3" style="align-content:flex-start;margin-top: 18px;white-space: nowrap;">                  
-                                <p class="card-text-submit" >{{ newTopuplistPayment.name }}</p>  
-                             
-                            </div>   
-                            <div class="col-1" style="align-content:flex-start;">                  
-                                <div class="divder-amount"></div>  
-                            </div>
-                                                  
-                            <div class="col-4 mr-1" style="padding: 0px !important;margin-top: 5px;">                             
-                                <div>
-                                    <h4 class="title-color" style="padding: 0px; margin: 0px;"><span style="white-space: nowrap;">{{'topup_submit_transfer' | translate}}</span><br> <span class="title-color" style="padding: 0px; margin-left:10px"> {{ transfer_amount | number : '1.0'}} </span>{{'ks' | translate}}</h4>
-                                </div>
-                            </div>
-                        </div>           
-                    </div> 
-                </div>
-                <div *ngIf="paymentDetailMethodList.length > 1" class="mb-1 container no-padding">
-                    <div class="container-fluid" *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index" >
-                        <!-- <div  [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"  *ngIf="i > 0 && isShowDown"></div> -->
-                        <div class="row ml-1" *ngIf="i == 0 && isShowUp" >
-                            <div class="col-3" style="margin-bottom: 3px;">
-                                <img [src]="newTopuplistPayment.image_url" alt="product" class="imaged-detail">
-                            </div>
-                            <div class="col-3" style="align-content:flex-start;margin-top: 18px;">                  
-                                <p class="card-text-submit" >{{ newTopuplistPayment.name }}</p>
-                                
-                            </div>
-                            <div class="col-1" style="align-content:flex-start;">                  
-                                <div class="divder-amount"></div>  
-                            </div>
-                            <!-- <div class="col-3 mt-1" style="padding: 0px !important;">
-                                <div class="float-right">
-                                    <h4 class="title-color" style="padding: 0px; margin: 0px;font-size: 14px;">{{'topup_submit_transfer' | translate}} <br> <span class="title-color" style="padding: 0px; margin: 0px;"> {{ transfer_amount | number : '1.0'}} </span>{{'ks' | translate}}</h4> 
-                                </div>
-                            </div> -->
+                            <div class="col-3" style="align-content:flex-start;margin-top: 18px;white-space: nowrap;">
+                                <p class="card-text-submit">{{ newTopuplistPayment.name }}</p>
 
-                            <div class="col-4 mr-1" style="padding: 0px !important;margin-top: 5px;">                             
+                            </div>
+                            <div class="col-1" style="align-content:flex-start;">
+                                <div class="divder-amount"></div>
+                            </div>
+
+                            <div class="col-4 mr-1" style="padding: 0px !important;margin-top: 5px;">
                                 <div>
-                                    <h4 class="title-color" style="padding: 0px; margin: 0px;"><span style="white-space: nowrap;">{{'topup_submit_transfer' | translate}}</span> <br> <span class="title-color" style="padding: 0px; margin-left:10px"> {{ transfer_amount | number : '1.0'}} </span>{{'ks' | translate}}</h4>
+                                    <h4 class="title-color" style="padding: 0px; margin: 0px;"><span
+                                            style="white-space: nowrap;">{{'topup_submit_transfer' |
+                                            translate}}</span><br> <span class="title-color"
+                                            style="padding: 0px; margin-left:10px"> {{ transfer_amount | number :
+                                            '1.0'}} </span>{{'ks' | translate}}</h4>
                                 </div>
                             </div>
                         </div>
-                      
-                        <!-- <div class="row d-flex justify-content-end" *ngIf="i == 0 && isUp"  (click)="paymentDetailMethodListDown()"> 
+                    </div>
+                </div>
+                <div *ngIf="paymentDetailMethodList.length > 1" class="mb-1 container no-padding">
+                    <div class="container-fluid"
+                        *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index">
+                        <!-- <div  [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"  *ngIf="i > 0 && isShowDown"></div> -->
+                        <div class="row ml-1" *ngIf="i == 0 && isShowUp">
+                            <div class="col-3" style="margin-bottom: 3px;">
+                                <img [src]="newTopuplistPayment.image_url" alt="product" class="imaged-detail">
+                            </div>
+                            <div class="col-3" style="align-content:flex-start;margin-top: 18px;">
+                                <p class="card-text-submit">{{ newTopuplistPayment.name }}</p>
+
+                            </div>
+                            <div class="col-1" style="align-content:flex-start;">
+                                <div class="divder-amount"></div>
+                            </div>
+                            <!-- <div class="col-3 mt-1" style="padding: 0px !important;">
+                                <div class="float-right">
+                                    <h4 class="title-color" style="padding: 0px; margin: 0px;font-size: 14px;">{{'topup_submit_transfer' | translate}} <br> <span class="title-color" style="padding: 0px; margin: 0px;"> {{ transfer_amount | number : '1.0'}} </span>{{'ks' | translate}}</h4>
+                                </div>
+                            </div> -->
+
+                            <div class="col-4 mr-1" style="padding: 0px !important;margin-top: 5px;">
+                                <div>
+                                    <h4 class="title-color" style="padding: 0px; margin: 0px;"><span
+                                            style="white-space: nowrap;">{{'topup_submit_transfer' | translate}}</span>
+                                        <br> <span class="title-color" style="padding: 0px; margin-left:10px"> {{
+                                            transfer_amount | number : '1.0'}} </span>{{'ks' | translate}}</h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="row d-flex justify-content-end" *ngIf="i == 0 && isUp"  (click)="paymentDetailMethodListDown()">
                             <h4 class="arrow_title">{{ 'other-bank-accounts' | translate }} </h4>&nbsp; <img src="assets/img/topup/down_arrow.png" alt="" style="background: transparent !important; border:  none !important;" width="20px" height="20px"></div> -->
                         <!-- <div class="row" *ngIf="i > 0 && isShowDown">
                             <div class="col-3">
                                 <img [src]="newTopuplistPayment.image_url" alt="product" class="imaged-detail">
                             </div>
-                            <div class="col-3 pt-3" style="align-content:flex-start;">                  
-                                <p class="card-text-submit" >{{ newTopuplistPayment.name }}</p>  
+                            <div class="col-3 pt-3" style="align-content:flex-start;">
+                                <p class="card-text-submit" >{{ newTopuplistPayment.name }}</p>
                             </div>
-                            <div class="col-2 pt-1" style="align-content:flex-start;">                  
-                                <div class="divder-amount"></div>  
+                            <div class="col-2 pt-1" style="align-content:flex-start;">
+                                <div class="divder-amount"></div>
                             </div>
                             <div class="col-3 mt-1" style="padding: 0px !important;">
                                 <div class="float-right">
@@ -81,272 +92,349 @@
                             </div>
                         </div> -->
                         <!-- <div class="row d-flex justify-content-end" *ngIf="i == paymentDetailMethodList.length-1 && isDown" (click)="paymentDetailMethodListUp()"> <h4 class="arrow_title">{{ 'other-bank-accounts' | translate }} </h4> &nbsp;<img src="assets/img/topup/up_arrow.png" alt="" style="background: transparent !important; border:  none !important;" width="20px" height="20px"></div> -->
-                    </div> 
-                </div> 
+                    </div>
+                </div>
                 <div class="col-11 d-flex justify-content-center">
+                </div>
             </div>
-            </div>
-            
-            
+
+
         </div>
-    </div>  
-        <div class="container" >      
-            <div class="mt-2 container topup-submit-card" >
-                <div class="row">               
-                    <div class="container mt-2">
-                    </div>
-                    <div class="container" *ngIf=" paymentDetailMethodList == null || paymentDetailMethodList.length ==0 ">
-                        <h4 class="title-color">{{'topup-bank-empty' | translate}}</h4>
-                    </div>
-                    <div *ngIf="paymentDetailMethodList.length == 1" class="mb-2 container no-padding">
-                        <div class="container-fluid" *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index"  >
-                            <div  [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"></div>
-                            <div class="row" *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
-                                <div class="col-8 pt-1" style="align-content:flex-start;">                  
-                                    <p class="card-text-submit" >{{ newTopuplistPayment.name }} {{'topup_bankaccount' | translate}} </p>
-                                    <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
-                                    <p class="card-text-submit">{{ paymentDetailMethodListObj.account_no}}</p>
-                                </div>                            
-                                <div class="col-3 mt-1" style="padding: 0px !important;">                             
-                                    <div>
-                                        <button  class="btn button-notRound" style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;" (click)="copyMessage(paymentDetailMethodListObj.account_no)" style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;" value="click to copy" >{{ 'copy' | translate }}</button>
-                                      
-                                    </div>
-                                </div>
-                            </div>          
-                            <div *ngIf="paymentDetailMethodListObj.isShowAll=='3'" class="divder-account"></div>
-                            <div class="row" *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'" >
-                                <div class="col-8 pt-1" style="align-content:flex-start;">                  
-                                    <p class="card-text-submit" >{{ newTopuplistPayment.name }} {{'topup_bankQR' | translate}}</p>
-                                    <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
-                                    <p class="card-text-submit"><img [src]="paymentDetailMethodListObj.imageUrl" alt="product" class="imaged-QR"></p>
-                                </div>                            
-                                <div class="col-4" style="margin-top: 60px; padding: 0px !important;">                             
-                                    <div>
-                                        <a  style="color:#2253A2;white-space: nowrap;" (click)="qrVeiwDialog(paymentDetailMethodListObj.imageUrl)">
-                                           <span class="underline">{{ 'QRview' | translate }}</span> 
-                                        </a>
-                                        <div class="mt-1">
-                                        <button  class="btn button-notRound" style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;" (click)="downloadImage(paymentDetailMethodListObj.imageUrl)" style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;" value="click to copy" >{{ 'QRdownload' | translate }}</button>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div>     
-                        </div> 
-                    </div>
-                    <div *ngIf="paymentDetailMethodList.length > 1" class="mb-2 container no-padding">
-                        <div class="container-fluid" *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index" >
-                            <div  [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"  *ngIf="i > 0 && isShowDown"></div>
-                            <div class="row" *ngIf="i == 0 && isShowUp" >
-                                <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'"> -->
-                                <div class="col-8 pt-1" style="align-content:flex-start;" *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'"> 
-                                    <p class="card-text-submit" >{{ newTopuplistPayment.name }}{{'topup_bankaccount' | translate}}</p>
-                                    <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>  
-                                    <p class="card-text-submit">{{ paymentDetailMethodListObj.account_no}}</p>
-                                   
-                                </div>
-                                <div class="col-3 mt-1 justify-content-end" style="padding: 0px !important;" *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
-                                    <div class="float-right">
-                                        <button  class="btn mb-1 mt-1 " (click)="copyMessage(paymentDetailMethodListObj.account_no)" style="background-color: #2253A2;font-size: 11px;padding: 0px 2px !important;color: #fff;" value="click to copy" >{{ 'copy' | translate }}</button>  
-                                    </div>
-                                </div>
-                            <!-- </div> -->
-                        </div>
-                            <div *ngIf="paymentDetailMethodListObj.isShowAll=='3' && i==0 && isShowUp" class="divder-account"></div>
-                            <div class="row" *ngIf="i == 0 && isShowUp">
-                                <div *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
-                                <div class="col-12 pt-1" style="align-content:flex-start;">                  
-                                    <p class="card-text-submit" >{{ newTopuplistPayment.name }} {{'topup_bankQR' | translate}}</p>
-                                    <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
-                                  
-                                </div>  
-                            </div> 
-                        </div>
-                                <div class="row" *ngIf="i == 0 && isShowUp">  
-                                    <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">  -->
-                                    <div class="col-8" *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
-                                        <p class="card-text-submit"><img [src]="paymentDetailMethodListObj.imageUrl" alt="product" class="imaged-QR"></p>
-                                    </div>                     
-                                <div class="col-4" style="margin-top: 15px; padding: 0px !important;" *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">                             
-                                    <div>
-                                        <a  style="color:#2253A2;white-space: nowrap;" (click)="qrVeiwDialog(paymentDetailMethodListObj.imageUrl)">
-                                           <span class="underline">{{ 'QRview' | translate }}</span> 
-                                        </a>
-                                        <div class="mt-1">
-                                        <button  class="btn button-notRound" style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;" (click)="downloadImage(paymentDetailMethodListObj.imageUrl)" style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;" value="click to copy" >{{ 'QRdownload' | translate }}</button>
-                                    </div>
-                                    </div>
-                                </div>
-                            <!-- </div>    -->
+    </div>
+    <div class="container">
+        <div class="mt-2 container topup-submit-card">
+            <div class="row">
+                <div class="container mt-2">
+                </div>
+                <div class="container" *ngIf=" paymentDetailMethodList == null || paymentDetailMethodList.length ==0 ">
+                    <h4 class="title-color">{{'topup-bank-empty' | translate}}</h4>
+                </div>
+                <div *ngIf="paymentDetailMethodList.length == 1" class="mb-2 container no-padding">
+                    <div class="container-fluid"
+                        *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index">
+                        <div [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"></div>
+                        <div class="row"
+                            *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
+                            <div class="col-8 pt-1" style="align-content:flex-start;">
+                                <p class="card-text-submit">{{ newTopuplistPayment.name }} {{'topup_bankaccount' |
+                                    translate}} </p>
+                                <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
+                                <p class="card-text-submit">{{ paymentDetailMethodListObj.account_no}}</p>
                             </div>
-                       
-                      
-                            <div class="row  justify-content-end" *ngIf="i == 0 && isUp"  (click)="paymentDetailMethodListDown()"> 
-                                <h4 class="arrow_title">{{ 'other-bank-accounts' | translate }} </h4>&nbsp; <img src="assets/img/topup/down_arrow.png" alt="" style="background: transparent !important; border:  none !important;" width="20px" height="20px"></div>
-                            <div class="row" *ngIf="i > 0 && isShowDown">
-                                
-                                <!-- <p>{{paymentDetailMethodListObj.isShowAll}}</p> -->
-                              <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'"> -->
-                                <div class="col-8 pt-1" style="align-content:flex-start;" *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'" >                  
-                                    <p class="card-text-submit" >{{ newTopuplistPayment.name }} {{'topup_bankaccount' | translate}}</p>
-                                    <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
-                                    <p class="card-text-submit">{{ paymentDetailMethodListObj.account_no}}</p>
-                                   
+                            <div class="col-3 mt-1" style="padding: 0px !important;">
+                                <div>
+                                    <button class="btn button-notRound"
+                                        style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"
+                                        (click)="copyMessage(paymentDetailMethodListObj.account_no)"
+                                        style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;"
+                                        value="click to copy">{{ 'copy' | translate }}</button>
+
                                 </div>
-                                <div class="col-3 mt-1" style="padding: 0px !important;" *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
-                                    <div class="float-right">
-                                        <button  class="btn mb-1" (click)="copyMessage(paymentDetailMethodListObj.account_no)" style="background-color: #2253A2;font-size: 10px;padding: 0px 2px !important;color: #fff;" value="click to copy" >{{ 'copy' | translate }}</button>
-                                
+                            </div>
+                        </div>
+                        <div *ngIf="paymentDetailMethodListObj.isShowAll=='3'" class="divder-account"></div>
+                        <div class="row"
+                            *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
+                            <div class="col-8 pt-1" style="align-content:flex-start;">
+                                <p class="card-text-submit">{{ newTopuplistPayment.name }} {{'topup_bankQR' |
+                                    translate}}</p>
+                                <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
+                                <p class="card-text-submit"><img [src]="paymentDetailMethodListObj.imageUrl"
+                                        alt="product" class="imaged-QR"></p>
+                            </div>
+                            <div class="col-4" style="margin-top: 60px; padding: 0px !important;">
+                                <div>
+                                    <a style="color:#2253A2;white-space: nowrap;"
+                                        (click)="qrVeiwDialog(paymentDetailMethodListObj.imageUrl)">
+                                        <span class="underline">{{ 'QRview' | translate }}</span>
+                                    </a>
+                                    <div class="mt-1">
+                                        <button class="btn button-notRound"
+                                            style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"
+                                            (click)="downloadImage(paymentDetailMethodListObj.imageUrl)"
+                                            style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;"
+                                            value="click to copy">{{ 'QRdownload' | translate }}</button>
                                     </div>
-                                   
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="paymentDetailMethodList.length > 1" class="mb-2 container no-padding">
+                    <div class="container-fluid"
+                        *ngFor="let paymentDetailMethodListObj of paymentDetailMethodList; let i=index">
+                        <div [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"
+                            *ngIf="i > 0 && isShowDown"></div>
+                        <div class="row" *ngIf="i == 0 && isShowUp">
+                            <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'"> -->
+                            <div class="col-8 pt-1" style="align-content:flex-start;"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <p class="card-text-submit">{{ newTopuplistPayment.name }}{{'topup_bankaccount' |
+                                    translate}}</p>
+                                <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
+                                <p class="card-text-submit">{{ paymentDetailMethodListObj.account_no}}</p>
+
+                            </div>
+                            <div class="col-3 mt-1 justify-content-end" style="padding: 0px !important;"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <div class="float-right">
+                                    <button class="btn mb-1 mt-1 "
+                                        (click)="copyMessage(paymentDetailMethodListObj.account_no)"
+                                        style="background-color: #2253A2;font-size: 11px;padding: 0px 2px !important;color: #fff;"
+                                        value="click to copy">{{ 'copy' | translate }}</button>
+                                </div>
+                            </div>
                             <!-- </div> -->
                         </div>
-                            <div *ngIf="paymentDetailMethodListObj.isShowAll=='3' && i>0 && isShowDown"class="divder-account"></div>
-                            <div class="row" *ngIf="i > 0 && isShowDown">
-                              
-                                <div *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
-                                <div class="col-12 pt-1" style="align-content:flex-start;">                  
-                                    <p class="card-text-submit" >{{ newTopuplistPayment.name }} {{'topup_bankQR' | translate}}</p>
+                        <div *ngIf="paymentDetailMethodListObj.isShowAll=='3' && i==0 && isShowUp"
+                            class="divder-account"></div>
+                        <div class="row" *ngIf="i == 0 && isShowUp">
+                            <div
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <div class="col-12 pt-1" style="align-content:flex-start;">
+                                    <p class="card-text-submit">{{ newTopuplistPayment.name }} {{'topup_bankQR' |
+                                        translate}}</p>
+                                    <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="i == 0 && isShowUp">
+                            <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">  -->
+                            <div class="col-8"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <p class="card-text-submit"><img [src]="paymentDetailMethodListObj.imageUrl"
+                                        alt="product" class="imaged-QR"></p>
+                            </div>
+                            <div class="col-4" style="margin-top: 15px; padding: 0px !important;"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <div>
+                                    <a style="color:#2253A2;white-space: nowrap;"
+                                        (click)="qrVeiwDialog(paymentDetailMethodListObj.imageUrl)">
+                                        <span class="underline">{{ 'QRview' | translate }}</span>
+                                    </a>
+                                    <div class="mt-1">
+                                        <button class="btn button-notRound"
+                                            style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"
+                                            (click)="downloadImage(paymentDetailMethodListObj.imageUrl)"
+                                            style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;"
+                                            value="click to copy">{{ 'QRdownload' | translate }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- </div>    -->
+                        </div>
+
+
+                        <div class="row  justify-content-end" *ngIf="i == 0 && isUp"
+                            (click)="paymentDetailMethodListDown()">
+                            <h4 class="arrow_title">{{ 'other-bank-accounts' | translate }} </h4>&nbsp; <img
+                                src="assets/img/topup/down_arrow.png" alt=""
+                                style="background: transparent !important; border:  none !important;" width="20px"
+                                height="20px">
+                        </div>
+                        <div class="row" *ngIf="i > 0 && isShowDown">
+
+                            <!-- <p>{{paymentDetailMethodListObj.isShowAll}}</p> -->
+                            <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'"> -->
+                            <div class="col-8 pt-1" style="align-content:flex-start;"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <p class="card-text-submit">{{ newTopuplistPayment.name }} {{'topup_bankaccount' |
+                                    translate}}</p>
+                                <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
+                                <p class="card-text-submit">{{ paymentDetailMethodListObj.account_no}}</p>
+
+                            </div>
+                            <div class="col-3 mt-1" style="padding: 0px !important;"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <div class="float-right">
+                                    <button class="btn mb-1"
+                                        (click)="copyMessage(paymentDetailMethodListObj.account_no)"
+                                        style="background-color: #2253A2;font-size: 10px;padding: 0px 2px !important;color: #fff;"
+                                        value="click to copy">{{ 'copy' | translate }}</button>
+
+                                </div>
+
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                        <div *ngIf="paymentDetailMethodListObj.isShowAll=='3' && i>0 && isShowDown"
+                            class="divder-account"></div>
+                        <div class="row" *ngIf="i > 0 && isShowDown">
+
+                            <div
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <div class="col-12 pt-1" style="align-content:flex-start;">
+                                    <p class="card-text-submit">{{ newTopuplistPayment.name }} {{'topup_bankQR' |
+                                        translate}}</p>
                                     <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
                                     <!-- <p class="card-text-submit"><img [src]="paymentDetailMethodListObj.imageUrl" alt="product" class="imaged-QR"></p> -->
-                                </div>  
                                 </div>
-                                </div>
-                                <div class="row" *ngIf="i > 0 && isShowDown">
-                                    <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'"> -->
-                                    <div class="col-8" *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
-                                        <p class="card-text-submit"><img [src]="paymentDetailMethodListObj.imageUrl" alt="product" class="imaged-QR"></p>
-                                    </div>                          
-                                <div class="col-4" style="margin-top: 15px; padding: 0px !important;" *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">                             
-                                    <div>
-                                        <a  style="color:#2253A2; white-space: nowrap;" (click)="qrVeiwDialog(paymentDetailMethodListObj.imageUrl)">
-                                           <span class="underline">{{ 'QRview' | translate }}</span> 
-                                        </a>
-                                        <div class="mt-1">
-                                        <button  class="btn button-notRound" style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;" (click)="downloadImage(paymentDetailMethodListObj.imageUrl)" style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;" value="click to copy" >{{ 'QRdownload' | translate }}</button>
-                                    </div>
-                                    </div>
-                                </div>
-                                <!-- </div> -->
-                            </div>   
-                      
-                        
-                            <div class="row d-flex justify-content-end" *ngIf="i == paymentDetailMethodList.length-1 && isDown" (click)="paymentDetailMethodListUp()"> <h4 class="arrow_title">{{ 'other-bank-accounts' | translate }} </h4> &nbsp;<img src="assets/img/topup/up_arrow.png" alt="" style="background: transparent !important; border:  none !important;" width="20px" height="20px"></div>
-                        
+                            </div>
                         </div>
-                        
-                    </div> 
-                    <div class="col-11 d-flex justify-content-center">
-                    <div style="color:rgb(223, 34, 34);align-items: center;"><p>{{'not-accept-message' | translate}}</p></div> 
-                </div>
-                </div>
-                
-                
-            </div>
-        </div>       
-      
-       
-        <div class="container mt-2">
-            <div id = "topupTransactionErr" class="row justify-content-center"></div>
-            <div style="font-size: 13px; margin-bottom: 5px;"><span class="title-color">{{'transaction_no' | translate}}</span></div>
-            <div class="row">
-                <div class="col-9">
-                    <!--XXXXX-->
-                    <!-- <input type="number" #passwordInput maxlength="6"  (input)="onPasswordInput($event)" (keyup.enter)="enter($event)" class="form-control input"  (keyup) = "wavePasswordTypeErr()" placeholder="{{'transaction_no_hint' | translate}}"
-                    [(ngModel)]="withdrawalRequestModel.remark"  [ngModelOptions]="{standalone: true}" > -->
-                    <input  #passwordInput maxlength="6" id="toput_submit_incorrect" (input)="onPasswordInput($event)" (keyup)="checkTranscation()" [type]="transactionFieldType" (keyup.enter)="enter($event)" class="form-control input incorrect-noborder-color" [(ngModel)]="topupModel.transaction_no" [ngModelOptions]="{standalone: true}" placeholder="{{'transaction_no_hint' | translate}}">
-                    <p id = "TopupTransErr" class="error-color"></p>
-                </div>
-              
-                <div class="col-2 pt-1">
-                    <a (click)="tutorialTwoModal(tutorialTwo)" *ngIf="transationNoScreenShot.length &gt; 0"><h4 class="title-color" style="font-weight: 600;white-space: nowrap;">{{ 'topup_simple' |translate }}</h4></a>
-                </div>
-            </div>
-        </div>
-        <div class="pt-2" style="display:flex;justify-content: center;">
+                        <div class="row" *ngIf="i > 0 && isShowDown">
+                            <!-- <div *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'"> -->
+                            <div class="col-8"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <p class="card-text-submit"><img [src]="paymentDetailMethodListObj.imageUrl"
+                                        alt="product" class="imaged-QR"></p>
+                            </div>
+                            <div class="col-4" style="margin-top: 15px; padding: 0px !important;"
+                                *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
+                                <div>
+                                    <a style="color:#2253A2; white-space: nowrap;"
+                                        (click)="qrVeiwDialog(paymentDetailMethodListObj.imageUrl)">
+                                        <span class="underline">{{ 'QRview' | translate }}</span>
+                                    </a>
+                                    <div class="mt-1">
+                                        <button class="btn button-notRound"
+                                            style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"
+                                            (click)="downloadImage(paymentDetailMethodListObj.imageUrl)"
+                                            style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;"
+                                            value="click to copy">{{ 'QRdownload' | translate }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- </div> -->
+                        </div>
 
-            <div class="mt-2" style=" position: relative; justify-content: center; background-color: red;" class="mt-2" *ngIf="loadingSubmiting" >                  
-                <ngx-spinner size = "medium" color = "rgb(6,56,107)" name="loadingTopupSubmiting" type = "ball-elastic-dots" [fullScreen] = "false"></ngx-spinner>
+
+                        <div class="row d-flex justify-content-end"
+                            *ngIf="i == paymentDetailMethodList.length-1 && isDown"
+                            (click)="paymentDetailMethodListUp()">
+                            <h4 class="arrow_title">{{ 'other-bank-accounts' | translate }} </h4> &nbsp;<img
+                                src="assets/img/topup/up_arrow.png" alt=""
+                                style="background: transparent !important; border:  none !important;" width="20px"
+                                height="20px">
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-11 d-flex justify-content-center">
+                    <div style="color:rgb(223, 34, 34);align-items: center;">
+                        <p>{{'not-accept-message' | translate}}</p>
+                    </div>
+                </div>
             </div>
-            <button type="button" *ngIf="!loadingSubmiting"
-            class="button-notRound" style="width: 92%; height: 40px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;" (click)="addTopupTransaction()" >
-               {{ 'topup_submit' | translate}}
-            </button>
+
+
         </div>
-        <!-- <div class="row justify-content-center">
-            <p class="justify-content-center mt-1 title-color" style="font-weight: bold;">{{ 'topup_service_dec' | translate}}</p> 
+    </div>
+
+
+    <div class="container mt-2">
+        <div id="topupTransactionErr" class="row justify-content-center"></div>
+        <div style="font-size: 13px; margin-bottom: 5px;"><span class="title-color">{{'transaction_no' |
+                translate}}</span></div>
+        <div class="row">
+            <div class="col-9">
+                <!--XXXXX-->
+                <!-- <input type="number" #passwordInput maxlength="6"  (input)="onPasswordInput($event)" (keyup.enter)="enter($event)" class="form-control input"  (keyup) = "wavePasswordTypeErr()" placeholder="{{'transaction_no_hint' | translate}}"
+                    [(ngModel)]="withdrawalRequestModel.remark"  [ngModelOptions]="{standalone: true}" > -->
+                <!-- <input type="text" inputmode="numeric" pattern="[0-9]*" #passwordInput  maxlength="6" id="toput_submit_incorrect" (input)="onPasswordInput($event)" (keyup)="checkTranscation()" [type]="transactionFieldType" (keyup.enter)="enter($event)" class="form-control input incorrect-noborder-color" [(ngModel)]="topupModel.transaction_no" [ngModelOptions]="{standalone: true}" placeholder="{{'transaction_no_hint' | translate}}"> -->
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6"
+                    (keydown)="preventInvalidInput($event)" (input)="onPasswordInput($event)"
+                    class="form-control input"  (keyup) = "wavePasswordTypeErr()" placeholder="{{'transaction_no_hint' | translate}}"
+                    (keyup)="checkTranscation()"
+                    [(ngModel)]="topupModel.transaction_no" />
+                <p id="TopupTransErr" class="error-color"></p>
+            </div>
+
+            <div class="col-2 pt-1">
+                <a (click)="tutorialTwoModal(tutorialTwo)" *ngIf="transationNoScreenShot.length &gt; 0">
+                    <h4 class="title-color" style="font-weight: 600;white-space: nowrap;">{{ 'topup_simple' |translate
+                        }}</h4>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="pt-2" style="display:flex;justify-content: center;">
+
+        <div class="mt-2" style=" position: relative; justify-content: center; background-color: red;" class="mt-2"
+            *ngIf="loadingSubmiting">
+            <ngx-spinner size="medium" color="rgb(6,56,107)" name="loadingTopupSubmiting" type="ball-elastic-dots"
+                [fullScreen]="false"></ngx-spinner>
+        </div>
+        <button type="button" *ngIf="!loadingSubmiting" class="button-notRound"
+            style="width: 92%; height: 40px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"
+            (click)="addTopupTransaction()">
+            {{ 'topup_submit' | translate}}
+        </button>
+    </div>
+    <!-- <div class="row justify-content-center">
+            <p class="justify-content-center mt-1 title-color" style="font-weight: bold;">{{ 'topup_service_dec' | translate}}</p>
         </div>
          -->
-         <!-- <div  class="row" *ngFor="let servicePhoneObj of servicePhoneList"> 
-        <div class="container-fluid " *ngIf="servicePhoneObj.title == 'service_transaction'">  
+    <!-- <div  class="row" *ngFor="let servicePhoneObj of servicePhoneList">
+        <div class="container-fluid " *ngIf="servicePhoneObj.title == 'service_transaction'">
          <div class="row topup-submit-phone-card mx-3">
-                     
-                                <div class="title-color col-5" style="margin-top: 5px;" *ngIf="servicePhoneObj.phone_no !=''"> 
+
+                                <div class="title-color col-5" style="margin-top: 5px;" *ngIf="servicePhoneObj.phone_no !=''">
                                     <h5 class="text-center" style="font-weight: bold; white-space: nowrap;"> {{ 'service_transaction' | translate }}
                                         <br>
                                   {{servicePhoneObj.phone_no}}</h5>
                                 </div>
-                                <div class="title-color col-5" style="margin-top: 15px;" *ngIf="servicePhoneObj.phone_no ==''"> 
+                                <div class="title-color col-5" style="margin-top: 15px;" *ngIf="servicePhoneObj.phone_no ==''">
                                     <h5 class="text-center" style="font-weight: bold; white-space: nowrap;"> {{ 'service_transaction' | translate }}
                                        </h5>
                                 </div>
                                <div class="col-6 d-flex justify-content-end">
-                                <div class="row" style="padding-top: 3px;"> 
+                                <div class="row" style="padding-top: 3px;">
                                     <div class="col-4" *ngIf="servicePhoneObj.phone_no ==''">
-                                                                   
+
                                     </div>
                                 <div class="col-4" *ngIf="servicePhoneObj.telegram_id !=''">
                                     <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+openUrl | safeUrl">
-                                        <img class="service-image ml-2" src="assets/img/telegram.png" alt="phone">                                     
-                                    </a>                                   
+                                        <img class="service-image ml-2" src="assets/img/telegram.png" alt="phone">
+                                    </a>
                                 </div>
                                 <div class="col-2" *ngIf="servicePhoneObj.telegram_id ==''">
-                                                                   
+
                                 </div>
-                              
+
                                 <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
                                     <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
-                                        <img class="service-image ml-2" src="assets/img/viber.png" alt="phone">                                     
-                                    </a>                                   
+                                        <img class="service-image ml-2" src="assets/img/viber.png" alt="phone">
+                                    </a>
                                 </div>
                                 <div class="col-4" *ngIf="servicePhoneObj.viber ==''">
-                                                                 
+
                                 </div>
 
                                 <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
                                     <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
-                                        <img class="service-image ml-2" src="assets/img/phone.png" alt="phone">                                     
-                                    </a>                                   
+                                        <img class="service-image ml-2" src="assets/img/phone.png" alt="phone">
+                                    </a>
                                 </div>
-                             
+
                                 </div>
                             </div>
                          </div>
                      </div>
                    </div> -->
-        <div class="container pt-2"></div>
+    <div class="container pt-2"></div>
 </div>
 
 <ng-template #tutorialTwo>
     <div class="modal-header justify-content-end" style="margin-bottom: 0px !important;padding-bottom: 0px !important;">
-        <div  class="close pull-right">
-          <i class="material-icons" style="font-size: 35px;" (click)="tutorialTwoHide()">close</i>
-        </div>    
+        <div class="close pull-right">
+            <i class="material-icons" style="font-size: 35px;" (click)="tutorialTwoHide()">close</i>
+        </div>
     </div>
-    <div class="modal-body">             
-        <div class="modal-body">                
+    <div class="modal-body">
+        <div class="modal-body">
             <div class="slider">
                 <owl-carousel-o [options]="customOptions">
-                  <ng-container>
-                      <ng-template carouselSlide  *ngFor="let transactionObj of transationNoScreenShot"> 
-                          <div class="slide">
-                              <img  [src]="transactionObj" alt="AdsImage">
-                          </div>
-                      </ng-template>  
-                  </ng-container>  
-                </owl-carousel-o>             
-              </div>
+                    <ng-container>
+                        <ng-template carouselSlide *ngFor="let transactionObj of transationNoScreenShot">
+                            <div class="slide">
+                                <img [src]="transactionObj" alt="AdsImage">
+                            </div>
+                        </ng-template>
+                    </ng-container>
+                </owl-carousel-o>
+            </div>
         </div>
     </div>
 </ng-template>
@@ -359,5 +447,5 @@
 
 <!-- refresh loading -->
 <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
-  [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
-  [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
+    [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
+    [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

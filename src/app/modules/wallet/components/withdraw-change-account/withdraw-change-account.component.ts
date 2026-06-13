@@ -30,20 +30,20 @@ export class WithdrawChangeAccountComponent implements OnInit {
   bankaccounteditmodel:any;
   editName:any;
 //@ViewChild('withdrawaldelete', { static: true }) myTemplateRef!: TemplateRef<any>;
-  
+
   constructor(
-    private modalService: BsModalService, 
+    private modalService: BsModalService,
     private translateService: TranslateService,
-    private toastr: ToastrService, 
-    private spinner: NgxSpinnerService, 
-    private dto: DtoService, 
-    private http: HttpClient, 
-    private util: UtilService, 
-    private router: Router, 
-    private storage: LocalStorageService, 
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+    private dto: DtoService,
+    private http: HttpClient,
+    private util: UtilService,
+    private router: Router,
+    private storage: LocalStorageService,
     private funct: FunctService,
-    private _location: Location,) { 
-     
+    private _location: Location,) {
+
     }
 
   ngOnInit(): void {
@@ -69,8 +69,8 @@ export class WithdrawChangeAccountComponent implements OnInit {
           return;
     }
     else{
-     this.withdrawaledit.hide(); 
-    this.token = this.storage.retrieve('token');    
+     this.withdrawaledit.hide();
+    this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders().set('Authorization', this.token);
     const formData = new FormData();
     formData.append('accid', this.bankaccounteditmodel.bank_account_id.toString());
@@ -81,15 +81,15 @@ export class WithdrawChangeAccountComponent implements OnInit {
       )
       .subscribe(
         result => {
-          this.dto.Response = result;  
-          this.withdrawaledit.hide();     
+          this.dto.Response = result;
+          this.withdrawaledit.hide();
           if(this.dto.Response.status=='Success')
           {
             this.toastr.success("", this.translateService.instant("bank_accname_success"), {
                            timeOut: 2000,
                            positionClass: 'toast-top-center',
                            });
-             
+
            this.getMyWithdrawAccounts();
             this.editName='';
           }
@@ -105,7 +105,7 @@ export class WithdrawChangeAccountComponent implements OnInit {
     }
 }
   handleError(error: HttpErrorResponse){
-    
+
     if(error.status == 0){
       this.toastr.error("", 'check your internet connection', {
         timeOut: 3000,
@@ -113,8 +113,8 @@ export class WithdrawChangeAccountComponent implements OnInit {
         });
     }
 
-    
-    
+
+
     if(error.status == 423)
     {
       this.toastr.error("", this.translateService.instant("youNeedLogin"), {
@@ -131,7 +131,7 @@ export class WithdrawChangeAccountComponent implements OnInit {
         timeOut: 3000,
         positionClass: 'toast-top-center',
         });
-        return;     
+        return;
     }
 
     if(error.error.message!='Bank Account Delete fail , withdrawal pending state')
@@ -151,20 +151,20 @@ export class WithdrawChangeAccountComponent implements OnInit {
     }
     return throwError(error);
   }
- 
-  
+
+
   getMyWithdrawAccounts()
   {
-    this.token = this.storage.retrieve('token');    
+    this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    headers = headers.set('Authorization', this.token);      
+    headers = headers.set('Authorization', this.token);
     this.http.get( this.funct.ipaddress+'userbankaccount/getuserbankaccount-byUserId', { headers: headers })
       .pipe(
         catchError(this.handleError.bind(this))
      )
       .subscribe(
         result => {
-          this.dto.Response = result;       
+          this.dto.Response = result;
           this.mywithdrawalBankAccList = this.dto.Response;
         }
       );
@@ -173,35 +173,35 @@ export class WithdrawChangeAccountComponent implements OnInit {
   // checkwithdrawDelete(payment_id: any,bank_acc_id: any,withdrawaldelete: TemplateRef<any>){
   //   this.currentpaymentid=payment_id;
   //   this.currentbankaccid=bank_acc_id;
-  //   this.token = this.storage.retrieve('token');    
+  //   this.token = this.storage.retrieve('token');
   //   let headers = new HttpHeaders();
   //   let params = new HttpParams();
-  //   headers = headers.set('Authorization', this.token); 
-  //  // this.withdrawaldelete.hide();   
-  //   params = params.set("paymentId",payment_id).set("bank_acc_id", bank_acc_id); 
-  //   this.http.get( this.funct.ipaddress+'userbankaccount/checkuserbankaccount-byPaymentId',{ params:params,headers: headers }) 
+  //   headers = headers.set('Authorization', this.token);
+  //  // this.withdrawaldelete.hide();
+  //   params = params.set("paymentId",payment_id).set("bank_acc_id", bank_acc_id);
+  //   this.http.get( this.funct.ipaddress+'userbankaccount/checkuserbankaccount-byPaymentId',{ params:params,headers: headers })
   //     .pipe(
-        
+
   //       catchError(this.handleError.bind(this))
   //    )
   //     .subscribe(
   //       result => {
-  //         this.dto.Response = result;   
+  //         this.dto.Response = result;
   //         this.withdrawaldeleteList=this.dto.Response;
   //         if (this.withdrawaldeleteList=='') {
-        
+
   //             this.toastr.error("", this.translateService.instant("withdraw_delete_fail"), {
   //              timeOut: 3000,
   //              positionClass: 'toast-top-center',
   //              });
-           
+
   //           return;
-  //         } 
+  //         }
   //         else{
   //          // var template = document.getElementById('withdrawaldelete') as HTMLTemplateElement;
   //           this.withdrawalModel(this.currentpaymentid,this.currentbankaccid,withdrawaldelete)
   //         }
-          
+
   //       }
   //     );
 
@@ -211,59 +211,109 @@ export class WithdrawChangeAccountComponent implements OnInit {
   {
     this.withdrawalBankAccDelete.payment_id= this.currentpaymentid
     this.withdrawalBankAccDelete.bank_acc_id= this.currentbankaccid;
-   
-    this.token = this.storage.retrieve('token');    
+
+    this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     let params = new HttpParams();
-    headers = headers.set('Authorization', this.token); 
-    this.withdrawaledit.hide();    
+    headers = headers.set('Authorization', this.token);
+    this.withdrawaledit.hide();
     this.http.post( this.funct.ipaddress+'userbankaccount/deleteuserBankAccount',this.withdrawalBankAccDelete, { headers: headers })
       .pipe(
-        
+
         catchError(this.handleError.bind(this))
      )
       .subscribe(
         result => {
-          this.dto.Response = result;   
+          this.dto.Response = result;
           this.withdrawaldeleteList=this.dto.Response;
-          if (this.dto.Response.status == "Success") {         
+          if (this.dto.Response.status == "Success") {
             this.getMyWithdrawAccounts();
             return;
-          } 
-          
+          }
+
         }
       );
 
   }
   withdrawAdd()
-  {  
+  {
     this.router.navigate(['/wallet/withdraw', 'add'],{replaceUrl: false});
   }
   changeBankAccount(id: any)
-   { 
+   {
     this.router.navigate(['/wallet/withdraw'], {state: {bank_account_id: id},replaceUrl:true});
     this._location.back();
   }
   goBack(){
     this._location.back();
   }
- 
+
   withdrawalModel(bankAccObj,withdrawaldelete: TemplateRef<any>){
-   
+
     this.bankaccounteditmodel=bankAccObj;
     this.editName=bankAccObj.account_name;
     this.withdrawaledit=this.modalService.show(withdrawaldelete,
       {
         class: "logout-modal modal-sm",
-        ignoreBackdropClick: true, 
+        ignoreBackdropClick: true,
         keyboard: false
-      });       
+      });
   }
   HidelogoutModel(){
     this.editName='';
     this.withdrawaledit.hide();
    // this.withdrawaldelete.hide();
   }
-  
+
+  checkInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  let charArray = Array.from(input.value);
+
+  if (charArray.length > 25) {
+    charArray = charArray.slice(0, 25);
+  }
+
+  const newValue = charArray.join('');
+
+  this.editName = newValue;
+  input.value = newValue; // IME / paste case fix
+
+  this.updateNameError(charArray.length);
+}
+
+checkKey(event: KeyboardEvent) {
+  const input = event.target as HTMLInputElement;
+  const charArray = Array.from(input.value);
+
+  const allowedKeys = [
+    'Backspace','Delete',
+    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
+    'Tab','Home','End'
+  ];
+
+  if (allowedKeys.includes(event.key)) {
+    return;
+  }
+
+  if (charArray.length >= 25) {
+    event.preventDefault();
+  }
+}
+
+updateNameError(length: number) {
+  if (length === 0) {
+    $("#nameErr").html("");
+  }
+  else if (length >= 25) {
+    let msg = this.translateService.instant("requiredFiled");
+    msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
+    $("#nameErr").html(msg);
+  }
+  else {
+    $("#nameErr").html("");
+  }
+}
+
 }
 

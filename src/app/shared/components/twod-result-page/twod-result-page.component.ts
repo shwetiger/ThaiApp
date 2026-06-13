@@ -7,9 +7,6 @@ import '@angular/common/locales/global/th';
 import '@angular/common/locales/global/zh';
 import '@angular/common/locales/global/my'
 
-// registerLocaleData(localeTh);
-// registerLocaleData(localeZh);
-// registerLocaleData(localeMy);
 
 @Component({
   selector: 'app-twod-result-page',

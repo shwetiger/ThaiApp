@@ -1,0 +1,19 @@
+<div class="appHeader text-light">
+    <div class="left">
+        <a (click)="goToGame()" class="headerButton">
+            <i class="material-icons" style="font-size: 26px;">arrow_back</i>
+        </a>
+    </div>
+    <div class="pageTitle"> {{ 'helloword' | translate}}</div>
+</div>
+<iframe *ngIf="providerId !='16'"
+  [src]="gameUrl"
+  style="width:100%; height:100vh; border:none;">
+</iframe>
+
+<div class="game-wrapper" *ngIf="providerId =='16'">
+  <iframe
+    [src]="gameUrl"
+    class="game-iframe">
+  </iframe>
+</div>

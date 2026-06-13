@@ -4,10 +4,11 @@ import { CommonModule } from '@angular/common';
 import { PageNotfoundComponent } from './modules/pages/page-notfound/page-notfound.component';
 import { NotiDetailWithoutIdComponent }from './modules/pages/noti-detail-without-id/noti-detail-without-id.component';
 import { HomeComponent } from './modules/home/components/home/home.component';
+import { AuthGuard } from './shared/service/auth.guard';
 
-const routes: Routes = [ 
+const routes: Routes = [
     {
-      path: '', 
+      path: '',
       redirectTo: 'home',
       pathMatch: 'full'
     },
@@ -15,7 +16,7 @@ const routes: Routes = [
     {
       path: 'home',
       loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
-    }, 
+    },
     {
       path: 'home/:deviceId',component: HomeComponent
     },
@@ -35,14 +36,14 @@ const routes: Routes = [
       path : 'me-page', loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule)
     },
     {
-      path : 'me-page/:deviceId', loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule)      
+      path : 'me-page/:deviceId', loadChildren: () => import('./modules/profile/profile.module').then(m => m.ProfileModule)
     },
     {
       path : 'login', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
     },
     {
       path : 'login/:deviceId', loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
-    },    
+    },
     //download
     {
       path: 'download' , loadChildren: () => import('./modules/download-page/download-page.module').then(m => m.DownloadPageModule)
@@ -63,11 +64,11 @@ const routes: Routes = [
       path: 'promotions', loadChildren: ()=> import('./modules/promotion/promotion.module').then(m=>m.PromotionModule)
     },
     {
-      path: 'wallet', loadChildren: ()=> import('./modules/wallet/wallet.module').then(m=>m.WalletModule)
+      path: 'wallet', loadChildren: ()=> import('./modules/wallet/wallet.module').then(m=>m.WalletModule),canActivate:[AuthGuard]
     },
     {
       path: 'wallet/:showBackButton', loadChildren: ()=> import('./modules/wallet/wallet.module').then(m=>m.WalletModule)
-    },    
+    },
     {
       path: 'game', loadChildren: ()=> import('./modules/game/game.module').then(m=> m.GameModule)
     },
@@ -77,7 +78,7 @@ const routes: Routes = [
     {
       path: '**', component: PageNotfoundComponent
     }
-    
+
 ];
 const config: ExtraOptions = {
   useHash: true,
@@ -85,10 +86,10 @@ const config: ExtraOptions = {
   // ,preloadingStrategy: PreloadAllModules
 };
 
-@NgModule({  
+@NgModule({
   //{onSameUrlNavigation: 'reload'}
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
-  
+
 })
 export class AppRoutingModule { }

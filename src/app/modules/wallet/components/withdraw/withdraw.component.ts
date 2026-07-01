@@ -120,6 +120,11 @@ export class WithdrawComponent implements OnInit {
     this.refreshLoading = true;
     this.spinner.show("refreshLoading");
     this.phoneValue = this.storage.retrieve('localPhoneValue');
+    // (!this.phoneValue)
+    // {
+    //   this.phoneValue = this.storage.retrieve('tgphnumber');
+    // }
+
     this.bankAccModel =
     {
       bankaccountName: '',
@@ -647,13 +652,22 @@ export class WithdrawComponent implements OnInit {
       this.storage.clear('Timer');
       this.prefix = this.storage.retrieve('localPhonePrefix')
       let phoneNumber;
-      if (this.phoneValue.startsWith("0")) {
-        phoneNumber = this.prefix + this.phoneValue.substring(
-          1, this.phoneValue.length);
+      // const value = this.phoneValue;
+      // if (value.startsWith(this.prefix)) {
+      //   phoneNumber = value;
+      // }
+      // else if (value.startsWith("0")) {
+      //   phoneNumber = this.prefix + value.substring(1);
+      // }
+      // else {
+      //   phoneNumber = this.prefix + value;
+      // }
+      const value = this.phoneValue;
+      if (value.startsWith("0")) {
+        phoneNumber = this.prefix + value.substring(1);
       }
-      if (!this.phoneValue.startsWith("0")) //XXXX
-      {
-        phoneNumber = this.prefix + this.phoneValue;
+      else{
+        phoneNumber= this.prefix + value;
       }
       let headers = new HttpHeaders();
       this.http.post(
@@ -674,7 +688,6 @@ export class WithdrawComponent implements OnInit {
               this.Timer = data.remainingSeconds;
               this.storage.store('Timer', this.Timer);
             }
-
             resolve();
           },
           error: (err) => {
@@ -749,59 +762,59 @@ export class WithdrawComponent implements OnInit {
 
   }
 
-  getSMSOperators() {
+  // getSMSOperators() {
 
-    var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
-    this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-      .pipe(
-        //catchError(this.HandleErrorMessageService)
-        catchError(this.handleError.bind(this))
-      )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          this.SMSoperatorList = this.dto.Response;
-          if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
+  //   var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
+  //   this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
+  //     .pipe(
+  //       //catchError(this.HandleErrorMessageService)
+  //       catchError(this.handleError.bind(this))
+  //     )
+  //     .subscribe(
+  //       result => {
+  //         this.dto.Response = {};
+  //         this.dto.Response = result;
+  //         this.SMSoperatorList = this.dto.Response;
+  //         if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
 
-            for (let i = 0; i < this.SMSoperatorList.length; i++) {
-              if (this.SMSoperatorList[i].operatorType == "MPT") {
-                for (let i = 0; i < this.MPTarraylist.length; i++)
-                  if (phoneno.startsWith(this.MPTarraylist[i])) {
-                    this.Usefirebase = true;
-                  }
+  //           for (let i = 0; i < this.SMSoperatorList.length; i++) {
+  //             if (this.SMSoperatorList[i].operatorType == "MPT") {
+  //               for (let i = 0; i < this.MPTarraylist.length; i++)
+  //                 if (phoneno.startsWith(this.MPTarraylist[i])) {
+  //                   this.Usefirebase = true;
+  //                 }
 
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-                for (let i = 0; i < this.OoredooList.length; i++)
-                  if (phoneno.startsWith(this.OoredooList[i])) {
-                    this.Usefirebase = true;
-                  }
+  //             }
+  //             else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
+  //               for (let i = 0; i < this.OoredooList.length; i++)
+  //                 if (phoneno.startsWith(this.OoredooList[i])) {
+  //                   this.Usefirebase = true;
+  //                 }
 
-              }
-              else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-                for (let i = 0; i < this.MYTELList.length; i++)
-                  if (phoneno.startsWith(this.MYTELList[i])) {
-                    this.Usefirebase = true;
-                  }
+  //             }
+  //             else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
+  //               for (let i = 0; i < this.MYTELList.length; i++)
+  //                 if (phoneno.startsWith(this.MYTELList[i])) {
+  //                   this.Usefirebase = true;
+  //                 }
 
-              }
-              else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-                for (let i = 0; i < this.TelenorList.length; i++)
-                  if (phoneno.startsWith(this.TelenorList[i])) {
-                    this.Usefirebase = true;
-                  }
+  //             }
+  //             else if (this.SMSoperatorList[i].operatorType == "Telenor") {
+  //               for (let i = 0; i < this.TelenorList.length; i++)
+  //                 if (phoneno.startsWith(this.TelenorList[i])) {
+  //                   this.Usefirebase = true;
+  //                 }
 
-              }
-            }
-          }
-          else {
-            return;
-          }
+  //             }
+  //           }
+  //         }
+  //         else {
+  //           return;
+  //         }
 
-        });
+  //       });
 
-  }
+  // }
   checkbankAccount() {
     $("#bankAccountErr").html("");
     let pattern = RegExp(/^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/);
@@ -941,16 +954,16 @@ export class WithdrawComponent implements OnInit {
     }
   }
 
-   onAmountInput(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  let value = input.value.replace(/\./g, '');
-  value = value.replace(/[^0-9]/g, '');
-  input.value = value;
-  this.withdrawalRequestModel.amount = value;
-  setTimeout(() => {
-    input.setSelectionRange(value.length, value.length);
-  });
-}
+  onAmountInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\./g, '');
+    value = value.replace(/[^0-9]/g, '');
+    input.value = value;
+    this.withdrawalRequestModel.amount = value;
+    setTimeout(() => {
+      input.setSelectionRange(value.length, value.length);
+    });
+  }
 
   amountKeyEnter(id) {
     document.getElementById(id).focus();
@@ -1150,13 +1163,23 @@ export class WithdrawComponent implements OnInit {
   getsmstype() {
     this.prefix = this.storage.retrieve('localPhonePrefix')
     let phoneNumber;
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
+    const value = this.phoneValue;
+
+    // already has prefix -> don't add again
+    // if (value.startsWith(this.prefix)) {
+    //   phoneNumber = value;
+    // }
+    // else if (value.startsWith("0")) {
+    //   phoneNumber = this.prefix + value.substring(1);
+    // }
+    // else {
+    //   phoneNumber = this.prefix + value;
+    // }
+    if (value.startsWith("0")) {
+      phoneNumber = this.prefix + value.substring(1);
     }
-    if (!this.phoneValue.startsWith("0")) //XXXX
-    {
-      phoneNumber = this.prefix + this.phoneValue;
+    else{
+      phoneNumber =this.prefix + value;
     }
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
@@ -1173,55 +1196,55 @@ export class WithdrawComponent implements OnInit {
   }
 
 
- checkInput(event: Event) {
-  const input = event.target as HTMLInputElement;
+  checkInput(event: Event) {
+    const input = event.target as HTMLInputElement;
 
-  let charArray = Array.from(input.value);
+    let charArray = Array.from(input.value);
 
-  if (charArray.length > 25) {
-    charArray = charArray.slice(0, 25);
+    if (charArray.length > 25) {
+      charArray = charArray.slice(0, 25);
+    }
+
+    const newValue = charArray.join('');
+
+    this.bankAccModel.bankaccountName = newValue;
+    input.value = newValue; // IME / paste case fix
+
+    this.updateNameError(charArray.length);
   }
 
-  const newValue = charArray.join('');
+  checkKey(event: KeyboardEvent) {
+    const input = event.target as HTMLInputElement;
+    const charArray = Array.from(input.value);
 
-  this.bankAccModel.bankaccountName = newValue;
-  input.value = newValue; // IME / paste case fix
+    const allowedKeys = [
+      'Backspace', 'Delete',
+      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+      'Tab', 'Home', 'End'
+    ];
 
-  this.updateNameError(charArray.length);
-}
+    if (allowedKeys.includes(event.key)) {
+      return;
+    }
 
-checkKey(event: KeyboardEvent) {
-  const input = event.target as HTMLInputElement;
-  const charArray = Array.from(input.value);
-
-  const allowedKeys = [
-    'Backspace','Delete',
-    'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',
-    'Tab','Home','End'
-  ];
-
-  if (allowedKeys.includes(event.key)) {
-    return;
+    if (charArray.length >= 25) {
+      event.preventDefault();
+    }
   }
 
-  if (charArray.length >= 25) {
-    event.preventDefault();
+  updateNameError(length: number) {
+    if (length === 0) {
+      $("#nameErr").html("");
+    }
+    else if (length >= 25) {
+      let msg = this.translateService.instant("requiredFiled");
+      msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
+      $("#nameErr").html(msg);
+    }
+    else {
+      $("#nameErr").html("");
+    }
   }
-}
-
-updateNameError(length: number) {
-  if (length === 0) {
-    $("#nameErr").html("");
-  }
-  else if (length >= 25) {
-    let msg = this.translateService.instant("requiredFiled");
-    msg = msg.toString().replace("@value", this.translateService.instant("namehint"));
-    $("#nameErr").html(msg);
-  }
-  else {
-    $("#nameErr").html("");
-  }
-}
 }
 //com
 @Component({

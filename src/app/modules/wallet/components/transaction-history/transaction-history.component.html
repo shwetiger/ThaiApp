@@ -63,7 +63,6 @@
                                                 <span class="amount"
                                                     style="color: #000; font-weight: 600;">{{tranObj.amount_Str}} {{'ks'
                                                     | translate}} &nbsp;
-
                                                     <img src="assets/img/icon/arrow_forward_ios.png" alt="" width="20">
                                                 </span>
                                             </div>
@@ -81,7 +80,6 @@
                                                         {{'topup_approved_state_title' | translate}}</h4>
                                                     <h4 style="margin: 0px;white-space: nowrap;" class="descText">
                                                         {{'topup_approved_state_desc' | translate}}
-                                                        <i class="fas fa-check-circle ml-5"></i>
                                                     </h4>
                                                 </div>
                                                 <div class="col-3 text-right pt-2 pr-2">
@@ -97,11 +95,9 @@
                                                     <h4 style="margin: 0px;white-space: nowrap;" class="denieddescText"
                                                         *ngIf="tranObj.description=='null'">{{'topup_denied_state_desc'
                                                         | translate}}
-                                                        <i class="fas fa-times-circle ml-5"></i>
                                                     </h4>
                                                     <h4 style="margin: 0px;white-space: nowrap;" class="denieddescText"
                                                         *ngIf="tranObj.description!='null'">{{ tranObj.description}}
-                                                        <i class="fas fa-times-circle ml-5"></i>
                                                     </h4>
                                                 </div>
                                                 <div class="col-4 text-right pt-3 pr-2">
@@ -115,9 +111,6 @@
                                                 </h3>
                                                 <div class="col-3 mt-1"
                                                     style="padding: 0px !important;margin-left: 33%;">
-                                                    <!-- <div >
-                                                            <button  class="btn" style="width: 80%;border-color: #2253A2;color:#2253A2 !important;font-size: 13px; height: 35px; border-radius: 20px;" (click)=" gotoTopuppage()" ><span><img src="assets/img/icons/edit.png" alt=""  width="20"> </span>{{'topup_edit' | translate}}</button>
-                                                        </div> -->
                                                 </div>
                                             </div>
                                             <div>
@@ -140,14 +133,7 @@
             </div>
         </div>
         <div style="margin-top: 10px;" *ngIf="withdrawaltab==true">
-                <div *ngIf="addWithdrawalList?.length === 0 && !loading" style="
-        height: 70vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-        color: #999;
-     ">
+                <div *ngIf="addWithdrawalList?.length === 0 && !loading" style="height: 70vh;display: flex;justify-content: center;align-items: center;font-size: 18px;color: #999;">
                     {{'nohistory' | translate}}
                 </div>
                 <div class="section" id="appCapsule">
@@ -183,7 +169,6 @@
                                                     <div class="col-9 pl-2">
                                                         <h3 style="margin: 0px;white-space: nowrap;" class="descText">
                                                             {{'notification_withdrawal_success' | translate}}
-                                                            <i class="fas fa-check-circle ml-5"></i>
                                                         </h3>
 
                                                     </div>

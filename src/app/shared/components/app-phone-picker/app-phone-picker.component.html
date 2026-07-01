@@ -7,7 +7,7 @@
               <button id="button-basic" dropdownToggle type="button"
                       class="btn dropdown-toggle input_prefix"
                       style="padding-left: 5px !important; margin-left: 5px !important; display: inline-flex; align-items: center;">
-                <img  *ngIf="imageUrl" src="{{imageUrl}}" alt="" width="20px" height="20px" style="padding: 0; margin: 0;">
+                <img src="{{imageUrl}}" alt="" width="20px" height="20px" style="padding: 0; margin: 0;">
               </button>
               <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
                 <a class="dropdown-item" *ngFor="let registerCountryCodeobj of registerCountryCode; let i = index;"
@@ -55,8 +55,6 @@
           placeholder="{{ 'phoneNumberHint' | translate}}" [disabled]="actionType === 'NEWDIVICE' || isDisabled"
            [(ngModel)]="phoneValue" [ngModelOptions]="{standalone: true}" (keyup.enter)="enter($event)"/>
         </div>
-        <!-- <p id ="phoneErr" class="error-color" style="text-align: left; width: 100%;" ></p> -->
-         <p class="error-color" style="text-align: left; width: 100%;">{{ phoneErr$ | async }}</p>
-         <!-- <div *ngIf="phoneErr$ | async as err">{{ err }}</div> -->
+        <p id ="phoneErr" class="error-color" style="text-align: left; width: 100%;" ></p>
       </div>
     </div>

@@ -133,7 +133,7 @@
       {{'transfer_point' | translate }}
     </h3>
 
-    <div ngClass="ml-3 mt-2 text-center">
+    <div ngClass=" mt-2 text-center">
       <input type="number" maxlength="10" [placeholder]="'enter_trans_pt' | translate"
         style="width: 250px;height: 40px; border: 0.5px solid #2253A2; border-radius: 3px;" class="form-control ml-2"
         [(ngModel)]="amount" [ngModelOptions]="{standalone: true}" (keypress)="keyPressNumberfornumberintput($event)"
@@ -144,7 +144,7 @@
   </div>
 
   <div class="modal-footer justify-content-center mt-1 mb-3">
-    <button type="button" class="btn mr-3" style="color: gray;height: 30px;width: 100px;border: 2px solid #2253A2"
+    <button type="button" class="btn mr-3" style="color: red;height: 30px;width: 100px;border: 2px solid gray"
       (click)="HideTransferModel()">
       {{'point_transfer_cancel' | translate}}
     </button>

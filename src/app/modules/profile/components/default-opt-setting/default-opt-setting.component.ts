@@ -148,8 +148,12 @@ export class DefaultOptSettingComponent implements OnInit {
   SaveOtptype() {
     this.token = this.storage.retrieve('token');
     const headers = new HttpHeaders();
-    const phoneValue = this.storage.retrieve('localPhoneValue');
-     const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+    let phoneValue = this.storage.retrieve('localPhoneValue');
+
+    if (!phoneValue) {
+      phoneValue = this.storage.retrieve('tgphnumber');
+    }
+    const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
     this.http.post(this.funct.ipaddress + 'user/setUserSmsType?type=' + this.selectedType + '&phone_no=' + phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
@@ -287,7 +291,11 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   getotptype() {
-    const phoneValue = this.storage.retrieve('localPhoneValue');
+    let phoneValue = this.storage.retrieve('localPhoneValue');
+
+    if (!phoneValue) {
+      phoneValue = this.storage.retrieve('tgphnumber');
+    }
     const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
     if (this.formPage == 'register' || this.formPage == 'registerpage') {
       this.selectedType = this.registerotptype;
@@ -397,7 +405,7 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   private async handleRegisterOtpResponse(response: any) {
-   // this.dto.Response = response;
+    // this.dto.Response = response;
     await this.getCountDown();
     if (response.errorCode === '000' && response.status === true) {
       this.stopLoading();
@@ -527,9 +535,16 @@ export class DefaultOptSettingComponent implements OnInit {
         });
   }
 
-    private formatPhoneNumber(phone: string, prefix: string): string {
-    return phone.startsWith('0')
-      ? prefix + phone.substring(1)
-      : prefix + phone;
-  }
+  // private formatPhoneNumber(phone: string, prefix: string): string {
+  //   return phone.startsWith('0')
+  //     ? prefix + phone.substring(1)
+  //     : prefix + phone;
+  // }
+  private formatPhoneNumber(phone: string, prefix: string): string {
+  if (!phone) return '';
+
+  return phone.startsWith(prefix)
+    ? phone
+    : prefix + (phone.startsWith('0') ? phone.slice(1) : phone);
+}
 }

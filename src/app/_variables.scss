@@ -16,24 +16,23 @@ $yellow-color: #ffcb50;
 $input-color: #F5F4F4;
 $background-color: #FAFAFA;
 
-
-//add
 @mixin card-box() {
     box-shadow: rgba(0,0,0,0.1) 0px 19px 38px, rgba(0,0,0, 0.6) 0px 4px 4px !important;
-    background-color: #fff !important;    
+    background-color: #fff !important;
     padding: 0px !important;
     margin: 0px !important;
 }
+
 @mixin submit-loading(){
-    position: relative; 
+    position: relative;
     justify-content: center;
 }
 
 @mixin button-notRound(){
-    width: 92%; 
-    height: 40px; 
+    width: 92%;
+    height: 40px;
     background: $second-color !important;
-    color: #fff !important; 
+    color: #fff !important;
     border-radius: 5px;
 }
 @mixin error-color() {
@@ -42,6 +41,5 @@ $background-color: #FAFAFA;
     padding-top: 5px;
 }
 @mixin box-shadow {
-    //box-shadow: 0 0 3px $second-color;
     box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.20) 0px 2px 16px 0px;
 }

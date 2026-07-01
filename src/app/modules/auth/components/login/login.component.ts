@@ -108,6 +108,7 @@ export class LoginComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.storage.clear('localPhoneValue');
     this.versionService.currentVersion$.subscribe(v => {
       this.version = v;
     });
@@ -174,9 +175,9 @@ export class LoginComponent implements OnInit {
     this.phoneValue = this.storage.retrieve('localPhoneValue');
 
     if (!this.phoneValue || this.phoneValue.length === 0) {
-      this.translateService.get(['requiredFiled', 'phonenumbererr']).subscribe(translations => {
-        this.phoneErr = translations['requiredFiled'].replace('@value', translations['phonenumbererr']);
-      });
+      var phoneRequired = this.translateService.instant("requiredFiled");
+      phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
+      $("#phoneErr").html(phoneRequired);
       return false;
     }
 
@@ -364,12 +365,12 @@ export class LoginComponent implements OnInit {
     event.target.blur();
   }
 
-openTelegramBot() {
-  // window.open(
-  //   'https://t.me/Thaisinapp_bot?openinnewtap=1'
-  // );
-   window.open(
-    'https://t.me/Thaisinofficial_bot?openinnewtap=1'
-  );
-}
+  openTelegramBot() {
+    window.open(
+      'https://t.me/Thaisinapp_bot?openinnewtap=1'
+    );
+    //    window.open(
+    //     'https://t.me/Thaisinofficial_bot?openinnewtap=1'
+    //   );
+  }
 }

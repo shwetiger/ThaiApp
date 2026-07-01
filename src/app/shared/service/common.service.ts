@@ -14,7 +14,6 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class CommonService {
-
   isLogged: any;
   gameProviderList : any;
   token: any;

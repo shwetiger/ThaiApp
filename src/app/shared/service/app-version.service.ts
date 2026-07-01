@@ -13,7 +13,7 @@ export class AppVersionService {
 
   constructor(private http: HttpClient) {}
 
- startVersionCheck() {
+  startVersionCheck() {
   timer(0, this.checkInterval)
     .pipe(
       switchMap(() =>

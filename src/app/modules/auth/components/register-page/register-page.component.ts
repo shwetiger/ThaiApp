@@ -388,10 +388,10 @@ export class RegisterPageComponent implements OnInit {
     return phoneValue.startsWith("0") ? prefix + phoneValue.substring(1) : prefix + phoneValue;
   }
 openTelegramBot() {
-  // window.open('https://t.me/Thaisinapp_bot?openinnewtap=1', '_blank');
-    window.open(
-    'https://t.me/Thaisinofficial_bot?openinnewtap=1'
-  );
+  window.open('https://t.me/Thaisinapp_bot?openinnewtap=1', '_blank');
+  //   window.open(
+  //   'https://t.me/Thaisinofficial_bot?openinnewtap=1'
+  // );
 }
 
 }

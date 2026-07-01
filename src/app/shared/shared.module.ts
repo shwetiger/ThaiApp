@@ -116,8 +116,8 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
     ThreedFormatTimePipe,
     SafeUrlPipe,
     ListPipe
-
   ],
+
   declarations: [
     AppNavigationBarComponent,
     AccountLoginComponent,

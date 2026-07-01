@@ -126,6 +126,7 @@ export class OtpPageComponent implements OnInit {
         this.phoneNumber = "+" + this.storage.retrieve('localInsertAccountOtpSms').number;
       }
     }
+
     if (this.storage.retrieve('localPhoneValue') != null) {
       var phone = this.storage.retrieve('localPhoneValue');
       var prefix = this.storage.retrieve('localPhonePrefix')
@@ -133,9 +134,21 @@ export class OtpPageComponent implements OnInit {
         this.phoneNumber = prefix + phone.substring(1, phone.length);
       }
       else {
-        this.phoneNumber = prefix + phone;
+        this.phoneNumber =  phone;
       }
     }
+    if (this.storage.retrieve('localPhoneValue') == null) {
+    //this.phoneNumber= this.storage.retrieve('tgphnumber')
+     var phone = this.storage.retrieve('localPhoneValue');
+     var prefix = this.storage.retrieve('localPhonePrefix')
+      if (phone.startsWith('0')) {
+        this.phoneNumber = prefix + phone.substring(1, phone.length);
+      }
+      else {
+        this.phoneNumber = phone;
+      }
+    }
+
     await this.getotptype();
     this.type =
       this.commonFormtype === 'register'
@@ -195,8 +208,6 @@ export class OtpPageComponent implements OnInit {
   }
 
   validateOtp() {
-    this.common.submitLoading = false;
-    this.spinner.hide("submitLoading");
     if (!this.otpcode || this.otpcode.length < 6) {
       $("#passErr").html(this.translateService.instant("otp_required"));
       return false;
@@ -271,6 +282,8 @@ export class OtpPageComponent implements OnInit {
     this.storage.clear("changeoptprocess");
     let checkOPTINput = this.validateOtp();
     if (!checkOPTINput) {
+       this.common.submitLoading = false;
+       this.spinner.hide("submitLoading");
       return;
     }
     if (this.common.actionType == "insertAccount") {
@@ -288,10 +301,10 @@ export class OtpPageComponent implements OnInit {
             result => {
               this.dto.Response = result;
               this.OtpSms = this.dto.Response;
-              this.common.submitLoading = false;
-              this.spinner.hide("submitLoading");
               if (this.dto.Response.status == 401) {
                 if (this.dto.Response.code == 0) {
+                  this.common.submitLoading = false;
+                  this.spinner.hide("submitLoading");
                   this.toastr.error("", this.translateService.instant('invalid-otp-code'),
                     {
                       timeOut: 3000,
@@ -377,8 +390,7 @@ export class OtpPageComponent implements OnInit {
         if (this.storage.retrieve('localOtpSms').request_id != null) {
           let headers = new HttpHeaders();
           this.OtpSms = [];
-          const localOtpSms = this.storage.retrieve('localOtpSms');
-          // var phone_no = this.storage.retrieve('localOtpSms').to;
+          //const localOtpSms = this.storage.retrieve('localOtpSms');
           var phone_no = this.phoneNumber;
           var request_id = this.request_id = this.storage.retrieve('requestId')
           var code = this.otpcode;
@@ -439,10 +451,6 @@ export class OtpPageComponent implements OnInit {
                     return true;
                   }
                   else {
-                    // this.toastr.error("Tip", 'OTP is not correct', {
-                    //   timeOut: 3000,
-                    //   positionClass: 'toast-top-center',
-                    // });
                     return false;
                   }
                 }

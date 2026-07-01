@@ -140,7 +140,7 @@ export class InitialForgotPasswordComponent implements OnInit {
     $("#phoneErr").html("");
     var prefix = this.storage.retrieve('localPhonePrefix');
     this.phoneValue = this.storage.retrieve('localPhoneValue');
-    if (this.phoneValue.length == 0) {
+    if (!this.phoneValue || this.phoneValue.length === 0) {
       var phoneRequired = this.translateService.instant("requiredFiled");
       phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
       $("#phoneErr").html(phoneRequired);
@@ -202,6 +202,7 @@ export class InitialForgotPasswordComponent implements OnInit {
       class: "forgetPassword-class modal-sm"
     });
   }
+
   HideAlert() {
     this.forgetPasswordModalRef.hide();
   }

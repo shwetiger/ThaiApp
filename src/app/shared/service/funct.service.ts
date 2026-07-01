@@ -30,6 +30,7 @@ export class FunctService {
     this.ipaddressluke = "https://luke.2dboss.com/api/luke/twod-result-live";
     this.secretKey = "Yv9GlO0wX4peYxWCMGpUXM9ZKJBU78tc8cvSld5sN20";
   }
+
   encrypt(): string {
     var registerKey = "68cf74c3da49d6d579ab81926f43a479";
     var key = CryptoJS.enc.Utf8.parse('7061737323313233');

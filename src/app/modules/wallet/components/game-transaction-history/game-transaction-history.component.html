@@ -14,23 +14,7 @@
             <a class="nav-link" [ngClass]="{'active': historyGame}" data-toggle="tab" href="#lined" (click) = "getTopupGameTransactionHistorytab(pageNumber,'DEPOSIT')"> {{ 'game_wallet_tran_text' | translate }}</a>
         </li>
     </ul>
-
   </div>
-
-  <!-- <div class="tab-content">
-    <div id="mainwallet" class="tab-pane fade in active" style="margin-top: 70px;">
-        <ul class="nav nav-tabs lined" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link " [ngClass]="{'active': gameTopup}" data-toggle="tab" href="#Topup" (click) = "getTopupGameTransactionHistory(pageNumber,'DEPOSIT')"> {{ 'toup_history' | translate }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [ngClass]="{'active': gameWithdrawal}" data-toggle="tab" href="#Withdrawal"  (click)="getTopupGameWithTransactionHistory(pageNumber,'WITHDRAWAL')"> {{ 'withdrawal_history' | translate }}</a>
-            </li>
-        </ul>
-
-    </div>
-  </div> -->
-
   <div class="row mt-5 ml-2 mr-2">
     <div [ngClass]="gametopuptab? 'header-active':'header'" (click)='Gotogametopup()'
         style="padding-top: 5px;display: flex;padding-right: 5px;">
@@ -42,10 +26,7 @@
         <span [ngStyle]="gamewithdrawaltab?{'color': '#2253A2'} : {'color': 'black'}"
             class="d-flex justify-content-center pt-1 mt-1 ">{{'withdrawal_history' | translate}}</span>
     </div>
-
 </div>
-
-
   <div class="tab-content" >
     <div id="Topup" style="margin-top: 10px;" *ngIf="gametopuptab==true">
 <div *ngIf="addList?.length === 0 && !loading"
@@ -87,7 +68,6 @@
                                         <div class="container-fluid" style="padding: 0px !important; margin: 0px !important;">
                                             <div class="row mb-1" *ngIf = "tranObj.type == 'DEPOSIT'">
                                                 <div class="col-8 pl-2">
-                                                    <!-- <h3 style="margin: 0px;" class="descText">{{'topup_approved_state_title' | translate}}</h3> -->
                                                     <h4 style="margin: 0px;white-space:nowrap ;" class="descText pt-1">{{'topup_approved_state_desc' | translate}}
                                                     </h4>
                                                 </div>
@@ -99,7 +79,6 @@
                                             <div class="row" *ngIf = "tranObj.status == 'DENIED' ">
                                                 <h3 style="margin: 0px;" class="denieddescText">{{'topup_denied_state_title' | translate}}</h3>
                                                 <h4 style="margin: 0px;" class="denieddescText">{{'topup_denied_state_desc' | translate}}
-                                                    <!-- <i class="fas fa-times-circle ml-5"></i> -->
                                                 </h4>
                                             </div>
                                             <div class="row" *ngIf = "tranObj.status == 'PENDING' ">
@@ -110,23 +89,14 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div style="display: flex;justify-content: center;margin-top: 2px;">
                     <button type="button"  [hidden] = isLast (click)="getTopupGameTransactionHistoryMore(pageNumber,'DEPOSIT')" style="background-color: #2253A2; color: #fff; border:none; border-radius: 5px;height:40px;width:80%" *ngIf="loadingMore">
                        {{'morebtn' | translate}}
                     </button>
-                    <!-- <button [hidden] = isLast type="button" class="btn btn-primary" (click)="getTopupGameTransactionHistoryMore(pageNumber,'DEPOSIT')">
-                        More
-                   </button>
-                x
-                    <p [hidden] = !isLast>
-                        No More Data
-                    </p> -->
                </div>
         </div>
    </div>
@@ -168,9 +138,7 @@
                                         <div class="container-fluid"  style="padding: 0px !important; margin: 0px !important;">
                                                 <div class="row justify-content-center"  *ngIf = "tranObj.type == 'WITHDRAWAL' ">
                                                     <div class="col-8 pl-2">
-                                                        <!-- <h3 style="margin: 0px;" class="descText">{{'notification_withdrawal_success' | translate}}</h3> -->
                                                     <h4 style="margin: 0px; white-space: nowrap;" class="descText pt-1">{{'gameTransaction_approved_state_desc' | translate}}
-                                                        <i class="fas fa-check-circle ml-5"></i>
                                                     </h4>
                                                     </div>
                                                     <div class="col-4 text-right pt-1 pr-2">
@@ -189,17 +157,11 @@
                     <button type="button" class="button mt-2"  [hidden]=isLastGW (click)="getTopupGameWithTransactionHistoryMore(pageNumber,'WITHDRAWAL')" style="background-color: #2253A2; color: #fff;border-radius: 5px;" *ngIf="loadingMore">
                         {{'morebtn' | translate}}
                     </button>
-                    <!-- <button type="button" class="btn btn-primary" [hidden]=isLastGW (click)="getTopupGameWithTransactionHistoryMore(pageNumber,'WITHDRAWAL')">
-                        More
-                    </button>
-                    <p [hidden]=!isLastGW>
-                        No More Data
-                    </p> -->
                 </div>
             </div>
         </div>
-
     </div>
+
     <div style="justify-content: center;  position: absolute;
         top: 50%;
         left: 50%;
@@ -207,9 +169,6 @@
         z-index: 9999;" class="mt-2" *ngIf="loading">
         <ngx-spinner [name] = "transactionSpinner" size = "small" color = "rgb(6,56,107)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>
     </div>
-
-
 </div>
 
-      <!--XXX spinner MH-->
-<!-- <ngx-spinner [name] = "spinnerName" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner> -->
+

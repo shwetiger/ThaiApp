@@ -186,15 +186,14 @@
     <ul style="list-style-type: disc;" class="ml-2">
       <li style="color : #2253A2 !important">{{ 'incorrect-info-desc' | translate }}</li>
     </ul>
-    <div style="text-align: right;">
-      <button type="button" class="btn" (click)="HideAlertOne()">{{ 'close' | translate}}</button>
+    <div style="text-align: center;margin-top: 5px;">
+       <button type="button" class="btn" style="background-color:  #2253A2;color:white;width:100px" (click)="HideAlertOne()">{{ 'close' | translate}}</button>
     </div>
   </div>
 </ng-template>
 
 
 <ng-template #forgetPassword1>
-
   <div class="modal-body">
     <div class="d-flex justify-content-center">
       <i class="material-icons" style="color: red;font-size: 30px;">cancel</i>

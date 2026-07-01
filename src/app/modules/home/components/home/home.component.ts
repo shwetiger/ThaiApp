@@ -65,19 +65,19 @@ export class HomeComponent implements OnInit {
     this.isUserLogin = this.storage.retrieve('isUserLoggedIn');
   }
 
- async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {
 
-  if (window.Telegram?.WebApp?.initData) {
-    this.tg = window.Telegram.WebApp;
-    this.tg.ready();
+    if (window.Telegram?.WebApp?.initData) {
+      this.tg = window.Telegram.WebApp;
+      this.tg.ready();
+      this.storage.clear('localPhoneValue');
+      await this.telegramLogin();
+      return;
+    }
 
-    await this.telegramLogin();
-    return;
+    this.initializeHomeData();
+    this.isAppReady = true;
   }
-
-  this.initializeHomeData();
-  this.isAppReady = true;
-}
 
   initializeHomeData() {
 
@@ -113,6 +113,7 @@ export class HomeComponent implements OnInit {
       this.updateUsedTime();
       this.updateFCMtoken();
       this.getAllNoti();
+      this.getUserProfile();
     }
 
     this.storage.clear('localadsList');
@@ -123,63 +124,62 @@ export class HomeComponent implements OnInit {
   }
 
   async telegramLogin() {
-  if (this.isTelegramLoggingIn) {
-    return;
-  }
-
-  this.isTelegramLoggingIn = true;
-
-  if (!this.tg?.initData) {
-    this.isTelegramLoggingIn = false;
-    this.initializeHomeData();
-    this.isAppReady = true;
-    return;
-  }
-
-  this.common.submitLoading = true;
-  this.spinner.show("submitLoading");
-
-  const payload = {
-    initData: this.tg.initData
-  };
-
-  this.http.post<any>(
-    `${this.funct.ipaddress}tg/webappLogin`,
-    payload
-  ).subscribe({
-
-    next: (res) => {
-
-      if (res?.token) {
-
-        this.storage.store('token', res.token);
-        this.storage.store('isUserLoggedIn', true);
-
-        this.token = res.token;
-        this.isUserLogin = true;
-        this.initializeHomeData();
-        this.isAppReady = true;
-
-      } else {
-
-        this.toastr.error('', 'Telegram Login Failed');
-      }
-
-      this.finishTelegramLogin();
-    },
-
-    error: (err) => {
-
-      console.error('Telegram Login Error : ', err);
-
-      this.finishTelegramLogin();
-
-      this.initializeHomeData();
-
-      this.isAppReady = true;
+    if (this.isTelegramLoggingIn) {
+      return;
     }
-  });
-}
+
+    this.isTelegramLoggingIn = true;
+
+    if (!this.tg?.initData) {
+      this.isTelegramLoggingIn = false;
+      this.initializeHomeData();
+      this.isAppReady = true;
+      return;
+    }
+
+    this.common.submitLoading = true;
+    this.spinner.show("submitLoading");
+
+    const payload = {
+      initData: this.tg.initData
+    };
+    this.http.post<any>(
+      `${this.funct.ipaddress}tg/webappLogin`,
+      payload
+    ).subscribe({
+
+      next: (res) => {
+
+        if (res?.token) {
+
+          this.storage.store('token', res.token);
+          this.storage.store('isUserLoggedIn', true);
+
+          this.token = res.token;
+          this.isUserLogin = true;
+          this.initializeHomeData();
+          this.isAppReady = true;
+
+        } else {
+
+          this.toastr.error('', 'Telegram Login Failed');
+        }
+
+        this.finishTelegramLogin();
+      },
+
+      error: (err) => {
+
+        console.error('Telegram Login Error : ', err);
+
+        this.finishTelegramLogin();
+
+        this.initializeHomeData();
+
+        this.isAppReady = true;
+      }
+    });
+  }
 
   finishTelegramLogin() {
 
@@ -362,7 +362,7 @@ export class HomeComponent implements OnInit {
 
   refreshPage() {
     this.ngOnInit();
-   // window.location.reload();
+    // window.location.reload();
     this.child.getUserProfile();
     setTimeout(() => {
       this.common.refreshLoading = false;
@@ -450,5 +450,33 @@ export class HomeComponent implements OnInit {
       window.history.replaceState({}, document.title, window.location.href);
     }
   }
+
+  getUserProfile() {
+    let params = new HttpParams();
+    this.token = this.storage.retrieve('token');
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', this.token);
+    this.storage.clear('tgphnumber');
+    this.http.get(this.funct.ipaddress + 'user/PointUserProfile', { headers: headers })
+      .pipe
+      (
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
+      )
+      .subscribe(
+        result => {
+          this.dto.Response = {};
+          this.dto.Response = result;
+          const phoneNumber = this.dto.Response.phone_no;
+          const prefix = this.storage.retrieve('localPhonePrefix');
+          let localPhone = phoneNumber;
+          if (prefix && phoneNumber.startsWith(prefix)) {
+            localPhone = '0' + phoneNumber.slice(prefix.length);
+          }
+          this.storage.store('localPhoneValue', localPhone);
+        }
+      );
+  }
+
+
 
 }

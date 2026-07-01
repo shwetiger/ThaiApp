@@ -11,6 +11,7 @@ import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-m
 import { CommonService } from 'src/app/shared/service/common.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { FunctService } from 'src/app/shared/service/funct.service';
+declare var Tawk_API: any;
 
 @Component({
   selector: 'app-service',
@@ -59,6 +60,7 @@ export class ServiceComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.loadTawk();
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
     this.service_transaction = 0;
@@ -70,6 +72,30 @@ export class ServiceComponent implements OnInit {
   }
   replaceData(openUrl) {
 
+  }
+
+   ngOnDestroy(): void {
+    if ((window as any).Tawk_API) {
+      (window as any).Tawk_API.hideWidget();
+    }
+  }
+
+   loadTawk() {
+    if ((window as any).Tawk_API) {
+      (window as any).Tawk_API.showWidget();
+      return;
+    }
+
+    (window as any).Tawk_API = (window as any).Tawk_API || {};
+
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://embed.tawk.to/6a3f7d9bedc6bb1d4b5d0a93/1js405a6q';
+    document.body.appendChild(s);
+
+    (window as any).Tawk_API.onLoad = () => {
+      (window as any).Tawk_API.showWidget();
+    };
   }
 
   listServicePhone() {
@@ -132,7 +158,7 @@ export class ServiceComponent implements OnInit {
       this.spinner.hide("refreshLoading");
     }, 1000);
   }
-  
+
 openViberFallback(viber:any) {
   // Viber official fallback link
   window.location.href = "https://invite.viber.com/?g2=" + viber;

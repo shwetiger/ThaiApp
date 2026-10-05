@@ -20,13 +20,13 @@
     </div>
 <div style="height:10px"></div>
     <div class="row mt-5 ml-2 mr-2" >
-        <div [ngClass]="topuptab? 'header-active':'header'" (click)='Gototopup()'
+        <div [ngClass]="topuptab? 'header-active':'header'"  (click)="!isTopupTabDisable && Gototopup()"
             style="padding-top: 5px;display: flex;">
             <span [ngStyle]="topuptab?{'color': '#2253A2'} : {'color': 'black'}"
                 class="d-flex justify-content-center pt-1 mt-1">{{'toup_history' | translate}}</span>
         </div>
 
-        <div [ngClass]="withdrawaltab? 'header-active':'header'" (click)='Gotowithdrawal()'
+        <div [ngClass]="withdrawaltab? 'header-active':'header'" (click)='!isWithdrawalTabDisable && Gotowithdrawal()'
             style="padding-top: 5px;display: flex;">
             <span [ngStyle]="withdrawaltab?{'color': '#2253A2'} : {'color': 'black'}"
                 class="d-flex justify-content-center pt-1 mt-1 ">{{'withdrawal_history' | translate}}</span>

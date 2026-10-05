@@ -186,6 +186,13 @@ export class BetHistoryPageComponent implements OnInit {
       .subscribe(
         result => {
           this.dto.Response = result;
+         if (this.dto.Response.status == 'Error') {
+              this.toastr.error("", this.dto.Response.message, {
+                timeOut: 3000,
+                positionClass: 'toast-top-center',
+              });
+            }
+          else{
           this.betHistoryList = this.dto.Response.results;
           this.addList = [...this.addList, ...this.betHistoryList];
           if (this.addList.length >= result.totalRows) {
@@ -196,6 +203,7 @@ export class BetHistoryPageComponent implements OnInit {
           this.loading = false;
           localStorage.setItem('localBetHistory' + this.type, JSON.stringify(this.betHistoryList));
         }
+      }
       );
   }
 

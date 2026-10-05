@@ -118,7 +118,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
   gamecatSlotsList: any = [];
   maintanance: any;
   deviceId1: any;
-  gameProviderCode:any;
+  gameProviderCode: any;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -154,6 +154,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.storage.clear('routefrom');
     this.storage.store("localGameCatId", this.catId);
     this.qmModel =
     {
@@ -255,9 +256,11 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
     this.getUserProfile();
     if (providerId == 8) {
       this.gameUserBalance = this.storage.retrieve('LocalgameUserBalance1');
+      this.storage.store('LocalgameUserBalance', this.gameUserBalance)
     }
     else {
       this.gameUserBalance = this.storage.retrieve('LocalgameUserBalance2');
+      this.storage.store('LocalgameUserBalance', this.gameUserBalance)
     }
     if (this.gameUserBalance < 1000) {
       this.common.gameLoading = false;
@@ -297,6 +300,15 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
               async result => {
                 this.spinner.hide("smallSpinner");
                 this.dto.Response = result;
+                if (result?.errCode === '603') {
+                  if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
+                    this.toastr.error("", this.translateService.instant("game_play_close"), {
+                      timeOut: 1000,
+                      positionClass: 'toast-top-center'
+                    });
+                    return;
+                  }
+                }
                 this.launchGameResModel = this.dto.Response;
                 this.storage.store('localGamePlayProviderId', providerId);
                 this.storage.store('localPreviousRoute', 'gameList')
@@ -318,12 +330,12 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
                     this.launchTagName = this.launchTagName.toString().replace("@name", gamelist.name);
                   }
                   this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-                  this.router.navigate(['/game-play'], {
-                    state: {
-                      launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
-                      providerId: providerId
-                    }, replaceUrl: false
-                  });
+                  // this.router.navigate(['/game-play'], {
+                  //   state: {
+                  //     launchUrl: this.launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: this.launchTagName,
+                  //     providerId: providerId
+                  //   }, replaceUrl: false
+                  // });
                 }
               }
             );
@@ -348,6 +360,15 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
                 this.common.gameLoading = false;
                 this.spinner.hide("gameLoading");
                 this.dto.Response = result;
+                if (result?.errCode === '603') {
+                  if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
+                    this.toastr.error("", this.translateService.instant("game_play_close"), {
+                      timeOut: 1000,
+                      positionClass: 'toast-top-center'
+                    });
+                    return;
+                  }
+                }
                 this.launchGameResModel = this.dto.Response;
                 this.storage.store('localGamePlayProviderId', providerId);
                 this.storage.store('localPreviousRoute', 'gameList')
@@ -466,7 +487,8 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
           this.dto.Response = result;
           this.gamecatSlotsList = this.dto.Response.gsGameList;
           this.gameProviderCodeName = this.dto.Response.name;
-          this.gameProviderCode=this.dto.Response.display_name
+          this.storage.store('localgameCatName', this.dto.Response.name)
+          this.gameProviderCode = this.dto.Response.display_name
           if (this.dto.Response.isMaintenance == true) {
             this.gameMaintenanceSlot = true;
             this.getGameAlert(id.toString());
@@ -512,7 +534,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
           this.dto.Response = result;
           this.gamecatFishingList = this.dto.Response.gsGameList;
           this.gameProviderCodeName = this.dto.Response.name;
-          this.gameProviderCode =this.dto.Response.display_name;
+          this.gameProviderCode = this.dto.Response.display_name;
           if (this.dto.Response.isMaintenance == true) {
             this.gameMaintenanceFishing = true;
             this.getGameAlert(id.toString());
@@ -741,6 +763,7 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
 
   //add
   showPlayFreeDialog(data) {
+    this.storage.clear('notgetBal');
     this.common.gameLoading = true;
     this.spinner.show("gameLoading");
     if (!this.isUserLoggedIn) {
@@ -774,15 +797,17 @@ export class GamecategoryComponent implements OnInit, OnDestroy {
     }
   }
 
-   goBack() {
+  goBack() {
     if (this.deviceId != null) {
       this.router.navigate(['/home', this.deviceId]);
       return;
     }
-    this.router.navigate(['/home'])
+    this.router.navigate(['/home'],{state: {
+                    from: 'noinitial'
+                  },});
   }
 
-    refreshPageHeader() {
+  refreshPageHeader() {
     this.ngOnInit();
   }
 }

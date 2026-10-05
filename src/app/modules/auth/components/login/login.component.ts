@@ -20,6 +20,7 @@ import { LoginDeviceDialogComponent } from 'src/app/shared/dialog/login-device-d
 import { DOCUMENT, PlatformLocation } from '@angular/common';
 import { AppVersionService } from 'src/app/shared/service/app-version.service';
 declare var require: any;
+declare var window: any;
 
 @Component({
   selector: 'app-login',
@@ -67,6 +68,7 @@ export class LoginComponent implements OnInit {
   phoneErr: string = '';
   tg: any;
 
+
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
     this.isKeyboardVisible = window.innerHeight < window.innerWidth;
@@ -108,6 +110,12 @@ export class LoginComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    // if (window.Telegram?.initData) {
+    //   const initData = window.Telegram?.initData;
+    //   // if (initData) {
+    //   await this.telegramLogin(initData);
+    //   // }
+    // }
     this.storage.clear('localPhoneValue');
     this.versionService.currentVersion$.subscribe(v => {
       this.version = v;
@@ -132,6 +140,32 @@ export class LoginComponent implements OnInit {
     this.getIpAddress();
   }
 
+  // async telegramLogin(initData: string): Promise<void> {
+  //   this.common.submitLoading = true;
+  //   this.spinner.show("submitLoading");
+  //   try {
+  //     const res: any = await this.http.post(
+  //       this.funct.ipaddress + "tg/webappLogin",
+  //       { initData: initData }
+  //     ).toPromise();
+
+  //     if (res && res.token) {
+
+  //       this.storage.store("token", res.token);
+  //       this.storage.store("isUserLoggedIn", true);
+  //       this.token = res.token;
+  //     }
+
+  //   } catch (err) {
+
+  //     console.error(err);
+
+  //   } finally {
+
+  //     this.spinner.hide("submitLoading");
+  //     this.common.submitLoading = false;
+  //   }
+  // }
 
   updateFCMtoken() {
     var token = this.storage.retrieve('localFcmtoken');

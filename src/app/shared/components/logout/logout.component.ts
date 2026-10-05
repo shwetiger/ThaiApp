@@ -55,10 +55,14 @@ export class LogoutComponent implements OnInit {
     this.storage.store('token', this.dto.token);
     this.storage.store('isUserLoggedIn', this.util.isLogged);
     if (this.deviceId != null) {
-      this.router.navigate(['/home', this.deviceId], { replaceUrl: false });
+      this.router.navigate(['/home', this.deviceId], { state: {
+            from: 'noinitial'
+          }, replaceUrl: false });
       return;
     }
-    this.router.navigate(['/home'], { replaceUrl: false });
+    this.router.navigate(['/home'], { state: {
+            from: 'noinitial'
+          }, replaceUrl: false });
 
   }
 
@@ -76,7 +80,7 @@ export class LogoutComponent implements OnInit {
            this.tg.close();
         },
         error: (err) => {
-         console.log(JSON.stringify(err));
+          return;
          // this.doLogOut();
         }
       });

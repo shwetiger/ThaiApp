@@ -53,7 +53,7 @@
     }
   }
 
-  
+
 
   /*for denied*/
   .tranStatusDenied {
@@ -77,19 +77,19 @@
 
 .topup-submit-phone-card {
     height: 50px;
-    @include box-shadow; 
-    border-radius: 5px; 
-    margin: 2px 0px; 
+    @include box-shadow;
+    border-radius: 5px;
+    margin: 2px 0px;
    // align-items: baseline;
    // width :80px;
     .phone-service-card {
       display: flex;
       font-size: 13px;
       //justify-content: space-between;
-   
-      //padding: 8px 10px 0 10px;     
-     // border-radius: 6px;  
-      
+
+      //padding: 8px 10px 0 10px;
+     // border-radius: 6px;
+
       p {
         padding: 15px 0 0 0;
         font-weight: 600;
@@ -100,29 +100,29 @@
       }
       .service-contact {
         display: flex;
-      
+
         a {
           color: unset;
           text-align: center;
           text-decoration: none;
-        
+
           span {
             display: block;
             //position: relative;
             top: -5px;
           }
         }
-       
+
         .col-4 {
           height: 55px;
-          line-height: 50px;  
-          width: auto;  
-         // vertical-align: middle; 
+          line-height: 50px;
+          width: auto;
+         // vertical-align: middle;
         }
-        
+
       }
-        
-      
+
+
     }
   }
 
@@ -132,3 +132,32 @@
     border-radius: 5px;
    // margin-top:5px;
   }
+
+ .action-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;      /* icon နှစ်ခုကြားအကွာ */
+  margin: 20px 0;
+}
+
+.icon-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  gap: 4px;
+}
+
+.icon-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+.icon-label {
+  font-size: 12px;
+  color: #333;
+}

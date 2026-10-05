@@ -108,11 +108,12 @@
             <div class="title">
                 <span style="font-size: 17px;line-height: 1.7;"> {{notiDetailObj.title}}</span>
             </div>
-            <div class="" *ngIf="notilink==''">
+            <div class="" *ngIf="notilink==''" >
                 <div style="width: 100%" class="ql-editor" (click)="handleClick($event)"
                     [innerHTML]="getSanitizedContent(this.notiDetailObj.bodyForPushNoti)"
                     *ngIf="notiDetailObj.bodyForPushNoti!=null"></div>
             </div>
+
             <div class="noti__body" style="white-space: pre-line;text-align: center;" *ngIf="notilink!=''">
                 <span>{{linktext}}</span>
                 <a href="{{notilink}}"> {{notilink}} </a>
@@ -125,7 +126,7 @@
             <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
                 {{'noti_date' | translate}} {{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
             </div>
-            <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
+            <div *ngIf="notiDetailObj.sendTime==null" class="noti__date" style="font-weight: bold;">
                 {{'noti_date' | translate}} {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
             </div>
         </div>
@@ -239,10 +240,10 @@
             </div>
 
             <div *ngIf="notiDetailObj.sendTime!=null" class="noti__date">
-                {{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
+                <span>{{'date' | translate}}</span>&nbsp;{{notiDetailObj.sendTime | date:'dd/MM/yyyy hh:mm a'}}
             </div>
             <div *ngIf="notiDetailObj.sendTime==null" class="noti__date">
-                {{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
+                <span>{{'date' | translate}}</span>&nbsp;{{notiDetailObj.currentdate | date:'dd/MM/yyyy hh:mm a'}}
             </div>
 
         </div>

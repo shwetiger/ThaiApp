@@ -80,6 +80,7 @@ export class TwodBetFinalComponentPageComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
+    this.storage.clear('localstatus');
     this.userProfileModel = {
       balance: ""
     }
@@ -217,6 +218,7 @@ export class TwodBetFinalComponentPageComponent implements OnInit {
               this.common.submitLoading = false;
               this.spinner.hide("submitLoading");
               this.storage.clear('localNewBetTwodNumber');
+              this.storage.store('localstatus','success')
               this.router.navigate(['/twod/bet-success-unsuccess-page'], { state: { status: "success" }, replaceUrl: true })
             }
 

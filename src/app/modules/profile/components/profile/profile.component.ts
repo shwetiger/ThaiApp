@@ -34,6 +34,7 @@ export class ProfileComponent implements OnInit {
   isWebview: any;
   phoneNumber: any;
   total_points: any;
+  notificationEnabled: boolean = true;
 
   constructor(
     private handleErrorMessage: HandleErrorMessageService,
@@ -69,6 +70,7 @@ export class ProfileComponent implements OnInit {
     }
     else {
       this.getUserProfile();
+      this.getReceivepushnoti();
     }
     if (this.isWebview) {
       this.deviceId = "mobile";
@@ -78,6 +80,52 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+ toggleNotification(event: any) {
+  this.notificationEnabled = event.target.checked;
+  this.token = this.storage.retrieve('token');
+
+  const headers = new HttpHeaders({
+    Authorization: this.token
+  });
+
+  const body = {
+    receive_push_notifications: this.notificationEnabled
+  };
+
+  this.http.post(
+    this.funct.ipaddress + 'user/updateReceivePushNotifications',
+    body,
+    { headers: headers }
+  )
+  .pipe(
+    catchError(
+      this.handleErrorMessage.handleError.bind(this, '')
+    )
+  )
+  .subscribe(
+    result => {
+      this.common.refreshLoading = false;
+      this.spinner.hide('refreshLoading');
+    }
+  );
+}
+
+getReceivepushnoti(){
+    this.token = this.storage.retrieve('token');
+    let headers = new HttpHeaders();
+    headers = headers.set('Authorization', this.token);
+    this.http.get(this.funct.ipaddress + 'user/getReceivePushNotifications', { headers: headers })
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
+      )
+      .subscribe(
+        result => {
+          this.notificationEnabled=result.receive_push_notifications
+          this.common.refreshLoading = false;
+          this.spinner.hide("refreshLoading");
+        })
+}
+
   loginAccount() {
     if (this.deviceId != null) {
       this.router.navigate(['/login', this.deviceId], { state: { parentLink: "/me-page" }, replaceUrl: false });
@@ -85,6 +133,8 @@ export class ProfileComponent implements OnInit {
     }
     this.router.navigate(['/login'], { state: { parentLink: "/me-page" }, replaceUrl: false })
   }
+
+
 
   getUserProfile() {
     this.token = this.storage.retrieve('token');

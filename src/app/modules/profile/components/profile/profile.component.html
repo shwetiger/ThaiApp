@@ -179,6 +179,27 @@
                     </div>
                 </a>
             </li>
+            <!-- <li *ngIf="isUserLoggedIn">
+                <a class="item">
+                    <div class="imageWrapper">
+                        <img src="assets/img/icon/noti_active.png" alt="Notification" class="imaged w64">
+                    </div>
+
+                    <div class="in">
+                        <div>
+                            {{ 'notification' | translate }}
+                        </div>
+
+                        <label class="switch">
+                            <input type="checkbox" [(ngModel)]="notificationEnabled" (change)="toggleNotification($event)">
+
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </a>
+            </li> -->
+
+
             <li *ngIf="isUserLoggedIn">
                 <logout></logout>
             </li>

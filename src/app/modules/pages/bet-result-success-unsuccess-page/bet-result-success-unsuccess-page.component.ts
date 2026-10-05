@@ -25,11 +25,12 @@ export class BetResultSuccessUnsuccessPageComponent implements OnInit {
   ) {
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
-    this.status = history.state.status;
+   // this.status = history.state.status;
     this.type = history.state.type;
   }
 
   ngOnInit(): void {
+    this.status=this.storage.retrieve('localstatus');
   }
 
   openHomePage() {
@@ -39,25 +40,45 @@ export class BetResultSuccessUnsuccessPageComponent implements OnInit {
     this.storage.clear('localThreedDPage');
     if ((dream_book != null && dream_book != undefined) || threed == "quickSelect" || threed == "dreamBook") {
       if (this.type == 'threed') {
-       //history.go(-3);
-       //this.router.navigate(['/threed/bet'], { replaceUrl: true });
-       this.router.navigate(['/home'], { replaceUrl: true })
+        //history.go(-3);
+        //this.router.navigate(['/threed/bet'], { replaceUrl: true });
+         this.router.navigate(['/home'], {
+          state: {
+            from: 'noinitial'
+          },
+          replaceUrl: true
+        });
       }
       else {
         //this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
-          this.router.navigate(['/home'], { replaceUrl: true })
+        this.router.navigate(['/home'], {
+          state: {
+            from: 'noinitial'
+          },
+          replaceUrl: true
+        });
       }
     }
     else {
       this.storage.clear('localSelectTwoDList')
       if (this.type == 'threed') {
         //this.router.navigate(['/threed/bet'], { replaceUrl: false });
-         this.router.navigate(['/home'], { replaceUrl: true })
+         this.router.navigate(['/home'], {
+          state: {
+            from: 'noinitial'
+          },
+          replaceUrl: true
+        });
       }
       else {
         //history.go(-2);
         // this.router.navigate(['/twod/bet'], {state: {replaceUrl: false}});
-          this.router.navigate(['/home'], { replaceUrl: true })
+         this.router.navigate(['/home'], {
+          state: {
+            from: 'noinitial'
+          },
+          replaceUrl: true
+        });
       }
     }
   }

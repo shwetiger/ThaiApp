@@ -15,6 +15,8 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 import { UtilService } from 'src/app/shared/service/util.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 declare var require: any;
+declare var window: any;
+
 @Component({
   selector: 'password-reset',
   templateUrl: './password-reset.component.html',
@@ -97,7 +99,12 @@ export class PasswordResetComponent implements OnInit {
     }
     let headers = new HttpHeaders();
     this.prefix = this.storage.retrieve('localPhonePrefix');
+     if (window.Telegram?.WebApp.initData) {
+      this.phoneValue = this.storage.retrieve('tglocalphone');
+       this.phoneValue = '0' + this.phoneValue.substring(3);
+    } else {
     this.phoneValue = this.storage.retrieve('localPhoneValue');
+    }
     var phoneNumber;
     if (this.phoneValue.startsWith('0')) {
       phoneNumber = this.prefix + this.phoneValue.substring(1, this.phoneValue.length);

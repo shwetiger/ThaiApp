@@ -13,7 +13,7 @@ export class AppbarComponent {
   @Output() myEvent = new EventEmitter();
   @Input() rootLevel=1;
   @Input() parentLink:string;
-  @Input() backUrl?: string;  
+  @Input() backUrl?: string;
   isClose = false;
   private history: string[] = []
   threedsuccessback:boolean=false;
@@ -47,7 +47,9 @@ export class AppbarComponent {
     } else if (window.history.length > 1) {
       this._location.back();
     } else {
-      this.router.navigate(['/home']);
+        this.router.navigate(['/home'],{state: {
+                    from: 'noinitial'
+                  },});
     }
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, ContentChild, ElementRef, ViewContainerRef, Injectable, Input, Output, EventEmitter } from '@angular/core';
-import { HttpClient, HttpHeaders ,HttpErrorResponse} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 
@@ -16,6 +16,7 @@ import { throwError } from 'rxjs';
 import { HandleErrorMessageService } from '../../service/handle-error-message.service';
 import { CommonService } from '../../service/common.service';
 import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
+declare var window: any;
 
 
 @Component({
@@ -28,16 +29,16 @@ import { ZawgyiDetector } from '@myanmartools/ng-zawgyi-detector';
 })
 export class AppPhonePickerComponent implements OnInit {
 
-  supportLanguages = ['en','my','th','zh'];
-  phone_no : any;
-  regExpressionList :any;
+  supportLanguages = ['en', 'my', 'th', 'zh'];
+  phone_no: any;
+  regExpressionList: any;
   registerCountryCode: any;
   CountryCodeActive: any;
   selectedIndex: any;
-  imageUrl= "assets/img/my_flag.png";
-  @Input() prefix= "";
+  imageUrl = "assets/img/my_flag.png";
+  @Input() prefix = "";
   localRegisterCountryCode: any;
-  regularExpression= "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";//'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$';//'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$';
+  regularExpression = "^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";//'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$';//'^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$';
   activeLang: any;
   @Input() phoneValue = "";
   @Input() regularExpressionPhone = '';
@@ -62,18 +63,23 @@ export class AppPhonePickerComponent implements OnInit {
     private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private readonly _zawgyiDetector: ZawgyiDetector)
-    {
+    private readonly _zawgyiDetector: ZawgyiDetector) {
 
-   }
+  }
 
 
   async ngOnInit(): Promise<void> {
-    this.prefix= "+95";
-    if(this.storage.retrieve('localPhonePrefix') ==null){
-      this.storage.store('localPhonePrefix',this.prefix);
+    this.prefix = "+95";
+    if (this.storage.retrieve('localPhonePrefix') == null) {
+      this.storage.store('localPhonePrefix', this.prefix);
     }
-    this.phoneValue=this.storage.retrieve('localPhoneValue');
+    if (window.Telegram?.WebApp.initData) {
+      this.phoneValue = this.storage.retrieve('tglocalphone');
+      this.phoneValue = '0' + this.phoneValue.substring(3);
+    }
+    else {
+      this.phoneValue = this.storage.retrieve('localPhoneValue');
+    }
     this.loginModel = {
       phone_no: '',
       password: '',
@@ -84,128 +90,123 @@ export class AppPhonePickerComponent implements OnInit {
     }
     this.translateService.addLangs(this.supportLanguages);
 
-    if(this.storage.retrieve('localLanguage') == null || this.storage.retrieve('localLanguage') == '')
-    {
+    if (this.storage.retrieve('localLanguage') == null || this.storage.retrieve('localLanguage') == '') {
       this.storage.store('localLanguage', 'en');
-      this.activeLang=this.storage.store('localLanguage', 'en');
+      this.activeLang = this.storage.store('localLanguage', 'en');
 
     }
-    else{
+    else {
       this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
-      this.activeLang=this.storage.retrieve('localLanguage');
+      this.activeLang = this.storage.retrieve('localLanguage');
 
     }
-     await this.getRegisterCountryCode();
-      var localpre=this.storage.retrieve('localPhonePrefix');
-      if(localpre == null){
-        this.selectedIndex = 0;
-      }else{
-           this.selectedIndex = 0;
-           if(this.registerCountryCode !=null && this.registerCountryCode !=undefined){
-            for(let j=0;j< this.registerCountryCode.length;j++){
-              if((this.registerCountryCode[j].prefix == localpre) && j== 0){
+    await this.getRegisterCountryCode();
+    var localpre = this.storage.retrieve('localPhonePrefix');
+    if (localpre == null) {
+      this.selectedIndex = 0;
+    } else {
+      this.selectedIndex = 0;
+      if (this.registerCountryCode != null && this.registerCountryCode != undefined) {
+        for (let j = 0; j < this.registerCountryCode.length; j++) {
+          if ((this.registerCountryCode[j].prefix == localpre) && j == 0) {
 
-                return;
-              }
-              if((this.registerCountryCode[j].prefix == localpre) && j>0){
+            return;
+          }
+          if ((this.registerCountryCode[j].prefix == localpre) && j > 0) {
 
-                this.selectedIndex= j;
-                return;
-              }
-             }
-           }
-
+            this.selectedIndex = j;
+            return;
+          }
+        }
       }
 
-      this.regularExpressionPhoneChange.emit(this.regularExpression);
-      this.prefixChange.emit(this.prefix);
-      if(this.registerCountryCode !=null){
-        if (this.registerCountryCode.length > 0) {
-          this.prefix= this.registerCountryCode[this.selectedIndex].prefix;
-          this.imageUrl= this.registerCountryCode[this.selectedIndex].imageUrl;
-          this.regularExpression = this.registerCountryCode[this.selectedIndex].regularExpression
+    }
+
+    this.regularExpressionPhoneChange.emit(this.regularExpression);
+    this.prefixChange.emit(this.prefix);
+    if (this.registerCountryCode != null) {
+      if (this.registerCountryCode.length > 0) {
+        this.prefix = this.registerCountryCode[this.selectedIndex].prefix;
+        this.imageUrl = this.registerCountryCode[this.selectedIndex].imageUrl;
+        this.regularExpression = this.registerCountryCode[this.selectedIndex].regularExpression
 
       }
-      }
+    }
 
   }
-   handleError(error: HttpErrorResponse){
+  handleError(error: HttpErrorResponse) {
 
-    if(error.status == 0){
+    if (error.status == 0) {
       this.toastr.error("", 'check your internet connection', {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
+      });
     }
 
-    if(error.status == 423)
-    {
+    if (error.status == 423) {
       this.toastr.error("", this.translateService.instant("youNeedLogin"), {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
-        this.storage.clear('token');
-        this.storage.clear('isUserLoggedIn');
+      });
+      this.storage.clear('token');
+      this.storage.clear('isUserLoggedIn');
     }
-    if(error.status == 400)
-    {
-       this.toastr.error("Bad request.", 'Invalid!', {
+    if (error.status == 400) {
+      this.toastr.error("Bad request.", 'Invalid!', {
         timeOut: 3000,
         positionClass: 'toast-top-center',
-        });
+      });
     }
     return throwError(error);
-    }
-  changeRegisterCountryCode(){
-      this.prefix=this.registerCountryCode[this.selectedIndex].prefix;
-      this.imageUrl = this.registerCountryCode[this.selectedIndex].imageUrl;
-      this.regularExpression = this.registerCountryCode[this.selectedIndex].regularExpression;
-      this.regularExpressionPhoneChange.emit(this.regularExpression);
-      this.prefixChange.emit(this.prefix);
-      this.phoneValueChange.emit(this.phoneValue);
-      this.storage.store('localPhonePrefix',this.prefix);
+  }
+  changeRegisterCountryCode() {
+    this.prefix = this.registerCountryCode[this.selectedIndex].prefix;
+    this.imageUrl = this.registerCountryCode[this.selectedIndex].imageUrl;
+    this.regularExpression = this.registerCountryCode[this.selectedIndex].regularExpression;
+    this.regularExpressionPhoneChange.emit(this.regularExpression);
+    this.prefixChange.emit(this.prefix);
+    this.phoneValueChange.emit(this.phoneValue);
+    this.storage.store('localPhonePrefix', this.prefix);
 
-    }
+  }
   selectedRegisterCountryCode(index: number) {
 
-      this.selectedIndex = index;
-      this.changeRegisterCountryCode();
-    }
+    this.selectedIndex = index;
+    this.changeRegisterCountryCode();
+  }
   getRegisterCountryCode() {
-      let headers = new HttpHeaders();
-      this.registerCountryCode = [];
+    let headers = new HttpHeaders();
+    this.registerCountryCode = [];
+    this.registerCountryCode = this.storage.retrieve('localRegisterCountryCode');
+
+    if (this.registerCountryCode != null) {
       this.registerCountryCode = this.storage.retrieve('localRegisterCountryCode');
 
-      if(this.registerCountryCode != null)
-      {
-        this.registerCountryCode = this.storage.retrieve('localRegisterCountryCode');
-
-      }
-      this.http.get(this.funct.ipaddress + 'registerPhone/getRegisterPhoneMobileList', { headers: headers })
+    }
+    this.http.get(this.funct.ipaddress + 'registerPhone/getRegisterPhoneMobileList', { headers: headers })
       .pipe(
-          catchError(this.handleError.bind(this))
-        )
+        catchError(this.handleError.bind(this))
+      )
       .subscribe(
         result => {
           this.dto.Response = {};
           this.dto.Response = result;
           this.registerCountryCode = this.dto.Response;
-          let _prefix=this.storage.retrieve('localPhonePrefix');
+          let _prefix = this.storage.retrieve('localPhonePrefix');
           this.registerCountryCode.forEach(element => {
-            if(element.prefix == _prefix){
-              this.prefix=element.prefix;
-              this.imageUrl=element.imageUrl;
+            if (element.prefix == _prefix) {
+              this.prefix = element.prefix;
+              this.imageUrl = element.imageUrl;
             }
-         });
-          this.storage.store('localRegisterCountryCode',  this.registerCountryCode);
+          });
+          this.storage.store('localRegisterCountryCode', this.registerCountryCode);
 
         }
       );
-    }
-  checkPhoneNumber()
-  {
+  }
+  checkPhoneNumber() {
 
-    this.common.submitLoading= false;
+    this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
 
     $("#phoneErr").html("");
@@ -213,35 +214,34 @@ export class AppPhonePickerComponent implements OnInit {
     this.phoneValueChange.emit(this.phoneValue);
     $("#phoneErr").html("");
     this.storage.store('localPhoneValue', this.phoneValue);
-    if(this.phoneValue.length==0)
-    {
-     var phoneRequired = this.translateService.instant("requiredFiled");
-     phoneRequired =  phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
-        $("#phoneErr").html(phoneRequired);
+    if (this.phoneValue.length == 0) {
+      var phoneRequired = this.translateService.instant("requiredFiled");
+      phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
+      $("#phoneErr").html(phoneRequired);
       return false;
     }
     const result = this._zawgyiDetector.detect(this.phoneValue);
     if (result.detectedEnc === 'zg') {
-        $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
-        return false;
+      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
+      return false;
     } else if (result.detectedEnc === 'uni') {
-        $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
-        return false;
+      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
+      return false;
     }
-    if(prefix == "+95"){
+    if (prefix == "+95") {
 
-      if(!this.phoneValue.startsWith("0")){
-       var checkNumber = this.translateService.instant("not-allowed-phone");
-       checkNumber= checkNumber.toString().replace("@number","09");
+      if (!this.phoneValue.startsWith("0")) {
+        var checkNumber = this.translateService.instant("not-allowed-phone");
+        checkNumber = checkNumber.toString().replace("@number", "09");
         $("#phoneErr").html(checkNumber);
         return false;
       }
 
     }
-    if(prefix == "+66"){
-      if(!this.phoneValue.startsWith("0")){
-       var checkNumber = this.translateService.instant("not-allowed-phone");
-       checkNumber= checkNumber.toString().replace("@number","06, 08, 09");
+    if (prefix == "+66") {
+      if (!this.phoneValue.startsWith("0")) {
+        var checkNumber = this.translateService.instant("not-allowed-phone");
+        checkNumber = checkNumber.toString().replace("@number", "06, 08, 09");
         $("#phoneErr").html(checkNumber);
         return false;
       }
@@ -249,13 +249,12 @@ export class AppPhonePickerComponent implements OnInit {
     let pattern = RegExp(this.regularExpressionPhone);// /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/;
 
     if (!pattern.test(this.phoneValue)) {
-       $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
-       return false;
+      $("#phoneErr").html(this.translateService.instant("phoneInvaild"));
+      return false;
     }
     return true;
   }
-  enter(event)
-  {
+  enter(event) {
     event.target.blur();
   }
 }

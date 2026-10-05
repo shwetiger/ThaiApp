@@ -37,7 +37,9 @@ export class NotRefreshAppbarComponent implements OnInit {
     } else if (window.history.length > 1) {
       this._location.back();
     } else {
-      this.router.navigate(['/home']);
+      this.router.navigate(['/home'],{state: {
+                    from: 'noinitial'
+                  },});
     }
   }
 

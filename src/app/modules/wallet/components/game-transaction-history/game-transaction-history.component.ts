@@ -48,6 +48,9 @@ export class GameTransactionHistoryComponent implements OnInit {
   isTopupTab = false;
   gametopuptab: any;
   gamewithdrawaltab: any;
+  isGameTopupTabDisable = false;
+  isGameWithdrawalTabDisable = false;
+  isRefreshDisabled = false;
 
   constructor(
     private spinner: NgxSpinnerService,
@@ -66,11 +69,14 @@ export class GameTransactionHistoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.storage.clear('reqObj');
+    this.storage.clear('typeOfPage');
+    this.storage.clear('typeOftrans')
     this.historyGame = true;
     this.historyMain = false;
     this.gametopuptab = true;
     this.gamewithdrawaltab = false;
-    // this.isTopupTab = true;
+    this.isTopupTab = true;
     // this.isWithdrawalTab = false;
     // this.gameTopup = true;
     // this.gameWithdrawal = false;
@@ -85,7 +91,7 @@ export class GameTransactionHistoryComponent implements OnInit {
       else {
         this.gametopuptab = true;
         this.gamewithdrawaltab = false;
-        this.type='DEPOSIT';
+        this.type = 'DEPOSIT';
         this.getTopupGameTransactionHistory(this.pageNumber, 'DEPOSIT')
       }
     }
@@ -109,6 +115,12 @@ export class GameTransactionHistoryComponent implements OnInit {
   }
 
   refreshPage(): void {
+
+    if (this.isRefreshDisabled) {
+      return;
+    }
+
+    this.isRefreshDisabled = true;
     if (this.isWithdrawalTab == true) {
       this.gameWithdrawal = true;
       this.gameTopup = false;
@@ -121,6 +133,9 @@ export class GameTransactionHistoryComponent implements OnInit {
       this.type = 'DEPOSIT';
       this.getTopupGameTransactionHistory(0, this.type);
     }
+    setTimeout(() => {
+      this.isRefreshDisabled = false;
+    }, 1000);
   }
 
   handleError(error: HttpErrorResponse) {
@@ -296,6 +311,9 @@ export class GameTransactionHistoryComponent implements OnInit {
   }
 
   viewDetail(tranObj, typeOfPage) {
+    this.storage.store('reqObj', tranObj);
+    this.storage.store('typeOfPage', typeOfPage);
+    this.storage.store('typeOftrans', 'gametrans')
     this.router.navigate(['/wallet/transaction-history-detail'], { state: { tranObj: tranObj, typeOfPage: 1 }, replaceUrl: false });
   }
 
@@ -305,14 +323,30 @@ export class GameTransactionHistoryComponent implements OnInit {
   }
 
   Gotogametopup() {
+    if (this.isGameTopupTabDisable) {
+      return;
+    }
+    this.isGameTopupTabDisable = true;
     this.gametopuptab = true;
     this.gamewithdrawaltab = false;
     this.getTopupGameTransactionHistory(this.pageNumber, 'DEPOSIT')
+    setTimeout(() => {
+      this.isGameTopupTabDisable = false;
+    }, 1000);
   }
+
   Gotogamewithdrawal() {
+
+    if (this.isGameWithdrawalTabDisable) {
+      return;
+    }
+    this.isGameWithdrawalTabDisable = true;
     this.gamewithdrawaltab = true;
     this.gametopuptab = false;
     this.getGameWithdrawTransactionHistory(this.pageNumber, 'WITHDRAWAL')
+    setTimeout(() => {
+      this.isGameWithdrawalTabDisable = false;
+    }, 1000);
   }
 
   getTopupGameTransactionHistorytab(pageNumber, type) {

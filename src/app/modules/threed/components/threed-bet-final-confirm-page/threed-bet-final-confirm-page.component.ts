@@ -70,6 +70,7 @@ export class ThreedBetFinalConfirmPageComponent implements OnInit {
   ngOnInit(): void {
     this.common.refreshLoading = false;
     this.spinner.hide("refreshLoading");
+    this.storage.clear('localstatus');
     this.getBalance();
     this.totalBetAmount();
     this.userProfileModel = {
@@ -182,6 +183,7 @@ export class ThreedBetFinalConfirmPageComponent implements OnInit {
             if (this.dto.Response.status == "Success") {
               this.storage.clear('localNewBetThreedNumber');
               sessionStorage.setItem('rootUrl', "/threed-bet");
+              this.storage.store('localstatus','success')
               this.router.navigate(['/threed/bet-success-unsuccess-page'], { state: { status: "success", type: 'threed' }, replaceUrl: true })
             }
           });

@@ -2,6 +2,7 @@
 #appCapsule {
     background-color: #fff !important;
     padding-top: 0px !important;
+    margin-top: 20px !important;
     overflow-x: hidden;
 }
 .card .card-body {
@@ -17,7 +18,7 @@
     margin-right: 10px;
 }
 
- 
+
 p.text-success.successMsg
 {
     color : green;
@@ -34,7 +35,7 @@ p.text-success.successMsg
     width: 50px;
     height: 50px;
 }
-@media screen and (max-width: 400px) {     
+@media screen and (max-width: 400px) {
     .game_transfer_img {
         width: 40px !important;
         height: 40px !important;

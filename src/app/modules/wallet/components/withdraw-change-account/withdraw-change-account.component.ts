@@ -29,7 +29,6 @@ export class WithdrawChangeAccountComponent implements OnInit {
   withdrawaldeleteList:any;
   bankaccounteditmodel:any;
   editName:any;
-//@ViewChild('withdrawaldelete', { static: true }) myTemplateRef!: TemplateRef<any>;
 
   constructor(
     private modalService: BsModalService,
@@ -43,7 +42,6 @@ export class WithdrawChangeAccountComponent implements OnInit {
     private storage: LocalStorageService,
     private funct: FunctService,
     private _location: Location,) {
-
     }
 
   ngOnInit(): void {
@@ -104,16 +102,14 @@ export class WithdrawChangeAccountComponent implements OnInit {
       );
     }
 }
-  handleError(error: HttpErrorResponse){
 
+  handleError(error: HttpErrorResponse){
     if(error.status == 0){
       this.toastr.error("", 'check your internet connection', {
         timeOut: 3000,
         positionClass: 'toast-top-center',
         });
     }
-
-
 
     if(error.status == 423)
     {
@@ -142,6 +138,7 @@ export class WithdrawChangeAccountComponent implements OnInit {
           });
 
       }
+
     if(error.status == 400)
     {
        this.toastr.error("Bad request.", 'Invalid!', {
@@ -151,7 +148,6 @@ export class WithdrawChangeAccountComponent implements OnInit {
     }
     return throwError(error);
   }
-
 
   getMyWithdrawAccounts()
   {
@@ -170,56 +166,17 @@ export class WithdrawChangeAccountComponent implements OnInit {
       );
   }
 
-  // checkwithdrawDelete(payment_id: any,bank_acc_id: any,withdrawaldelete: TemplateRef<any>){
-  //   this.currentpaymentid=payment_id;
-  //   this.currentbankaccid=bank_acc_id;
-  //   this.token = this.storage.retrieve('token');
-  //   let headers = new HttpHeaders();
-  //   let params = new HttpParams();
-  //   headers = headers.set('Authorization', this.token);
-  //  // this.withdrawaldelete.hide();
-  //   params = params.set("paymentId",payment_id).set("bank_acc_id", bank_acc_id);
-  //   this.http.get( this.funct.ipaddress+'userbankaccount/checkuserbankaccount-byPaymentId',{ params:params,headers: headers })
-  //     .pipe(
-
-  //       catchError(this.handleError.bind(this))
-  //    )
-  //     .subscribe(
-  //       result => {
-  //         this.dto.Response = result;
-  //         this.withdrawaldeleteList=this.dto.Response;
-  //         if (this.withdrawaldeleteList=='') {
-
-  //             this.toastr.error("", this.translateService.instant("withdraw_delete_fail"), {
-  //              timeOut: 3000,
-  //              positionClass: 'toast-top-center',
-  //              });
-
-  //           return;
-  //         }
-  //         else{
-  //          // var template = document.getElementById('withdrawaldelete') as HTMLTemplateElement;
-  //           this.withdrawalModel(this.currentpaymentid,this.currentbankaccid,withdrawaldelete)
-  //         }
-
-  //       }
-  //     );
-
-  // }
 
   withdrawDelete()
   {
     this.withdrawalBankAccDelete.payment_id= this.currentpaymentid
     this.withdrawalBankAccDelete.bank_acc_id= this.currentbankaccid;
-
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
-    let params = new HttpParams();
     headers = headers.set('Authorization', this.token);
     this.withdrawaledit.hide();
     this.http.post( this.funct.ipaddress+'userbankaccount/deleteuserBankAccount',this.withdrawalBankAccDelete, { headers: headers })
       .pipe(
-
         catchError(this.handleError.bind(this))
      )
       .subscribe(
@@ -230,26 +187,26 @@ export class WithdrawChangeAccountComponent implements OnInit {
             this.getMyWithdrawAccounts();
             return;
           }
-
         }
       );
-
   }
+
   withdrawAdd()
   {
     this.router.navigate(['/wallet/withdraw', 'add'],{replaceUrl: false});
   }
+
   changeBankAccount(id: any)
-   {
+  {
     this.router.navigate(['/wallet/withdraw'], {state: {bank_account_id: id},replaceUrl:true});
     this._location.back();
   }
+
   goBack(){
     this._location.back();
   }
 
   withdrawalModel(bankAccObj,withdrawaldelete: TemplateRef<any>){
-
     this.bankaccounteditmodel=bankAccObj;
     this.editName=bankAccObj.account_name;
     this.withdrawaledit=this.modalService.show(withdrawaldelete,
@@ -259,33 +216,27 @@ export class WithdrawChangeAccountComponent implements OnInit {
         keyboard: false
       });
   }
+
   HidelogoutModel(){
     this.editName='';
     this.withdrawaledit.hide();
-   // this.withdrawaldelete.hide();
   }
 
   checkInput(event: Event) {
   const input = event.target as HTMLInputElement;
-
   let charArray = Array.from(input.value);
-
   if (charArray.length > 25) {
     charArray = charArray.slice(0, 25);
   }
-
   const newValue = charArray.join('');
-
   this.editName = newValue;
-  input.value = newValue; // IME / paste case fix
-
+  input.value = newValue;
   this.updateNameError(charArray.length);
 }
 
 checkKey(event: KeyboardEvent) {
   const input = event.target as HTMLInputElement;
   const charArray = Array.from(input.value);
-
   const allowedKeys = [
     'Backspace','Delete',
     'ArrowLeft','ArrowRight','ArrowUp','ArrowDown',

@@ -73,12 +73,19 @@ export class FeedbackPageComponent implements OnInit {
     this.elementRef.nativeElement.remove();
   }
 
+  // validation() {
+  //   this.requiredForm = this.fb.group({
+  //     title: ['', Validators.required],
+  //     description: ['', Validators.required],
+  //   });
+  // }
+
   validation() {
-    this.requiredForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-    });
-  }
+  this.requiredForm = this.fb.group({
+    title: ['', [Validators.required, Validators.pattern(/\S+/)]],
+    description: ['', [Validators.required, Validators.pattern(/\S+/)]],
+  });
+}
 
   titleRequired() {
     let title = this.translateService.instant("requiredFiled");
@@ -92,9 +99,18 @@ export class FeedbackPageComponent implements OnInit {
     return descri;
   }
 
-  cancel() {
-    this.feedbackModel.description ='';
-  }
+ @ViewChild('descriptionInput') descriptionInput!: ElementRef<HTMLTextAreaElement>;
+
+cancel() {
+  this.requiredForm.get('description')?.setValue('');
+
+  const textarea = this.descriptionInput.nativeElement;
+  textarea.value = '';
+  textarea.focus();
+  textarea.blur();
+}
+
+
 
   containsSpecialCharacters(str) {
     var pattern = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;

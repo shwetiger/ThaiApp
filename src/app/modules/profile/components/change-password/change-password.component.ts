@@ -57,7 +57,11 @@ export class ChangePasswordComponent implements OnInit {
     if (myanmarRegex.test(this.password)) {
       this.password = this.password.slice(0, -1);
     }
-    if (this.password.trim() == '' || this.password.trim() == undefined || this.password.trim() == null) {
+    if (this.password == undefined) {
+      $(".passError1").html(this.translateService.instant("curretPassisRequired"));
+      return false;
+    }
+    if (this.password.trim() == '' || this.password.trim() == null) {
       $(".passError1").html(this.translateService.instant("curretPassisRequired"));
       return false;
     }
@@ -76,7 +80,11 @@ export class ChangePasswordComponent implements OnInit {
     if (myanmarRegex.test(this.newPassword)) {
       this.newPassword = this.newPassword.slice(0, -1);
     }
-    if (this.newPassword.trim() == '' || this.newPassword.trim() == undefined || this.newPassword.trim() == null) {
+    if (this.newPassword == undefined) {
+      $(".passError2").html(this.translateService.instant("newPassisRequired"));
+      return false;
+    }
+    if (this.newPassword.trim() == '' || this.newPassword.trim() == null) {
       $(".passError2").html(this.translateService.instant("newPassisRequired"));
       return false;
     }
@@ -109,7 +117,11 @@ export class ChangePasswordComponent implements OnInit {
     if (myanmarRegex.test(this.confirmPassword)) {
       this.confirmPassword = this.confirmPassword.slice(0, -1);
     }
-    if (this.confirmPassword.trim() == '' || this.confirmPassword.trim() == undefined || this.confirmPassword.trim() == null) {
+    if (this.confirmPassword == undefined) {
+      $(".passError3").html(this.translateService.instant("confirmPassLength"));
+      return false;
+    }
+    if (this.confirmPassword.trim() == '' || this.confirmPassword.trim() == null) {
       $(".passError3").html(this.translateService.instant("confirmPassLength"));
       return false;
     }
@@ -171,7 +183,7 @@ export class ChangePasswordComponent implements OnInit {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
     }
     if (error.status == 400) {
       this.toastr.error(this.translateService.instant("current_password_wrong"), '', {

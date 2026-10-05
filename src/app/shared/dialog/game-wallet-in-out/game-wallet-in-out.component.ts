@@ -32,6 +32,8 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
   password_error_message: any;
   gameproviderlist: any;
   isAmountInvalid = false;
+
+
   constructor(
     private dto: DtoService,
     private toastr: ToastrService,
@@ -47,14 +49,14 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.storage.clear('notgetBal');
     this.depositModel = {
       "transferAmount": '',
       "password": '',
       "providerId": ""
     }
+
     this.gameType = this.data.tranfer;
-
-
     if (this.gameType == "in") {
       this.title = this.translateService.instant("main_wallet_tranfer");
       this.title = this.title.replace("@name", this.data.list.display_name);
@@ -87,13 +89,11 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
 
   checkPassword() {
     const myanmarRegex = /[\u1000-\u109F]/;
-
     if (myanmarRegex.test(this.depositModel.password)) {
       this.depositModel.password = this.depositModel.password.slice(0, -1);
     }
     this.password_error_message = "";
     if (this.depositModel.password.length > 20) {
-      // $("#passwordErr").html("Password must be maximum 20 digit or characters");
       this.password_error_message = this.translateService.instant("charlength");
       return false;
     }
@@ -117,12 +117,6 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
 
   checkAmount() {
     this.amount_error_message = "";
-    // const myanmarRegex = /[\u1000-\u109F]/;
-    // if (myanmarRegex.test(this.depositModel.transferAmount)) {
-    //   this.isAmountInvalid = true;
-    //   this.depositModel.transferAmount= this.depositModel.transferAmount.slice(0, -1);
-    // }
-
     if (this.depositModel.transferAmount == '' || this.depositModel.transferAmount == null || this.depositModel.transferAmount == undefined) {
       var amountRequired = this.translateService.instant("requiredFiled");
       amountRequired = amountRequired.toString().replace("@value", this.translateService.instant("amount"));
@@ -199,12 +193,6 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
       return;
     }
     if (error.status == 307) {
-
-      // this.toastr.error("", 'Going to perform an online maintenance Withdraw API is DISABLED temporarily', {
-      //   timeOut: 1000,
-      //   positionClass: 'toast-top-center',
-      //   });
-
       this.toastr.error("", this.translateService.instant("gametransferwait"), {
         timeOut: 1000,
         positionClass: 'toast-top-center',
@@ -251,16 +239,10 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
       });
       return;
     }
-    // this.toastr.error("", error.status.toString(), {
-    //   timeOut: 3000,
-    //   positionClass: 'toast-top-center',
-    //   });
-    //   return;
-    //return throwError(error);
+
   }
 
   transfer() {
-
     let amountCheck = this.checkAmount();
     let pwdCheck = this.checkPassword();
     if (!pwdCheck || !amountCheck) {
@@ -270,20 +252,8 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
     this.depositModel.providerId = this.data.list.providerId.toString();
-
     this.loadingSubmiting = true;
     this.spinner.show('loadingSubmiting');
-    // this.getGameProviderList();
-    // var checkmaintenance = this.gameproviderlist.find(x=>(x.id == parseInt(this.depositModel.providerId)));
-    // if(checkmaintenance.isMaintenance == true)
-    // {
-    //     this.toastr.error("", this.translateService.instant("transfer_maintenance_alert"), {
-    //       timeOut: 3000,
-    //       positionClass: 'toast-top-center',
-    //     });
-    //     return;
-    // }
-    // else{
     if (this.gameType == 'in') {
       var gameIn = this.translateService.instant("game_from");
       gameIn = gameIn.toString().replace("@wallet", this.translateService.instant("main_wallet"));
@@ -332,7 +302,7 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
                 this.storage.store("transferAmount", this.depositModel.transferAmount);
                 this.data.gameWalletTransfer = this.storage.retrieve("localGameWalletTransfer");
                 if ((this.data.gameWalletTransfer != null || this.data.gameWalletTransfer != undefined) && this.data.gameWalletTransfer == "Wallet") {
-                  this.router.navigate(["/game/deposit-success", '200'], { replaceUrl: false });
+                  this.router.navigate(["/game/deposit-success", '200'], { replaceUrl: true });
                 }
                 else {
                   this.router.navigate(["/game/deposit-success", '200'], { replaceUrl: true });
@@ -377,14 +347,15 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
               }
 
               if (this.dto.Response.errMsg == 'SUCCESS') {
+               // this.storage.store('localCategorydata',this.data);
                 this.bsModalRef.hide();
                 this.storage.store("transferAmount", this.depositModel.transferAmount);
                 this.data.gameWalletTransfer = this.storage.retrieve("localGameWalletTransfer");
                 if ((this.data.gameWalletTransfer != null || this.data.gameWalletTransfer != undefined) && this.data.gameWalletTransfer == "Wallet") {
-                  this.router.navigate(["/game/deposit-success", '200'], { replaceUrl: false });
+                  this.router.navigate(["/game/deposit-success", '200'], { replaceUrl: true });
                 }
                 else {
-                  this.router.navigate(["/game/deposit-success", '200'], { replaceUrl: true });
+                  this.router.navigate(["/game/deposit-success", '200'], { replaceUrl: true, skipLocationChange: true});
                 }
 
                 return;
@@ -540,7 +511,6 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
     else {
       return;
     }
-
   }
 
   enter(event) {
@@ -566,14 +536,6 @@ export class GameWalletInOutComponent implements OnInit, OnDestroy {
         }
       );
   }
-
-  // onAmountInput(event: Event): void {
-  //   const inputElement = event.target as HTMLInputElement;
-  //   let currentValue = inputElement.value;
-  //   currentValue = currentValue.replace('.', '');
-  //   inputElement.value = currentValue;
-
-  // }
 
  onAmountInput(event: Event): void {
   const input = event.target as HTMLInputElement;

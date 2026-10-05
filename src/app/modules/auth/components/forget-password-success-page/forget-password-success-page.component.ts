@@ -45,7 +45,7 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
     private funct: FunctService,
     private location: Location,
     private common: CommonService) {
-    this.oldLoginModel= this.storage.retrieve('forgetPasswordModel');
+    this.oldLoginModel = this.storage.retrieve('forgetPasswordModel');
   }
 
   async ngOnInit(): Promise<void> {
@@ -83,7 +83,7 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
     }
 
     if (error.status == 406) {
@@ -139,11 +139,17 @@ export class ForgetPasswordSuccessPageComponent implements OnInit {
               var successBack = this.storage.retrieve('localForgetPasswordSuccess');
               if (successBack != null && successBack != undefined) {
                 this.storage.clear('localForgetPasswordSuccess');
-                this.router.navigate(['/home'], { replaceUrl: true })
+                this.router.navigate(['/home'], {
+                  state: {
+                    from: 'noinitial'
+                  }, replaceUrl: true
+                })
               }
               else {
                 this.storage.clear('localForgetPasswordSuccess');
-                  this.router.navigate(['/home'], { replaceUrl: true })
+                this.router.navigate(['/home'], { state: {
+                    from: 'noinitial'
+                  }, replaceUrl: true })
               }
             }
           }

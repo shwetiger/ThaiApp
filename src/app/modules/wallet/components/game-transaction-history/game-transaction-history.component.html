@@ -16,12 +16,12 @@
     </ul>
   </div>
   <div class="row mt-5 ml-2 mr-2">
-    <div [ngClass]="gametopuptab? 'header-active':'header'" (click)='Gotogametopup()'
+    <div [ngClass]="gametopuptab? 'header-active':'header'" (click)="!isGameTopupTabDisable && Gotogametopup()"
         style="padding-top: 5px;display: flex;padding-right: 5px;">
         <span [ngStyle]="gametopuptab?{'color': '#2253A2'} : {'color': 'black'}"
             class="d-flex justify-content-center pt-1 mt-1">{{'toup_history' | translate}}</span>
     </div>
-    <div [ngClass]="gamewithdrawaltab? 'header-active':'header'" (click)='Gotogamewithdrawal()'
+    <div [ngClass]="gamewithdrawaltab? 'header-active':'header'" (click)='!isGameWithdrawalTabDisable && Gotogamewithdrawal()'
         style="padding-top: 5px;display: flex;padding-right: 0px  !important">
         <span [ngStyle]="gamewithdrawaltab?{'color': '#2253A2'} : {'color': 'black'}"
             class="d-flex justify-content-center pt-1 mt-1 ">{{'withdrawal_history' | translate}}</span>

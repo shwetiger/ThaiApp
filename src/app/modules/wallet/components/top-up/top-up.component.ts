@@ -66,7 +66,6 @@ export class TopUpComponent implements OnInit {
     ];
     this.getPaymentMethoded();
     this.getUserProfile();
-
   }
 
   getPaymentMethoded() {
@@ -121,12 +120,20 @@ export class TopUpComponent implements OnInit {
         result => {
           this.dto.Response = {};
           this.dto.Response = result;
-          this.userBalance = this.dto.Response.balance;
+          if (this.dto.Response.message == "too many request") {
+            this.toastr.error("", this.dto.Response.message, {
+              timeOut: 1000,
+              positionClass: 'toast-top-center',
+            });
+            return;
+          }
+          else {
+            this.userBalance = this.dto.Response.balance;
+          }
         });
   }
 
   checkAmountTopup() {
-
     for (let k = 0; k < this.chooseTopupAmount.length; k++) {
       if (this.topupAmount == this.chooseTopupAmount[k].amount) {
         this.chooseTopupAmount[k].selected = true;
@@ -139,7 +146,6 @@ export class TopUpComponent implements OnInit {
     $("#topupAmountErr").html("");
     if (this.topupAmount != undefined && this.topupAmount != null && this.topupAmount != '') {
       if (this.topupAmount < 1000) {
-        // $('#topup_amount_incorrect').addClass('incorrect-border-color');
         $("#topupAmountErr").html("<h5 class='error-color'>" + this.translateService.instant("amount_error") + "</h5>");
         return false;
       } else {
@@ -149,11 +155,9 @@ export class TopUpComponent implements OnInit {
         return true;
       }
     } else {
-      // $('#topup_amount_incorrect').addClass('incorrect-border-color');
       var amount = this.translateService.instant("requiredFiled");
       amount = amount.toString().replace("@value", this.translateService.instant("cash_amount"));
       $("#topupAmountErr").html("<h5 class='error-color'>" + amount + "</h5>");
-      // <img src='assets/img/error/incorrect.png' width='30' height='30' >
       return false;
     }
   }
@@ -191,15 +195,13 @@ export class TopUpComponent implements OnInit {
     this.spinner.hide("submitLoading");
     this.storage.store('transfer_amount', this.topupSelectedAmount)
     this.storage.store('transfer_payment_id', this.payment_id)
-    this.storage.store('transfer_amount',this.topupSelectedAmount)
+    this.storage.store('transfer_amount', this.topupSelectedAmount)
     this.router.navigate(['/wallet/top-up-submit'], { state: { transfer_amount: this.topupSelectedAmount, transfer_payment_id: this.payment_id }, replaceUrl: false });
   }
 
   enter(event) {
     event.target.blur();
   }
-
-
 
   getTopupDetail(id) {
     this.token = this.storage.retrieve('token');
@@ -249,13 +251,13 @@ export class TopUpComponent implements OnInit {
   }
 
   onAmountInput(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  let value = input.value.replace(/\./g, '');
-  value = value.replace(/[^0-9]/g, '');
-  input.value = value;
-  this.topupAmount = value;
-  setTimeout(() => {
-    input.setSelectionRange(value.length, value.length);
-  });
-}
+    const input = event.target as HTMLInputElement;
+    let value = input.value.replace(/\./g, '');
+    value = value.replace(/[^0-9]/g, '');
+    input.value = value;
+    this.topupAmount = value;
+    setTimeout(() => {
+      input.setSelectionRange(value.length, value.length);
+    });
+  }
 }

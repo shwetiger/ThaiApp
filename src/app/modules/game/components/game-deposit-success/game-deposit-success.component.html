@@ -1,4 +1,8 @@
 <app-not-appbar>{{ 'helloword' | translate }}</app-not-appbar>
+<div class="container-fluid" style="padding: 0px !important;display: none;">
+    <game-account-login [gameProviderId]="gameProviderId" RouteFrom="depostiesuccess">
+    </game-account-login>
+</div>
 <div id="appCapsule">
     <div class="d-flex justify-content-center py-2">
         <i class="material-icons"
@@ -6,19 +10,19 @@
     </div>
     <p calss="text-success successMsg" style="text-align: center;color: green;">{{'game_transfer_success' | translate}}
     </p>
-    <div class="card mx-1">
+    <div class="card mx-3" >
         <div class="card-body">
             <div class="card-header" style="background-color: #fff;">
                 <div class="container-fluid">
                     <div class="row d-flex justify-content-center">
                         <div class="col-5 d-flex justify-content-end">
-                            <p class="service-color pt-2" style="color: #000;"> {{gameFrom}} </p>
+                            <p class="service-color pt-2" style="color: #000;white-space: nowrap;"> {{gameFrom}} </p>
                         </div>
                         <div class="col-2 d-flex justify-content-center">
                             <img src="assets/img/game_transfer.png" alt="walletImg" class="game_transfer_img">
                         </div>
                         <div class="col-5 d-flex justify-content-start">
-                            <p class="service-color pt-2" style="color: #000;"> {{gameTo}} </p>
+                            <p class="service-color pt-2" style="color: #000;white-space: nowrap;"> {{gameTo}} </p>
                         </div>
                     </div>
                 </div>
@@ -34,8 +38,28 @@
         </div>
     </div>
     <div class="section full text-center mt-2" id="gameTransferSuccess">
-        <button type="button" (click)="goToGameList()"
+        <button type="button" (click)="Done(playFreeOrPlay)"
             style="border:none;border-radius: 5px;height:40px; width: 90%;background-color: #2253A2 !important;color: #fff;">{{
             'bet_done' | translate}}</button>
     </div>
 </div>
+
+
+<ng-template #playFreeOrPlay>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left"></h4>
+        <div class="close pull-right">
+            <i class="material-icons" (click)="HidePlayFreeOrPlayAlert()" style="color: red;">cancel</i>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <button type="button" class="btn btn-block mx-3" data-dismiss="modal" (click)="playFree()"
+                style="background: #000; color: #fff;margin: 10px 0px;">{{ 'play_free' | translate}}</button>
+            <button type="button" class="btn btn-success btn-block  mx-3" (click)="play()">{{ 'play' |
+                translate}}</button>
+        </div>
+    </div>
+    <div class="modal-footer">
+    </div>
+</ng-template>

@@ -45,6 +45,10 @@ export class TransactionHistoryComponent implements OnInit {
   isWithdrawalTab = false;
   topuptab: any;
   withdrawaltab: any;
+  isTopupTabDisable = false;
+  isWithdrawalTabDisable = false;
+  isRefreshDisabled = false;
+
   constructor(
     private spinner: NgxSpinnerService,
     private router: Router,
@@ -63,6 +67,9 @@ export class TransactionHistoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.storage.clear('reqObj');
+    this.storage.clear('typeOfPage');
+    this.storage.clear('typeOftrans');
     this.loading = false;
     this.spinner.show(this.transactionSpinner);
     this.historyMain = true;
@@ -73,6 +80,7 @@ export class TransactionHistoryComponent implements OnInit {
     this.mainWithdrawal = false;
     this.rowsOfPage = 20;
     this.pageNumber = 0;
+    this.maintransactionHistoryList = [];
     const receivedData = this.storage.retrieve('transtype');
     if (receivedData) {
       this.type = receivedData;
@@ -125,6 +133,12 @@ export class TransactionHistoryComponent implements OnInit {
   }
 
   refreshPage(): void {
+
+    if (this.isRefreshDisabled) {
+      return;
+    }
+
+    this.isRefreshDisabled = true;
     if (this.isWithdrawalTab == true) {
       this.mainWithdrawal = true;
       this.mainTopup = false;
@@ -137,9 +151,15 @@ export class TransactionHistoryComponent implements OnInit {
       this.type = 'TOPUP';
       this.getTopupMainTransactionHistory(1, this.type);
     }
+    setTimeout(() => {
+      this.isRefreshDisabled = false;
+    }, 1000);
   }
 
   viewDetail(tranObj: any, typeOfPage: any) {
+    this.storage.store('reqObj', tranObj);
+    this.storage.store('typeOfPage', typeOfPage);
+    this.storage.store('typeOftrans', 'maintrans')
     this.router.navigate(['/wallet/transaction-history-detail'], { state: { tranObj: tranObj, typeOfPage: typeOfPage }, replaceUrl: false });
   }
 
@@ -171,9 +191,9 @@ export class TransactionHistoryComponent implements OnInit {
       .subscribe(
         result => {
           this.dto.Response = result;
-          this.loading=false;
+          this.loading = false;
           if (this.dto.Response.message == 'too many request') {
-            this.loading =true;
+            this.loading = true;
             this.spinner.show(this.transactionSpinner);
             this.spinner.show();
           }
@@ -181,8 +201,8 @@ export class TransactionHistoryComponent implements OnInit {
             this.maintransactionHistoryList = result.results;
             this.totalItems = result.totalRows;
             pageNumber = result.pageNumber;
-           // this.spinner.hide(this.transactionSpinner);
-             this.spinner.hide(this.transactionSpinner);
+            // this.spinner.hide(this.transactionSpinner);
+            this.spinner.hide(this.transactionSpinner);
             this.spinner.hide();
             this.loadingMore = true;
             this.addTopupList = [...this.addTopupList, ...this.maintransactionHistoryList];;
@@ -206,6 +226,8 @@ export class TransactionHistoryComponent implements OnInit {
     let params = new HttpParams();
     this.pageNumber = pageNumber;
     this.pageNumber = pageNumber + 1;
+    this.addTopupList = [];
+    this.maintransactionHistoryList = [];
     params = params.set('type', type).set('searchKey', this.searchKey).set('pageNumber', this.pageNumber).set('rowsOfPage', this.rowsOfPage.toString());
     this.http.get(this.funct.ipaddress + 'transaction/GetList', { params: params, headers: headers })
       .pipe(
@@ -258,7 +280,7 @@ export class TransactionHistoryComponent implements OnInit {
         result => {
           this.dto.Response = result;
           if (this.dto.Response.message == 'too many request') {
-           this.loading = true;
+            this.loading = true;
             this.spinner.show(this.transactionSpinner);
             return;
           }
@@ -292,6 +314,8 @@ export class TransactionHistoryComponent implements OnInit {
     headers = headers.set('Authorization', this.token);
     let params = new HttpParams();
     this.pageNumber = pageNumber + 1;
+    this.addWithdrawalList = [];
+    this.maintransactionWithdrawalHistoryList = [];
     params = params.set('type', type).set('searchKey', this.searchKey).set('pageNumber', this.pageNumber).set('rowsOfPage', this.rowsOfPage.toString());
     this.http.get(this.funct.ipaddress + 'transaction/GetList', { params: params, headers: headers })
       .pipe(
@@ -323,22 +347,52 @@ export class TransactionHistoryComponent implements OnInit {
     this.router.navigate(['/wallet/game-transaction-history'], { replaceUrl: true });
   }
 
+  // Gototopup() {
+  //   this.topuptab = true;
+  //   this.withdrawaltab = false;
+  //   this.getTopupMainTransactionHistory(1, 'TOPUP')
+  // }
+
   Gototopup() {
+    if (this.isTopupTabDisable) {
+      return;
+    }
+
+    this.isTopupTabDisable = true;
     this.topuptab = true;
     this.withdrawaltab = false;
-    this.getTopupMainTransactionHistory(1, 'TOPUP')
+    this.getTopupMainTransactionHistory(1, 'TOPUP');
+
+    setTimeout(() => {
+      this.isTopupTabDisable = false;
+    }, 1000); // 1 second
   }
 
+  // Gotowithdrawal() {
+  //   this.withdrawaltab = true;
+  //   this.topuptab = false;
+  //   this.getWithdrawalMainTransactionHistory(1, 'WITHDRAW')
+  // }
+
   Gotowithdrawal() {
+    if (this.isWithdrawalTabDisable) {
+      return;
+    }
+
+    this.isWithdrawalTabDisable = true;
     this.withdrawaltab = true;
     this.topuptab = false;
     this.getWithdrawalMainTransactionHistory(1, 'WITHDRAW')
+    setTimeout(() => {
+      this.isWithdrawalTabDisable = false;
+    }, 1000); // 1 second
   }
 
+
   getDescription(desc: any): string {
-  if (!desc || desc === 'null' || desc === 'undefined') {
-    return this.translateService.instant('withdrawal_denied_state_desc');
+    if (!desc || desc === 'null' || desc === 'undefined') {
+      return this.translateService.instant('withdrawal_denied_state_desc');
+    }
+    return desc;
   }
-  return desc;
-}
 }

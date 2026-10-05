@@ -23,7 +23,7 @@
                 </div>
                 <button type="button"
                     style="background-color: #2253A2; color: #fff;border:none;border-radius:5px;width:80%;height:40px"
-                    (click)="getOtp()"
+                    (click)="onNextClick()"
                     *ngIf="!recaptcha && !common.submitLoading ">{{ 'next' | translate}}</button>
             </div>
         </form>

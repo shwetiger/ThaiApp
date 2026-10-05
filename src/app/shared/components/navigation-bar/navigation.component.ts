@@ -27,19 +27,19 @@ export class AppNavigationBarComponent implements OnInit {
   deviceRouterName: any;
   @Input() routeUrl;
   constructor(
-    private toastr: ToastrService, 
+    private toastr: ToastrService,
     private spinner: NgxSpinnerService,
-    private dto: DtoService, 
-    private http: HttpClient, 
-    private util: UtilService, 
-    private router: Router, 
+    private dto: DtoService,
+    private http: HttpClient,
+    private util: UtilService,
+    private router: Router,
     private storage: LocalStorageService,
     private funct: FunctService,
-    private versionService:AppVersionService) 
+    private versionService:AppVersionService)
     {
-    
+
     }
-  ngOnInit(): void 
+  ngOnInit(): void
   {
     this.deviceId=this.storage.retrieve('localDeviceId');
     this.isUserLoggedIn= this.storage.retrieve('isUserLoggedIn');
@@ -52,18 +52,18 @@ export class AppNavigationBarComponent implements OnInit {
     this.openPage(this.routeUrl)
   }
 
-  openPage(routeUrl:string) {  
+  openPage(routeUrl:string) {
     if(routeUrl =='/home')
     {
-      this.deviceId=this.storage.retrieve('localDeviceId'); 
-      if(this.deviceId != null){      
-        this.router.navigate([routeUrl,this.deviceId],{replaceUrl: true});       
+      this.deviceId=this.storage.retrieve('localDeviceId');
+      if(this.deviceId != null){
+        this.router.navigate([routeUrl,this.deviceId],{ state: {
+            from: 'noinitial'
+          },replaceUrl: true});
         return;
-      }     
+      }
     }
-
-    this.router.navigate([routeUrl],{replaceUrl: true});   
-    
+    this.router.navigate([routeUrl],{replaceUrl: true});
   }
 
 }

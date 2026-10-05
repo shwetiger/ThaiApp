@@ -34,14 +34,15 @@ export class GameAccountLoginComponent implements OnInit {
   gameUserBalance: any = [];
   parentLink: any;
   gameList: any;
-  //test start
+
   bsModalRef: BsModalRef;
   data: any={};
   gameproviderlist: any;
-  //end test
-  @Input() gameProviderId
-
+  @Input() gameProviderId;
+  @Input() RouteFrom: string;
   notiCount: number;
+  getBal:any;
+
   constructor(
     private modalService: BsModalService,
     private handleErrorMessage: HandleErrorMessageService,
@@ -65,6 +66,7 @@ export class GameAccountLoginComponent implements OnInit {
     this.common.closeLoadingSubmit = true;
     this.spinner.show('closeLoadingSubmit');
     this.storage.clear("localGameWalletTransfer");
+    this.getBal=this.storage.retrieve('notgetBal');
     var localnoti = this.storage.retrieve('localNewNotiCount');
     if (localnoti != null && this.isUserLoggedIn) {
       this.notiCount = this.storage.retrieve('localNewNotiCount');
@@ -73,7 +75,16 @@ export class GameAccountLoginComponent implements OnInit {
     }
     this.gameProviderId = this.storage.retrieve('localGameProviderId');
     // this.getGameList();
+    if(this.getBal=='no')
+    {
+      this.common.closeLoadingSubmit = false;
+      this.spinner.hide('closeLoadingSubmit');
+      this.gameUserBalance=this.storage.retrieve('LocalallgameUserBalance');
+
+    }
+    else{
     this.getGameUserBalance();
+    }
     this.deviceId = this.storage.retrieve('localDeviceId');
     this.showAmount = this.storage.retrieve('showAmount');
 
@@ -245,6 +256,7 @@ async getGameUserBalance() {
       const balance = this.gameUserBalance.find(b => b.providerId === providerId)?.balance ?? 0;
       const firstbalance = this.gameUserBalance[0]?.balance ?? 0;
       const secondbalance = this.gameUserBalance[1]?.balance ?? 0;
+      this.storage.store('LocalallgameUserBalance',this.gameUserBalance);
       this.storage.store('LocalgameUserBalance', balance);
       this.storage.store('LocalgameUserBalance1', firstbalance);
       this.storage.store('LocalgameUserBalance2', secondbalance);

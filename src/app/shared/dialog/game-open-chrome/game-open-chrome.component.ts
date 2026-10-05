@@ -47,7 +47,6 @@ export class GameOpenChromeComponent implements OnInit {
   ngOnInit() {
     this.closeBtnName = this.translateService.instant('cancel');
     this.profileUserBalance = this.storage.retrieve('localuserMainbalance');
-    // this.getGameUserBalance();
   }
   close() {
     this.bsModalRef.hide();
@@ -78,7 +77,7 @@ export class GameOpenChromeComponent implements OnInit {
       });
       this.storage.clear('token');
       this.storage.clear('isUserLoggedIn');
-       this.router.navigate(['/login'], { replaceUrl: true });
+      this.router.navigate(['/login'], { replaceUrl: true });
       return;
     }
     if (error.status == 400) {
@@ -193,6 +192,29 @@ export class GameOpenChromeComponent implements OnInit {
             async result => {
               this.dto.Response = {};
               this.dto.Response = result;
+                if (result?.errCode === '603') {
+                if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", this.translateService.instant("game_play_close"), {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+                else {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", result.errMsg, {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+              }
+
               if (this.dto.Response.isSuccess == false) {
                 const rawData = this.dto.Response.data;
                 const timeLeftMatch = rawData.match(/timeLeft\s*=\s*(\d+)/);
@@ -253,6 +275,29 @@ export class GameOpenChromeComponent implements OnInit {
             async result => {
               this.dto.Response = {};
               this.dto.Response = result;
+              if (result?.errCode === '603') {
+                if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", this.translateService.instant("game_play_close"), {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+                else {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", result.errMsg, {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+              }
+
               if (this.dto.Response.isSuccess == false) {
                 const rawData = this.dto.Response.data;
                 const timeLeftMatch = rawData.match(/timeLeft\s*=\s*(\d+)/);
@@ -293,7 +338,7 @@ export class GameOpenChromeComponent implements OnInit {
               this.bsModalRef.hide();
               this.storage.store('localCloseGameBalance', this.gameUserBalance);
               this.storage.store('localLaunchTagName', launchTagName);
-              launchGameResModel.gameUrl =launchGameResModel.gameUrl.replace(/[?&]openinnewtap=1/, '');
+              launchGameResModel.gameUrl = launchGameResModel.gameUrl.replace(/[?&]openinnewtap=1/, '');
               this.router.navigate(['/game/play'], {
                 state: {
                   launchUrl: launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: launchTagName,
@@ -337,6 +382,29 @@ export class GameOpenChromeComponent implements OnInit {
               this.dto.Response = {};
               this.dto.Response = result;
               var launchGameResModel = this.dto.Response.data;
+                if (result?.errCode === '603') {
+                if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", this.translateService.instant("game_play_close"), {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+                else {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", result.errMsg, {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+              }
+
               this.storage.store('localGamePlayProviderId', this.providerId);
               this.storage.store('localPreviousRoute', 'gameList')
               sessionStorage.setItem('providerId', this.providerId);
@@ -382,6 +450,29 @@ export class GameOpenChromeComponent implements OnInit {
               this.dto.Response = {};
               this.dto.Response = result;
               var launchGameResModel = this.dto.Response;
+                if (result?.errCode === '603') {
+                if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", this.translateService.instant("game_play_close"), {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+                else {
+                  this.gameLoadingone = false;
+                  this.spinner.hide("gameLoadingone");
+                  this.bsModalRef.hide();
+                  this.toastr.error("", result.errMsg, {
+                    timeOut: 1000,
+                    positionClass: 'toast-top-center'
+                  });
+                  return;
+                }
+              }
+
               this.storage.store('localGamePlayProviderId', this.providerId);
               this.storage.store('localPreviousRoute', 'gameList')
               sessionStorage.setItem('providerId', this.providerId);

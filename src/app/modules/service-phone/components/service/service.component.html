@@ -1,12 +1,19 @@
 <!-- <app-not-refresh-appbar >{{ 'helloword' | translate }}</app-not-refresh-appbar> -->
+<div class="custom-loading" *ngIf="common.refreshLoading">
+  <div class="loading-box">
+    <div class="loader"></div>
+    <div class="loading-text">Loading...</div>
+  </div>
+</div>
 <div class="appHeader text-light">
     <div class="left">
     </div>
     <div class="pageTitle">{{ 'helloword' | translate }}</div>
 </div>
-<div id="appCapsule">
+
+<div id="appCapsule" *ngIf="!common.refreshLoading">
     <div class="container-fluid no-padding bg-white">
-        <div class="row bg-white pt-3 pt-2">
+        <div class="row bg-white pt-3">
             <div class="col-10 offset-1">
                 <h3 class="service-color text-center " style="font-weight: bold;color:#2253A2">{{ 'serviceTime3' |
                     translate}}</h3>
@@ -221,10 +228,8 @@
             </div>
         </div>
     </div>
+</div>
 
     <app-navigation-bar></app-navigation-bar>
 
     <!-- refresh loading -->
-    <ngx-spinner [name]="common.loading.refreshLoading.name" [size]="common.loading.refreshLoading.size"
-        [color]="common.loading.refreshLoading.color" [type]="common.loading.refreshLoading.type"
-        [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>

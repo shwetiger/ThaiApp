@@ -53,6 +53,7 @@ export class ThreedBetComponent implements OnInit {
   ngOnInit() {
     this.common.refreshLoading = true;
     this.spinner.show("refreshLoading");
+    this.dunum='';
     this.getThreedScrolling();
     this.threedNumberFieldType = "number";
     this.storage.clear('localTrippleNumbers');
@@ -162,15 +163,21 @@ export class ThreedBetComponent implements OnInit {
     }
     this.storage.store('localSelectTwoDList', this.betNumberList);
   }
+
   roundNumber(num1) {
-    this.betNumberList = [];
+   this.betNumberList = this.betNumberList ?? [];
+    if(num1=='')
+    {
+      num1 = this.betNumberList[this.betNumberList.length - 1].betNumberValue;
+    }
     if (num1.length == 0) {
       num1 = this.selectnum;
       if (this.dunum == num1) {
-        this.toastr.error("", this.translateService.instant("select_numbers"), {
-          timeOut: 3000,
-          positionClass: 'toast-top-center',
-        });
+         this.toastr.error("", this.translateService.instant("already_added"), {
+                timeOut: 3000,
+                positionClass: 'toast-top-center',
+              });
+        return;
       }
       if (num1 == undefined || num1 == '') {
         if (this.storage.retrieve('localSelectTwoDList') != null) {
@@ -180,6 +187,7 @@ export class ThreedBetComponent implements OnInit {
           timeOut: 3000,
           positionClass: 'toast-top-center',
         });
+        return;
       }
     }
     try {
@@ -196,11 +204,17 @@ export class ThreedBetComponent implements OnInit {
         var splitted = ("" + num1).split("");
         if (splitted.length == 3) {
           var indexValue = this.betNumberList.indexOf(num1);
+
           if (indexValue < 0) {
             let unique = splitted.filter((item, i, ar) => ar.indexOf(item) === i);
             if (unique.length == 1) {
-              this.betNumberList.push({ betNumberValue: num1, isUse: 1 });
-              newNumber.push({ betNumberValue: num1, isUse: 1 });
+              // this.betNumberList.push({ betNumberValue: num1, isUse: 1 });
+              // newNumber.push({ betNumberValue: num1, isUse: 1 });
+              this.toastr.error("", this.translateService.instant("already_added"), {
+                timeOut: 3000,
+                positionClass: 'toast-top-center',
+              });
+              return;
             }
             else {
               let shuff1 = splitted[0] + splitted[1] + splitted[2];
@@ -249,6 +263,7 @@ export class ThreedBetComponent implements OnInit {
     this.storage.clear('localSelectTwoDList');
     this.betNumberList = [];
     this.selectnum = ''
+    this.betValue='';
   }
 
   selectBetNumber(objNum): { betNumberValue: string; isUse: number; }[] {
@@ -281,19 +296,19 @@ export class ThreedBetComponent implements OnInit {
     }
   }
 
-onlyNumber(event: any) {
-  const input = event.target;
+  onlyNumber(event: any) {
+    const input = event.target;
 
-  // remove non-numbers
-  input.value = input.value.replace(/[^0-9]/g, '');
+    // remove non-numbers
+    input.value = input.value.replace(/[^0-9]/g, '');
 
-  this.amount = input.value;
+    this.amount = input.value;
 
-  // keep cursor at end
-  setTimeout(() => {
-    input.setSelectionRange(input.value.length, input.value.length);
-  });
-}
+    // keep cursor at end
+    setTimeout(() => {
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+  }
   keyPressNumberfornumberintput(event: KeyboardEvent) {
     const inputElement = event.target as HTMLInputElement;
     const charCode = (event.which) ? event.which : event.keyCode;

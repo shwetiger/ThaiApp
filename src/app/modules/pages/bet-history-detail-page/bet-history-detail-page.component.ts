@@ -121,6 +121,7 @@ export class BetHistoryDetailPageComponent implements OnInit {
           this.dto.Response = result;
           this.odd = this.dto.Response.odd;
           this.betHistoryDetailList = this.dto.Response.results;
+          this.betHistoryDetailList.sort((a, b) => parseInt(a.number) - parseInt(b.number));
           this.storage.store("localHistoryType", this.betType);
         }
       );

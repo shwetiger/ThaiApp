@@ -9,7 +9,7 @@
   </div>
 
 <div id="appCapsule"   >
-<div class="container" *ngIf = "!isSpinner">
+<div id="receipt" class="container" *ngIf = "!isSpinner">
     <div class="pt-2">
 
         <div class="text-center" *ngIf = "tranObj.type== 'TOPUP' && tranObj.status== 'DENIED' ">
@@ -26,7 +26,7 @@
                 {{ 'withdrawal_pending_detail_title' | translate}}
             </h4>
             <i class="material-icons"  style="color: red;font-size: 30px;">cancel</i>
-            <p class = "deniedIcon">{{'notification_toup_denied' | translate }} </p>
+            <p class = "deniedIcon">{{'notification_withdrawal_denied' | translate }} </p>
         </div>
 
         <div class="text-center" *ngIf = "tranObj.type == 'WITHDRAW' && tranObj.status == 'APPROVED' ">
@@ -137,81 +137,7 @@
             </ul>
         </div>
 
-        <!-- * if pending -->
         <div *ngIf = "tranObj.type == 'TOPUP' && tranObj.status == 'PENDING'">
-            <!-- <div class="section full bg-white py-2">
-                <div class="wide-block pt-2">
-                    <div class="row">
-                        <div class="col justify-content-center text-center">
-                            <h3 class="service-color">{{ 'serviceTime1' | translate}} </h3>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- <p> {{transaction_detail_desc}}</p>  -->
-
-            <!-- <div class="section full mt-2">
-
-
-                    <div  class="row" *ngFor="let servicePhoneObj of servicePhoneList">
-                        <div class="container-fluid " *ngIf="servicePhoneObj.title == 'service_transaction'">
-                         <div class="row topup-submit-phone-card mx-3">
-
-                                                <div class="title-color col-5" style="margin-top: 5px;" *ngIf="servicePhoneObj.phone_no !=''">
-                                                    <h5 class="text-center" style="font-weight: bold;"> {{ 'service_transaction' | translate }}
-                                                        <br>
-                                                  {{servicePhoneObj.phone_no}}</h5>
-                                                </div>
-                                                <div class="title-color col-5" style="margin-top: 15px;" *ngIf="servicePhoneObj.phone_no ==''">
-                                                    <h5 class="text-center" style="font-weight: bold;"> {{ 'service_transaction' | translate }}
-                                                       </h5>
-                                                </div>
-                                               <div class="col-6 d-flex justify-content-end">
-                                                <div class="row" style="padding-top: 3px;">
-                                                    <div class="col-4" *ngIf="servicePhoneObj.phone_no ==''">
-
-                                                    </div>
-                                                <div class="col-4" *ngIf="servicePhoneObj.telegram_id !=''">
-                                                    <a [href]="'https://t.me/+'+ servicePhoneObj.telegram_id+''+openUrl | safeUrl">
-                                                        <img class="service-image ml-2" src="assets/img/telegram.png" alt="phone">
-                                                    </a>
-                                                </div>
-                                                <div class="col-2" *ngIf="servicePhoneObj.telegram_id ==''">
-
-                                                </div>
-
-                                                <div class="col-4" *ngIf="servicePhoneObj.viber !=''">
-                                                    <a [href]="'viber://chat?number='+servicePhoneObj.viber+''+openUrl | safeUrl">
-                                                        <img class="service-image ml-2" src="assets/img/viber.png" alt="phone">
-                                                    </a>
-                                                </div>
-                                                <div class="col-4" *ngIf="servicePhoneObj.viber ==''">
-
-                                                </div>
-
-                                                <div class="col-4" *ngIf="servicePhoneObj.phone_no !=''">
-                                                    <a href="tel:{{servicePhoneObj.phone_no}}{{openUrl}}">
-                                                        <img class="service-image ml-2" src="assets/img/phone.png" alt="phone">
-                                                    </a>
-                                                </div>
-
-                                                </div>
-                                            </div>
-                                         </div>
-                                     </div>
-                </div>
-
-        </div> -->
-
-        <!-- <div class="pt-2 mb-2" style="display:flex;justify-content: center;" *ngIf = "tranObj.status != 'DENIED'">
-
-
-            <button type="button" class="btn shadowed" (click) = "goMainPage()" style="width: 88%;align-content: center;background-color: #2456A6;border-radius: 5px;color: #fff;">
-               {{ 'tran_waiting_btn' | translate}}
-            </button>
-
-        </div>  -->
-
         <div class="row" *ngIf = "tranObj.type == 'TOPUP' && tranObj.status == 'DENIED'">
             <div class="row tranStatusDenied">
                 <div class="col-12 d-block my-2 text-center">
@@ -253,7 +179,25 @@
     </div>
 
 </div>
+
 </div>
+<div class="action-container" *ngIf="typeOftrans=='maintrans' && !isSpinner">
+
+  <!-- Download -->
+  <button class="icon-btn" (click)="downloadReceipt()">
+  <img src="assets/img/icon/download.svg" alt="Download" class="icon-img">
+   <span class="icon-label">{{'download' |translate}}</span>
+ </button>
+
+  <!-- Share -->
+  <button class="icon-btn" (click)="shareReceipt()">
+      <img src="assets/img/icon/share.svg" alt="Download" class="icon-img">
+       <span class="icon-label">{{'share' |translate}}</span>
+  </button>
+
+</div>
+
+
 
  <!--XXX spinner MH-->
  <ngx-spinner name = "spinnerName1" bdOpacity = 0.9 size = "medium" color = "rgb(50,205,50)" type = "ball-spin-clockwise" [fullScreen] = "true"></ngx-spinner>

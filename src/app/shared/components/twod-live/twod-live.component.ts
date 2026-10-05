@@ -1,14 +1,15 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit,OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { LocalStorageService } from 'ngx-webstorage';
 import * as Parse from 'parse';
 import { CommonService } from '../../service/common.service';
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse  } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { FunctService } from '../../service/funct.service';
 import { DtoService } from '../../service/dto.service';
 import { HandleErrorMessageService } from '../../service/handle-error-message.service';
 import { catchError } from 'rxjs/internal/operators/catchError';
+import {TranslateService} from '@ngx-translate/core'
 
 
 @Component({
@@ -17,13 +18,13 @@ import { catchError } from 'rxjs/internal/operators/catchError';
   styleUrls: ['./twod-live.component.scss'],
 
 })
-export class TwodLiveComponent implements OnInit, OnDestroy{
-    token:any;
-    isServerapicall: boolean = false;
-    liveserverdata:any;
-    lastUpdateDate:any;
-    result:any;
-    intervalId:any;
+export class TwodLiveComponent implements OnInit, OnDestroy {
+  token: any;
+  isServerapicall: boolean = false;
+  liveserverdata: any;
+  lastUpdateDate: any;
+  result: any;
+  intervalId: any;
   constructor(
     public handleErrorMessage: HandleErrorMessageService,
     private storage: LocalStorageService,
@@ -31,33 +32,33 @@ export class TwodLiveComponent implements OnInit, OnDestroy{
     private spinner: NgxSpinnerService,
     private http: HttpClient,
     private funct: FunctService,
-    private dto: DtoService,) {
+    private dto: DtoService,
+    private translateService: TranslateService,) {
   }
   async ngOnInit() {
     this.getapicalldecision();
     const date = await this.common.getDateTime();
     const currentTime = await this.common.convertMyanmarTime(date);
-    this.storage.store('localLiveDate',currentTime);
+    this.storage.store('localLiveDate', currentTime);
 
   }
- ngOnDestroy() {
+  ngOnDestroy() {
     clearInterval(this.intervalId);
   }
 
-getapicalldecision()
-{
+  getapicalldecision() {
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
-    this.http.post(this.funct.ipaddress + 'LastValue/LastValueFromTS',{}, { headers: headers })
-    .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this,''))
-    )
-    .subscribe(
-      result => {
-        this.dto.Response = result;
-        this.isServerapicall=this.dto.Response;
-        if (this.isServerapicall) {
+    this.http.post(this.funct.ipaddress + 'LastValue/LastValueFromTS', {}, { headers: headers })
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
+      )
+      .subscribe(
+        result => {
+          this.dto.Response = result;
+          this.isServerapicall = this.dto.Response;
+          if (this.isServerapicall) {
             this.getlastValue();
             this.getModernInternet();
             this.intervalId = setInterval(() => {
@@ -69,106 +70,103 @@ getapicalldecision()
           } else {
             this.getLiveData();
           }
-      });
-}
+        });
+  }
 
 
-getlastValue()
-{
+  getlastValue() {
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
-    this.http.post(this.funct.ipaddress + 'LastValue/lastValue',{}, { headers: headers })
-    .pipe(
-      catchError(this.handleErrorMessage.handleError.bind(this,''))
-    )
-    .subscribe(
-      async result => {
-        this.dto.Response = result;
-        this.dto.Response.results.forEach(result => {
-        this.liveserverdata = JSON.parse(result.data);
-        });
+    this.http.post(this.funct.ipaddress + 'LastValue/lastValue', {}, { headers: headers })
+      .pipe(
+        catchError(this.handleErrorMessage.handleError.bind(this, ''))
+      )
+      .subscribe(
+        async result => {
+          this.dto.Response = result;
+          this.dto.Response.results.forEach(result => {
+            this.liveserverdata = JSON.parse(result.data);
+          });
 
-        this.dto.Response.results.forEach(result => {
+          this.dto.Response.results.forEach(result => {
             this.lastUpdateDate = result.lastUpdateDate;
-            });
-            this.dto.Response.results.forEach(result => {
-                this.result = result.result;
-                });
-        var datas=this.dto.Response.results
-        if (datas != '' && datas != null && datas != undefined) {
-        var dateStr1 = new Date(this.lastUpdateDate.iso).toLocaleString("en-US", {timeZone: "Asia/Yangon"});
-        const format = 'dd-MM-yyyy h:mm:ss a';
-        const myDate = dateStr1;
-        const locale = 'en-US';
-        const formattedDate = formatDate(myDate, format, locale);
-        var updatedTime = "Updated: " + formattedDate;
-        var lastIndex=null;
-        var showAnimation = false;
-        var showManualOutAnimation=false;
-        var sectionDatas = JSON.stringify(this.liveserverdata);
-        var resuldData=this.result;
-        if (sectionDatas != null && sectionDatas != "") {
-            document.getElementById('section-container').innerHTML = '<div id="section-container" class="container"> </div>';
-            var sectionList = JSON.parse(sectionDatas);
+          });
+          this.dto.Response.results.forEach(result => {
+            this.result = result.result;
+          });
+          var datas = this.dto.Response.results
+          if (datas != '' && datas != null && datas != undefined) {
+            var dateStr1 = new Date(this.lastUpdateDate.iso).toLocaleString("en-US", { timeZone: "Asia/Yangon" });
+            const format = 'dd-MM-yyyy h:mm:ss a';
+            const myDate = dateStr1;
+            const locale = 'en-US';
+            const formattedDate = formatDate(myDate, format, locale);
+            var updatedTime = "Updated: " + formattedDate;
+            var lastIndex = null;
+            var showAnimation = false;
+            var showManualOutAnimation = false;
+            var sectionDatas = JSON.stringify(this.liveserverdata);
+            var resuldData = this.result;
+            if (sectionDatas != null && sectionDatas != "") {
+              document.getElementById('section-container').innerHTML = '<div id="section-container" class="container"> </div>';
+              var sectionList = JSON.parse(sectionDatas);
 
-            for (let i = 0; i < sectionList.length; i++) {
+              for (let i = 0; i < sectionList.length; i++) {
                 var item = sectionList[i];
                 var from = new Date(item.fromDateTime);
                 var to = new Date(item.toDateTime);
-                var toDisplayDateTime=new Date(item.toDisplayDateTime);
+                var toDisplayDateTime = new Date(item.toDisplayDateTime);
                 var now = await this.common.convertMyanmarTime(new Date());//new Date();
 
                 var showManualOut;
-                var dateManualOut= new Date(to.setSeconds(to.getSeconds() - 15));
+                var dateManualOut = new Date(to.setSeconds(to.getSeconds() - 15));
 
-                if ((from.getTime() < now.getTime() && to.getTime() > now.getTime() && !item.isDone))
-                {
-                    lastIndex = i;
-                    showAnimation = true;
-                    if(item.switchManual &&  dateManualOut.getTime() <= now.getTime()){
-                        showManualOut=true;
-                    }
-                    break;
+                if ((from.getTime() < now.getTime() && to.getTime() > now.getTime() && !item.isDone)) {
+                  lastIndex = i;
+                  showAnimation = true;
+                  if (item.switchManual && dateManualOut.getTime() <= now.getTime()) {
+                    showManualOut = true;
+                  }
+                  break;
                 }
-                else if((toDisplayDateTime.getTime() <= now.getTime()) && (item.switchManual == true && item.isManual == false))
-                {
-                    lastIndex = i;
-                    showAnimation = true;
-                    if(dateManualOut.getTime() <= now.getTime()){
-                        showManualOut=true;
-                    }
-                    break;
+                else if ((toDisplayDateTime.getTime() <= now.getTime()) && (item.switchManual == true && item.isManual == false)) {
+                  lastIndex = i;
+                  showAnimation = true;
+                  if (dateManualOut.getTime() <= now.getTime()) {
+                    showManualOut = true;
+                  }
+                  break;
 
                 }
-                else if(now.getTime() > 17){
-                    showAnimation = false;
+                else if (now.getTime() > 17) {
+                  showAnimation = false;
                 }
                 else {
-                    showAnimation = false;
+                  showAnimation = false;
                 }
 
-            }
-            document.getElementById('result').innerHTML = resuldData;
-            if (showAnimation == false) {
+              }
+              document.getElementById('result').innerHTML = resuldData;
+              if (showAnimation == false) {
                 document.getElementById('result').className = 'resultStyle';
-            }
-            else {
+              }
+              else {
                 document.getElementById('result').className = 'resultStyle';
                 document.getElementById('result').className = 'resultStyleAnimate';
-            }
+              }
 
-            document.getElementById('lastUpdateDate').innerHTML =
-                        (showAnimation == false ? "<img src='assets/img/icon/done.png'  width='20'>" : "<img src='assets/img/icon/update.png'  width='20'>")
-                        + '<span style="font-style: italic;">' + updatedTime + '</span>';
+              document.getElementById('lastUpdateDate').innerHTML =
+                (showAnimation == false ? "<img src='assets/img/icon/done.png'  width='20'>" : "<img src='assets/img/icon/update.png'  width='20'>")
+                + '<span style="font-style: italic;">' + updatedTime + '</span>';
 
-            sectionList.forEach((item, index) => {
+              sectionList.forEach((item, index) => {
                 var section = item.section;
                 var set0 = '--';
                 var set1 = '';
                 if (item.set != "--" && item.set != null && item.set != '') {
-                        set0 = item.set.substr(0, item.set.length - 1);
-                        set1 = item.set.substr(item.set.length - 1, item.set.length);
+                  set0 = item.set.substr(0, item.set.length - 1);
+                  set1 = item.set.substr(item.set.length - 1, item.set.length);
 
                 }
                 var val0 = '--';
@@ -176,32 +174,32 @@ getlastValue()
                 var val2 = '';
                 var result = '--';
                 if (item.value != "--" && item.value != null && item.value != '') {
-                        val0 = item.value.substr(0, item.value.length - 4);
-                        val1 = item.value.substr(item.value.length - 4, 1);
-                        val2 = item.value.substr(item.value.length - 3, item.value.length);
+                  val0 = item.value.substr(0, item.value.length - 4);
+                  val1 = item.value.substr(item.value.length - 4, 1);
+                  val2 = item.value.substr(item.value.length - 3, item.value.length);
 
                 }
-                if((item.isDone == true && item.isManual==true && item.switchManual==true) || !isShake ){
-                    result = item.result;
+                if ((item.isDone == true && item.isManual == true && item.switchManual == true) || !isShake) {
+                  result = item.result;
                 }
 
-                else{
-                    result = "--";
+                else {
+                  result = "--";
                 }
-                 var isShake;//=true;
-                if(index == lastIndex){
-                   isShake= true;
+                var isShake;//=true;
+                if (index == lastIndex) {
+                  isShake = true;
                 }
-                else{
-                    isShake= false;
+                else {
+                  isShake = false;
                 }
 
-                    document.getElementById('section-container').innerHTML = `${document.getElementById('section-container').innerHTML}
+                document.getElementById('section-container').innerHTML = `${document.getElementById('section-container').innerHTML}
                     <div class='row section-inner' style = 'width: 100%; text-decoration: none; color: white;'>
 
                         <div class='container'>
-                            <div class='row ${index != 0?"driver mx-1 pt-1":"mx-1 pt-1" }'></div>
-                            <div class='row d-flex justify-content-center ${index != 0?"pt-1":"" }'> ${section} </div>
+                            <div class='row ${index != 0 ? "driver mx-1 pt-1" : "mx-1 pt-1"}'></div>
+                            <div class='row d-flex justify-content-center ${index != 0 ? "pt-1" : ""}'> ${section} </div>
                             <div class='row' style='padding-top: 8px; text-align: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between;'>
                                 <div class='col-4'><p style='color: silver;'>Set</p></div>
                                 <div class='col-4'><p style='color: silver;'>Value</p></div>
@@ -210,20 +208,20 @@ getlastValue()
                             <div class='row ${isShake ? 'annimate' : 'no-annimate'}'>
                             <div class='col-4'> <span>${set0}</span ><span style='color: #ffff00;'>${set1}</span></div>
                             <div class='col-4'><span>${val0}</span><span style='color: #ffff00;'>${val1}</span><span>${val2}</span></div>
-                            <div class='col-4'><span style='color: #ffff00;'>${isShake == true?"--": result}</span> </div>
+                            <div class='col-4'><span style='color: #ffff00;'>${isShake == true ? "--" : result}</span> </div>
                             </div>
-                            <div class='row ${index == sectionList.length-1 ?"pb-1":"" }'></div>
+                            <div class='row ${index == sectionList.length - 1 ? "pb-1" : ""}'></div>
                         </div>
                     </div>`;
-            });
+              });
 
-        }
-    }
+            }
+          }
 
- });
-}
+        });
+  }
 
-async getLiveData() {
+  async getLiveData() {
     this.initializeParseClient();
 
     const client = this.createLiveQueryClient();
@@ -296,7 +294,7 @@ async getLiveData() {
     const seconds = String(date.getSeconds()).padStart(2, '0');
 
     return `${day}/${month}/${year} ,${hours}:${minutes}:${seconds}`;
-}
+  }
 
   evaluateSections(sectionList, dateObject) {
     let lastIndex = null;
@@ -308,8 +306,25 @@ async getLiveData() {
       const to = new Date(item.toDateTime);
       const display = new Date(item.toDisplayDateTime);
       const manualOutTime = new Date(to.getTime() - 15000);
+
+      // const firstCondition =
+      //   from < dateObject &&
+      //   to > dateObject &&
+      //   !item.isDone;
+
+      // const secondCondition =
+      //   display <= dateObject &&
+      //   item.switchManual &&
+      //   !item.isManual;
+
+      // if (firstCondition || secondCondition) {
+      //   lastIndex = i;
+      //   showAnimation = true;
+      //   break;
+      // }
+
       if ((from < dateObject && to > dateObject && !item.isDone) ||
-          (display <= dateObject && item.switchManual && !item.isManual)) {
+        (display <= dateObject && item.switchManual && !item.isManual)) {
         lastIndex = i;
         showAnimation = true;
         break;
@@ -398,106 +413,112 @@ async getLiveData() {
     });
   }
 
- async handleLiveUpdate(result) {
-  const page = document.getElementById('livePage');
-  if (!page) return;
+  async handleLiveUpdate(result) {
+    const page = document.getElementById('livePage');
+    if (!page) return;
 
-  const datas = result;
-  if (!datas) return;
+    const datas = result;
+    if (!datas) return;
 
-  const rawDate = datas.get('lastUpdateDate');
-  const dateObject = this.parseYangonDate(rawDate);
-  const formattedDate = this.formatDate(dateObject);
-  const updatedTime = "Updated: " + formattedDate;
+    const rawDate = datas.get('lastUpdateDate');
+    const dateObject = this.parseYangonDate(rawDate);
+    const formattedDate = this.formatDate(dateObject);
+    const updatedTime = "Updated: " + formattedDate;
 
-  const sectionData = datas.get('data');
-  const resultData = datas.get('result');
+    const sectionData = datas.get('data');
+    const resultData = datas.get('result');
 
-  if (sectionData) {
-    const sectionList = JSON.parse(sectionData);
-    const state = this.evaluateSections(sectionList, dateObject);
-    this.renderSections(sectionList, state.lastIndex, state.showAnimation);
-    this.renderResult(resultData, state.showAnimation);
-    this.updateLastUpdateDateUI(state.showAnimation, updatedTime);
+    if (sectionData) {
+      const sectionList = JSON.parse(sectionData);
+      const state = this.evaluateSections(sectionList, dateObject);
+      this.renderSections(sectionList, state.lastIndex, state.showAnimation);
+      this.renderResult(resultData, state.showAnimation);
+      this.updateLastUpdateDateUI(state.showAnimation, updatedTime);
+    }
   }
-}
 
 
   async getModernInternet() {
     (Parse as any).serverURL = 'https://thai2d3d.b4a.io';
     (Parse as any).keyLiveQueryUrl = 'wss://thai2d3d.b4a.io';
     Parse.initialize('dxEhlPEJK3rGaa1viywMIxS31lqCFZMwb0oHQWXJ', 'G4ePnxxZcdObpoF8bZMx2QzvgNlFrpGb8WHrF0Bx');
-    var client = new  (Parse as any).LiveQueryClient({
-        applicationId: 'dxEhlPEJK3rGaa1viywMIxS31lqCFZMwb0oHQWXJ',
-        serverURL: 'wss://thai2d3d.b4a.io',
-        javascriptKey: 'G4ePnxxZcdObpoF8bZMx2QzvgNlFrpGb8WHrF0Bx'
+    var client = new (Parse as any).LiveQueryClient({
+      applicationId: 'dxEhlPEJK3rGaa1viywMIxS31lqCFZMwb0oHQWXJ',
+      serverURL: 'wss://thai2d3d.b4a.io',
+      javascriptKey: 'G4ePnxxZcdObpoF8bZMx2QzvgNlFrpGb8WHrF0Bx'
     });
 
-    var modernInternetLink=new (Parse as any).Query('ModernInternet');
+    var modernInternetLink = new (Parse as any).Query('ModernInternet');
     var modernInternetLinkDatas = await modernInternetLink.get("F0QapwSYJl"); // F0QapwSYJl // yuQAHDBzeE
     var Live2dboss = new (Parse as any).Query('Live2dboss');
     var Live2dbossDatas = await Live2dboss.get("I2CZXHqtbT"); //I2CZXHqtbT //AJotixiCSi
     const axios = require('axios').default;
     const response = await axios.get(Live2dbossDatas.get('link'));
-    var datas= response.data.data;
-    var currentTime= this.storage.retrieve('localLiveDate');
+    var datas = response.data.data;
+    var currentTime = this.storage.retrieve('localLiveDate');
     var dateTime = await this.common.convertMyanmarTime(new Date(currentTime));
     let twodSectionDatas;
-    if(datas == undefined || datas == null){
-        if((dateTime.getHours() == 9  && dateTime.getMinutes() >= 30) || dateTime.getHours() > 9 ){
-            twodSectionDatas={'modern_930': modernInternetLinkDatas.get('modern'),'internet_930': modernInternetLinkDatas.get('internet'),
-            'modern_200': "",'internet_200':""}
+    if (datas == undefined || datas == null) {
+      if ((dateTime.getHours() == 9 && dateTime.getMinutes() >= 30) || dateTime.getHours() > 9) {
+        twodSectionDatas = {
+          'modern_930': modernInternetLinkDatas.get('modern'), 'internet_930': modernInternetLinkDatas.get('internet'),
+          'modern_200': "", 'internet_200': ""
         }
-        if( dateTime.getHours() >= 14 ){
-            twodSectionDatas={'modern_930': modernInternetLinkDatas.get('modern'),'internet_930': modernInternetLinkDatas.get('internet'),
-            'modern_200': modernInternetLinkDatas.get('modern230'),'internet_200': modernInternetLinkDatas.get('internet230')}
+      }
+      if (dateTime.getHours() >= 14) {
+        twodSectionDatas = {
+          'modern_930': modernInternetLinkDatas.get('modern'), 'internet_930': modernInternetLinkDatas.get('internet'),
+          'modern_200': modernInternetLinkDatas.get('modern230'), 'internet_200': modernInternetLinkDatas.get('internet230')
         }
-        else{
-            twodSectionDatas={'modern_930': modernInternetLinkDatas.get('modern'),'internet_930': modernInternetLinkDatas.get('internet'),
-            'modern_200': modernInternetLinkDatas.get('modern230'),'internet_200': modernInternetLinkDatas.get('internet230')}
+      }
+      else {
+        twodSectionDatas = {
+          'modern_930': modernInternetLinkDatas.get('modern'), 'internet_930': modernInternetLinkDatas.get('internet'),
+          'modern_200': modernInternetLinkDatas.get('modern230'), 'internet_200': modernInternetLinkDatas.get('internet230')
         }
+      }
     }
-    else{
-        if(((dateTime.getHours() == 9  && dateTime.getMinutes() >= 30) || dateTime.getHours() > 9) && dateTime.getHours() < 14 ){
-            if(datas.internet_930 == null || datas.modern_930 == null){
-                datas.internet_930 = modernInternetLinkDatas.get('internet');
-                datas.modern_930 = modernInternetLinkDatas.get('modern');
-                twodSectionDatas= datas;
-            }
-            else{
-                twodSectionDatas= datas;
-            }
+    else {
+      if (((dateTime.getHours() == 9 && dateTime.getMinutes() >= 30) || dateTime.getHours() > 9) && dateTime.getHours() < 14) {
+        if (datas.internet_930 == null || datas.modern_930 == null) {
+          datas.internet_930 = modernInternetLinkDatas.get('internet');
+          datas.modern_930 = modernInternetLinkDatas.get('modern');
+          twodSectionDatas = datas;
         }
-        if(dateTime.getHours() >= 14 ){
-            if(datas.internet_930 == null || datas.modern_930 == null){
-                datas.internet_930 = modernInternetLinkDatas.get('internet');
-                datas.modern_930 = modernInternetLinkDatas.get('modern');
-                twodSectionDatas= datas;
-            }
-            if(datas.internet_200 == null || datas.modern_200 == null){
-                datas.internet_200 =  modernInternetLinkDatas.get('internet230');
-                datas.modern_200 = modernInternetLinkDatas.get('modern230');
-                twodSectionDatas= datas;
-            }
-            else{
-                twodSectionDatas= datas;
-            }
+        else {
+          twodSectionDatas = datas;
         }
-       else{
-        twodSectionDatas= datas;
-       }
+      }
+      if (dateTime.getHours() >= 14) {
+        if (datas.internet_930 == null || datas.modern_930 == null) {
+          datas.internet_930 = modernInternetLinkDatas.get('internet');
+          datas.modern_930 = modernInternetLinkDatas.get('modern');
+          twodSectionDatas = datas;
+        }
+        if (datas.internet_200 == null || datas.modern_200 == null) {
+          datas.internet_200 = modernInternetLinkDatas.get('internet230');
+          datas.modern_200 = modernInternetLinkDatas.get('modern230');
+          twodSectionDatas = datas;
+        }
+        else {
+          twodSectionDatas = datas;
+        }
+      }
+      else {
+        twodSectionDatas = datas;
+      }
     }
 
     if (twodSectionDatas != '' && twodSectionDatas != null && twodSectionDatas != undefined) {
-        var internet930 = twodSectionDatas.internet_930 == "" || twodSectionDatas.internet_930 == null ? "--" : twodSectionDatas.internet_930;
-        var modern930 = twodSectionDatas.modern_930 == "" || twodSectionDatas.modern_930 == null ? "--" : twodSectionDatas.modern_930;
-        var internet200 = twodSectionDatas.internet_200 == "" || twodSectionDatas.internet_200 == null ? "--" : twodSectionDatas.internet_200;
-        var modern200 = twodSectionDatas.modern_200 == "" || twodSectionDatas.modern_200 == null ? "--" : twodSectionDatas.modern_200;
-        document.getElementById('modern-container').innerHTML = `${document.getElementById('modern-container').innerHTML}
+      var internet930 = twodSectionDatas.internet_930 == "" || twodSectionDatas.internet_930 == null ? "--" : twodSectionDatas.internet_930;
+      var modern930 = twodSectionDatas.modern_930 == "" || twodSectionDatas.modern_930 == null ? "--" : twodSectionDatas.modern_930;
+      var internet200 = twodSectionDatas.internet_200 == "" || twodSectionDatas.internet_200 == null ? "--" : twodSectionDatas.internet_200;
+      var modern200 = twodSectionDatas.modern_200 == "" || twodSectionDatas.modern_200 == null ? "--" : twodSectionDatas.modern_200;
+      document.getElementById('modern-container').innerHTML = `${document.getElementById('modern-container').innerHTML}
             <div class="row header-row" style="margin: 10px 20px !important;">
-                <div class="col-3"></div>
-                <div class="col-5 text-center text-white">Modern</div>
-                <div class="col-4 text-center text-white">Internet</div>
+                <div class="col-3 text-center text-white">  ${this.translateService.instant('time_twod')}</div>
+                <div class="col-5 text-center text-white">  ${this.translateService.instant('modern')}</div>
+                <div class="col-4 text-center text-white"> ${this.translateService.instant('internet')}</div>
             </div>
             <div class="row modern-1" style="margin: 10px 20px !important;">
                 <div class="col-3 text-white">9:30 AM</div>
@@ -518,6 +539,6 @@ async getLiveData() {
 }
 
 function OnDestroy() {
-    throw new Error('Function not implemented.');
+  throw new Error('Function not implemented.');
 }
 

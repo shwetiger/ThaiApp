@@ -144,6 +144,10 @@ input::placeholder {
   }
 }
 
+input::placeholder {
+  font-size: 11.5px;
+}
+
 @media screen and (min-width: 1024px) {
   #navTwoDBet {
     margin: 0px 35% !important;

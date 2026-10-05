@@ -59,10 +59,10 @@
               </ng-container>
             </div>
             <!-- Date Column -->
-            <div class="col-3 mt-1 d-flex flex-column justify-content-center align-items-center">
+            <div class="col-3 d-flex flex-column justify-content-center align-items-center" style="margin-top:25px">
               <ng-container>
                 <p class="receive__dec" style="font-weight: bold;">{{'pt_date' | translate}}</p>
-                <p style="line-height: 0.7rem;"> {{ recievept.date }}</p>
+                <p style="line-height: 0.7rem;white-space: nowrap;"> {{ recievept.date }}</p>
                 <p style="line-height: 0.7rem;">{{ recievept.time }}</p>
               </ng-container>
             </div>
@@ -102,10 +102,10 @@
               </ng-container>
             </div>
             <!-- Date Column -->
-            <div class="col-3 mt-1 d-flex flex-column justify-content-center align-items-center">
+            <div class="col-3 d-flex flex-column justify-content-center align-items-center" style="margin-top:23px">
               <ng-container>
                 <p class="receive__dec" style="font-weight: bold;">{{'pt_date' | translate}}</p>
-                <p style="line-height: 0.7;">{{ transferObj.date}}</p>
+                <p style="line-height: 0.7; white-space: nowrap;">{{ transferObj.date}}</p>
                 <p style="line-height: 0.7;">{{ transferObj.time }}</p>
               </ng-container>
             </div>

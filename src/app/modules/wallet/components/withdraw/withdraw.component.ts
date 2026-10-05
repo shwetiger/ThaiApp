@@ -13,6 +13,7 @@ import { FunctService } from 'src/app/shared/service/funct.service';
 import { DtoService } from 'src/app/shared/service/dto.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { TopupAlertMaintenanceComponent } from 'src/app/shared/dialog/topup-alert-maintenance/topup-alert-maintenance.component';
+declare var window: any;
 
 @Component({
   selector: 'app-withdraw',
@@ -23,8 +24,6 @@ import { TopupAlertMaintenanceComponent } from 'src/app/shared/dialog/topup-aler
 export class WithdrawComponent implements OnInit {
   @ViewChild('passwordInput') passwordInput!: ElementRef<HTMLInputElement>;
   @ViewChild('fileInput') fileInput: ElementRef;
-  // imgURL: string | null = null;
-  // lang: string = 'en';
   token: any;
   myAccountList: any;
   bsModalRef: BsModalRef;
@@ -58,7 +57,6 @@ export class WithdrawComponent implements OnInit {
   lang: any;
   topupBankName: any;
   newwithdrawalBankAccList: any = [];
-  //loadingSubmiting: any;
   parentLink: any;
   showPass: boolean;
   passwordType: any;
@@ -102,7 +100,6 @@ export class WithdrawComponent implements OnInit {
     private storage: LocalStorageService,
     private funct: FunctService,
     private _location: Location,) {
-
     this.translateService.addLangs(this.supportLanguages);
     this.translateService.setDefaultLang(this.storage.retrieve('localLanguage'));
     this.bankAccount = history.state.bankAccount;
@@ -112,19 +109,18 @@ export class WithdrawComponent implements OnInit {
     this.parentLink = history.state.parentLink;
     this.granParent = history.state.granParent;
     this.isFromAdd = this.route.snapshot.paramMap.get("isFromAdd");
-
   }
 
   ngOnInit(): void {
     this.lang = this.storage.retrieve('localLanguage');
     this.refreshLoading = true;
     this.spinner.show("refreshLoading");
+    if (window.Telegram?.WebApp.initData) {
+    this.phoneValue = this.storage.retrieve('tglocalphone');
+      }
+    else{
     this.phoneValue = this.storage.retrieve('localPhoneValue');
-    // (!this.phoneValue)
-    // {
-    //   this.phoneValue = this.storage.retrieve('tgphnumber');
-    // }
-
+      }
     this.bankAccModel =
     {
       bankaccountName: '',
@@ -158,12 +154,12 @@ export class WithdrawComponent implements OnInit {
     this.wavePasswordType = "number";
 
     if (this.isFromAdd == null || this.isFromAdd == undefined) {
-      this.getMyWithdrawAccounts();//user's accounts
+      this.getMyWithdrawAccounts();
       this.getUserProfile();
     }
     if (this.isFromAdd == "add") {
       this.mywithdrawalBankAccList = null;
-      this.getWithdrawBankAccounts(); //system accounts
+      this.getWithdrawBankAccounts();
     }
     this.getsmstype();
   }
@@ -356,16 +352,13 @@ export class WithdrawComponent implements OnInit {
           if (this.mywithdrawalBankAccList.length == 0) {
             this.withdrawLength = 0;
             if (this.otpSms != 'insert' || this.storage.retrieve('localTopupBankName') == undefined || this.storage.retrieve('localTopupBankName') == null) {
-              // this.showMyDialog();
             }
             this.getWithdrawBankAccounts();
-
           }
           if (this.mywithdrawalBankAccList.length > 0) {
             this.withdrawLength = this.mywithdrawalBankAccList.length;
             if (this.bank_account_id != null) {
               if (this.mywithdrawalBankAccList.find(x => x.bank_account_id == this.bank_account_id)) {
-                /*for show in ui XXX*/
                 this.bankAccObj.account_number = this.mywithdrawalBankAccList.find(x => x.bank_account_id == this.bank_account_id).account_number;
                 this.bankAccObj.payment_id = this.mywithdrawalBankAccList.find(x => x.bank_account_id == this.bank_account_id).payment_id;
                 this.bankAccObj.imageUrl = this.mywithdrawalBankAccList.find(x => x.bank_account_id == this.bank_account_id).imageUrl;
@@ -375,7 +368,6 @@ export class WithdrawComponent implements OnInit {
                 this.withdrawalRequestModel.account_no = this.bankAccObj.account_number;
                 this.getWithdrawMaintenance(this.withdrawalRequestModel.payment_id);
               }
-              //need to call 24 hours wait api
             }
             else {
               if (this.isSelectBtn == undefined || this.isSelectBtn == '' || this.isSelectBtn == null)/*If no choose payment account*/ {
@@ -383,7 +375,7 @@ export class WithdrawComponent implements OnInit {
                 this.withdrawalRequestModel.payment_id = this.paymentId;
                 this.withdrawalRequestModel.account_no = this.mywithdrawalBankAccList[0].account_number;
               }
-              /*show initial*/
+
               this.bankAccObj.account_number = this.mywithdrawalBankAccList[0].account_number;
               this.bankAccObj.payment_id = this.mywithdrawalBankAccList[0].payment_id;
               this.bankAccObj.imageUrl = this.mywithdrawalBankAccList[0].imageUrl;
@@ -429,6 +421,7 @@ export class WithdrawComponent implements OnInit {
       );
     this.mybankList.hide();
   }
+
   insertWithdrawlAcc() {
     this.router.navigate(["/wallet/withdraw-add-acc"]);
   }
@@ -454,7 +447,6 @@ export class WithdrawComponent implements OnInit {
             this.showMyDialog();
           }
         })
-
     this.withdrawpaymentImg = id;
     if (this.clickId.length == 0) {
       $("#" + id).css('filter', 'grayscale(0%)');
@@ -527,25 +519,22 @@ export class WithdrawComponent implements OnInit {
       );
   }
 
-  InsertBankAccount() {
-    if (!this.isValidForm()) return;
-    if (this.loadingInsertBankAcc) return;
+ async InsertBankAccount(): Promise<void> {
+  if (!this.isValidForm()) return;
+  if (this.loadingInsertBankAcc) return;
+  await this.prepareImageBase64();
+  await this.prepareBankAccountList();
+  const headers = new HttpHeaders().set(
+    'Authorization',
+    this.storage.retrieve('token')
+  );
 
-    this.prepareImageBase64();
-    this.prepareBankAccountList();
-
-    const headers = new HttpHeaders().set(
-      'Authorization',
-      this.storage.retrieve('token')
-    );
-
-    this.loadingInsertBankAcc = true;
-    this.spinner.show("loadingInsertBankAcc");
-
-    this.storage.store('localInsertBankAccountList', this.bankAccountList);
-
-    this.checkInsertAccount(headers);
-  }
+  this.loadingInsertBankAcc = true;
+  this.spinner.show("loadingInsertBankAcc");
+  this.storage.store('localInsertBankAccountList', this.bankAccountList);
+  await this.getsmstype();
+  await this.checkInsertAccount(headers);
+}
 
   private checkInsertAccount(headers: HttpHeaders) {
     this.http.post(
@@ -571,18 +560,15 @@ export class WithdrawComponent implements OnInit {
     )
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe((accounts: any[]) => {
-
         const exists = accounts.some(x =>
           x.account_number === this.bankAccModel.bankAccount &&
           x.payment_id === this.paymentId
         );
-
         if (exists) {
           this.stopLoading();
           this.showAlreadyExist();
           return;
         }
-
         this.requestOtp(headers, accounts.length);
       });
   }
@@ -620,7 +606,6 @@ export class WithdrawComponent implements OnInit {
       if (accountCount === 0) {
         this.storage.store("localInsertAccount", 'insertAccount');
       }
-
       this.storage.store('otptype', 'smsotp');
       this.storage.store('actionType', 'insertAccount');
       this.storage.store('formPageType', 'withdrawaladd');
@@ -652,22 +637,13 @@ export class WithdrawComponent implements OnInit {
       this.storage.clear('Timer');
       this.prefix = this.storage.retrieve('localPhonePrefix')
       let phoneNumber;
-      // const value = this.phoneValue;
-      // if (value.startsWith(this.prefix)) {
-      //   phoneNumber = value;
-      // }
-      // else if (value.startsWith("0")) {
-      //   phoneNumber = this.prefix + value.substring(1);
-      // }
-      // else {
-      //   phoneNumber = this.prefix + value;
-      // }
-      const value = this.phoneValue;
-      if (value.startsWith("0")) {
-        phoneNumber = this.prefix + value.substring(1);
-      }
-      else{
-        phoneNumber= this.prefix + value;
+     if (window.Telegram?.WebApp.initData) {
+        phoneNumber = this.storage.retrieve('tglocalphone');
+      } else {
+        const value = this.storage.retrieve('localPhoneValue').trim();
+        phoneNumber = value.startsWith('0')
+          ? this.prefix + value.slice(1)
+          : this.prefix + value;
       }
       let headers = new HttpHeaders();
       this.http.post(
@@ -696,6 +672,7 @@ export class WithdrawComponent implements OnInit {
         });
     });
   }
+
   private isValidForm(): boolean {
     return (
       this.checkbankaccountname() &&
@@ -705,10 +682,8 @@ export class WithdrawComponent implements OnInit {
     );
   }
 
-
   private prepareImageBase64() {
     if (!this.imgURL) return;
-
     ['jpeg', 'png', 'gif'].some(type => {
       const prefix = `data:image/${type};base64,`;
       if (this.imgURL.includes(prefix)) {
@@ -738,7 +713,6 @@ export class WithdrawComponent implements OnInit {
 
   refreshPage(): void {
     this.ngOnInit();
-    //  this.getUserProfile();
     this.showPass = false;
     setTimeout(() => {
       this.refreshLoading = false;
@@ -749,7 +723,6 @@ export class WithdrawComponent implements OnInit {
   GetSMSProvider() {
     this.http.get(this.funct.ipaddress + 'user/getSMSProvider')
       .pipe(
-        //catchError(this.HandleErrorMessageService)
         catchError(this.handleError.bind(this))
       )
       .subscribe(
@@ -759,62 +732,8 @@ export class WithdrawComponent implements OnInit {
           this.SMSprovider = this.dto.Response.message;
           this.storage.store('SMSprovider', this.SMSprovider);
         });
-
   }
 
-  // getSMSOperators() {
-
-  //   var phoneno = this.phoneValue.substring(2, this.phoneValue.length);
-  //   this.http.get(this.funct.ipaddress + 'user/getSMSOperators')
-  //     .pipe(
-  //       //catchError(this.HandleErrorMessageService)
-  //       catchError(this.handleError.bind(this))
-  //     )
-  //     .subscribe(
-  //       result => {
-  //         this.dto.Response = {};
-  //         this.dto.Response = result;
-  //         this.SMSoperatorList = this.dto.Response;
-  //         if (this.SMSoperatorList != undefined || this.SMSoperatorList != null || this.SMSoperatorList != "") {
-
-  //           for (let i = 0; i < this.SMSoperatorList.length; i++) {
-  //             if (this.SMSoperatorList[i].operatorType == "MPT") {
-  //               for (let i = 0; i < this.MPTarraylist.length; i++)
-  //                 if (phoneno.startsWith(this.MPTarraylist[i])) {
-  //                   this.Usefirebase = true;
-  //                 }
-
-  //             }
-  //             else if (this.SMSoperatorList[i].operatorType == "Ooredoo") {
-  //               for (let i = 0; i < this.OoredooList.length; i++)
-  //                 if (phoneno.startsWith(this.OoredooList[i])) {
-  //                   this.Usefirebase = true;
-  //                 }
-
-  //             }
-  //             else if (this.SMSoperatorList[i].operatorType == "MYTEL") {
-  //               for (let i = 0; i < this.MYTELList.length; i++)
-  //                 if (phoneno.startsWith(this.MYTELList[i])) {
-  //                   this.Usefirebase = true;
-  //                 }
-
-  //             }
-  //             else if (this.SMSoperatorList[i].operatorType == "Telenor") {
-  //               for (let i = 0; i < this.TelenorList.length; i++)
-  //                 if (phoneno.startsWith(this.TelenorList[i])) {
-  //                   this.Usefirebase = true;
-  //                 }
-
-  //             }
-  //           }
-  //         }
-  //         else {
-  //           return;
-  //         }
-
-  //       });
-
-  // }
   checkbankAccount() {
     $("#bankAccountErr").html("");
     let pattern = RegExp(/^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/);
@@ -828,27 +747,7 @@ export class WithdrawComponent implements OnInit {
       $("#bankAccountErr").html(this.translateService.instant("accountInvaild"));
       return false;
     }
-    //if (!this.bankAccModel.bankAccount.startsWith("0")) {
-    // if (this.bankAccModel.bankAccount.startsWith("6")) {
-    //   var checkNumber = this.translateService.instant("not-allowed-phone-withdraw");
-    //   checkNumber = checkNumber.toString().replace("@number", "06");
-    //   $("#bankAccountErr").html(checkNumber);
-    //   return false;
-    // }
-    // if (this.bankAccModel.bankAccount.startsWith("8")) {
-    //   var checkNumber = this.translateService.instant("not-allowed-phone-withdraw");
-    //   checkNumber = checkNumber.toString().replace("@number", "08");
-    //   $("#bankAccountErr").html(checkNumber);
-    //   return false;
-    // }
-    // else {
-    //   var checkNumber = this.translateService.instant("not-allowed-phone-withdraw");
-    //   checkNumber = checkNumber.toString().replace("@number", "09");
-    //   $("#bankAccountErr").html(checkNumber);
-    //   return false;
-    // }
 
-    //}
     if (this.bankAccModel.confirmbankAccount != '') {
       if (this.bankAccModel.bankAccount == this.bankAccModel.confirmbankAccount) {
         $("#confirmbankAccountErr").html("");
@@ -856,27 +755,21 @@ export class WithdrawComponent implements OnInit {
       }
       return true;
     }
-
     else {
       $("#bankAccountErr").html("");
       localStorage.setItem('bankAccModel', JSON.stringify(this.bankAccModel));
       return true;
     }
-
-
   }
+
   confirmbankAccount() {
-
     $("#confirmbankAccountErr").html("");
-
     if (this.bankAccModel.confirmbankAccount.length == 0) {
       var phoneRequired = this.translateService.instant("requiredFiled");
       phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("withdraw_account_confirm_name"));
       $("#confirmbankAccountErr").html(phoneRequired);
       return false;
     }
-
-    // let pattern = RegExp('/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/');// ;
 
     if (this.bankAccModel.bankAccount != this.bankAccModel.confirmbankAccount) {
       $("#confirmbankAccountErr").html(this.translateService.instant("withdraw_account_confirm_error"));
@@ -888,7 +781,6 @@ export class WithdrawComponent implements OnInit {
 
   checkbankaccountname() {
     $("#bankNameErr").html("");
-    //let pattern = RegExp(/^[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$/);
     if (this.bankAccModel.bankaccountName.trim().length == 0) {
       var phoneRequired = this.translateService.instant("requiredFiled");
       phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("withdrawal_account_name"));
@@ -899,14 +791,9 @@ export class WithdrawComponent implements OnInit {
       localStorage.setItem('bankAccModel', JSON.stringify(this.bankAccModel));
       return true;
     }
-    // if (!pattern.test(this.bankAccModel.bankaccountName)) {
-    //   $("#bankAccountErr").html(this.translateService.instant("accountInvaild"));
-    //   return false;
-    // }
   }
 
   getUserProfile() {
-    let params = new HttpParams();
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     headers = headers.set('Authorization', this.token);
@@ -924,7 +811,7 @@ export class WithdrawComponent implements OnInit {
         }
       );
   }
-  /*need to check*/
+
   checkAmount(balance: any) {
     if (this.withdrawalRequestModel.amount != undefined && this.withdrawalRequestModel.amount != null && this.withdrawalRequestModel.amount != '') {
       if (this.withdrawalRequestModel.amount > balance) {
@@ -1163,24 +1050,14 @@ export class WithdrawComponent implements OnInit {
   getsmstype() {
     this.prefix = this.storage.retrieve('localPhonePrefix')
     let phoneNumber;
-    const value = this.phoneValue;
-
-    // already has prefix -> don't add again
-    // if (value.startsWith(this.prefix)) {
-    //   phoneNumber = value;
-    // }
-    // else if (value.startsWith("0")) {
-    //   phoneNumber = this.prefix + value.substring(1);
-    // }
-    // else {
-    //   phoneNumber = this.prefix + value;
-    // }
-    if (value.startsWith("0")) {
-      phoneNumber = this.prefix + value.substring(1);
-    }
-    else{
-      phoneNumber =this.prefix + value;
-    }
+    if (window.Telegram?.WebApp.initData) {
+        phoneNumber = this.storage.retrieve('tglocalphone');
+      } else {
+        const value = this.storage.retrieve('localPhoneValue').trim();
+        phoneNumber = value.startsWith('0')
+          ? this.prefix + value.slice(1)
+          : this.prefix + value;
+      }
     this.token = this.storage.retrieve('token');
     let headers = new HttpHeaders();
     this.http.get(this.funct.ipaddress + 'user/userSmsType?phone_no=' + phoneNumber, { headers: headers })

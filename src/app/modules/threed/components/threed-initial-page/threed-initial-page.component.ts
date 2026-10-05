@@ -117,10 +117,14 @@ export class ThreedInitialPageComponent implements OnInit {
   goBack() {
     var threedsuccessback = history.state.threedsuccessback;
     if (threedsuccessback == true) {
-      this.router.navigate(['/home'], { replaceUrl: false });
+      this.router.navigate(['/home'], {state: {
+                    from: 'noinitial'
+                  }, replaceUrl: false });
     }
     else {
-      this.router.navigate(['/home'], { replaceUrl: false });
+      this.router.navigate(['/home'], {state: {
+                    from: 'noinitial'
+                  }, replaceUrl: false });
     }
   }
 

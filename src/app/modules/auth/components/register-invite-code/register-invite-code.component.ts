@@ -71,7 +71,6 @@ export class RegisterInviteCodeComponent implements OnInit {
   }
 
   handleError(error: HttpErrorResponse) {
-  // console.log("Error>>>>" + JSON.stringify(error));
     this.loadingSubmiting = false;
     this.spinner.hide("loadingSubmiting");
     this.loadingSubmitingOne = false;
@@ -185,6 +184,8 @@ export class RegisterInviteCodeComponent implements OnInit {
     this.otpVerifyToken = this.storage.retrieve('otpVerifyToken');
     this.refModel.otpVerifyToken = this.otpVerifyToken;
     let headers = new HttpHeaders().set('Authorization', this.token);
+    console.log("otpVerifyToken =", this.storage.retrieve("otpVerifyToken"));
+    console.log("refModel =", this.refModel);
     this.http.post(this.funct.ipaddress + 'v2/authenticate/register', this.refModel, { headers })
       .pipe(catchError(this.handleError.bind(this)))
       .subscribe(result => {

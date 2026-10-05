@@ -803,5 +803,12 @@
   "nohistory":"မှတ်တမ်း မရှိပါ",
   "nobankaccount":"ဘဏ်အကောင့်မရှိပါ",
   "telegram_login":"Telegram ဖြင့် အကောင့်ဝင်မည်",
-  "telegram_register":"Telegram ဖြင့် အကောင့်ဖွင့်မည်"
+  "telegram_register":"Telegram ဖြင့် အကောင့်ဖွင့်မည်",
+  "download":"ဒေါင်းလုဒ်",
+  "share":"မျှဝေမည်",
+  "game_play_close":"ဂိမ်းကစားရန် ခေတ္တစောင့်ဆိုင်းပေးပါ",
+  "time_twod":"အချိန်",
+  "modern":"မော်ဒန်",
+  "internet":"အင်တာနက်",
+  "date":"Date "
 }

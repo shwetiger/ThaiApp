@@ -321,15 +321,19 @@ export class TwodInitialPageComponent implements OnInit {
     //this.ngOnInit();
     this.common.refreshLoading=true;
     this.spinner.show("refreshLoading");
-    setTimeout(() => {
-      this.common.refreshLoading = false;
-      this.spinner.hide("refreshLoading");
-    }, 2000);
+    window.location.reload();
+    // setTimeout(() => {
+    //   this.common.refreshLoading = false;
+    //   this.spinner.hide("refreshLoading");
+    //   window.location.reload();
+    // }, 2000);
   }
 
   goBack(){
    // this.location.back()
-   this.router.navigate(['/home']);
+   this.router.navigate(['/home'],{state: {
+                    from: 'noinitial'
+                  },});
   }
 
 }

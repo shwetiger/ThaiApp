@@ -20,6 +20,9 @@ const routes: Routes = [
     {
       path: 'home/:deviceId',component: HomeComponent
     },
+    // {
+    //   path: 'home/fcm/:fcmToken',component: HomeComponent
+    // },
     {
       path: 'home/:deviceId/:fcmToken',component: HomeComponent
     },

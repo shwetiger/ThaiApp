@@ -160,38 +160,83 @@ export class LoginVerifyPhonePageComponent implements OnInit {
     }
   }
 
-  getOtp(): void {
+  // getOtp(): void {
+  //   this.common.submitLoading = true;
+  //   this.spinner.show('submitLoading');
+  //   if (!this.checkPhoneNumber()) {
+  //     this.stopLoading();
+  //     return;
+  //   }
+  //   const phoneValue = this.storage.retrieve('localPhoneValue');
+  //   if (!phoneValue) {
+  //     this.stopLoading();
+  //     return;
+  //   }
+  //   const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+  //   this.http
+  //     .get<any>(
+  //       `${this.funct.ipaddress}v1/user/getNewDeviceOTP?phoneNo=${phoneNumber}`
+  //     )
+  //     .pipe(catchError(this.handleErrorMessage.handleError.bind(this, '')))
+  //     .subscribe(response => {
+  //       this.stopLoading();
+  //       this.dto.Response = response;
+  //       if (response?.errorCode === '000' && response?.status === true) {
+  //         this.handleSuccessOTP(response);
+  //         return;
+  //       }
+  //       if (response?.status === 'Error') {
+  //         this.handleErrorOTP(response);
+  //       }
+  //     });
+  // }
+
+
+  async getOtp(): Promise<void> {
+  return new Promise((resolve, reject) => {
     this.common.submitLoading = true;
     this.spinner.show('submitLoading');
+
     if (!this.checkPhoneNumber()) {
       this.stopLoading();
+      resolve();
       return;
     }
+
     const phoneValue = this.storage.retrieve('localPhoneValue');
     if (!phoneValue) {
       this.stopLoading();
+      resolve();
       return;
     }
+
     const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+
     this.http
       .get<any>(
         `${this.funct.ipaddress}v1/user/getNewDeviceOTP?phoneNo=${phoneNumber}`
       )
       .pipe(catchError(this.handleErrorMessage.handleError.bind(this, '')))
-      .subscribe(response => {
-        this.stopLoading();
-        this.dto.Response = response;
-        if (response?.errorCode === '000' && response?.status === true) {
-          this.handleSuccessOTP(response);
-          return;
-        }
-        if (response?.status === 'Error') {
-          this.handleErrorOTP(response);
+      .subscribe({
+        next: (response) => {
+          this.stopLoading();
+          this.dto.Response = response;
+
+          if (response?.errorCode === '000' && response?.status === true) {
+            this.handleSuccessOTP(response);
+          } else if (response?.status === 'Error') {
+            this.handleErrorOTP(response);
+          }
+
+          resolve();
+        },
+        error: (err) => {
+          this.stopLoading();
+          reject(err);
         }
       });
-  }
-
-
+  });
+}
   private formatPhoneNumber(phone: string, prefix: string): string {
     return phone.startsWith('0')
       ? prefix + phone.substring(1)
@@ -212,15 +257,10 @@ export class LoginVerifyPhonePageComponent implements OnInit {
       requestIdList = response.request_id;
     }
     this.storage.store('requestId', requestIdList);
-    await this.getCountDown();
+    //await this.getCountDown();
     this.storage.store('actionType', 'NEWDIVICE');
     this.storage.store('formPageType', 'NEWDIVICE');
-    this.router.navigate(
-      ['/login/otp'],
-      {
-        replaceUrl: true
-      }
-    );
+
     if (response.statusCode !== 200 || !response.body) {
       return;
     }
@@ -335,4 +375,20 @@ export class LoginVerifyPhonePageComponent implements OnInit {
           this.smstype = this.dto.Response.smstype;
         });
   }
+
+  async onNextClick() {
+  try {
+    await this.getsmstype();
+    await this.getOtp();
+    await this.getCountDown();
+     this.router.navigate(
+      ['/login/otp'],
+      {
+        replaceUrl: true
+      }
+    );
+  } catch (err) {
+    console.error(err);
+  }
+}
 }

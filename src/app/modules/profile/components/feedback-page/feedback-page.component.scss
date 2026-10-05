@@ -6,7 +6,7 @@
     max-height: 100%;
     overflow: auto;
     h3 {
-        color: $second-color; 
+        color: $second-color;
         font-weight: 700;
     }
 
@@ -21,25 +21,25 @@
       display: flex;
       justify-content: center;
       width: 50%;
-      border-bottom: solid 4px $second-color;  
-      box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);  
+      border-bottom: solid 4px $second-color;
+      box-shadow: 2px 0px 5px 0px rgba(0, 0, 0 , 0.2);
       z-index: 111;
   }
-  
+
   .one-header-active{
       display: flex;
       justify-content: center;
       width: 100%;
       border-bottom: solid 4px $second-color;
   }
-  
+
   .faq-searching-col {
      // text-align: center;
      // justify-content: center;
       height:50px;
     }
     .faq-searching {
-      width: 100%;   
+      width: 100%;
       padding: 8px;
       border:none;
       height:26px;
@@ -47,12 +47,12 @@
     .faq-searching:focus {
       border: 0px solid $second-color !important;
       outline: none !important;
-    } 
-  
+    }
+
     .faq-searching-icon {
-      margin-left: 1px;    
+      margin-left: 1px;
       margin-top: 10px;
-      width: 20px;    
+      width: 20px;
     }
     .no-resize {
       resize: none;
@@ -62,7 +62,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-  
+
   }
 
   .custom-textarea {
@@ -70,7 +70,7 @@
     height: 150px;
     resize: none;
 }
-     
+
 .no-resize-textarea .form-control {
   resize: none;
 }
@@ -84,7 +84,7 @@
   width:100%;
   scrollbar-width: none;
   height: 100%;
-  
+
 }
 
 
@@ -103,11 +103,11 @@
   }
     .underline-link {
       position: relative; /* Ensure the positioning context */
-      text-decoration: underline; 
+      text-decoration: underline;
       line-height: 1 /* Remove default underline */
-      
+
     }
-    
+
     .underline-link::after {
       content: ""; /* Add a pseudo-element for the underline */
       position: absolute; /* Position it relative to its parent */
@@ -121,7 +121,7 @@
     ol.a {
       list-style-type: number;
     }
-  
+
     .numbered-list {
       list-style-type: decimal;
       padding-left: 20px; /* Adjust as needed */
@@ -130,20 +130,21 @@
     .no-list-style {
       list-style-type: none; /* Remove bullet points */
     }
-    
+
     input::placeholder {
       font-size: 13px;
     }
 
     .form-control::placeholder {
       font-size: 13px; /* Set your desired font size */
-         
+
     }
 
     .custom-link {
       font-size: 14px;
-     
+
   }
 
+ 
 
-  
+

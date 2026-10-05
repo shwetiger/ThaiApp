@@ -18,6 +18,7 @@ import { DtoService } from 'src/app/shared/service/dto.service';
 import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-message.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 declare var $: any;
+declare var window: any;
 
 @Component({
   selector: 'app-checking-personal-info',
@@ -29,7 +30,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
   OtpSms: any;
   localOtpSms: any;
   prefix = "+95";
-  phoneValue: "";
+  phoneValue: any = "";
   regularExpressionPhone = "^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{3,6}$";
   localRegisterCountryCode: any;
   bank_type: any;
@@ -86,7 +87,13 @@ export class CheckingPersonalInfoComponent implements OnInit {
     this.storage.clear('formPageType',);
     this.BankInfoListByType();
     this.prefix = this.storage.retrieve('localPhonePrefix');
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
+      if (window.Telegram?.WebApp.initData) {
+      this.phoneValue = this.storage.retrieve('tglocalphone');
+      this.phoneValue = '0' + this.phoneValue.substring(3);
+    }
+    else {
+      this.phoneValue = this.storage.retrieve('localPhoneValue');
+    }
     this.fileUploadModel = {
       "phone_no": "",
       "deviceId": "",
@@ -598,7 +605,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     });
   }
 
- 
+
 
   initYearSelect() {
     const yearList = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019"];
@@ -607,7 +614,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     const dateRequired = this.translateService.instant("forget3");
 
     const $select = $(".year");
-
+    
     $select.attr("placeholder", placeholder);
 
     $select.each(function () {
@@ -662,7 +669,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
       $(".custom-select").removeClass("opened");
     });
   }
-  /*XXX*/
+
   BankInfoListByType() {
     let headers = new HttpHeaders();
     let params = new HttpParams();
@@ -681,7 +688,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
 
   checkPhoneNumber() {
     $("#phoneErr").html("");
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
     if (this.phoneValue.length == 0) {
       var phoneRequired = this.translateService.instant("requiredFiled");
       phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phoneNumberHint"));
@@ -706,7 +712,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
         timeOut: 3000,
         positionClass: 'toast-top-center',
       });
-
       return false;
     }
     if (this.imgURL != null && this.imgURL != undefined && this.imgURL != "") {
@@ -730,17 +735,16 @@ export class CheckingPersonalInfoComponent implements OnInit {
       }
     }
   }
+
   checkDate() {
     var day = sessionStorage.getItem("day");
     var month = sessionStorage.getItem("month");
     var year = sessionStorage.getItem("year");
     this.imgURL = sessionStorage.getItem("imageUrl");
-
     if (this.imgURL != null && this.imgURL != undefined && this.imgURL != "") {
       if ((day == '' && month == '' && year == '') || (day != '' && month != '' && year != '')) {
         if ((day == '' && month == '' && year == '')) {
           this.topupDate = null;
-
         }
         $("#errDate").html("");
         return true;
@@ -811,7 +815,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
     }
   }
 
-
   ForgotPasswordValidation(forgetPassword: TemplateRef<any>, forgetPassword1: TemplateRef<any>) {
     let checkBankList = this.checkBankList();
     let checkAmt = this.checkAmt();
@@ -819,7 +822,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
     if (!checkBankList || !checkAmt || !checkDate) {
       return;
     }
-
     this.common.submitLoading = true;
     this.spinner.show("submitLoading");
 
@@ -954,9 +956,11 @@ export class CheckingPersonalInfoComponent implements OnInit {
       class: "forgetPassword-class modal-sm"
     });
   }
+
   HideAlertOne() {
     this.forgetPasswordModalRef.hide();
   }
+
   HideAlert() {
     this.forgetPasswordModalRef.hide();
     this.navigation.goBack();
@@ -986,7 +990,6 @@ export class CheckingPersonalInfoComponent implements OnInit {
               this.Timer = data.remainingSeconds;
               this.storage.store('Timer', this.Timer);
             }
-
             resolve();
           },
           error: (err) => {
@@ -996,20 +999,34 @@ export class CheckingPersonalInfoComponent implements OnInit {
     });
   }
 
-  submit() {
-    this.storage.store("otptype", 'smsotp');
-    if (!this.checkPhoneNumber()) {
-      return;
-    }
+  async submit() {
+  this.storage.store("otptype", "smsotp");
+
+  if (!this.checkPhoneNumber()) {
+    return;
+  }
+
+  try {
+    await this.getsmstype();
     const phoneNumber = this.preparePhoneNumber();
-    this.http.get(
-      `${this.funct.ipaddress}v1/user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
-    )
+    const result: any = await new Promise((resolve, reject) => {
+      this.http.get(
+        `${this.funct.ipaddress}v1/user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
+      )
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, ""))
       )
-      .subscribe(result => this.handleForgetOtpResponse(result));
+      .subscribe({
+        next: (res) => resolve(res),
+        error: (err) => reject(err)
+      });
+    });
+    this.handleForgetOtpResponse(result);
+
+  } catch (err) {
+    console.error(err);
   }
+}
 
   private preparePhoneNumber(): string {
     const prefix = this.storage.retrieve('localPhonePrefix');
@@ -1019,6 +1036,7 @@ export class CheckingPersonalInfoComponent implements OnInit {
     }
     return prefix + this.phoneValue;
   }
+
 
   private async handleForgetOtpResponse(result: any) {
     this.dto.Response = result;

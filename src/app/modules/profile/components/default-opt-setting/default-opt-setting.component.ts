@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Router, ActivatedRoute } from '@angular/router';
 import { catchError, retry } from 'rxjs/operators';
+declare var window: any;
 //import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
@@ -48,6 +49,7 @@ export class DefaultOptSettingComponent implements OnInit {
   prefix = '+95';//"+95";
   functionName: any;
   Timer: any;
+
 
   constructor(public common: CommonService,
     private handleErrorMessage: HandleErrorMessageService,
@@ -149,11 +151,14 @@ export class DefaultOptSettingComponent implements OnInit {
     this.token = this.storage.retrieve('token');
     const headers = new HttpHeaders();
     let phoneValue = this.storage.retrieve('localPhoneValue');
+    let phoneNumber = '';
 
-    if (!phoneValue) {
-      phoneValue = this.storage.retrieve('tgphnumber');
+    if (window.Telegram?.WebApp.initData) {
+      phoneNumber = this.storage.retrieve('tglocalphone');
+    } else {
+      phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
     }
-    const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+
     this.http.post(this.funct.ipaddress + 'user/setUserSmsType?type=' + this.selectedType + '&phone_no=' + phoneNumber, { headers: headers })
       .pipe(
         catchError(this.handleErrorMessage.handleError.bind(this, this.formPage))
@@ -291,12 +296,15 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   getotptype() {
-    let phoneValue = this.storage.retrieve('localPhoneValue');
-
-    if (!phoneValue) {
-      phoneValue = this.storage.retrieve('tgphnumber');
-    }
-    const phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+     let phoneNumber;
+      if (window.Telegram?.WebApp.initData) {
+        phoneNumber = this.storage.retrieve('tglocalphone');
+      } else {
+        phoneNumber =this.storage.retrieve('localPhoneValue')
+        phoneNumber = phoneNumber.startsWith('0')
+          ? this.prefix + phoneNumber.slice(1)
+          : this.prefix + phoneNumber;
+      }
     if (this.formPage == 'register' || this.formPage == 'registerpage') {
       this.selectedType = this.registerotptype;
       if (this.phoneNumber == "" || this.phoneNumber == undefined || this.phoneNumber == null) {
@@ -376,7 +384,6 @@ export class DefaultOptSettingComponent implements OnInit {
       .set('phoneNo', this.phoneNumber)
       .set('type', this.selectedType);
 
-    // email ကို email type ဖြစ်မှသာ ထည့်
     if (this.selectedType === 'email') {
       params = params.set('email', this.email);
     }
@@ -405,7 +412,6 @@ export class DefaultOptSettingComponent implements OnInit {
   }
 
   private async handleRegisterOtpResponse(response: any) {
-    // this.dto.Response = response;
     await this.getCountDown();
     if (response.errorCode === '000' && response.status === true) {
       this.stopLoading();
@@ -425,14 +431,12 @@ export class DefaultOptSettingComponent implements OnInit {
       return;
     }
 
-    // ⏱ 180 seconds case
     if (response.status === 'Error' && response.message?.includes('180 seconds')) {
       this.storage.store("registeropttype", this.selectedType);
       this._location.back();
       return;
     }
 
-    // ⛔ 60 seconds case
     if (response.status === 'Error' && response.message?.includes('60 seconds')) {
       this.toastr.error(
         "",
@@ -535,16 +539,10 @@ export class DefaultOptSettingComponent implements OnInit {
         });
   }
 
-  // private formatPhoneNumber(phone: string, prefix: string): string {
-  //   return phone.startsWith('0')
-  //     ? prefix + phone.substring(1)
-  //     : prefix + phone;
-  // }
   private formatPhoneNumber(phone: string, prefix: string): string {
-  if (!phone) return '';
-
-  return phone.startsWith(prefix)
-    ? phone
-    : prefix + (phone.startsWith('0') ? phone.slice(1) : phone);
-}
+    if (!phone) return '';
+    return phone.startsWith(prefix)
+      ? phone
+      : prefix + (phone.startsWith('0') ? phone.slice(1) : phone);
+  }
 }

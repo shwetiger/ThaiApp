@@ -40,11 +40,8 @@ export class UserGuideComponent implements OnInit {
     private translateService: TranslateService,
     public common: CommonService,
   ) {
-      console.log('CURRENT LANG =', this.translateService.currentLang);
       this.lang=this.translateService.currentLang;
-
-  this.translateService.get('previous').subscribe(res => {
-    console.log('TRANSLATE TEST =', res);
+      this.translateService.get('previous').subscribe(res => {
   });
 
       // <h4 *ngIf="lang == 'en'" class="">{{ video.description_en}}</h4>

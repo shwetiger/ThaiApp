@@ -13,7 +13,7 @@ import { DtoService } from 'src/app/shared/service/dto.service';
 import { UtilService } from 'src/app/shared/service/util.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { Router, ActivatedRoute } from '@angular/router';
-
+declare var window: any;
 
 @Component({
   selector: 'app-initial-forgot-password',
@@ -43,7 +43,8 @@ export class InitialForgotPasswordComponent implements OnInit {
   smstype: any;
   functionName: string = 'Forgot Password OTP';
   Timer: any;
-  emailaddress:any;
+  emailaddress: any;
+  phoneNumber: any;
 
   constructor(
     private modalService: BsModalService,
@@ -68,7 +69,15 @@ export class InitialForgotPasswordComponent implements OnInit {
     this.common.submitLoading = false;
     this.spinner.hide("submitLoading");
     this.prefix = this.storage.retrieve('localPhonePrefix');
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
+
+    if (window.Telegram?.WebApp.initData) {
+      this.phoneValue = this.storage.retrieve('tglocalphone');
+      this.phoneValue = '0' + this.phoneValue.substring(3);
+
+    }
+    else {
+      this.phoneValue = this.storage.retrieve('localPhoneValue');
+    }
     this.storage.clear("formPageType")
     this.getsmstype();
     this.storage.clear('actionType');
@@ -139,7 +148,6 @@ export class InitialForgotPasswordComponent implements OnInit {
   checkPhoneNumber() {
     $("#phoneErr").html("");
     var prefix = this.storage.retrieve('localPhonePrefix');
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
     if (!this.phoneValue || this.phoneValue.length === 0) {
       var phoneRequired = this.translateService.instant("requiredFiled");
       phoneRequired = phoneRequired.toString().replace("@value", this.translateService.instant("phonenumbererr"));
@@ -188,12 +196,14 @@ export class InitialForgotPasswordComponent implements OnInit {
     }
     var phoneNumber;
     this.prefix = this.storage.retrieve('localPhonePrefix');
-    if (this.phoneValue.startsWith('0')) {
-      phoneNumber = this.prefix + this.phoneValue.substring(1, this.phoneValue.length);
-    }
-    else {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
+
+      if (this.phoneValue.startsWith('0')) {
+        phoneNumber = this.prefix + this.phoneValue.substring(1, this.phoneValue.length);
+      }
+      else {
+        phoneNumber = this.prefix + this.phoneValue;
+      }
+
     const forgetPasswordModal = {
       number: phoneNumber,
     };
@@ -207,34 +217,37 @@ export class InitialForgotPasswordComponent implements OnInit {
     this.forgetPasswordModalRef.hide();
   }
 
-  submit() {
+
+  async submit() {
     this.common.submitLoading = true;
     this.spinner.show("submitLoading");
     this.updateFCMtoken();
-    let checkPhone = this.checkPhoneNumber();
+
+    const checkPhone = this.checkPhoneNumber();
     if (!checkPhone) {
       return;
     }
-    let phoneNumber = this.prefix + this.phoneValue;
+
     this.prefix = this.storage.retrieve('localPhonePrefix');
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
+      if (this.phoneValue.startsWith("0")) {
+        this.phoneNumber = this.prefix + this.phoneValue.substring(1);
+      } else {
+        this.phoneNumber = this.prefix + this.phoneValue;
+      }
+    this.OtpSms = this.storage.retrieve('localOtpSms') || [];
+    try {
+      await this.getsmstype();
+      await this.ForgotPasswordBankSlipCheck();
+    } catch (err) {
+      console.error(err);
     }
-    else {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-    this.OtpSms = [];
-    this.OtpSms = this.storage.retrieve('localOtpSms');
-    this.ForgotPasswordBankSlipCheck();
-    return;
   }
 
   updateFCMtoken() {
     var token = this.storage.retrieve('localFcmtoken');
     let headers = new HttpHeaders();
     var phone_no = '';
-    var phoneValue = this.storage.retrieve('localPhoneValue');
+    var phoneValue =this.phoneValue;
     var prefix = this.storage.retrieve('localPhonePrefix');
     if ((phoneValue == null || phoneValue == undefined || phoneValue == "")) {
       return;
@@ -261,124 +274,152 @@ export class InitialForgotPasswordComponent implements OnInit {
       );
   }
 
-  ForgotPasswordBankSlipCheck() {
-    let checkPhone = this.checkPhoneNumber();
-    if (!checkPhone) {
-      return;
-    }
-    let phoneNumber;
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
-    this.prefix = this.storage.retrieve('localPhonePrefix');
-    if (this.phoneValue == null || this.phoneValue == undefined || this.phoneValue == "") {
-      return;
-    }
-    if (this.phoneValue.startsWith("0")) {
-      phoneNumber = this.prefix + this.phoneValue.substring(
-        1, this.phoneValue.length);
-    }
-    else {
-      phoneNumber = this.prefix + this.phoneValue;
-    }
-    this.http.get(this.funct.ipaddress + 'userforgotpassword/ForgotPasswordBankSlipCheck?phoneNo=' + phoneNumber)
-      .pipe(
-        catchError(this.handleError.bind(this))
+
+  async ForgotPasswordBankSlipCheck(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      let checkPhone = this.checkPhoneNumber();
+      if (!checkPhone) {
+        resolve();
+        return;
+      }
+
+      let phoneNumber;
+      this.prefix = this.storage.retrieve('localPhonePrefix');
+
+      if (!this.phoneValue) {
+        resolve();
+        return;
+      }
+      phoneNumber = this.phoneValue.startsWith("0")
+        ? this.prefix + this.phoneValue.substring(1)
+        : this.prefix + this.phoneValue;
+
+      this.http.get(
+        this.funct.ipaddress +
+        'userforgotpassword/ForgotPasswordBankSlipCheck?phoneNo=' + phoneNumber
       )
-      .subscribe(
-        result => {
-          this.dto.Response = {};
-          this.dto.Response = result;
-          if (this.dto.Response == null) {
-            this.toastr.error("", this.translateService.instant("forgetpwd_nouser"), {
-              timeOut: 3000,
-              positionClass: 'toast-top-center',
-            });
-            this.common.submitLoading = false;
-            this.spinner.hide("submitLoading");
-            return;
-          }
-          switch (this.dto.Response.requestFlag) {
-            case true:
-              this.getForgotPasswordOTP()
-              break;
-            case false:
-              switch (this.dto.Response.requestStatus) {
-                case 0:
-                  this.router.navigate(['/login/waiting'], { replaceUrl: false });
+        .pipe(
+          catchError(this.handleError.bind(this))
+        )
+        .subscribe({
+          next: async (result: any) => {
+            try {
+              this.dto.Response = result;
+              if (!this.dto.Response) {
+                this.common.submitLoading = false;
+                this.spinner.hide("submitLoading");
+                resolve();
+                return;
+              }
+              switch (this.dto.Response.requestFlag) {
+                case true:
+                  await this.getForgotPasswordOTP();
                   break;
-                case 1:
-                  this.getForgotPasswordOTP();
-                  break;
-                case 2:
-                  this.getForgotPasswordOTP();
-                  break;
-                case -1:
-                  if (this.dto.Response.status == "INACTIVE" && this.dto.Response.failCount < 3) {
-                    this.toastr.error("", this.translateService.instant("user_not_acceptable"), {
-                      timeOut: 3000,
-                      positionClass: 'toast-top-center',
-                    });
-                    this.common.submitLoading = false;
-                    this.spinner.hide("submitLoading");
+                case false:
+                  switch (this.dto.Response.requestStatus) {
+                    case 0:
+                      this.router.navigate(['/login/waiting'], { replaceUrl: false });
+                      break;
+
+                    case 1:
+                    case 2:
+                    default:
+                      await this.getForgotPasswordOTP();
+                      break;
+
+                    case -1:
+                      if (this.dto.Response.status == "INACTIVE" &&
+                        this.dto.Response.failCount < 3) {
+
+                        this.toastr.error("", this.translateService.instant("user_not_acceptable"), {
+                          timeOut: 3000,
+                          positionClass: 'toast-top-center',
+                        });
+
+                        this.common.submitLoading = false;
+                        this.spinner.hide("submitLoading");
+                      } else {
+                        let activeMinute = this.translateService.instant("login-active-minutes");
+                        activeMinute = activeMinute.toString().replace("@time", 5);
+
+                        this.toastr.error("", activeMinute, {
+                          timeOut: 3000,
+                          positionClass: 'toast-top-center',
+                        });
+                      }
+                      break;
+
+                    case 3:
+                    case 4:
+                      this.router.navigate(['/login/forgot-password-validation'], {
+                        replaceUrl: false
+                      });
+                      break;
                   }
-                  else {
-                    var activeMinute = this.translateService.instant("login-active-minutes");
-                    activeMinute = activeMinute.toString().replace("@time", 5);
-                    this.toastr.error("", activeMinute, {
-                      timeOut: 3000,
-                      positionClass: 'toast-top-center',
-                    });
-                  }
-                  return;
-                case 3:
-                  this.router.navigate(['/login/forgot-password-validation'], { replaceUrl: false });//show question page --closed
-                  break;
-                case 4:
-                  this.router.navigate(['/login/forgot-password-validation'], { replaceUrl: false });//show question page --closed
-                  break;
-                default:
-                  this.getForgotPasswordOTP();
                   break;
               }
-              break;
-          }
-        }
-      );
+
+              resolve();
+
+            } catch (err) {
+              reject(err);
+            }
+          },
+          error: (err) => reject(err)
+        });
+
+    });
   }
 
-  getForgotPasswordOTP(): void {
-    if (!this.checkPhoneNumber()) {
-      return;
-    }
-    const phoneValue = this.storage.retrieve('localPhoneValue');
-    const prefix = this.storage.retrieve('localPhonePrefix');
-    if (!phoneValue || !prefix) {
-      return;
-    }
-    const phoneNumber = this.formatPhoneNumber(phoneValue, prefix);
-    this.OtpSms = this.storage.retrieve('localOtpSms') || [];
 
-    this.http
-      .get<any>(
-        `${this.funct.ipaddress}v1/user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
-      )
-      .pipe(catchError(this.handleError.bind(this)))
-      .subscribe(response => {
-        this.dto.Response = response;
-        if (response?.status === true) {
-          this.handleSuccessResponse(response);
-          return;
-        }
-        if (response?.status === 'Error') {
-          this.handleErrorResponse(response);
-        }
-      });
+
+  async getForgotPasswordOTP(): Promise<void> {
+    return new Promise((resolve, reject) => {
+
+      if (!this.checkPhoneNumber()) {
+        resolve();
+        return;
+      }
+
+      const phoneValue =this.phoneValue;
+      const prefix = this.storage.retrieve('localPhonePrefix');
+      if (!phoneValue || !prefix) {
+        resolve();
+        return;
+      }
+
+      const phoneNumber = this.formatPhoneNumber(phoneValue, prefix);
+      this.OtpSms = this.storage.retrieve('localOtpSms') || [];
+
+      this.http
+        .get<any>(
+          `${this.funct.ipaddress}v1/user/getForgotPassowrdOTP?phoneNo=${phoneNumber}`
+        )
+        .pipe(
+          catchError(this.handleError.bind(this))
+        )
+        .subscribe({
+          next: (response) => {
+            this.dto.Response = response;
+            if (response?.status === true) {
+              this.handleSuccessResponse(response);
+            } else if (response?.status === 'Error') {
+              this.handleErrorResponse(response);
+            }
+            resolve();
+          },
+          error: (err) => {
+            reject(err);
+          }
+        });
+    });
   }
 
   private formatPhoneNumber(phone: string, prefix: string): string {
     return phone.startsWith('0')
       ? prefix + phone.substring(1)
       : prefix + phone;
-  }
+}
 
   private async handleSuccessResponse(response: any): Promise<void> {
     this.storage.store('localOtpSms', response);
@@ -452,7 +493,6 @@ export class InitialForgotPasswordComponent implements OnInit {
   async getCountDown(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.storage.clear('Timer');
-      const phoneValue = this.storage.retrieve('localPhoneValue');
       const prefix = this.storage.retrieve('localPhonePrefix');
       const phoneNumber = this.formatPhoneNumber(this.phoneValue, prefix);
       let headers = new HttpHeaders();
@@ -486,7 +526,6 @@ export class InitialForgotPasswordComponent implements OnInit {
 
   getsmstype() {
     let phoneNumber;
-    this.phoneValue = this.storage.retrieve('localPhoneValue');
     this.prefix = this.storage.retrieve('localPhonePrefix');
     if (this.phoneValue == null || this.phoneValue == undefined || this.phoneValue == "") {
       return;
@@ -507,12 +546,51 @@ export class InitialForgotPasswordComponent implements OnInit {
         result => {
           this.dto.Response = result;
           this.smstype = this.dto.Response.smstype;
-          this.emailaddress=this.dto.Response.email;
+          this.emailaddress = this.dto.Response.email;
         });
   }
 
   goBack() {
     this.location.back();
+  }
+
+  async onNextClick() {
+    try {
+      await this.getsmstype();
+      await this.getForgotPasswordOTP();
+      await this.getCountDown();
+      this.router.navigate(
+        ['/login/otp'],
+        {
+          replaceUrl: true
+        }
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  goDefaultOtp() {
+    if (!this.phoneValue || this.phoneValue.trim() === '') {
+      this.toastr.error(
+        '',
+        this.translateService.instant('withdrawal_wave_shop_phone_hint'),
+        {
+          timeOut: 3000,
+          positionClass: 'toast-top-center',
+        }
+      );
+      return;
+    }
+
+    this.router.navigate(
+      ['/me-page/default-otp'],
+      {
+        queryParams: {
+          phoneNumber: this.phoneValue
+        }
+      }
+    );
   }
 }
 

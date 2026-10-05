@@ -17,6 +17,7 @@ import { NavigationService } from 'src/app/shared/service/navigation.service';
 import { CommonService } from 'src/app/shared/service/common.service';
 import { HandleErrorMessageService } from 'src/app/shared/service/handle-error-message.service';
 declare var require: any;
+declare var window: any;
 
 @Component({
   selector: 'app-otp-page',
@@ -126,29 +127,19 @@ export class OtpPageComponent implements OnInit {
         this.phoneNumber = "+" + this.storage.retrieve('localInsertAccountOtpSms').number;
       }
     }
-
-    if (this.storage.retrieve('localPhoneValue') != null) {
-      var phone = this.storage.retrieve('localPhoneValue');
-      var prefix = this.storage.retrieve('localPhonePrefix')
-      if (phone.startsWith('0')) {
-        this.phoneNumber = prefix + phone.substring(1, phone.length);
-      }
-      else {
-        this.phoneNumber =  phone;
-      }
-    }
-    if (this.storage.retrieve('localPhoneValue') == null) {
-    //this.phoneNumber= this.storage.retrieve('tgphnumber')
-     var phone = this.storage.retrieve('localPhoneValue');
-     var prefix = this.storage.retrieve('localPhonePrefix')
-      if (phone.startsWith('0')) {
-        this.phoneNumber = prefix + phone.substring(1, phone.length);
-      }
-      else {
-        this.phoneNumber = phone;
+    if (window.Telegram?.WebApp.initData) {
+      this.phoneNumber = this.storage.retrieve('tglocalphone');
+    } else {
+      const phone = this.storage.retrieve('localPhoneValue');
+      const prefix = this.storage.retrieve('localPhonePrefix');
+      if (phone) {
+        if (phone.startsWith('0')) {
+          this.phoneNumber = prefix + phone.substring(1);
+        } else {
+          this.phoneNumber = prefix + phone;
+        }
       }
     }
-
     await this.getotptype();
     this.type =
       this.commonFormtype === 'register'
@@ -218,23 +209,9 @@ export class OtpPageComponent implements OnInit {
     }
   }
 
-  // startCountdown(seconds) {
-  //   let counter = seconds;
-  //   const interval = setInterval(() => {
-  //     this.coundDown = counter;
-  //     counter--;
-  //     if (counter < -1) {
-  //       clearInterval(interval);
-  //       this.coundDown = counter;
-  //     }
-  //     this.storage.store("Timer", this.coundDown)
-  //   }, 1000);
-  // }
 
   startCountdown(seconds: number) {
-    // 🔹 expire time (milliseconds)
     const expireAt = Date.now() + seconds * 1000;
-    // 🔹 storage ထဲမှာ expireAt ကိုသိမ်း (app restart / background အတွက်)
     this.storage.store('expireAt', expireAt);
 
     this.interval = setInterval(() => {
@@ -282,8 +259,8 @@ export class OtpPageComponent implements OnInit {
     this.storage.clear("changeoptprocess");
     let checkOPTINput = this.validateOtp();
     if (!checkOPTINput) {
-       this.common.submitLoading = false;
-       this.spinner.hide("submitLoading");
+      this.common.submitLoading = false;
+      this.spinner.hide("submitLoading");
       return;
     }
     if (this.common.actionType == "insertAccount") {
@@ -390,7 +367,6 @@ export class OtpPageComponent implements OnInit {
         if (this.storage.retrieve('localOtpSms').request_id != null) {
           let headers = new HttpHeaders();
           this.OtpSms = [];
-          //const localOtpSms = this.storage.retrieve('localOtpSms');
           var phone_no = this.phoneNumber;
           var request_id = this.request_id = this.storage.retrieve('requestId')
           var code = this.otpcode;
@@ -473,9 +449,7 @@ export class OtpPageComponent implements OnInit {
         });
         return false;
       }
-
     }
-
   }
 
   getOtp() {
@@ -498,12 +472,8 @@ export class OtpPageComponent implements OnInit {
 
   ResendWithdrawOtp() {
     this.token = this.storage.retrieve('token');
-
     let headers = new HttpHeaders().set('Authorization', this.token);
     this.storage.store('localInsertBankAccountList', this.bankAccountList);
-
-    // this.common.submitLoading = true;
-    // this.spinner.show('submitLoading');
 
     this.http
       .get(
@@ -580,19 +550,13 @@ export class OtpPageComponent implements OnInit {
       });
   }
 
-
   getNewOtp() {
     clearInterval(this.intervalId);
     this.intervalId = null;
     this.showResend = false;
     this.coundDown = 180;
     this.codeInput.reset();
-
-    // this.common.submitLoading = true;
-    // this.spinner.show('submitLoading');
-
     const headers = new HttpHeaders();
-
     this.http
       .get(
         `${this.funct.ipaddress}v1/user/getRegisterDeviceOTP?phoneNo=${this.phoneNumber}`,
@@ -724,10 +688,6 @@ export class OtpPageComponent implements OnInit {
           else {
             this.common.submitLoading = false;
             this.spinner.hide("submitLoading");
-            // this.toastr.error("Tip", this.dto.Response.message.toString(), {
-            //   timeOut: 3000,
-            //   positionClass: 'toast-top-center',
-            // });
             return false;
           }
         }
@@ -752,7 +712,9 @@ export class OtpPageComponent implements OnInit {
               this.storage.store('token', this.dto.token);
               this.storage.store('isUserLoggedIn', this.util.isLogged);
               this.storage.clear('localLoginModel');
-              this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+              this.router.navigate(['/home'], { state: {
+                    from: 'noinitial'
+                  }, replaceUrl: true }).then(() => {
                 history.replaceState(null, '', location.href); // replaceState is safer
                 window.addEventListener('popstate', () => {
                   history.replaceState(null, '', location.href);  // prevent navigation
@@ -787,17 +749,23 @@ export class OtpPageComponent implements OnInit {
   updateFCMtoken() {
     var token = this.storage.retrieve('localFcmtoken');
     let headers = new HttpHeaders();
-    var phone_no = '';
-    var phoneValue = this.storage.retrieve('localPhoneValue');
-    var prefix = this.storage.retrieve('localPhonePrefix');
-    if ((phoneValue == null || phoneValue == undefined || phoneValue == "")) {
-      return;
-    }
-    if (phoneValue.startsWith('0')) {
-      phone_no = prefix + phoneValue.substring(1, phoneValue.length);
-    }
-    else {
-      phone_no = prefix + phoneValue;
+    let phone_no = '';
+
+    const isTelegram = !!window.Telegram?.WebApp;
+
+    if (isTelegram) {
+      phone_no = this.storage.retrieve('tglocalphone') || '';
+    } else {
+      const phoneValue = this.storage.retrieve('localPhoneValue');
+      const prefix = this.storage.retrieve('localPhonePrefix');
+
+      if (!phoneValue) {
+        return;
+      }
+
+      phone_no = phoneValue.startsWith('0')
+        ? `${prefix}${phoneValue.substring(1)}`
+        : `${prefix}${phoneValue}`;
     }
     var newToken = {
       fcmtoken: token,
@@ -834,7 +802,9 @@ export class OtpPageComponent implements OnInit {
               this.storage.store('token', this.dto.token);
               this.storage.store('isUserLoggedIn', this.util.isLogged);
               this.storage.clear('localLoginModel');
-              this.router.navigate(['/home'], { replaceUrl: true }).then(() => {
+              this.router.navigate(['/home'], {state: {
+                    from: 'noinitial'
+                  }, replaceUrl: true }).then(() => {
                 history.replaceState(null, '', location.href); // replaceState is safer
                 window.addEventListener('popstate', () => {
                   history.replaceState(null, '', location.href);  // prevent navigation
@@ -854,10 +824,6 @@ export class OtpPageComponent implements OnInit {
 
   ResendRegisOtp() {
     const headers = new HttpHeaders();
-
-    // this.common.submitLoading = true;
-    // this.spinner.show('submitLoading');
-
     this.http
       .get(
         `${this.funct.ipaddress}v1/user/getRegisterOTP?phoneNo=${this.phoneNumber}&type=${this.registerottype}&email=${this.emailaddress}`,

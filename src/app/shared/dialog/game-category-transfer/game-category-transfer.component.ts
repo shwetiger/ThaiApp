@@ -24,7 +24,7 @@ export class GameCategoryTransferComponent implements OnInit {
     this.closeBtnName= this.translateService.instant('cancel');
     this.transferdata = {
     display_name: '',
-    providerId: ''
+    providerId: '',
       }
 
   }
@@ -39,6 +39,7 @@ export class GameCategoryTransferComponent implements OnInit {
     this.transferdata.display_name = this.data.name;
     this.transferdata.providerId = this.data.id;
     const list = { list: this.transferdata, tranfer: 'in' };
+    this.storage.store('routefrom','lowbalance')
     this.showGameInOutDialog(list);
    // this.router.navigate(['/game/wallet'], {state: {providerType: this.data.id,gameType: "in"},replaceUrl: false});
   }

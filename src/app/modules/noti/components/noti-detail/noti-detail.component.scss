@@ -1,51 +1,53 @@
 @import '../../../../variables';
-.root{    
-    margin-top: 8px; 
+.root{
+    margin-top: 8px;
     min-height: 100vh;
     background-color: $background-color !important;
-    .noti-card{        
-        margin: 38px 10px 16px;   
+    .noti-card{
+        margin: 38px 10px 16px;
         padding: 32px 16px 16px;
         position: relative;
         width: auto;
+        text-align: center;
         .title{
             color: blue;
             text-align: center;
-            padding-bottom: 16px;            
-        }        
+            padding-bottom: 16px;
+        }
         .noti__body{
             padding-bottom: 16px;
-            text-align: center;
+            text-align: center !important;
             .number{
                 color: blue;
             }
-        } 
+        }
         .noti__date{
             display: flex;
             align-self: center;
             margin-top: 16px;
-        }   
+            text-align: center;
+        }
 
-        
+
     }
     .img__box{
-        display: flex;       
+        display: flex;
         min-width: max-content;
-        left: calc(50% - 30px);        
+        left: calc(50% - 30px);
         top: 62px;
         position: absolute;
-        
-        .noti__imaged{   
+
+        .noti__imaged{
             width:60px;
             height:60px;
             border-radius: 10px;
-        }        
-    }  
+        }
+    }
 
     .ql-editor em {
         font-style: italic;
       }
-      
+
       .ql-editor strong {
         font-weight: bold;
       }
@@ -53,11 +55,15 @@
         line-height: 1.5;
       }
 
+     .ql-editor * {
+       text-align: center !important;
+}
+
 }
 
 
 
-  
-  
+
+
 
 

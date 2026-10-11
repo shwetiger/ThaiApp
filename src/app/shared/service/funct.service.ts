@@ -20,9 +20,9 @@ export class FunctService {
   constructor() {
   this.appName = "Thai 2D3D";
 
- // this.ipaddress = "https://api.thaisinapp.com/api/";
+  //this.ipaddress = "https://api.thaisinapp.com/api/";
 
- this.ipaddress = "https://apitest.thai2d3dgame.com/api/";
+  this.ipaddress = "https://apitest.thai2d3dgame.com/api/";
 
  // this.ipaddress = "https://api.thai2d3dgame.com/api/";
 

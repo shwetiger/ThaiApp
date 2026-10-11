@@ -141,6 +141,7 @@ export class ThreedResultComponent implements OnInit {
     }
     return throwError(error);
   }
+
   getThreedResult(pageNumber) {
     this.loading = true;
     this.spinner.show();

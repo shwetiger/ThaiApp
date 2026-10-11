@@ -112,6 +112,7 @@
                 <div style="width: 100%" class="ql-editor" (click)="handleClick($event)"
                     [innerHTML]="getSanitizedContent(this.notiDetailObj.bodyForPushNoti)"
                     *ngIf="notiDetailObj.bodyForPushNoti!=null"></div>
+                    <!-- {{this.notiDetailObj.bodyForPushNoti}} -->
             </div>
 
             <div class="noti__body" style="white-space: pre-line;text-align: center;" *ngIf="notilink!=''">

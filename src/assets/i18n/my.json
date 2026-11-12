@@ -810,5 +810,8 @@
   "time_twod":"အချိန်",
   "modern":"မော်ဒန်",
   "internet":"အင်တာနက်",
-  "date":"Date "
+  "date":"Date ",
+  "discount":"လျှော့ဈေး",
+  "enteramt":"Enter amount",
+  "enternum":"Enter number"
 }

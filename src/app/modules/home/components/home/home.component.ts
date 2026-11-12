@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef,NgZone  } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, NgZone } from '@angular/core';
 import { NgxSpinnerService } from "ngx-spinner";
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-webstorage';
@@ -41,7 +41,8 @@ export class HomeComponent implements OnInit {
   isTelegramLoggingIn = false;
   isAppReady = false;
   private telegramLoginStarted = false;
- // private homeInitialized = false;
+  prefix:any;
+  // private homeInitialized = false;
 
   constructor(
     public handleErrorMessage: HandleErrorMessageService,
@@ -80,31 +81,25 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.storage.clear('notgetBal');
-     await this.checkTelegramLogin();
-      this.initializeHomeData();
-      this.isAppReady = true;
-    // if (this.homeInitialized) {
-    //   return;
-    // }
-    // this.homeInitialized = true;
+    await this.checkTelegramLogin();
+    this.initializeHomeData();
+    this.isAppReady = true;
+    this.prefix = this.storage.retrieve('localPhonePrefix');
+    let phoneValue = this.storage.retrieve('localPhoneValue');
+    let phoneNumber = '';
+     if (window.Telegram?.WebApp.initData) {
+      phoneNumber = this.storage.retrieve('tglocalphone');
+    } else {
+      phoneNumber = this.formatPhoneNumber(phoneValue, this.prefix);
+    }
 
-  //   try {
-  //     const state = history.state;
-  //     if (state.navigationId == 1) {
-  //       const userAgent = navigator.userAgent;
-  //       if (userAgent.includes("Telegram")) {
-  //         const initData = await this.waitForTelegramInitData();
-  //         if (initData) {
-  //           await this.telegramLogin(initData);
-  //         }
-  //       }
-  //     }
-  //   } catch (err) {
-  //     console.error('Telegram initialization error', err);
-  //   } finally {
-  //     this.initializeHomeData();
-  //     this.isAppReady = true;
-  //   }
+  }
+
+  private formatPhoneNumber(phone: string, prefix: string): string {
+    if (!phone) return '';
+    return phone.startsWith(prefix)
+      ? phone
+      : prefix + (phone.startsWith('0') ? phone.slice(1) : phone);
   }
 
   private wait(ms: number): Promise<void> {
@@ -215,172 +210,170 @@ export class HomeComponent implements OnInit {
 
   async telegramLogin(): Promise<boolean> {
 
-  const tg = (window as any).Telegram?.WebApp;
+    const tg = (window as any).Telegram?.WebApp;
 
-  if (!tg?.initDataUnsafe?.user) {
-    return false;
-  }
+    if (!tg?.initDataUnsafe?.user) {
+      return false;
+    }
 
-  tg.ready();
-  const user = tg.initDataUnsafe.user;
+    tg.ready();
+    const user = tg.initDataUnsafe.user;
 
-  const telegramLoginModel = {
+    const telegramLoginModel = {
 
-    initData: tg.initData,
+      initData: tg.initData,
 
-    telegram_id: user.id,
+      telegram_id: user.id,
 
-    username: user.username || '',
+      username: user.username || '',
 
-    first_name: user.first_name||  '',
+      first_name: user.first_name || '',
 
-    app_version: 'tg_bot'
-  };
+      app_version: 'tg_bot'
+    };
 
-  this.spinner.show('refreshLoading');
-  return new Promise<boolean>((resolve, reject) => {
+    this.spinner.show('refreshLoading');
+    return new Promise<boolean>((resolve, reject) => {
 
-    this.http.post(
-      this.funct.ipaddress + 'tg/webappLogin',
-      telegramLoginModel
-    ).subscribe({
+      this.http.post(
+        this.funct.ipaddress + 'tg/webappLogin',
+        telegramLoginModel
+      ).subscribe({
 
-      next: async (result: any) => {
+        next: async (result: any) => {
 
-        this.spinner.hide('refreshLoading');
+          this.spinner.hide('refreshLoading');
 
-        console.log(
-          'Telegram login response:',
-          result
-        );
+          console.log(
+            'Telegram login response:',
+            result
+          );
 
-        if (
-          result &&
-          result.status !== 'Error' &&
-          result.token
-        ) {
+          if (
+            result &&
+            result.status !== 'Error' &&
+            result.token
+          ) {
 
-          this.token ='Bearer ' + result.token;
-          this.isUserLogin = true;
-          try {
-            await this.ngZone.run(async () => {
-              this.isUserLogin = true;
-              this.spinner.hide('refreshLoading');
-              this.common.refreshLoading=false;
+            this.token = 'Bearer ' + result.token;
+            this.isUserLogin = true;
+            try {
+              await this.ngZone.run(async () => {
+                this.isUserLogin = true;
+                this.spinner.hide('refreshLoading');
+                this.common.refreshLoading = false;
 
-             await this.storage.store("token",this.token);
+                await this.storage.store("token", this.token);
 
-              await this.storage.store(
-                'isUserLoggedIn',
-                true
+                await this.storage.store(
+                  'isUserLoggedIn',
+                  true
+                );
+
+                await this.storage.store(
+                  'telegram_id',
+                  String(user.id)
+                );
+
+                this.cdr.detectChanges();
+              });
+              resolve(true);
+
+            } catch (error) {
+
+              console.error(
+                'Telegram storage error:',
+                error
               );
 
-              await this.storage.store(
-                'telegram_id',
-                String(user.id)
-              );
+              resolve(false);
+            }
 
-              this.cdr.detectChanges();
-            });
-            resolve(true);
+          } else {
 
-          } catch (error) {
-
-            console.error(
-              'Telegram storage error:',
-              error
+            console.log(
+              'Telegram login failed'
             );
 
             resolve(false);
           }
+        },
 
-        } else {
+        error: (error) => {
 
-          console.log(
-            'Telegram login failed'
+          this.spinner.hide('refreshLoading');
+
+          console.error(
+            'Telegram login API error:',
+            error
           );
 
-          resolve(false);
+          reject(error);
         }
-      },
-
-      error: (error) => {
-
-        this.spinner.hide('refreshLoading');
-
-        console.error(
-          'Telegram login API error:',
-          error
-        );
-
-        reject(error);
-      }
+      });
     });
-  });
-}
+  }
 
 
   async checkTelegramLogin(): Promise<boolean> {
 
-  const tg = (window as any).Telegram?.WebApp;
+    const tg = (window as any).Telegram?.WebApp;
 
-  if (!tg) {
-    console.log('Telegram WebApp not found');
-    return false;
-  }
-
-  tg.ready();
-
-  const user = tg.initDataUnsafe?.user;
-
-  if (!user) {
-    console.log('Telegram user not found');
-    return false;
-  }
-
-  const currentTelegramId = String(user.id);
-
-  console.log(
-    'Telegram user:',
-    currentTelegramId
-  );
-
-  try {
-    const loginSuccess = await this.telegramLogin();
-    if (loginSuccess) {
-
-      this.isUserLogin = true;
-
-      await this.storage.store(
-        'isUserLoggedIn',
-        true
-      );
-
-      await this.storage.store(
-        'telegram_id',
-        currentTelegramId
-      );
-
-      this.cdr.detectChanges();
-
-      return true;
+    if (!tg) {
+      return false;
     }
 
-    this.isUserLogin = false;
+    tg.ready();
 
-    return false;
+    const user = tg.initDataUnsafe?.user;
 
-  } catch (error) {
+    if (!user) {
+      return false;
+    }
 
-    console.error(
-      'checkTelegramLogin error:',
-      error
+    const currentTelegramId = String(user.id);
+
+    console.log(
+      'Telegram user:',
+      currentTelegramId
     );
 
-    this.isUserLogin = false;
-    return false;
+    try {
+      const loginSuccess = await this.telegramLogin();
+      if (loginSuccess) {
+
+        this.isUserLogin = true;
+
+        await this.storage.store(
+          'isUserLoggedIn',
+          true
+        );
+
+        await this.storage.store(
+          'telegram_id',
+          currentTelegramId
+        );
+
+        this.cdr.detectChanges();
+
+        return true;
+      }
+
+      this.isUserLogin = false;
+
+      return false;
+
+    } catch (error) {
+
+      console.error(
+        'checkTelegramLogin error:',
+        error
+      );
+
+      this.isUserLogin = false;
+      return false;
+    }
   }
-}
 
   private getTelegramInitData(): string | null {
     const telegram = (window as any).Telegram;
@@ -666,5 +659,4 @@ export class HomeComponent implements OnInit {
       window.history.replaceState({}, document.title, window.location.href);
     }
   }
-
 }

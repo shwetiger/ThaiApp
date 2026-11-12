@@ -35,6 +35,8 @@ export class ThreedResultComponent implements OnInit {
   deviceId: any;
   issafariView: any;
   loading: any;
+  showlogo: any;
+  isVideoFinished = false;
   /*XXX*/
   //spinnerName :string;
   constructor(
@@ -73,6 +75,10 @@ export class ThreedResultComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    window.addEventListener(
+      'facebook-video-finished',
+      this.onFacebookVideoFinished
+    );
     if (this.isWebview) {
       this.deviceId = "mobile";
 
@@ -87,7 +93,16 @@ export class ThreedResultComponent implements OnInit {
     //this.getThreeResult();
   }
 
+  onFacebookVideoFinished = (): void => {
+    this.isVideoFinished = true;
+  };
 
+  ngOnDestroy(): void {
+  window.removeEventListener(
+    'facebook-video-finished',
+    this.onFacebookVideoFinished
+  );
+}
 
   getthreedliveLink() {
     let headers = new HttpHeaders();
@@ -99,6 +114,9 @@ export class ThreedResultComponent implements OnInit {
       .subscribe(
         result => {
           this.dto.Response = result;
+          if (this.dto.Response.liveLink == '') {
+            this.showlogo = true;
+          }
           const livelink = 'https://www.facebook.com/plugins/video.php?href=' + this.dto.Response.liveLink;
           this.showliveVideo = this.sanitizer.bypassSecurityTrustResourceUrl(livelink);
           this.watchlivevideo = this.dto.Response.liveLink;

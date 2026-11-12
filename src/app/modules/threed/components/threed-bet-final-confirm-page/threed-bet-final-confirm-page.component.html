@@ -20,23 +20,36 @@
                 <td class="text-right">{{betTwoDListObj.amount | number:'1.0':'en-US'}}</td>
               </tr>
               <tr>
-                <td colspan="2" class="text-left font-weight-bold" style="color:#2253A2"> {{ 'total_amount' | translate
-                  }}</td>
-                <td class="text-right">
-                  <h4 class="bet-amount-color" style="font-weight: 600;">{{totalAmount | number:'1.0':'en-US'}} {{ 'ks'
-                    | translate }}</h4>
+                <td colspan="2" class="text-right">
+                  <h4 style="font-weight: 600; color: #2253A2; margin: 0;">
+                    {{ 'total_amount' | translate }} </h4>
+                </td>
+                <td colspan="1" class="text-right">
+                  <h4> {{ totalAmount | number:'1.0':'en-US' }}
+                    {{ 'ks' | translate }}
+                  </h4>
+                </td>
+              </tr>
+              <tr *ngIf="limitedAmt != null && discountAmount !=null">
+                <td colspan="2" class="text-right">
+                  <h4 style="margin: 0;">
+                   {{'discount' | translate}}  {{ discountPercent }} % </h4>
+                </td>
+                <td colspan="1" class="text-right">
+                  <h4>  {{ discountAmount | number:'1.0':'en-US' }} {{ 'ks' | translate }}
+                  </h4>
                 </td>
               </tr>
             </tbody>
           </table>
-          <div class="row totalbetamount" *ngIf="limitedAmt != null && discountAmount !=null">
+          <!-- <div class="row totalbetamount text-center" *ngIf="limitedAmt != null && discountAmount !=null">
             <div class="col-6 my-2 text-center">
               Discount {{ discountPercent }} %
             </div>
-            <div class="col-6 my-2">
+            <div class="col-6 my-2 text-center">
               {{ discountAmount | number:'1.0':'en-US' }} {{ 'ks' | translate }}
             </div>
-          </div>
+          </div> -->
 
         </div>
       </div>

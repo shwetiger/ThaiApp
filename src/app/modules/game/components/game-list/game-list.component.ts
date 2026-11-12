@@ -672,7 +672,7 @@ export class GameListComponent implements OnInit, OnDestroy {
                 var waitmessage = this.translateService.instant('skm-lock-time');
                 waitmessage = waitmessage.toString().replace("@time", this.timeLeft);
                 this.toastr.error("", waitmessage, {
-                  timeOut: 1000,
+                  timeOut: 2000,
                   positionClass: 'toast-top-center',
                 });
                 return;

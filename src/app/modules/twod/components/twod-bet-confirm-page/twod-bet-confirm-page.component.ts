@@ -176,10 +176,11 @@ export class TwodBetConfirmPageComponent implements OnInit {
       });
     }
   }
-  twodBetEditModal(twodBetEdit: TemplateRef<any>, number: number, amount: number,) {
+  twodBetEditModal(twodBetEdit: TemplateRef<any>, number: number, amount: number,i:number) {
     const betModal = {
       number: number,
-      amount: amount
+      amount: amount,
+      i:i
     };
     this.twodBetEdit = this.modalService.show(twodBetEdit, {
       initialState: betModal,

@@ -24,7 +24,7 @@ export class FunctService {
 
   this.ipaddress = "https://apitest.thai2d3dgame.com/api/";
 
- // this.ipaddress = "https://api.thai2d3dgame.com/api/";
+  //this.ipaddress = "https://api.thai2d3dgame.com/api/";
 
     this.ipaddresslive = "https://api.thai2dlive.com/api/";
     this.ipaddressluke = "https://luke.2dboss.com/api/luke/twod-result-live";

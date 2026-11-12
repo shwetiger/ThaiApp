@@ -1,4 +1,4 @@
-import { Component, OnInit,OnDestroy, Pipe, PipeTransform, PLATFORM_ID, Inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Pipe, PipeTransform, PLATFORM_ID, Inject, ChangeDetectorRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, retry } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
@@ -130,26 +130,23 @@ export class ServiceComponent implements OnInit {
   // }
 
   ngOnDestroy(): void {
-  this.isDestroyed = true;
+    this.isDestroyed = true;
 
-  if (this.tawkTimeout) {
-    clearTimeout(this.tawkTimeout);
-    this.tawkTimeout = null;
-  }
-
-  const tawk = (window as any).Tawk_API;
-
-  try {
-    if (tawk && typeof tawk.hideWidget === 'function') {
-      tawk.hideWidget();
+    if (this.tawkTimeout) {
+      clearTimeout(this.tawkTimeout);
+      this.tawkTimeout = null;
     }
 
-    // Optional: remove widget visibility state
-    console.log('Service phone page destroyed: hiding Tawk widget');
-  } catch (error) {
-    console.error('Tawk hideWidget error:', error);
+    const tawk = (window as any).Tawk_API;
+
+    try {
+      if (tawk && typeof tawk.hideWidget === 'function') {
+        tawk.hideWidget();
+      }
+    } catch (error) {
+      console.error('Tawk hideWidget error:', error);
+    }
   }
-}
 
 
 
@@ -291,12 +288,11 @@ export class ServiceComponent implements OnInit {
         next: (response: any) => {
           if (this.isDestroyed) {
             return;
-          }
-          console.log(JSON.stringify(response));
+          };
           const hash = response?.hash;
           const phone = response?.phoneNo;
           const userid = response?.userId;
-          const name=response?.name;
+          const name = response?.name;
 
 
 
@@ -307,7 +303,7 @@ export class ServiceComponent implements OnInit {
           }
 
           // 2. Load Tawk
-          this.initTawk(phone, hash, userid,name);
+          this.initTawk(phone, hash, userid, name);
         },
 
         error: (error) => {
@@ -318,7 +314,179 @@ export class ServiceComponent implements OnInit {
   }
 
 
- private initTawk(
+
+  // private initTawk(
+  //   phoneNo: string,
+  //   hash: string,
+  //   userid: string,
+  //   name: string
+  // ): void {
+  //   const w = window as any;
+
+  //   if (this.isDestroyed) {
+  //     return;
+  //   }
+
+  //   // Initialize Tawk API
+  //   w.Tawk_API = w.Tawk_API || {};
+  //   const tawkApi = w.Tawk_API;
+
+  //   // Normalize input values
+  //   const phone = String(phoneNo || '').trim();
+  //   const userId = String(userid || '').trim();
+  //   const secureHash = String(hash || '').trim();
+  //   const visitorName = String(name || '').trim();
+  //   const displayName = phone || visitorName;
+
+  //   // Validate required values
+  //   if (!userId || !secureHash) {
+  //     console.error('Tawk login requires userId and hash');
+  //     this.finishTawkLoading();
+  //     return;
+  //   }
+
+  //   // Validate E.164 phone format
+  //   if (phone && !/^\+[1-9]\d{1,14}$/.test(phone)) {
+  //     console.error(
+  //       'Invalid phone format. Expected: +959123456789'
+  //     );
+  //     this.finishTawkLoading();
+  //     return;
+  //   }
+
+  //   let loginStarted = false;
+  //   let finished = false;
+
+  //   const finish = (): void => {
+  //     if (finished) {
+  //       return;
+  //     }
+
+  //     finished = true;
+  //     this.finishTawkLoading();
+  //   };
+
+  //   const loginTawk = (): void => {
+  //     if (this.isDestroyed || loginStarted) {
+  //       return;
+  //     }
+
+  //     if (typeof tawkApi.login !== 'function') {
+  //       console.error('Tawk login API is not ready');
+  //       finish();
+  //       return;
+  //     }
+
+  //     loginStarted = true;
+
+  //     // Prepare authenticated visitor data
+  //     const loginData: any = {
+  //       userId: userId,
+  //       hash: secureHash,
+  //       name: displayName
+  //     };
+
+  //     // Pass phone directly through login data
+  //     if (phone) {
+  //       loginData.phone = phone;
+  //     }
+
+  //     try {
+
+  //       console.log('Tawk login payload:', {
+  //         userId,
+  //         name: displayName,
+  //         phone: phone,
+  //         hashExists: !!secureHash
+  //       });
+  //       tawkApi.login(loginData, (error: any) => {
+  //         if (this.isDestroyed) {
+  //           finish();
+  //           return;
+  //         }
+
+  //         if (error) {
+  //           console.error('Tawk login error:', error);
+  //           finish();
+  //           return;
+  //         }
+
+  //         console.log('Tawk login successful for:', userId);
+
+  //         // Show widget after successful login
+  //         if (typeof tawkApi.showWidget === 'function') {
+  //           tawkApi.showWidget();
+  //         }
+
+  //         finish();
+  //       });
+  //     } catch (error) {
+  //       console.error('Tawk login exception:', error);
+  //       finish();
+  //     }
+  //   };
+
+  //   // Reuse an already initialized Tawk API
+  //   if (typeof tawkApi.login === 'function') {
+
+  //     loginTawk();
+  //     return;
+  //   }
+
+  //   // Check whether the widget script already exists
+  //   const existingScript = document.querySelector(
+  //     'script[src*="embed.tawk.to"]'
+  //   ) as HTMLScriptElement | null;
+
+  //   if (existingScript) {
+  //     const previousOnLoad = tawkApi.onLoad;
+
+  //     tawkApi.onLoad = (): void => {
+  //       if (typeof previousOnLoad === 'function') {
+  //         try {
+  //           previousOnLoad();
+  //         } catch (error) {
+  //           console.error(
+  //             'Previous Tawk onLoad error:',
+  //             error
+  //           );
+  //         }
+  //       }
+
+  //       loginTawk();
+  //     };
+
+  //     return;
+  //   }
+
+  //   // Register callback before loading the widget
+  //   tawkApi.onLoad = (): void => {
+  //     loginTawk();
+  //   };
+
+  //   // Load Tawk script once
+  //   const script = document.createElement('script');
+
+  //   script.async = true;
+
+  //   // Testing widget
+  //   script.src =
+  //     'https://embed.tawk.to/6a3f7d9bedc6bb1d4b5d0a93/1js405a6q';//testing
+
+  //   // Production widget, if needed:
+  //   // script.src =
+  //   //  'https://embed.tawk.to/6a3fb078eafe991d4bfa009f/1js4cim9n';//prod
+
+  //   script.onerror = (error: Event): void => {
+  //     console.error('Tawk script loading failed:', error);
+  //     finish();
+  //   };
+
+  //   document.body.appendChild(script);
+  // }
+
+
+private initTawk(
   phoneNo: string,
   hash: string,
   userid: string,
@@ -330,125 +498,165 @@ export class ServiceComponent implements OnInit {
     return;
   }
 
-  // Initialize Tawk API before loading the script
-  w.Tawk_API = w.Tawk_API || {};
-
-  const tawkApi = w.Tawk_API;
-
-  // Normalize phone number.
-  // Input should already be in E.164 format, e.g. +959123456789
   const phone = String(phoneNo || '').trim();
+  const userId = String(userid || '').trim();
+  const secureHash = String(hash || '').trim();
+  const visitorName = String(name || '').trim();
 
-  if (!userid || !hash) {
+  // Use phone as the displayed name when available.
+  const displayName = phone || visitorName;
+
+  if (!userId || !secureHash) {
     console.error('Tawk login requires userId and hash');
     this.finishTawkLoading();
     return;
   }
 
+  // Validate phone number using E.164 format.
   if (phone && !/^\+[1-9]\d{1,14}$/.test(phone)) {
     console.error(
-      'Invalid phone format. Use E.164 format, e.g. +959123456789'
+      'Invalid phone format. Expected: +959123456789'
     );
     this.finishTawkLoading();
     return;
   }
 
+  // Reuse the existing Tawk API.
+  w.Tawk_API = w.Tawk_API || {};
+  const tawkApi = w.Tawk_API;
+
   let loginStarted = false;
+  let finished = false;
+  let loadHandlerRegistered = false;
+
+  const finish = (): void => {
+    if (finished) {
+      return;
+    }
+
+    finished = true;
+    this.finishTawkLoading();
+  };
 
   const loginTawk = (): void => {
-    if (this.isDestroyed || loginStarted) {
+    if (this.isDestroyed || loginStarted || finished) {
       return;
     }
 
     if (typeof tawkApi.login !== 'function') {
       console.error('Tawk login API is not ready');
-      this.finishTawkLoading();
+      finish();
       return;
     }
 
     loginStarted = true;
 
+    const loginData: Record<string, string> = {
+      userId,
+      hash: secureHash,
+      name: displayName
+    };
+
+    if (phone) {
+      loginData['phone'] = phone;
+    }
+
     try {
       tawkApi.login(
-        {
-          userId: String(userid).trim(),
-          hash: String(hash).trim(),
-          name: String(phone || '').trim(),
-          phone: phone
-        },
-        (error: any) => {
+        loginData,
+        (error: any): void => {
           if (this.isDestroyed) {
+            finish();
             return;
           }
 
           if (error) {
             console.error('Tawk login error:', error);
-            this.finishTawkLoading();
+            finish();
             return;
           }
 
           console.log('Tawk login successful');
 
-          // Phone is already passed through login().
-          // No additional setAttributes() call is needed.
-
-          if (typeof tawkApi.showWidget === 'function') {
-            tawkApi.showWidget();
+          // Display the widget only after login succeeds.
+          try {
+            if (typeof tawkApi.showWidget === 'function') {
+              tawkApi.showWidget();
+            }
+          } catch (error) {
+            console.error('Tawk showWidget error:', error);
           }
 
-          this.finishTawkLoading();
+          finish();
         }
       );
     } catch (error) {
-      console.error('Tawk login error:', error);
-      this.finishTawkLoading();
+      console.error('Tawk login exception:', error);
+      finish();
     }
   };
 
-  // If Tawk is already initialized, login directly.
+  // If login is already available, reuse the API.
   if (typeof tawkApi.login === 'function') {
     loginTawk();
     return;
   }
 
-  // Register onLoad before loading the script.
-  tawkApi.onLoad = () => {
-    console.log('Tawk widget loaded');
+  // Register onLoad only once for this initialization.
+  const previousOnLoad = tawkApi.onLoad;
+
+  const handleTawkLoad = (): void => {
+    if (loadHandlerRegistered) {
+      return;
+    }
+
+    loadHandlerRegistered = true;
+
+    // Preserve an existing onLoad callback.
+    if (typeof previousOnLoad === 'function') {
+      try {
+        previousOnLoad();
+      } catch (error) {
+        console.error('Previous Tawk onLoad error:', error);
+      }
+    }
+
     loginTawk();
   };
 
+  tawkApi.onLoad = handleTawkLoad;
+
+  // Check if the script already exists.
   const existingScript = document.querySelector(
     'script[src*="embed.tawk.to"]'
   ) as HTMLScriptElement | null;
 
   if (existingScript) {
-    // Avoid calling login twice.
-    // The registered Tawk onLoad callback handles login.
-    existingScript.addEventListener(
-      'error',
-      () => {
-        console.error('Tawk script loading failed');
-        this.finishTawkLoading();
-      },
-      { once: true }
-    );
-
+    // If the script has loaded but login is still unavailable,
+    // wait for Tawk's onLoad callback.
+    // Do not insert another script.
     return;
   }
 
+  // Load Tawk only when no existing script is found.
   const script = document.createElement('script');
 
   script.async = true;
   script.src =
-    'https://embed.tawk.to/6a3f7d9bedc6bb1d4b5d0a93/1js405a6q';
+    'https://embed.tawk.to/6a3f7d9bedc6bb1d4b5d0a93/1js405a6q';//testing
+    //'https://embed.tawk.to/6a3fb078eafe991d4bfa009f/1js4cim9n';//prod
 
-  script.onerror = (error) => {
+
+  script.onerror = (error: Event): void => {
     console.error('Tawk script loading failed:', error);
-    this.finishTawkLoading();
+    finish();
   };
 
   document.body.appendChild(script);
 }
+
+
+
 
 
   private finishTawkLoading(): void {

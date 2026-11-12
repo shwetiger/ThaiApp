@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-12">
+      <div class="col-12 text-center">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -39,18 +39,20 @@
                   number:'1.0':'en-US'}}</span></td>
               <td>
                 <img src="assets/img/icons/edit.png" alt="Edit"
-                  (click)="threedBetEditModal(threedBetEdit,betTwoDListObj.number,betTwoDListObj.amount)"
+                  (click)="threedBetEditModal(threedBetEdit,betTwoDListObj.number,betTwoDListObj.amount,i+1)"
                   style="margin-right: 20px; margin-bottom: 3px !important;">
                 <img src="assets/img/icons/delete.png" alt="Delete" (click)="twodBetDelete(betTwoDListObj.number)">
               </td>
             </tr>
             <tr>
-              <td colspan="2" class="text-center" style="color:#2253A2">
-                {{ 'total_amount' | translate }}
+              <td colspan="2" class="text-left">
+                <h4 style="font-weight: 600; color: #2253A2; margin: 0;">
+                  {{ 'total_amount' | translate }} </h4>
               </td>
-              <td colspan="2">
-                <h4 style="font-weight: 600;" style="color:#2253A2">{{totalAmount | number:'1.0':'en-US'}} {{ 'ks' |
-                  translate }}</h4>
+              <td colspan="2" class="text-left">
+                <h4> {{ totalAmount | number:'1.0':'en-US' }}
+                  {{ 'ks' | translate }}
+                </h4>
               </td>
             </tr>
             <tr>
@@ -63,11 +65,11 @@
         </table>
       </div>
     </div>
-    <div class="row totalAccountAmount">
+    <div class="row totalAccountAmount text-center">
       <div class="col-6 d-block my-2 text-center" style="color:#2253A2">
         {{ 'balance' | translate }}
       </div>
-      <div class="col-6 d-block my-2 text-center" style="color:#2253A2">
+      <div class="col-6 d-block my-2 text-center text-right" style="color:#2253A2">
         {{ userProfileModel.balance | number : '1.0'}}
         {{ 'ks' | translate }}
       </div>
@@ -78,20 +80,26 @@
 <ng-template #threedBetEdit>
   <div class="modal-body">
     <div class="container">
-      <div class="row">
-        <div class="pl-1 font-weight-bold">{{ modalService.config.initialState.number }}</div>
-      </div>
-      <div class="row">
-        <div class="col-12 mt-1">
-          <input type="number" maxlength="3" class="betamount-text"
+      <div class="row text-center justify-content-center">
+        <div class="col-3">
+          <label for="">{{ 'S/N' | translate}}</label>
+        <div class="mt-1 pl-1 font-weight-bold pb-1">{{ modalService.config.initialState.i }}</div>
+        </div>
+         <div class="col-3">
+          <label for="">{{ 'bet_list_number' | translate}}</label>
+        <div class="mt-1 pl-1 font-weight-bold pb-1">{{ modalService.config.initialState.number }}</div>
+        </div>
+       <div class="col-5">
+         <label class="mb-1" for="">{{ 'bet_list_amount' | translate}}</label>
+         <input type="number" maxlength="3" class="betamount-text"
             [(ngModel)]="modalService.config.initialState.amount" [ngModelOptions]="{standalone: true}"
             value={{modalService.config.initialState.amount}} (keyup)="checkBetAmount()"
             (keypress)="keyPressNumbers($event)">
           <p id="betAmountErr" class="error-color"></p>
-        </div>
+       </div>
       </div>
-      <div class="row justify-content-end">
-        <button type="button" class="btn btn-sm bet-buttton mr-1" style="width: 80px;" (click)="twodBetModalDelete()">
+      <div class="row justify-content-center">
+        <button type="button" class="btn btn-sm bet-buttton mr-1" style="width: 80px;background-color:#fff;color:red;border:2px solid rgb(147, 145, 145)" (click)="twodBetModalDelete()">
           {{ 'cancel' | translate}}
         </button>
         <button type="button" class="btn btn-sm bet-buttton" style="width: 80px;"
@@ -124,33 +132,40 @@
 <ng-template #twodBetAdd>
   <div class="modal-body">
     <div class="container">
-      <div class="row">
-        <div class="pl-1 ">{{ 'threeDbetAddTitle' | translate}}</div>
-      </div>
-      <div class="row">
-        <div class="col-12 mt-1">
+      <div class="row text-center">
+          <div class="col-6 mt-1 text-center">
           <label for="" class="pb-1">{{ 'bet_list_number' | translate}}</label>
           <input [type]="threedNumberFieldType" class="betamount-text" [(ngModel)]="betAddNumber"
             [ngModelOptions]="{standalone: true}" (keyup)="checkBetAddNumber()"
             (keypress)="keyPressNumberfornumberintput($event)">
           <p id="betAddNumberErr" class="error-color"></p>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-12 mt-1">
+        <div class="col-6 mt-1 text-center">
           <label for="" class="pb-1">{{ 'bet_list_amount' | translate}}</label>
           <input type="number" minlength="3" class="betamount-text" [(ngModel)]="betAddAmount"
             [ngModelOptions]="{standalone: true}" (keyup)="checkBetAddAmount()" (keypress)="keyPressNumbers($event)">
           <p id="betAddAmountErr" class="error-color"></p>
         </div>
       </div>
-      <div class="row justify-content-end">
-        <button type="button" class="btn btn-sm bet-buttton mr-1" style="width: 80px;" (click)="betAddModelRemove()">
+      <!-- <div class="row">
+        <div class="col-12 mt-1">
+          <label for="" class="pb-1">{{ 'bet_list_amount' | translate}}</label>
+          <input type="number" minlength="3" class="betamount-text" [(ngModel)]="betAddAmount"
+            [ngModelOptions]="{standalone: true}" (keyup)="checkBetAddAmount()" (keypress)="keyPressNumbers($event)">
+          <p id="betAddAmountErr" class="error-color"></p>
+        </div>
+      </div> -->
+      <div class="row justify-content-center">
+        <div class="col-6 mt-1 text-center">
+        <button type="button" class="btn btn-sm bet-buttton" style="width: 80%;background-color:#fff;color:red;border:2px solid rgb(147, 145, 145)" (click)="betAddModelRemove()">
           {{ 'cancel' | translate}}
         </button>
-        <button type="button" class="btn btn-sm bet-buttton" style="width: 80px;" (click)="betAddModelNumber()">
+        </div>
+        <div class="col-6 mt-1 text-center">
+        <button type="button" class="btn btn-sm bet-buttton" style="width: 80%;" (click)="betAddModelNumber()">
           {{ 'twoDbetAddButton' | translate}}
         </button>
+        </div>
       </div>
     </div>
   </div>
@@ -162,18 +177,27 @@
   [fullScreen]="common.loading.refreshLoading.fullScreen"></ngx-spinner>
 
 <!-- App Bottom Menu -->
-<div class=" section full   d-flex justify-content-center" id="navTwoDBetConfirm" style="background-color: none;">
-  <button type="button" class="btn btn-lg btn-block  betconfrimButton1 mb-3" style="font-size: 15px;" (click)="goBack()">{{ 'reselect' |
-    translate}}</button>
-  <div class="mt-5"
-    style=" position: relative; justify-content: center; background-color: transparent !important; width: 100%; height: 100%;"
-    *ngIf="common.betLoading">
-    <!-- submit loading -->
+<div class="section full d-flex justify-content-center navTwoDBetConfirm" id="navTwoDBetConfirm"
+  style="background-color: transparent;">
+
+  <button type="button" class="btn btn-lg btn-block betconfrimButton1" style="font-size: 15px;" (click)="goBack()">
+    {{ 'reselect' | translate }}
+  </button>
+
+  <div class="mt-5" style="position: relative; justify-content: center;
+           background-color: transparent !important;
+           width: 100%; height: 100%;" *ngIf="common.betLoading">
+
     <ngx-spinner [name]="common.loading.betLoading.name" [size]="common.loading.betLoading.size"
       [color]="common.loading.betLoading.color" [type]="common.loading.betLoading.type"
-      [fullScreen]="common.loading.betLoading.fullScreen"></ngx-spinner>
+      [fullScreen]="common.loading.betLoading.fullScreen">
+    </ngx-spinner>
   </div>
-  <button type="button" class="btn btn-lg btn-block  betconfrimButton2 mb-3"
-    (click)="threedBetUnBetListModal(threedBetUnBetList)" style="font-size: 15px;" *ngIf="!common.betLoading">{{ 'bet' | translate}}</button>
+
+  <button type="button" class="btn btn-lg btn-block betconfrimButton2" style="font-size: 15px;"
+    (click)="threedBetUnBetListModal(threedBetUnBetList)" *ngIf="!common.betLoading">
+    {{ 'bet' | translate }}
+  </button>
+
 </div>
 <!-- * App Bottom Menu -->

@@ -39,6 +39,31 @@ s0.parentNode.insertBefore(s1,s0);
 </script> -->
 <!--End of Tawk.to Script-->
   <noscript>Please enable JavaScript to continue using this application.</noscript>
+  <!-- Facebook SDK -->
+<div id="fb-root"></div>
+
+<script>
+  window.fbAsyncInit = function () {
+    FB.init({
+      xfbml: true,
+      version: 'vXX.X'
+    });
+
+    FB.Event.subscribe('xfbml.ready', function (msg) {
+      if (msg.type === 'video') {
+        msg.instance.subscribe('finishedPlaying', function () {
+          window.dispatchEvent(
+            new Event('facebook-video-finished')
+          );
+        });
+      }
+    });
+  };
+</script>
+
+<script async defer crossorigin="anonymous"
+  src="https://connect.facebook.net/en_US/sdk.js">
+</script>
 </body>
 
 </html>

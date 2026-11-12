@@ -807,5 +807,8 @@
   "time_twod":"Time",
   "modern":"Modern",
   "internet":"Internet",
-  "date":"Date "
+  "date":"Date ",
+  "discount":"ส่วนลด",
+  "enteramt":"Enter amount",
+  "enternum":"Enter number"
 }

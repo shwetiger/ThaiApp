@@ -102,7 +102,7 @@
         </div>
     </div>
     <div class="container">
-        <div class="mt-2 container topup-submit-card">
+        <div class="mt-2 container topup-submit-card" style="align-items: center;">
             <div class="row">
                 <div class="container mt-2">
                 </div>
@@ -115,8 +115,8 @@
                         <div [ngClass]="{ divder:(paymentDetailMethodList.length >1 && i>0) }"></div>
                         <div class="row"
                             *ngIf="paymentDetailMethodListObj.isShowAll=='1' || paymentDetailMethodListObj.isShowAll=='3'">
-                            <div class="col-8 pt-1" style="align-content:flex-start;">
-                                <p class="card-text-submit">{{ newTopuplistPayment.name }} {{'topup_bankaccount' |
+                            <div class="col-7 pt-1 ml-3" style="align-content:flex-start;">
+                                <p class="card-text-submit" style="white-space:nowrap">{{ newTopuplistPayment.name }} {{'topup_bankaccount' |
                                     translate}} </p>
                                 <p class="card-text-submit">{{paymentDetailMethodListObj.account_name}}</p>
                                 <p class="card-text-submit">{{ paymentDetailMethodListObj.account_no}}</p>
@@ -124,7 +124,7 @@
                             <div class="col-3 mt-1" style="padding: 0px !important;">
                                 <div>
                                     <button class="btn button-notRound"
-                                        style="width: 92%; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"
+                                        style="width: 200px; height: 35px; background: #2253A2 !important;color: #fff !important; border-radius: 5px;"
                                         (click)="copyMessage(paymentDetailMethodListObj.account_no)"
                                         style="background-color: #2253A2;font-size: 12px;padding: 0px 2px !important;color: #fff;"
                                         value="click to copy">{{ 'copy' | translate }}</button>
@@ -133,7 +133,7 @@
                             </div>
                         </div>
                         <div *ngIf="paymentDetailMethodListObj.isShowAll=='3'" class="divder-account"></div>
-                        <div class="row"
+                        <div class="row text-center"
                             *ngIf="paymentDetailMethodListObj.isShowAll=='2' || paymentDetailMethodListObj.isShowAll=='3'">
                             <div class="col-8 pt-1" style="align-content:flex-start;">
                                 <p class="card-text-submit">{{ newTopuplistPayment.name }} {{'topup_bankQR' |
@@ -311,7 +311,7 @@
                     </div>
 
                 </div>
-                <div class="col-11 d-flex justify-content-center">
+                <div class="col-12 d-flex justify-content-center">
                     <div style="color:rgb(223, 34, 34);align-items: center;">
                         <p>{{'not-accept-message' | translate}}</p>
                     </div>

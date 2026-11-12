@@ -90,6 +90,11 @@ export class ThreedBetComponent implements OnInit {
   }
 
   selectNumber(num1) {
+    let numCheck=this.checkBetNumberCount();
+    if(numCheck==false)
+    {
+      return;
+    }
     this.betNumberList = [];
     if (num1.length == 0) {
       num1 = $("#number-swiper-value").val();
@@ -325,7 +330,7 @@ export class ThreedBetComponent implements OnInit {
     return true;
   }
 
-  checkBetNumberCount() {
+  checkBetNumberCount():boolean {
     $("#betNumberCountErr").html("");
     if (this.betValue == null || this.betValue == undefined || this.betValue == '') {
       $("#betNumberCountErr").html("");
@@ -333,15 +338,15 @@ export class ThreedBetComponent implements OnInit {
     }
     if (this.betValue.toString().length > 3) {
       $("#betNumberCountErr").html("Must be 3 digit only");
-      return;
+      return false;
     }
     if (this.betValue.toString().length < 3) {
       $("#betNumberCountErr").html(this.translateService.instant("threed_number_text_required"));
-      return;
+      return false;
     }
     if (this.betValue.toString().includes('.') || this.betValue.toString().includes('-')) {
       $("#betNumberCountErr").html(this.translateService.instant("invalid_bet_number"));
-      return;
+      return false;
     }
     else {
       $("#betNumberCountErr").html("");

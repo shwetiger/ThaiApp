@@ -805,5 +805,6 @@
   "time_twod":"Time",
   "modern":"Modern",
   "internet":"Internet",
-  "date":"Date "
+  "date":"Date ",
+  "discount":"折扣"
 }

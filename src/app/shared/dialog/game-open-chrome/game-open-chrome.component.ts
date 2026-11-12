@@ -56,7 +56,7 @@ export class GameOpenChromeComponent implements OnInit {
     this.spinner.hide("smallSpinner");
     if (error.status == 200) {
       this.toastr.error("", this.translateService.instant("skm-lock-time"), {
-        timeOut: 3000,
+        timeOut: 2000,
         positionClass: 'toast-top-center',
       });
       return;
@@ -192,7 +192,7 @@ export class GameOpenChromeComponent implements OnInit {
             async result => {
               this.dto.Response = {};
               this.dto.Response = result;
-                if (result?.errCode === '603') {
+              if (result?.errCode === '603') {
                 if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
                   this.gameLoadingone = false;
                   this.spinner.hide("gameLoadingone");
@@ -216,6 +216,8 @@ export class GameOpenChromeComponent implements OnInit {
               }
 
               if (this.dto.Response.isSuccess == false) {
+                this.gameLoadingone = false;
+                this.spinner.hide("gameLoadingone");
                 const rawData = this.dto.Response.data;
                 const timeLeftMatch = rawData.match(/timeLeft\s*=\s*(\d+)/);
                 if (timeLeftMatch && timeLeftMatch[1]) {
@@ -224,7 +226,7 @@ export class GameOpenChromeComponent implements OnInit {
                 var waitmessage = this.translateService.instant('skm-lock-time');
                 waitmessage = waitmessage.toString().replace("@time", this.timeLeft);
                 this.toastr.error("", waitmessage, {
-                  timeOut: 1000,
+                  timeOut: 2000,
                   positionClass: 'toast-top-center',
                 });
                 return;
@@ -307,7 +309,7 @@ export class GameOpenChromeComponent implements OnInit {
                 var waitmessage = this.translateService.instant('skm-lock-time');
                 waitmessage = waitmessage.toString().replace("@time", this.timeLeft);
                 this.toastr.error("", waitmessage, {
-                  timeOut: 1000,
+                  timeOut: 2000,
                   positionClass: 'toast-top-center',
                 });
                 return;
@@ -382,7 +384,7 @@ export class GameOpenChromeComponent implements OnInit {
               this.dto.Response = {};
               this.dto.Response = result;
               var launchGameResModel = this.dto.Response.data;
-                if (result?.errCode === '603') {
+              if (result?.errCode === '603') {
                 if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
                   this.gameLoadingone = false;
                   this.spinner.hide("gameLoadingone");
@@ -404,38 +406,55 @@ export class GameOpenChromeComponent implements OnInit {
                   return;
                 }
               }
-
-              this.storage.store('localGamePlayProviderId', this.providerId);
-              this.storage.store('localPreviousRoute', 'gameList')
-              sessionStorage.setItem('providerId', this.providerId);
-              var launchTagName;
-              var gamelist = this.storage.retrieve('localLaunchGameList');
-              let language = this.storage.retrieve('localLanguage');
-              if (language == "my") {
-                launchTagName = this.translateService.instant("game-win-lose-chrome");
-                launchTagName = launchTagName.toString().replace("@name", gamelist.name_my);
-              } else if (language == "th") {
-                launchTagName = this.translateService.instant("game-win-lose-chrome");
-                launchTagName = launchTagName.toString().replace("@name", gamelist.name_th);
-              } else if (language == "zh") {
-                launchTagName = this.translateService.instant("game-win-lose-chrome");
-                launchTagName = launchTagName.toString().replace("@name", gamelist.name_zh);
-              } else {
-                launchTagName = this.translateService.instant("game-win-lose-chrome");
-                launchTagName = launchTagName.toString().replace("@name", gamelist.name);
+              if (this.dto.Response.isSuccess == true) {
+                this.storage.store('localGamePlayProviderId', this.providerId);
+                this.storage.store('localPreviousRoute', 'gameList')
+                sessionStorage.setItem('providerId', this.providerId);
+                var launchTagName;
+                var gamelist = this.storage.retrieve('localLaunchGameList');
+                let language = this.storage.retrieve('localLanguage');
+                if (language == "my") {
+                  launchTagName = this.translateService.instant("game-win-lose-chrome");
+                  launchTagName = launchTagName.toString().replace("@name", gamelist.name_my);
+                } else if (language == "th") {
+                  launchTagName = this.translateService.instant("game-win-lose-chrome");
+                  launchTagName = launchTagName.toString().replace("@name", gamelist.name_th);
+                } else if (language == "zh") {
+                  launchTagName = this.translateService.instant("game-win-lose-chrome");
+                  launchTagName = launchTagName.toString().replace("@name", gamelist.name_zh);
+                } else {
+                  launchTagName = this.translateService.instant("game-win-lose-chrome");
+                  launchTagName = launchTagName.toString().replace("@name", gamelist.name);
+                }
+                this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
+                this.gameLoadingtwo = false;
+                this.spinner.show("gameLoadingtwo");
+                this.bsModalRef.hide();
+                this.storage.store('localCloseGameBalance', this.gameUserBalance);
+                this.storage.store('localLaunchTagName', launchTagName);
+                this.router.navigate(['/game/play'], {
+                  state: {
+                    launchUrl: launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: launchTagName,
+                    providerId: this.providerId
+                  }, replaceUrl: false
+                });
               }
-              this.storage.store('localOpenNewTap', this.storage.retrieve('localGameBalanceBefore'));
-              this.gameLoadingtwo = false;
-              this.spinner.show("gameLoadingtwo");
-              this.bsModalRef.hide();
-              this.storage.store('localCloseGameBalance', this.gameUserBalance);
-              this.storage.store('localLaunchTagName', launchTagName);
-              this.router.navigate(['/game/play'], {
-                state: {
-                  launchUrl: launchGameResModel.gameUrl, launchTag: "openinnewtap", launchTagName: launchTagName,
-                  providerId: this.providerId
-                }, replaceUrl: false
-              });
+              if (this.dto.Response.isSuccess == false) {
+                this.gameLoadingtwo = false;
+                this.spinner.show("gameLoadingtwo");
+                const rawData = this.dto.Response.data;
+                const timeLeftMatch = rawData.match(/timeLeft\s*=\s*(\d+)/);
+                if (timeLeftMatch && timeLeftMatch[1]) {
+                  this.timeLeft = parseInt(timeLeftMatch[1], 10);
+                }
+                var waitmessage = this.translateService.instant('skm-lock-time');
+                waitmessage = waitmessage.toString().replace("@time", this.timeLeft);
+                this.toastr.error("", waitmessage, {
+                  timeOut: 2000,
+                  positionClass: 'toast-top-center',
+                });
+                return;
+              }
             }
           );
       }
@@ -450,7 +469,7 @@ export class GameOpenChromeComponent implements OnInit {
               this.dto.Response = {};
               this.dto.Response = result;
               var launchGameResModel = this.dto.Response;
-                if (result?.errCode === '603') {
+              if (result?.errCode === '603') {
                 if (result.errMsg == 'Going to perform an online maintenance game open API is DISABLED temporarily') {
                   this.gameLoadingone = false;
                   this.spinner.hide("gameLoadingone");

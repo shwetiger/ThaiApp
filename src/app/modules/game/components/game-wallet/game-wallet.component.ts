@@ -69,6 +69,7 @@ export class GameWalletComponent implements OnInit {
   async ngOnInit() {
     this.refreshLoading = true;
     this.spinner.show("refreshLoading");
+    this.storage.clear('routefrom');
     this.loading = true;
     this.getUserProfile();
     this.showAmount = this.storage.retrieve('localShowBalance');

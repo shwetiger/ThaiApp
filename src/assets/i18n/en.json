@@ -808,5 +808,8 @@
   "time_twod":"Time",
   "modern":"Modern",
   "internet":"Internet",
-  "date":"Date "
+  "date":"Date ",
+  "discount":"Discount",
+  "enteramt":"Enter amount",
+  "enternum":"Enter number"
 }

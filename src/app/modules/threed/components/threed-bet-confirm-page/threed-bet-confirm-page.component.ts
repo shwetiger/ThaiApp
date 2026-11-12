@@ -102,10 +102,11 @@ export class ThreedBetConfirmPageComponent implements OnInit {
     });
   }
 
-  threedBetEditModal(threedBetEdit: TemplateRef<any>, number: number, amount: number,) {
+  threedBetEditModal(threedBetEdit: TemplateRef<any>, number: number, amount: number,i:number) {
     const betModal = {
       number: number,
-      amount: amount
+      amount: amount,
+      i:i
     };
     this.threedBetEdit = this.modalService.show(threedBetEdit, {
       initialState: betModal,

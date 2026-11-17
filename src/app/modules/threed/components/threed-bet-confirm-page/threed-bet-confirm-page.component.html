@@ -83,11 +83,11 @@
       <div class="row text-center justify-content-center">
         <div class="col-3">
           <label for="">{{ 'S/N' | translate}}</label>
-        <div class="mt-1 pl-1 font-weight-bold pb-1">{{ modalService.config.initialState.i }}</div>
+        <div class="pl-1 font-weight-bold pb-1" style="margin-top :14px !important;">{{ modalService.config.initialState.i }}</div>
         </div>
          <div class="col-3">
           <label for="">{{ 'bet_list_number' | translate}}</label>
-        <div class="mt-1 pl-1 font-weight-bold pb-1">{{ modalService.config.initialState.number }}</div>
+        <div class="pl-1 font-weight-bold pb-1" style="margin-top :13px !important;">{{ modalService.config.initialState.number }}</div>
         </div>
        <div class="col-5">
          <label class="mb-1" for="">{{ 'bet_list_amount' | translate}}</label>
@@ -99,10 +99,10 @@
        </div>
       </div>
       <div class="row justify-content-center">
-        <button type="button" class="btn btn-sm bet-buttton mr-1" style="width: 80px;background-color:#fff;color:red;border:2px solid rgb(147, 145, 145)" (click)="twodBetModalDelete()">
+        <button type="button" class="btn btn-sm bet-buttton mr-1" style="width: 80px;height:40px;background-color:#fff;color:red;border:2px solid rgb(147, 145, 145)" (click)="twodBetModalDelete()">
           {{ 'cancel' | translate}}
         </button>
-        <button type="button" class="btn btn-sm bet-buttton" style="width: 80px;"
+        <button type="button" class="btn btn-sm bet-buttton" style="width: 80px;height:40px"
           (click)="threedBetModalNew(modalService.config.initialState.number, modalService.config.initialState.amount)">
           {{ 'ok' | translate}}
         </button>
@@ -147,22 +147,14 @@
           <p id="betAddAmountErr" class="error-color"></p>
         </div>
       </div>
-      <!-- <div class="row">
-        <div class="col-12 mt-1">
-          <label for="" class="pb-1">{{ 'bet_list_amount' | translate}}</label>
-          <input type="number" minlength="3" class="betamount-text" [(ngModel)]="betAddAmount"
-            [ngModelOptions]="{standalone: true}" (keyup)="checkBetAddAmount()" (keypress)="keyPressNumbers($event)">
-          <p id="betAddAmountErr" class="error-color"></p>
-        </div>
-      </div> -->
       <div class="row justify-content-center">
-        <div class="col-6 mt-1 text-center">
-        <button type="button" class="btn btn-sm bet-buttton" style="width: 80%;background-color:#fff;color:red;border:2px solid rgb(147, 145, 145)" (click)="betAddModelRemove()">
+        <div class="col-6 mt-1 text-right">
+        <button type="button" class="btn btn-sm bet-buttton" style="width: 80%;height:40px;background-color:#fff;color:red;border:2px solid rgb(147, 145, 145)" (click)="betAddModelRemove()">
           {{ 'cancel' | translate}}
         </button>
         </div>
-        <div class="col-6 mt-1 text-center">
-        <button type="button" class="btn btn-sm bet-buttton" style="width: 80%;" (click)="betAddModelNumber()">
+        <div class="col-6 mt-1 text-left">
+        <button type="button" class="btn btn-sm bet-buttton" style="width: 80%;height:40px" (click)="betAddModelNumber()">
           {{ 'twoDbetAddButton' | translate}}
         </button>
         </div>

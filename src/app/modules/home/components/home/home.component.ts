@@ -243,12 +243,6 @@ export class HomeComponent implements OnInit {
         next: async (result: any) => {
 
           this.spinner.hide('refreshLoading');
-
-          console.log(
-            'Telegram login response:',
-            result
-          );
-
           if (
             result &&
             result.status !== 'Error' &&
@@ -290,11 +284,6 @@ export class HomeComponent implements OnInit {
             }
 
           } else {
-
-            console.log(
-              'Telegram login failed'
-            );
-
             resolve(false);
           }
         },
@@ -332,12 +321,6 @@ export class HomeComponent implements OnInit {
     }
 
     const currentTelegramId = String(user.id);
-
-    console.log(
-      'Telegram user:',
-      currentTelegramId
-    );
-
     try {
       const loginSuccess = await this.telegramLogin();
       if (loginSuccess) {

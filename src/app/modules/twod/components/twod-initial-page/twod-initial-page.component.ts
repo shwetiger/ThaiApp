@@ -268,7 +268,8 @@ export class TwodInitialPageComponent implements OnInit {
       };
       this.modalRef = this.modalService.show(BetSectionColsedComponent, {...this.modalConfig});
 
-       } else {
+       }
+        else {
 
       let initialState = { refLink: refLink };
       this.modalConfig = {
